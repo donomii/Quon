@@ -1,0 +1,27 @@
+(
+(includes "q/base.qon" "q/lists.qon" "q/macros.qon" "q/astaccessors.qon"  )
+
+(types (a int)
+ (b float)
+)
+(functions 
+
+(int factorial (int x)
+(declare )
+(body 
+(if (greaterthan 1 x) 
+(then 
+(return 1)) 
+(else 
+(return (mult x (factorial (sub x 1))))))
+))
+  (int start ()
+(declare )
+(body 
+(printf "Factorial 0: %d\n" (factorial 0)) 
+(printf "Factorial 1: %d\n" (factorial 1)) 
+(printf "Factorial 2: %d\n" (factorial 2)) 
+(printf "Factorial 3: %d\n" (factorial 3)) 
+(printf "Factorial 10: %d\n" (factorial 10))))
+ )
+)

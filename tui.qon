@@ -1,0 +1,51 @@
+((includes base.qon  )
+ (types)
+ (functions
+
+ (string newScreen (int size string screen) (declare) 
+(body
+(if (greaterthan size 0) 
+(then (return (stringConcatenate " " (newScreen (sub1 size) screen))))
+(else (return screen))
+
+)))
+
+ (string drawAt (string screen int width int height  int x int y string text int posInText) (declare) 
+ (body
+ (if (greaterthan (string-length text) posInText) 
+ (then 
+ (printf "%d, %d, %d pos: %d\n" y width x (add (mult y width) x))
+ (printf "string length %d\n" (string-length screen))
+ (printf "text %s\n" (sub_string text posInText 10))
+ ;(setSubString screen  1 "hello")
+ (printf "worked\n" )
+ (setSubString screen (add (mult y width) x) (sub_string text posInText 10))
+ (drawAt screen width height (add1 x) y text (add1 posInText))
+ )
+ (else (return screen)))
+(return screen)
+
+ ))
+
+ (void printLine (string screen int width int line) (declare)
+ (body
+    (printf "%sx\n" (sub_string screen (mult line width) width)) 
+ ))
+
+ (void printScreen (string screen int width int height int line) (declare)
+ (body
+     (if (greaterthan height line)
+     (then
+        (printLine screen width line)
+        (printScreen screen width height (add1 line)))
+     (else (return)))
+ ))
+
+ (int start ()
+ (declare )
+   (body
+ ;  (tron)
+    (printScreen (drawAt (newScreen 1600 "") 80 20 10 10 "asdfsf" 0) 80 20 0)
+    (return 0)
+    ))
+ ))

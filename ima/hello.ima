@@ -1,0 +1,8 @@
+Includes: "base.qon"
+Types:
+type a is int;
+type b is float;
+Functions:
+fu start() -> int in
+	printf("Hello World from Ima");
+end function

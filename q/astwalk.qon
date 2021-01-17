@@ -1,0 +1,73 @@
+(
+ (includes q/base.qon)
+ (types)
+    
+ (functions
+
+(void displayNode (list node) (declare)
+(body
+    (if (isNode node)
+        (then
+            (printf "Dumping node")
+            (printf "Type: %s\n" (stringify (nameof node)))
+            (printf "SubType: %s\n" (stringify (subnameof node)))
+            (printf "Code: %s\n" (stringify (codeof node)))
+            (printf "Children: %d\n" (listLength (childrenof node))))
+        (else 
+            (printf "Not a node!!! %s\n" (stringify (car node)))
+            (panic "Not a node")))
+))
+
+
+(void dumpAst (list node) (declare (list children nil)  )
+(body
+    (printf "*******\n")
+    (displayNode node)
+    (printf "*******\n")
+    (set children (childrenof (cdr node)))
+    (if (> (listLength children) 1)
+    (then (dumpChildren (cdr children)))
+    (else))
+))
+
+(void dumpChildren (list children) (declare)
+    (body
+    ;(display children)
+        ;(tron)
+        (if (isNil children)
+        (then )
+        (else 
+            (dumpAst (car children))
+            (dumpChildren children)))
+    ))
+
+
+(list astTree (string filename) (declare (string programStr "") (list tree nil) (list program nil))
+        (body
+        (printf "Loading file %s\n" filename)
+         (set programStr (read-file filename))
+        (printf "Loaded file \n")
+        (set tree (readSexpr programStr filename))
+        (printf "Parsed tree\n" )
+        (set program
+          (alistCons
+           (boxString "includes")
+           (astIncludes (first tree))
+           (alistCons
+            (boxString "types")
+            (astTypes (second tree))
+            (alistCons (boxString "functions") (astFunctions (third tree)) nil))))
+         (printf "Merged ast\n")
+         (return program)
+     ))
+
+  (int start () (declare (list ast nil))
+       (body
+        (set ast (astTree "compiler.qon"))
+        ;(display (cdr (car ast)))
+        ;(dumpAst (cdr (first ast)))
+        (dumpAst (cdr (second ast)))
+        (dumpAst (cdr (third ast)))
+        (return 0)
+        ))
+  ))

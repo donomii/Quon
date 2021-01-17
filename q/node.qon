@@ -1,0 +1,380 @@
+((includes)
+ (types)
+ (functions
+
+(void nodeFunctionArgs (list tree) (declare)
+   (body
+    (if (isEmpty tree)
+      (then (return))
+      (else
+       (display (second tree))
+       (if (isNil (cddr tree)) (then (printf "")) (else (printf ",")))
+       (nodeFunctionArgs (cddr tree))))))
+
+    (void nodeLeaf (list thisNode int indent) (declare)
+   (body (display (nodeFuncMap (codeof thisNode)))))
+
+  (void nodeStructGetterExpression (list thisNode int indent) (declare)
+   (body
+    (if (equalBox (boxString "structGetter") (subnameof thisNode))
+      (then (nodeGetStruct thisNode indent))
+      (else (nodeLeaf thisNode indent)))))
+
+  (void nodeExpression (list node int indent) (declare)
+   (body
+    (if (isLeaf node)
+      (then (display (nodeFuncMap (codeof node))))
+      (else (nodeSubExpression node indent)))))
+  (void
+   nodeRecurList
+   (list expr int indent)
+   (declare)
+   (body
+    (if (isEmpty expr)
+      (then (return))
+      (else
+       (nodeExpression (car expr) indent)
+       (if (isNil (cdr expr))
+         (then (printf ""))
+         (else (printf ", ") (nodeRecurList (cdr expr) indent)))))
+    ))
+
+  (void nodeSubExpression (list tree int indent) (declare (box thing nil))
+   (body
+    (if (isEmpty tree)
+      (then (return))
+      (else
+       (if (isNode (childrenof tree))
+         (then (nodeSubExpression (childrenof tree) indent))
+         (else
+          (if (isLeaf tree)
+            (then (display (nodeFuncMap (codeof tree))))
+            (else
+             (if (equal 1 (listLength (childrenof tree)))
+               (then
+                (display (codeof (car (childrenof tree))))
+                (if (equalBox
+                     (boxString "return")
+                     (codeof (car (childrenof tree))))
+                  (then (printf ""))
+                  (else (printf "()"))))
+               (else
+                (set thing (codeof (car (childrenof tree))))
+                (if (equalBox (boxSymbol "get-struct") thing)
+                  (then
+                   (printf
+                    "%s.%s"
+                    (stringify (codeof (second (childrenof tree))))
+                    (stringify (codeof (third (childrenof tree))))))
+                  (else
+                   (if (equalBox (boxSymbol "new") thing)
+                     (then
+                      (printf
+                       "{}"
+                       ))
+                     (else
+                      (printf
+                       "%s("
+                       (stringify
+                        (nodeFuncMap (codeof (car (childrenof tree))))))
+                      (nodeRecurList (cdr (childrenof tree)) indent)
+                      (printf ")")))))))))))))))
+
+  (void nodeIf (list node int indent) (declare)
+   (body
+    (newLine indent)
+    (printf "if ( ")
+    (nodeExpression (car (first (childrenof node))) 0)
+    (printf ") {")
+    (nodeBody (second (childrenof node)) (add1 indent))
+    (newLine indent)
+    (printf "} else {")
+    (nodeBody (third (childrenof node)) (add1 indent))
+    (newLine indent)
+    (printf "}")))
+
+
+  (void nodeGetStruct  (list node int indent)  (declare)
+   (body
+    (newLine indent)
+    (printf
+     "%s.%s"
+     (stringify (first (codeof node)))
+     (stringify (second (codeof node))))))
+
+  (void nodeSet  (list node int indent)  (declare)
+   (body
+    (newLine indent)
+    (printf "%s = " (stringify (first (codeof node))))
+    (nodeExpression (childrenof node) indent)))
+
+  (void nodeSetStruct (list node int indent) (declare)
+   (body
+    (newLine indent)
+    (printf "%s.%s = " (stringify (first (codeof node))) (stringify (second (codeof node))))
+    (nodeExpression (childrenof node) indent)
+    ))
+
+
+  (void nodeStatement (list node int indent) (declare)
+   (body
+    (if (equalBox (boxString "setter") (subnameof node))
+      (then (nodeSet node indent))
+      (else
+       (if (equalBox (boxString "structSetter") (subnameof node))
+         (then (nodeSetStruct node indent))
+         (else
+          (if (equalBox (boxString "if") (subnameof node))
+            (then (nodeIf node indent))
+            (else
+             (if (equalBox (boxString "returnvoid") (subnameof node))
+               (then (newLine indent) (printf "return"))
+               (else
+                (newLine indent)
+                (nodeExpression (childrenof node) indent)))))))))
+    (printf ";\n")))
+
+  (void
+   nodeBody
+   (list tree int indent)
+   (declare)
+   (body
+    (if (isEmpty tree)
+      (then (return))
+      (else
+       (printIndent indent)
+       (printf
+        "%s"
+        "if (globalStepTrace) {console.log(new Error(\"StepTrace \\n\"));}\n")
+       (nodeStatement (car tree) indent)
+       (nodeBody (cdr tree) indent)))))
+
+  (void nodeDeclarations (list decls int indent) (declare (box decl nil))
+   (body
+    (if (isEmpty decls)
+      (then (return))
+      (else
+       (set decl (car decls))
+       (printf
+        "var %s = "
+        (stringify (second decl)))
+       (display (nodeFuncMap (third decl)))
+       (printf ";\n")
+       (nodeDeclarations (cdr decls) indent)))))
+
+
+
+  (void nodeFunction (list node) (declare (box name nil))
+   (body
+    (set name (subnameof node))
+    (printf "\n\n//Building function %s from line: %s" (stringify name) (stringify (getTag name (boxString "line"))))
+    (newLine 0)
+    (if (isNil node)
+      (then (return))
+      (else
+       (newLine 0)
+       (printf
+        "function %s("
+        (stringify (subnameof node)))
+       (nodeFunctionArgs (cdr (assoc "intype" (cdr node))))
+       (printf ") {")
+       (newLine 1)
+       (nodeDeclarations (declarationsof node) 1)
+       (if (inList (toStr name) (noStackTrace))
+       (then (printf ""))
+       (else
+           (printf "\nif (globalTrace)\n    {printf(\"%s at %s:%s\\n\");}\n" (stringify name) (stringify (getTag name (boxString "filename"))) (stringify (getTag name (boxString "line"))))))
+       (if (inList (toStr name) (noStackTrace))
+         (then (printf ""))
+         (else
+          ;;(printf "\n  stackTracePush(\"%s\", \"%s\", %s, %d );\n" (stringify (getTag name (boxString "filename"))) (stringify name) (stringify (getTag name (boxString "line"))) 0)
+          ))
+       (nodeBody (childrenof node) 1)
+       (if (inList (toStr name) (noStackTrace))
+         (then (printf ""))
+         (else
+            (printf "\nif (globalTrace)\n    {printf(\"Leaving %s\\n\");}\n" (stringify name))
+            ))
+       (printf "\n}\n")))))
+
+  (void nodeForwardDeclaration (list node) (declare)
+   (body
+    (if (isNil node)
+      (then (return))
+      (else
+       (printf
+        "\n%s %s("
+        (stringify (nodeTypeMap (cdr (assoc "outtype" (cdr node)))))
+        (stringify (subnameof node)))
+       (nodeFunctionArgs (cdr (assoc "intype" (cdr node))))
+       (printf ");")))))
+  (void
+   nodeForwardDeclarations
+   (list tree)
+   (declare)
+   (body
+    (if (isEmpty tree)
+      (then (return))
+      (else
+       (nodeForwardDeclaration (car tree))
+       (nodeForwardDeclarations (cdr tree))))))
+  (void
+   nodeFunctions
+   (list tree)
+   (declare)
+   (body
+    (if (isEmpty tree)
+      (then (return))
+      (else (nodeFunction (car tree)) (nodeFunctions (cdr tree))))))
+
+  (void nodeIncludes (list nodes) (declare)
+   (body
+    (printf "%s" "function read_file(filename) {return fs.readFileSync(filename);}\n")
+    (printf "%s" "function write_file(filename, data) {fs.writeFileSync(filename, data);}\n")
+    (printf "%s" "var util = require('util');\n")
+    (printf "%s" "function printf() {process.stdout.write(util.format.apply(this, arguments));}\n")
+    (printf "%s" "function qlog()   {process.stderr.write(util.format.apply(this, arguments));}\n")
+    (printf "%s" "var fs = require('fs');\n")
+    (printf "%s" "function equalString(a,b) {if (a==null) {return false;}if (b==null) {return false;}return a.toString()===b.toString() }\n")
+    (printf "%s" "function panic(s){console.trace(s);process.exit(1);}\n")
+    (printf "%s" "function dump(s){console.log(s)}")
+    (printf "%s" "function sub(a, b) { return a - b; }\n")
+    (printf "%s" "function mult(a, b) { return a * b; }\n")
+    (printf "%s" "function greaterthan(a, b) { return a > b; }\n")
+    (printf "%s" "function subf(a, b) { return a - b; }\n")
+    (printf "%s" "function multf(a, b) { return a * b; }\n")
+    (printf "%s" "function greaterthanf(a, b) { return a > b; }\n")
+    (printf "%s" "function equal(a, b) { return a == b; }\n")
+    (printf "%s" "function andBool(a, b) { return a == b;}\n")
+    (printf "%s" "function string_length(s) { return s.length;}\n")
+    (printf "%s" "function sub_string(str, start, len) {str = ''+str;return str.substring(start, start+len)};\n")
+    (printf "%s" "function stringConcatenate(a, b) { return a + b}\n")
+    (printf "%s" "function intToString(a) {}\n\n\n")
+    (printf "%s" "function gc_malloc( size ) {\nreturn {};\n}\n\n")
+    (printf "%s" "function makeArray(length) {\n   return [];\n}\n\n")
+    (printf "%s" "function at(arr, index) {\n  return arr[index];\n}\n\n")
+    (printf "%s" "function setAt(array, index, value) {\n    array[index] = value;\n}\n\n")
+    (printf "%s" "function getStringArray(index, strs) {\nreturn strs[index];\n}\n\n")
+    (printf "%s" "var NULL = null;")
+    (printf "%s" "var globalArgs;\nvar globalArgsCount;\nvar globalTrace = false;\nvar globalStepTrace = false;")
+    (printf "%s" "function character(num) {}")
+))
+
+
+  (void nodeTypeDecl (list l) (declare)
+   (body
+    (if (> (listLength l) 2)
+      (then
+       (printIndent 1)
+       (printf
+        "%s %s %s;\n"
+        (stringify (second l))
+        (stringify (nodeTypeMap (listLast l)))
+        (stringify (first l))))
+      (else
+       (printIndent 1)
+       (printf
+        "%s %s;\n"
+        (stringify (nodeTypeMap (listLast l)))
+        (stringify (car l)))))))
+  (void
+   nodeStructComponents
+   (list node)
+   (declare)
+   (body
+    (if (isEmpty node)
+      (then (return))
+      (else (nodeTypeDecl (car node)) (nodeStructComponents (cdr node))))))
+  (void
+   nodeStruct
+   (list node)
+   (declare)
+   (body (nodeStructComponents (cdr (car node))) ))
+  (box
+   nodeTypeMap
+   (box aSym)
+   (declare (list symMap nil))
+   (body
+    (set
+     symMap
+     (alistCons
+      (boxSymbol "stringArray")
+      (boxSymbol "char**")
+      (alistCons (boxSymbol "string") (boxSymbol "char*") nil)))
+    (if (truthy (assoc (stringify aSym) symMap))
+      (then (return (cdr (assoc (stringify aSym) symMap))))
+      (else (return aSym)))))
+
+
+  (box nodeFuncMap (box aSym) (declare (list symMap nil))
+
+   (body
+    (if (equalString "symbol" (boxType aSym))
+      (then
+       (set
+        symMap
+        (alistCons
+         (boxSymbol "=")
+         (boxSymbol "equal")
+         (alistCons
+          (boxSymbol "sub-string")
+          (boxSymbol "sub_string")
+          (alistCons
+           (boxSymbol "read-file")
+           (boxSymbol "read_file")
+           (alistCons
+            (boxSymbol "write-file")
+            (boxSymbol "write_file")
+            (alistCons
+             (boxSymbol ">")
+             (boxSymbol "greaterthan")
+             (alistCons
+              (boxSymbol "string-length")
+              (boxSymbol "string_length")
+              (alistCons (boxSymbol "nil") (boxSymbol "NULL") nil))))))))
+
+       (if (truthy (assoc (stringify aSym) symMap))
+         (then (return (cdr (assoc (stringify aSym) symMap))))
+         (else (return aSym))))
+      (else (return aSym)))))
+  (void nodeType (list node) (declare)
+   (body ))
+
+  (void
+   nodeTypes
+   (list nodes)
+   (declare)
+   (body
+    (if (isEmpty nodes)
+      (then (return))
+      (else (nodeType (car nodes)) (nodeTypes (cdr nodes))))))
+  (void
+   nodeCompile
+   (string filename)
+   (declare (string programStr "") (list tree nil) (list program nil))
+   (body
+    (set programStr (read-file filename))
+    (set tree (readSexpr programStr filename))
+    (set
+     program
+     (alistCons
+      (boxString "includes")
+      (astIncludes (first tree))
+      (alistCons
+       (boxString "types")
+       (astTypes (second tree))
+       (alistCons (boxString "functions") (astFunctions (third tree)) nil))))
+    (set program (mergeIncludes program))
+    (nodeIncludes (cdr (assoc "includes" program)))
+    (nodeTypes (childrenof (cdr (assoc "types" program))))
+    (printf "\nvar globalStackTrace = NULL;\n")
+    (printf "\nvar caller = \"\";\n")
+    (printf "\nfunction isNil(p) {\n    return p == NULL;\n}\n\n")
+    (nodeFunctions
+     (cdr (assoc "children" (cdr (cdr (assoc "functions" program))))))
+    (printf "\n")
+    (printf "const [asfdasdf, ...qwerqwer] = process.argv;")
+    (printf "globalArgs = qwerqwer;")
+    (printf "globalArgsCount = qwerqwer.length;")
+    (printf "%s" "start();\n")))
+  ))

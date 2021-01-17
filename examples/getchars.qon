@@ -1,0 +1,18 @@
+(
+ (includes base.qon)
+ (types)
+    
+ (functions
+
+  (void echo () (declare)
+        (body
+        (printf "%d\n" (getCharImmediate))
+        (echo)
+         ))
+
+  (int start () (declare)
+       (body
+        (echo)
+        (return 0)
+        ))
+  ))

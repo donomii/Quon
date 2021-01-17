@@ -1,0 +1,69 @@
+((includes )
+
+ (types
+  )
+  
+ (functions
+ 
+  (list macrowalk (list l ) (declare) (body
+    (if (isEmpty l)
+      (then (return nil))
+      (else
+
+	  ;(printf "//type: %s\n" (get-struct l typ))
+       (if (isList l)
+         (then
+		 ;(printf "//Processing list\n")
+		;	(printf "//Listlength: %d\n" (listLength l))
+			;(display l)
+
+        ;Handle boxList
+          (if (equalString (stringConcatenate "box" "List") (stringify (car l)))
+          (then
+            ;(display (doBoxList (cdr l)))
+          (return (car (doBoxList (cdr l)))))
+          (else))
+
+        ;Handle stringList
+          (if (equalString (stringConcatenate "string" "List") (stringify (car l)))
+          (then
+            ;(display (doStringList (cdr l)))
+          (return (car (doStringList (cdr l)))))
+          (else))
+		  (if (equalString (stringConcatenate "multi" "List") (stringify (car l)))
+          (then
+            ;(display (doStringList (cdr l)))
+          (return (car (doMultiList (cdr l)))))
+          (else))
+		  
+            (return   (cons (macrowalk (car l) ) (macrowalk (cdr l) ))))
+         (else
+         (return l)
+			))))))
+
+
+
+  (list macrosingle (list l string search string replace ) (declare (box val nil)) (body
+    (if (isEmpty l)
+      (then (return nil))
+      (else
+
+	  ;(printf "//type: %s\n" (get-struct l typ))
+       (if (isList l)
+         (then
+            (return   (cons (macrosingle (car l) search replace) (macrosingle (cdr l) search replace ))))
+         (else
+                      ;(printf "---Processing non list: %s\n" (stringify l))
+          ;(printf "--Comparing %s and %s at %s,%s\n" search (stringify l) (stringify (getTagFail l (boxString "line")(boxString "no tag"))) (stringify (getTagFail l (boxString "filename" )(boxString "no tag"))))
+          
+          (if (equalString search (stringify l))
+            (then
+				;(printf "---Matched!: %s\n" (stringify l))
+              (set val (clone l))
+              (set-struct val str replace)
+              (return val))
+            (else))
+         (return l)
+			))))))
+			
+ )

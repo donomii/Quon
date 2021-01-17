@@ -1,0 +1,302 @@
+((includes )
+
+ (types
+  )
+  
+ (functions
+ 
+ 
+ 
+  (box car (list l) (declare)
+   (body
+    (assertType "list" l __LINE__ __FILE__)
+    (if (isNil l)
+      (then
+       (printf "Cannot call car on empty list!\n")
+       (panic "Cannot call car on empty list!\n")
+       (return nil))
+      (else
+       (if (isNil (get-struct l car))
+         (then (return nil))
+         (else (return (get-struct l car))))))))
+
+  (list cdr (list l) (declare)
+   (body
+    (assertType "list" l __LINE__ __FILE__)
+    (if (isEmpty l)
+      (then
+       (printf "Attempt to cdr an empty list!!!!\n")
+       (panic "Attempt to cdr an empty list!!!!\n")
+       (return nil))
+      (else (return (get-struct l cdr))))))
+	  
+	(list cons (box data list l) (declare (pair p nil))
+   (body
+    (set p (makePair))
+    (set-struct p cdr l)
+    (set-struct p car data)
+    (set-struct p typ "list")
+    (return p)))
+
+	  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; List access functions ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  (box caar (list l) (declare) (body (return (car (car l)))))
+  (box cadr (list l) (declare) (body (return (car (cdr l)))))
+  (box caddr (list l) (declare) (body (return (car (cdr (cdr l))))))
+  (box cadddr (list l) (declare) (body (return (car (cdr (cdr (cdr l)))))))
+  (box caddddr (list l) (declare) (body (return (car (cdr (cdr (cdr (cdr l))))))))
+  (box cddr (list l) (declare) (body (return (cdr (cdr l)))))
+  (box first (list l) (declare) (body (return (car l))))
+  (box second (list l) (declare) (body (return (cadr l))))
+  (box third (list l) (declare) (body (return (caddr l))))
+  (box fourth (list l) (declare) (body (return (cadddr l))))
+  (box fifth (list l) (declare) (body (return (caddddr l))))
+
+
+  (bool isList (box b) (declare)
+   (body
+
+    (if (isNil b)
+      (then (return true))
+      (else (return (equalString "list" (get-struct b typ)))))))
+
+  (list emptyList () (declare) (body (return nil)))
+
+  (bool isEmpty (box b) (declare)
+   (body
+    (if (isNil b)
+      (then (return true))
+      (else 
+       (return false)))))
+
+  (int listLength
+   (list l)
+   (declare)
+   (body
+    (if (isEmpty l)
+      (then (return 0))
+      (else (return (add1 (listLength (cdr l))))))))
+
+
+  (list alistCons (box key box value list alist) (declare)
+   (body (return (cons (cons key value) alist))))
+
+  (list assoc (string searchTerm list l) (declare (list elem nil))
+   (body
+    (assertType "list" l __LINE__ __FILE__)
+
+    (if (isEmpty l)
+      (then (return (boxBool false)))
+      (else
+       (set elem (car l))
+       (assertType "list" elem __LINE__ __FILE__)
+       (if (isEmpty elem)
+         (then (return (assoc searchTerm (cdr l))))
+         (else
+         (if false (then (printf "Comparing %s and %s\n" searchTerm (stringify (car elem)))) (else (printf "")))
+          (if (equalString
+               searchTerm
+               (stringify (car elem)))
+            (then (return elem))
+            (else (return (assoc searchTerm (cdr l)))))))))))
+
+ ;bool string symbol int float
+ (string chooseBox (string aType) (declare)
+ (body
+	(if (equalString "string" aType)
+	(then (return "boxString"))
+	(else (if (equalString "symbol" aType)
+	(then (return "boxSymbol"))
+	(else (if (equalString "bool" aType)
+	(then (return "boxBool"))
+	(else (if (equalString "int" aType)
+	(then (return "boxInt"))
+	(else (if (equalString "float" aType)
+	(then (return "boxFloat"))
+	(else (panic "Invalid type")))))))))))
+	(return "")))
+	
+	
+  (box mlistLiteral (box b) (declare)
+   (body
+    (if (isNil b)
+      (then (return nil))
+      (else
+       (if (equalString "string" (boxType b))
+         (then (return  b))
+         (else
+          (if (equalString "bool" (boxType b))
+            (then
+             (return b))
+            (else
+             (if (equalString "int" (boxType b))
+               (then (return b))
+               (else
+                (if (equalString "symbol" (boxType b))
+                  (then (return (boxString (unBoxSymbol b))))
+                  (else
+                    
+                      
+                  (return (boxString (stringConcatenate "Unsupported type: " (boxType b))))))))))))))))
+	
+ (list doMultiList (list l) (declare (list newlist nil) (list ret nil) (box elem nil))
+ (body
+ (if (isNil l)
+ (then (return (cons (boxSymbol "nil") nil)))
+ (else
+ (if (isEmpty l)
+      (then (return nil))
+      (else
+	  
+ (set elem (first l))
+ (set newlist (cons (boxString (chooseBox (get-struct elem typ))) (cons (mlistLiteral (first l)) newlist)))
+ (set ret
+    (cons
+            (cons
+                (boxSymbol "cons")
+                (cons
+                   newlist 
+                    (doMultiList (cdr l)))
+            ) nil)
+    )
+ (return ret))) ))))
+ 
+ 
+ (list doStringList (list l) (declare (list newlist nil) (list ret nil))
+ (body
+ (if (isNil l)
+ (then (return (cons (boxSymbol "nil") nil)))
+ (else
+ (set newlist (cons (boxSymbol "boxString") (cons (first l) newlist)))
+ (set ret
+    (cons
+            (cons
+                (boxSymbol "cons")
+                (cons
+                   newlist 
+                    (doStringList (cdr l)))
+            ) nil)
+    )
+ (return ret))) ))
+ 
+ 
+ (list doBoxList (list l) (declare)
+ (body
+ ;(printf "doBoxList\n")
+ (if (isNil l)
+ (then (return (cons (boxSymbol "nil") nil)))
+ (else
+ (return
+    (cons
+            (cons
+                (boxSymbol "cons")
+                (cons
+                    (first l)
+                    (doBoxList (cdr l)))
+            ) nil)))) ))
+
+
+
+
+ 
+   (list concatLists (list seq1 list seq2) (declare)
+   (body
+    (if (isNil seq1)
+      (then (return seq2))
+      (else (return (cons (car seq1) (concatLists (cdr seq1) seq2)))))))
+
+  (list alistKeys (list alist) (declare)
+   (body
+    (if (isNil alist)
+      (then (return nil))
+      (else (return (cons (car (car alist)) (alistKeys (cdr alist))))))))
+
+(void displayList (list l int indent bool first) (declare (box val nil))
+   (body
+    (if (isEmpty l)
+      (then (return))
+      (else
+       (if (isList l)
+         (then
+          (if (isEmpty l)
+            (then (return))
+            (else
+			(if first 
+			(then)
+			(else (printf " ")))
+             (set val (car l))
+             (if (isList val)
+               (then
+                (newLine indent)
+                (printf "%s" (openBrace))
+                (displayList (car l) (add1 indent) true)
+                (printf "%s" (closeBrace))
+                (displayList (cdr l) indent false))
+               (else
+                (if (equalString "string" (get-struct val typ))
+                  (then (printf "\"%s\"" (unBoxString val)))
+                  (else (printf "%s" (stringify val))))
+                (displayList (cdr l) indent false))))))
+         (else
+          (if (equalString "string" (get-struct l typ))
+            (then (printf "\"%s\"" (unBoxString l)))
+            (else (printf "%s" (stringify l))))))))))
+
+
+  (list listReverse (list l) (declare)
+   (body
+    (if (isNil l)
+      (then (return nil))
+      (else (return (cons (car l) (listReverse (cdr l))))))))
+
+  (bool inList (box item list l) (declare)
+   (body
+    (if (isNil l)
+      (then (return false))
+      (else
+       ;(printf "Comparing %s and %s\n" (stringify item) (stringify (car l)))
+       (if (equalBox (car l) item)
+         (then (return true))
+         (else (return (inList item (cdr l)))))))))
+
+ (bool equalList (list a list b) (declare)
+   (body
+      (if (isNil a)
+       (then (if (isNil b)
+          (then 
+            (return true))
+          (else
+            (return false))))
+       (else))
+	   
+	      (if (isNil b)
+       (then (if (isNil a)
+          (then 
+            (return true))
+          (else
+            (return false))))
+       (else))
+	   
+      (if (equalBox (car a) (car b))
+       (then (return (equalList (cdr a)(cdr b))))
+       (else (return false)))
+    ))
+
+  (list reverseRec (list oldL list newL) (declare)
+    (body
+      (if (isEmpty oldL)
+      (then (return newL))
+      (else (return (reverseRec (cdr oldL) (cons (first oldL) newL)))))
+    ))
+
+  (list reverseList (list l) (declare)
+  (body
+    (return (reverseRec l nil))
+  ))
+
+
+
+
+ ))

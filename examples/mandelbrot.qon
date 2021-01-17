@@ -1,0 +1,59 @@
+(
+          (includes q/base.qon q/lists.qon)
+          (types)
+          (functions
+
+           ;16 tones " .:-;!/>)|&IH%*#"
+           (string asciiShade (int val) (declare (string dithers " .:!/>o+*%98O0G#"))
+                   (body
+                    (if (> val 15)
+                        (then ;(printf "Requested value cannot be larger than 15, was %d!" val)
+                         (return (asciiShade 15)))
+                        (else (return (sub-string dithers val 1))))
+                    ))
+
+           (int escape (float x float y float c1 float c2 int iteration int max) (declare)
+                (body
+                 (if (greaterthanf 4 (addf (multf x x)  (multf y y)))
+                     (then (if (>  max iteration)
+                               (then
+                                (return (escape (addf (subf (multf x x)  (multf y y)) c1)  (addf (multf 2 (multf x y))  c2) c1 c2 (add1 iteration) max)))
+                               (else (return iteration))))
+                     (else (return iteration)))
+                 ))
+
+           (void mandelRow (float start float end float step float y) (declare)
+                 (body
+                  (if (greaterthanf end start)
+                      (then
+                       (printf "%s" (asciiShade (escape start y start y 0 16)))
+                       (mandelRow (addf start step) end step y))
+                      (else
+                       (return)))
+                  ))
+
+           (void mandelRows (float start float end float step) (declare)
+                 (body
+                  (if (greaterthanf end start)
+                      (then
+                       (mandelRow -2.1 1 0.02 start)
+                       (newLine 0)
+                       (mandelRows (addf start step) end step))
+                      (else
+                       (return)))
+                  ))
+
+           (void mandelPic () (declare)
+                 (body
+                  (mandelRows -1.1 1.1 0.035)
+           ))
+
+     (int start () (declare (list cmdLine nil))
+           (body
+             (set cmdLine (listReverse (argList globalArgsCount 0 globalArgs)))
+             (set globalTrace  (inList (boxString "--trace") cmdLine ))
+             (set globalStepTrace  (inList (boxString "--steptrace") cmdLine ))
+             (mandelPic)
+             (return 0)
+        ))
+))

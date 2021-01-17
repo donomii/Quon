@@ -1,0 +1,296 @@
+((includes)
+ (types)
+ (functions
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; Power on self tests
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  (void test0 () (declare)
+   (body
+    (if (equalString
+         (stringify (boxString "hello"))
+         (stringify (boxString "hello")))
+      (then (printf "0.  pass string compare works\n"))
+      (else (printf "0.  pass string compare fails\n")))
+    (if (equalString
+         (stringify (boxString "hello"))
+         (stringify (boxSymbol "hello")))
+      (then (printf "0.  pass string compare works\n"))
+      (else (printf "0.  pass string compare fails\n")))))
+
+  (void test1 () (declare)
+   (body (printf "1.  pass Function call and print work\n")))
+
+  (void
+   test2_do
+   (string message)
+   (declare)
+   (body (printf "2.  pass Function call with arg works: %s\n" message)))
+  (void test2 () (declare) (body (test2_do "This is the argument")))
+  (void
+   test3_do
+   (int b string c)
+   (declare)
+   (body
+    (printf "3.1 pass Two arg call, first arg: %d\n" b)
+    (printf "3.2 pass Two arg call, second arg: %s\n" c)))
+  (void test3 () (declare) (body (test3_do 42 "Fourty-two")))
+  (string test4_do () (declare) (body (return "pass Return works")))
+  (string
+   returnThis
+   (string returnMessage)
+   (declare)
+   (body (return returnMessage)))
+  (void
+   test4
+   ()
+   (declare (string message "fail"))
+   (body (set message (test4_do)) (printf "4.  %s\n" message)))
+  (void
+   test5
+   ()
+   (declare (string message "fail"))
+   (body
+    (set message (returnThis "pass return passthrough string"))
+    (printf "5.  %s\n" message)))
+  (void
+   test6
+   ()
+   (declare)
+   (body
+    (if true
+      (then (printf "6.  pass If statement works\n"))
+      (else (printf "6.  fail If statement works\n")))))
+  (int
+   test7_do
+   (int count)
+   (declare)
+   (body
+    (set count (sub count 1))
+    (if (> count 0) (then (set count (test7_do count))) (else (return count)))
+    (return count)))
+  (void
+   test7
+   ()
+   (declare)
+   (body
+    (if (= 0 (test7_do 10))
+      (then (printf "7.  pass count works\n"))
+      (else (printf "7.  fail count fails\n")))))
+  (void
+   beer
+   ()
+   (declare)
+   (body
+    (printf
+     "%d bottle of beer on the wall, %d bottle of beer.  Take one down, pass it round, no bottles of beer on the wall\n"
+     1
+     1)))
+  (string
+   plural
+   (int num)
+   (declare)
+   (body (if (equal num 1) (then (return "")) (else (return "s")))))
+  (int
+   beers
+   (int count)
+   (declare (int newcount 0))
+   (body
+    (set newcount (sub count 1))
+    (printf
+     "%d bottle%s of beer on the wall, %d bottle%s of beer.  Take one down, pass it round, %d bottle%s of beer on the wall\n"
+     count
+     (plural count)
+     count
+     (plural count)
+     newcount
+     (plural newcount))
+    (if (> count 1) (then (set count (beers newcount))) (else (return count)))
+    (return 0)))
+  (void
+   test8
+   ()
+   (declare)
+   (body
+    (if (equal (sub (sub 2 1) (sub 3 1)) -1)
+      (then (printf "8.  pass Nested expressions work\n"))
+      (else (printf "8.  fail Nested expressions don't work\n")))))
+  (void
+   test9
+   ()
+   (declare (int answer -999999))
+   (body
+    (set answer (sub (sub 20 1) (sub 3 1)))
+    (if (equal answer 17)
+      (then (printf "9.  pass arithmetic works\n"))
+      (else (printf "9.  fail arithmetic\n")))))
+  (void
+   test10
+   ()
+   (declare (string testString "This is a test string"))
+   (body
+    (if (equalString
+         testString
+         (unBoxString (car (cons (boxString testString) nil))))
+      (then (printf "10. pass cons and car work\n"))
+      (else (printf "10. fail cons and car fail\n")))))
+  (void
+   test12
+   ()
+   (declare (box b nil))
+   (body
+    (set b (new box Box))
+    (set-struct b str "12. pass structure accessors\n")
+    (printf "%s" (get-struct b str))))
+  (void
+   test13
+   ()
+   (declare
+    (string testString "Hello from the filesystem!")
+    (string contents ""))
+   (body
+    (write-file "test.txt" testString)
+    (set contents (read-file "test.txt"))
+    (if (equalString testString contents)
+      (then (printf "13. pass Read and write files\n"))
+      (else 
+      (printf "13. fail Read and write files\n")
+      (printf "Expected: %s\n" testString)
+      (printf "Got: %s\n" contents)
+      ))))
+
+(void test15 ()
+   (declare (string a "hello") (string b " world") (string c ""))
+   (body
+    (set c (stringConcatenate a b))
+    (if (equalString c "hello world")
+      (then (printf "15. pass String concatenate\n"))
+      (else (printf "15. fail String concatenate\n")))))
+
+  (void test16 ()
+   (declare
+    (list assocCell1 nil)
+    (list assList nil)
+    (list assocCell2 nil)
+    (list assocCell3 nil))
+   (body
+    (set assocCell1 (cons (boxString "Hello") (boxString "world")))
+    (set assocCell2 (cons (boxString "goodnight") (boxString "moon")))
+    (set assocCell3 (cons (boxSymbol "ohio") (boxString "gozaimasu")))
+    (set assList (cons assocCell2 (emptyList)))
+    (set assList (cons assocCell1 assList))
+    (set assList (cons assocCell3 assList))
+    (if (equalBox (cdr (assoc "Hello" assList)) (boxString "world"))
+      (then (printf "16.1 pass Basic assoc works\n"))
+      (else (printf "16.1 fail Basic assoc fails\n")))
+    (if (andBool
+         (andBool
+          (equalBox (cdr (assoc "Hello" assList)) (boxString "world"))
+          (equalBox (cdr (assoc "goodnight" assList)) (boxString "moon")))
+         (equalBox (cdr (assoc "ohio" assList)) (boxString "gozaimasu")))
+      (then (printf "16.2 pass assoc list\n"))
+      (else (printf "16.2 fail assoc list\n")))))
+
+  (void test17 () (declare (list l nil))
+      (body 
+      (set l (boxList (boxInt 1) (boxInt 2) (boxInt 3)))
+         (if (equalBox (car l) (boxInt 1))
+         (then (printf "17. pass list literal works\n"))
+         (else (printf "17. fail list literal failed\n")))
+      ))
+
+
+
+
+   (void test18 () 
+    (declare 
+       (string val1 "a")
+       (string val2 "b")
+       (list l nil) )
+    (body
+      (set l (stringList val1 val2 "c"))
+      (if (equalList l (stringList "a" "b" "c"))
+         (then (printf "18. pass string list constructor works\n"))
+         (else (printf "18. fail string list constructor failed\n"))
+       )
+  ))
+
+
+(void test19 () (declare 
+       
+       (string val1 "a")
+       (string val2 "b")
+       (list l nil)
+       (list revlist nil)
+       (list answer nil))
+             (body
+             
+                (set l (stringList val1 val2 "c"))
+                (set answer (stringList "c" val2 val1))
+                (set revlist (reverseList l))
+               (if (equalList answer revlist)
+                  (then (printf "19. pass reverseList\n"))
+                  (else (printf "19. fail reverseList\n"))
+                 )
+                 ))
+
+(list concatenateLists (list oldL list newL) (declare)
+  (body
+      (return (reverseRec (reverseList oldL) newL))
+))
+
+(void test20 () (declare 
+       (string val1 "a")
+       (string val2 "b")
+       (string val3 "c")
+       (list l nil)
+       (list l2 nil)
+       (list l3 nil)
+       (list combined nil)
+       )
+             (body
+                (set l (stringList val1 val2 "c"))
+                (set l2 (stringList "d" "e" "f"))
+                (set l3 (stringList val1 val2 val3 "d" "e" "f"))
+                (set combined (concatenateLists l l2))
+                (if (equalList l3 combined)
+                  (then (printf "21. pass concatenateLists\n"))
+                  (else (printf "21. fail concatenateLists\n"))
+                 )
+             
+                 ))
+(void test21 () (declare 
+       (string val1 "a")
+       (string val2 "b")
+       (string val3 "c")
+       (list l nil)
+       (list l2 nil)
+       )
+             (body
+                (set l (stringList val1 val2 val3))
+                (set l2 (stringList "a" "b" "c"))
+                (if (equalList l l2)
+                  (then (printf "21. pass equalList\n"))
+                  (else (printf "21. fail equalList\n"))
+                 )
+                 ))
+
+;	(void test22 () (declare 
+;       (list l nil)
+;       (list l2 nil)
+;       )
+;             (body
+;                (set l (cons (boxString "a") (cons (boxSymbol "aaaa")  nil)))
+;				;(printf "List1: ")
+;				;(displayList l 0 true)
+;                (set l2 (multiList "a" aaaa))
+;				;(printf "\nList2: ")
+;				;(displayList l2 0 true)
+;				;(printf "\n\n")
+;                (if (equalList l l2)
+;                  (then (printf "22. pass multiList\n"))
+;                  (else (printf "22. fail multiList\n"))
+;                 )
+;                 ))
+
+  ))

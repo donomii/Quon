@@ -1,0 +1,311 @@
+((includes)
+(types)
+ (functions
+
+(void imaFunctionArgs (int indent list tree) (declare)
+   (body
+    (if (isEmpty tree)
+      (then (return))
+      (else
+       (display (second tree))
+	   (printf ": ")
+	   (display (first tree))
+       (if (isNil (cddr tree)) (then (printf "")) (else (printf ", ")))
+       (imaFunctionArgs indent (cddr tree))))))
+
+
+(void imaFunction (int indent list functionDefinition ) (declare (string fname ""))
+(body
+(set fname (stringify (second functionDefinition)))
+;(printf "-- Chose function name %s" fname)
+;(display functionDefinition)
+(printf "\nfu %s(" fname)
+(imaFunctionArgs indent (third functionDefinition))
+(printf ") ")
+(printf "-> %s" (stringify (first functionDefinition)))
+;(printf "print(\"caller: \", caller, \"-> %s\")\n" fname)
+(imaDeclarations (add1 indent) (cdr (fourth functionDefinition)))
+(if (greaterthan (listLength (cdr (fourth functionDefinition))) 0)
+(then 
+(printf "\n"))
+(else (printf " ")))
+ (printIndent indent)
+(printf "in\n")
+
+(imaBody fname indent (cdr (fifth functionDefinition)))
+(printf "end function\n")))
+
+(void imaDeclarations (int indent list declarations ) (declare (list decl nil))
+(body
+  (if (isNil declarations)
+    (then 
+	
+      (return))
+    (else 
+	  (set decl (first declarations))
+	  (printf "\n")
+	  (printIndent indent)
+      (printf "%s: %s " (stringify (second decl))(stringify (first decl)) )
+      (imaExpressionStart indent (third decl))
+      
+      (imaDeclarations indent (cdr declarations))
+    ))
+))
+
+
+
+(void imaExpressionStart (int indent list program) (declare)
+(body
+  (if (isNil program)
+    (then 
+      (return))
+    (else 
+      (if (isList program)
+      (then
+         (if (equalString (stringify (car program)) "get-struct")
+         (then
+            (printf "%s.%s" (stringify (second program)) (stringify (third program)))
+         )
+         (else 
+            (if (equalString (stringify (car program)) ">")
+            (then
+               (printf "greaterthan(" )
+               (imaExpression indent (cdr program))
+               (printf ")")
+            )
+            (else 
+            (if (equalString (stringify (car program)) "=")
+            (then
+               (printf "equal(" )
+               (imaExpression indent (cdr program))
+               (printf ")")
+            )
+            (else 
+               (printf "%s(" (stringify (car program)))
+               (imaExpression indent (cdr program))
+               (printf ")")
+            ))
+            ))
+        ))
+      )
+      (else
+        (imaExpression indent program)
+      )
+      )
+    )
+  )
+))
+
+(void imaExpression (int indent list program) (declare)
+(body
+  (if (isNil program)
+    (then 
+      (return))
+    (else 
+      (if (isList program)
+        (then
+          (if (isList (car program))
+            (then 
+              (imaExpressionStart indent (car program))
+            )
+            (else
+              ;(printf "%s" (stringify (car program)))
+              (display (car program))
+            )
+          )
+          (if (greaterthan (listLength program) 1)
+          (then 
+            (printf ", "))
+          (else ))
+            (imaExpression indent (cdr program))
+        )
+        (else
+          (display program)
+          ))))))
+
+
+(void imaStatement (int indent list statement) (declare)
+  (body
+  (if (equalString (stringify (car statement)) "if")
+    (then
+      ;do if thing
+      (printIndent indent)
+      (printf "if ")
+      (add1 indent)
+      (imaExpressionStart (add1 indent) (second statement))
+      
+      (printf " then\n" )
+      (imaBody caller (add1 indent) (cdr (third statement)))
+      (printIndent indent)
+      (printf "else\n" )
+      (imaBody caller (add1 indent) (cdr (fourth statement)))
+      (printIndent indent)
+      (printf "end\n" )
+     )
+    (else
+      (if (equalString (stringify (car statement)) "set")
+      (then
+         (printIndent indent)
+         (printf "%s = " (stringify (second statement)) )
+         (imaExpressionStart (add1 indent) (third statement))
+		 (printf ";\n")
+      )
+      (else
+         (if (equalString (stringify (car statement)) "set-struct")
+            (then
+				(printIndent indent)
+               (printf "%s.%s = " (stringify (second statement)) (stringify (third statement)))
+               (imaExpressionStart indent (fourth statement))
+			   (printf ";\n")
+            )
+            (else  
+            (if (equalString (stringify (car statement)) "return")
+               (then
+                  (printIndent indent)
+                  (printf "return; ")
+                  (if (greaterthan (listLength statement) 1)
+                  (then 
+                     (imaExpressionStart indent (second statement)))
+                  (else))
+                     (printf "\n")
+               )
+               (else 
+                  (printIndent indent)
+                  (imaExpressionStart indent statement)
+                  (printf ";\n")
+            ))
+            ))
+      ))
+    )
+  )))
+
+(void imaBody (string local_caller int indent list program) (declare (list statement nil))
+  (body
+  (if (isNil program)
+    (then (return))
+    (else 
+     (set statement (car program))
+      ;(printf "caller = \"%s:%s:%d\"\n" local_caller  (unBoxString (getTagFail statement (boxString "filename") (boxString "Unknown file")))  (unBoxInt (getTagFail statement (boxString "line") (boxInt -1))))
+      (imaStatement (add1 indent) statement)
+      (imaBody local_caller indent  (cdr program))))
+))
+
+(void imaFunctions (int indent list program) (declare)
+(body
+(if (isNil program)
+  (then 
+    (return))
+  (else 
+    (imaFunction indent  (car program))
+    (imaFunctions indent (cdr program))))
+))
+
+ (void imaTypeDecl (list l) (declare
+  (string name "")
+  (list body nil)
+  )
+   (body
+   (set name (stringify (first l)))
+   (set body (cdr l))
+    (if (> (listLength l) 2)
+      (then
+       (printIndent 1)
+       (printf
+        "%s is "
+        name
+        )
+		(displayList body 0 true)
+		(printf
+        ";\n"
+		))
+      (else
+       (printIndent 1)
+       (printf
+        "%s is %s;\n"
+        name
+        (stringify (second l)))))))
+
+  (void imaStructComponents (list node) (declare)
+   (body
+    (if (isEmpty node)
+      (then (return))
+      (else (imaTypeDecl (car node)) (imaStructComponents (cdr node))))))
+
+  (void imaStruct (list node) (declare)
+   (body (imaStructComponents (cdr (car node))) ))
+
+    (box imaTypeMap (box aSym) (declare (list symMap nil))
+   (body
+    (set
+     symMap
+     (alistCons
+      (boxSymbol "stringArray")
+      (boxSymbol "char**")
+      (alistCons (boxSymbol "string") (boxSymbol "char*") nil)))
+    (if (truthy (assoc (stringify aSym) symMap))
+      (then (return (cdr (assoc (stringify aSym) symMap))))
+      (else (return aSym)))))
+   
+  (void imaType (list node) (declare
+  (string name "")
+  (list body nil)
+  )
+   (body
+   (set name (stringify (first node)))
+   (set body (cdr node))
+    (if (isList (first  body) )
+      (then
+       (printf "\ntype %s is struct (\n"  name)
+       (imaStruct body)
+       (printf ");\n" ))
+      (else (printf "type" ) (imaTypeDecl node)))
+    ))
+
+  (void imaTypes (int indent list nodes) (declare)
+   (body
+   ;(tron)
+    (if (isEmpty nodes)
+      (then (return))
+      (else (imaType (car nodes)) (imaTypes indent (cdr nodes))))))
+
+
+
+(void imaProgram (list program) (declare)
+  (body
+  (imaIncludes 0 (cdr (first program)))
+  (printf "\nTypes:\n" )
+  (imaTypes 0 (cdr (second program)))
+  (printf "\nFunctions:\n" )
+    (imaFunctions 0 (cdr (third program)))
+  )
+)
+
+(void imaIncludes (int indent list nodes) (declare)
+   (body
+   (printf "Includes: \n")
+    (displayList nodes 0 true)
+))
+
+
+(void imaCompile (string filename) (declare (list tree nil)  )
+    (body
+  
+      (set tree (loadQuon "compiler.qon"))
+
+      ;(printf "Final program: \n")
+      (set tree (loadIncludes tree))
+      (set tree (macrowalk tree))
+      (set tree (macrosingle tree "write-file" "imaWriteFile"))
+      (set tree (macrosingle tree "read-file" "imaReadFile"))
+      (set tree (macrosingle tree "string-length" "string.len"))
+      
+      (set tree (macrosingle tree "sub-string" "imaSubstring"))
+      (set tree (macrosingle tree "stringLength" "string.len"))
+      ;(printf "Transformed tree")
+      (imaProgram tree)
+      (printf "\n")
+      (printf "function main()\nglobalArgs = arg\nglobalArgsCount = #arg\nstart()\nend\n")
+      (printf "main()")
+   ))
+  )
+  )

@@ -1,0 +1,365 @@
+((includes)
+(types)
+ (functions
+  (void ansiFunctionArgs (list tree) (declare)
+   (body
+    (if (isEmpty tree)
+      (then (return))
+      (else
+       (display (ansiTypeMap (first tree)))
+       (display (second tree))
+       (if (isNil (cddr tree)) (then (printf "")) (else (printf ",")))
+       (ansiFunctionArgs (cddr tree))))))
+
+  (void ansiLeaf (list thisNode int indent) (declare)
+   (body (display (ansiFuncMap (codeof thisNode)))))
+
+  (void ansiStructGetterExpression (list thisNode int indent) (declare)
+   (body
+    (if (equalBox (boxString "structGetter") (subnameof thisNode))
+      (then (ansiGetStruct thisNode indent))
+      (else (ansiLeaf thisNode indent)))))
+
+  (void ansiExpression (list node int indent) (declare)
+   (body
+    (if (isLeaf node)
+      (then (display (ansiFuncMap (codeof node))))
+      (else (ansiSubExpression node indent)))))
+  (void
+   ansiRecurList
+   (list expr int indent)
+   (declare)
+   (body
+    (if (isEmpty expr)
+      (then (return))
+      (else
+       (ansiExpression (car expr) indent)
+       (if (isNil (cdr expr))
+         (then (printf ""))
+         (else (printf ", ") (ansiRecurList (cdr expr) indent)))))
+    ))
+  (void ansiSubExpression (list tree int indent) (declare (box thing nil))
+   (body
+    (if (isEmpty tree)
+      (then (return))
+      (else
+       (if (isNode (childrenof tree))
+         (then (ansiSubExpression (childrenof tree) indent))
+         (else
+          (if (isLeaf tree)
+            (then (display (ansiFuncMap (codeof tree))))
+            (else
+             (if (equal 1 (listLength (childrenof tree)))
+               (then
+                (display (codeof (car (childrenof tree))))
+                (if (equalBox
+                     (boxString "return")
+                     (codeof (car (childrenof tree))))
+                  (then (printf ""))
+                  (else (printf "()"))))
+               (else
+                (set thing (codeof (car (childrenof tree))))
+                (if (equalBox (boxSymbol "get-struct") thing)
+                  (then
+                   (printf
+                    "%s->%s"
+                    (stringify (codeof (second (childrenof tree))))
+                    (stringify (codeof (third (childrenof tree))))))
+                  (else
+                   (if (equalBox (boxSymbol "new") thing)
+                     (then
+                      (printf
+                       "malloc(sizeof(%s))"
+                       (stringify (codeof (third (childrenof tree))))))
+                     (else
+                      (printf
+                       "%s("
+                       (stringify
+                        (ansiFuncMap (codeof (car (childrenof tree))))))
+                      (ansiRecurList (cdr (childrenof tree)) indent)
+                      (printf ")")))))))))))))))
+  (void ansiIf (list node int indent) (declare)
+   (body
+    (newLine indent)
+    (printf "if ( ")
+    (ansiExpression (car (first (childrenof node))) 0)
+    (printf ") {")
+    (ansiBody (second (childrenof node)) (add1 indent))
+    (newLine indent)
+    (printf "} else {")
+    (ansiBody (third (childrenof node)) (add1 indent))
+    (newLine indent)
+    (printf "}")))
+
+  (void ansiSetStruct (list node int indent) (declare)
+   (body
+    (newLine indent)
+    (printf
+     "%s->%s = "
+     (stringify (first (codeof node)))
+     (stringify (second (codeof node))))
+    (ansiExpression (childrenof node) indent)))
+
+  (void ansiGetStruct (list node int indent) (declare)
+   (body
+    (newLine indent)
+    (printf
+     "%s->%s"
+     (stringify (first (codeof node)))
+     (stringify (second (codeof node))))))
+
+  (void ansiSet (list node int indent) (declare)
+   (body
+    (newLine indent)
+    (printf "%s = " (stringify (first (codeof node))))
+    (ansiExpression (childrenof node) indent)))
+
+  (void ansiStatement (list node int indent) (declare)
+   (body
+    (if (equalBox (boxString "setter") (subnameof node))
+      (then (ansiSet node indent))
+      (else
+       (if (equalBox (boxString "structSetter") (subnameof node))
+         (then (ansiSetStruct node indent))
+         (else
+          (if (equalBox (boxString "if") (subnameof node))
+            (then (ansiIf node indent))
+            (else
+             (if (equalBox (boxString "returnvoid") (subnameof node))
+               (then (newLine indent) (printf "return"))
+               (else
+                (newLine indent)
+                (ansiExpression (childrenof node) indent)))))))))
+    (printf ";\n")))
+
+  (void ansiBody (list tree int indent) (declare (list code nil))
+   (body
+    (if (isEmpty tree)
+      (then (return))
+      (else
+       ;(display  (car (codeof (car tree))))
+       (set code (codeof (car tree)))
+       (if (isNil code)
+       (then)
+       (else
+       (set code (car (codeof (car tree))))
+           (printf "\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n"  (stringify (getTagFail code  (boxString "filename")  (boxString "Unknown"))) (stringify (getTagFail code (boxString "line") (boxString "Unknown") )))))
+       (printIndent indent)
+       (printf
+        "%s"
+        "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n")
+       (ansiStatement (car tree) indent)
+       (ansiBody (cdr tree) indent)))))
+
+  (void ansiDeclarations (list decls int indent) (declare (box decl nil))
+   (body
+    (if (isEmpty decls)
+      (then (return))
+      (else
+       (set decl (car decls))
+       (printf
+        "%s %s = "
+        (stringify (ansiTypeMap (first decl)))
+        (stringify (second decl)))
+       (display (ansiFuncMap (third decl)))
+       (printf ";\n")
+       (ansiDeclarations (cdr decls) indent)))))
+
+  (void ansiFunction (list node) (declare (box name nil))
+   (body
+    (set name (subnameof node))
+    (printf "\n\n//Building function %s from line: %s" (stringify name) (stringify (getTag name (boxString "line"))))
+    (newLine 0)
+    (if (isNil node)
+      (then (return))
+      (else
+       (newLine 0)
+       (printf
+        "%s %s("
+        (stringify (ansiTypeMap (cdr (assoc "outtype" (cdr node)))))
+        (stringify (subnameof node)))
+       (ansiFunctionArgs (cdr (assoc "intype" (cdr node))))
+       (printf ") {")
+       (newLine 1)
+       (ansiDeclarations (declarationsof node) 1)
+       (if (inList (toStr name) (noStackTrace))
+       (then (printf ""))
+       (else
+           (printf "\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n" (stringify name) (stringify (getTag name (boxString "filename"))) (stringify (getTag name (boxString "line")))   )))
+       (if (inList (toStr name) (noStackTrace))
+         (then (printf ""))
+         (else
+          ;;(printf "\n  stackTracePush(\"%s\", \"%s\", %s, %d );\n" (stringify (getTag name (boxString "filename"))) (stringify name) (stringify (getTag name (boxString "line"))) 0)
+          ))
+       (ansiBody (childrenof node) 1)
+       (if (inList (toStr name) (noStackTrace))
+         (then (printf ""))
+         (else
+            (printf "\nif (globalTrace)\n    printf(\"Leaving %s\\n\");\n" (stringify name))
+            ))
+       (printf "\n}\n")))))
+
+  (void ansiForwardDeclaration (list node) (declare)
+   (body
+    (if (isNil node)
+      (then (return))
+      (else
+       (printf
+        "\n%s %s("
+        (stringify (ansiTypeMap (cdr (assoc "outtype" (cdr node)))))
+        (stringify (subnameof node)))
+       (ansiFunctionArgs (cdr (assoc "intype" (cdr node))))
+       (printf ");")))))
+
+  (void ansiForwardDeclarations (list tree) (declare)
+   (body
+    (if (isEmpty tree)
+      (then (return))
+      (else
+       (ansiForwardDeclaration (car tree))
+       (ansiForwardDeclarations (cdr tree))))))
+
+  (void ansiFunctions (list tree) (declare)
+   (body
+    (if (isEmpty tree)
+      (then (return))
+      (else (ansiFunction (car tree)) (ansiFunctions (cdr tree))))))
+  (void ansiIncludes (list nodes) (declare)
+   (body
+    (printf
+     "%s"
+     "\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nconst char* getEnv(char* key){return getenv(key);}\n void panic(char* s){abort();}\nint sub(int a, int b) { return a - b; }\nfloat mult(int a, int b) { return a * b; }\nint greaterthan(int a, int b) { return a > b; }\nfloat subf(float a, float b) { return a - b; }\nfloat multf(float a, float b) { return a * b; }\nint greaterthanf(float a, float b) { return a > b; }\nint equal(int a, int b) { return a == b; }\nint equalString(char* a, char* b) { return !strcmp(a,b); }\nint andBool(int a, int b) { return a == b;}\nint string_length(char* s) { return strlen(s);}\nchar* setSubString(char* target, int start,char *source){target[start]=source[0]; return target;}\nchar* sub_string(char* s, int start, int length) {\nchar* substr = calloc(length+1, 1);\nstrncpy(substr, s+start, length);\nreturn substr;\n}\n\n\n\nchar* stringConcatenate(char* a, char* b) {\nint len = strlen(a) + strlen(b) + 1;\nchar* target = calloc(len,1);\nstrncat(target, a, len);\nstrncat(target, b, len);\nreturn target;\n}\n\nchar* intToString(int a) {\nint len = 100;\nchar* target = calloc(len,1);\nsnprintf(target, 99, \"%d\", a);\nreturn target;\n}\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\nvoid * gc_malloc( unsigned int size ) {\nreturn malloc( size);\n}\n\nint* makeArray(int length) {\n    int * array = gc_malloc(length*sizeof(int));\n    return array;\n}\n\nint at(int* arr, int index) {\n  return arr[index];\n}\n\nvoid setAt(int* array, int index, int value) {\n    array[index] = value;\n}\n\nchar * read_file(char * filename) {\nchar * buffer = 0;\nlong length;\nFILE * f = fopen (filename, \"rb\");\n\nif (f)\n{\n  fseek (f, 0, SEEK_END);\n  length = ftell (f);\n  fseek (f, 0, SEEK_SET);\n  buffer = malloc (length);\n  if (buffer == NULL) {\n  printf(\"Malloc failed!\\n\");\n  exit(1);\n}\n  if (buffer)\n  {\n    fread (buffer, 1, length, f);\n  }\n  fclose (f);\n}\nreturn buffer;\n}\n\n\nvoid write_file (char * filename, char * data) {\nFILE *f = fopen(filename, \"w\");\nif (f == NULL)\n{\n    printf(\"Error opening file!\");\n    exit(1);\n}\n\nfprintf(f, \"%s\", data);\n\nfclose(f);\n}\n\nchar* getStringArray(int index, char** strs) {\nreturn strs[index];\n}\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\nint main( int argc, char *argv[] )  {\n  globalArgs = argv;\n  globalArgsCount = argc;\n  caller=calloc(1024,1);\n\n  return start();\n\n}\n\n")
+    (printf "%s" "char * character(int num) { char *string = malloc(2); if (!string) return 0; string[0] = num; string[1] = 0; return string; }")
+))
+
+  (void ansiTypeDecl (list l) (declare)
+   (body
+    (if (> (listLength l) 2)
+      (then
+       (printIndent 1)
+       (printf
+        "%s %s %s;\n"
+        (stringify (second l))
+        (stringify (ansiTypeMap (listLast l)))
+        (stringify (first l))))
+      (else
+       (printIndent 1)
+       (printf
+        "%s %s;\n"
+        (stringify (ansiTypeMap (listLast l)))
+        (stringify (car l)))))))
+
+  (void ansiStructComponents (list node) (declare)
+   (body
+    (if (isEmpty node)
+      (then (return))
+      (else (ansiTypeDecl (car node)) (ansiStructComponents (cdr node))))))
+
+  (void ansiStruct (list node) (declare)
+   (body (ansiStructComponents (cdr (car node))) ))
+
+  (box ansiTypeMap (box aSym) (declare (list symMap nil))
+   (body
+    (set
+     symMap
+     (alistCons
+      (boxSymbol "stringArray")
+      (boxSymbol "char**")
+      (alistCons (boxSymbol "string") (boxSymbol "char*") nil)))
+    (if (truthy (assoc (stringify aSym) symMap))
+      (then (return (cdr (assoc (stringify aSym) symMap))))
+      (else (return aSym)))))
+
+  (box ansiFuncMap (box aSym) (declare (list symMap nil))
+   (body
+    (if (equalString "symbol" (boxType aSym))
+      (then
+       (set
+        symMap
+        (alistCons
+         (boxSymbol "=")
+         (boxSymbol "equal")
+         (alistCons
+          (boxSymbol "sub-string")
+          (boxSymbol "sub_string")
+          (alistCons
+           (boxSymbol "read-file")
+           (boxSymbol "read_file")
+           (alistCons
+            (boxSymbol "write-file")
+            (boxSymbol "write_file")
+            (alistCons
+             (boxSymbol ">")
+             (boxSymbol "greaterthan")
+             (alistCons
+              (boxSymbol "string-length")
+              (boxSymbol "string_length")
+              (alistCons (boxSymbol "nil") (boxSymbol "NULL") nil))))))))
+
+       (if (truthy (assoc (stringify aSym) symMap))
+         (then (return (cdr (assoc (stringify aSym) symMap))))
+         (else (return aSym))))
+      (else (return aSym)))))
+
+  (void ansiType (list node) (declare)
+   (body
+    (if (equalBox (subnameof node) (boxString "struct"))
+      (then
+       (printf "\ntypedef struct %s {\n" (stringify (first (codeof node))))
+       (ansiStruct (cdr (codeof node)))
+       (printf "\n} %s;\n" (stringify (first (codeof node)))))
+      (else (printf "typedef ") (ansiTypeDecl (codeof node))))
+    ))
+
+  (void ansiTypes (list nodes) (declare)
+   (body
+    (if (isEmpty nodes)
+      (then (return))
+      (else (ansiType (car nodes)) (ansiTypes (cdr nodes))))))
+
+
+
+	  (void uniqueTarget (string a string b) (declare) (body))
+
+
+(void ansiCompile (string filename) (declare (list foundationFuncs nil) (list foundation nil) (string programStr "") (list tree nil) (list program nil))
+    (body
+   (set foundation (readSexpr (read-file "foundationlibs/ansi.qon") "foundationlibs/ansi.qon"))
+   (set foundationFuncs (cdr (third foundation)))
+   ;(display foundationFuncs)
+
+
+   (printf "//Scanning file...%s\n" filename)
+    (set programStr (read-file filename))
+   (printf "//Building sexpr\n")
+    (set tree (readSexpr programStr filename))
+	(set tree (macrowalk tree))
+	;(display tree)
+	;(uniqueTarget "blah" "blah")
+    (boxList (boxString "a") (boxString "b") (boxString "c"))
+   (printf "//Building AST\n")
+    (set
+     program
+     (alistCons
+      (boxString "includes")
+      (astIncludes (first tree))
+      (alistCons
+       (boxString "types")
+       (astTypes (second tree))
+       (alistCons (boxString "functions") (astFunctions (third tree)) nil))))
+
+   (printf "//Merging ASTs\n")
+    (set program (mergeIncludes program))
+   (printf "//Printing program\n")
+    (ansiIncludes (cdr (assoc "includes" program)))
+    (ansiTypes (childrenof (cdr (assoc "types" program))))
+    (printf "Box* globalStackTrace = NULL;\n")
+    (printf
+     "\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n")
+    (ansiForwardDeclarations
+     (cdr (assoc "children" (cdr (cdr (assoc "functions" program))))))
+    (printf "\n\n//End forward declarations\n\n")
+    (ansiFunctions
+     (cdr (assoc "children" (cdr (cdr (assoc "functions" program))))))
+    (printf "\n")))
+  ))
