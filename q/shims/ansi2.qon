@@ -1,8 +1,13 @@
 ((includes)
  (types
-(uint int unsigned))
-typedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n
-(char* caller;\nchar** globalArgs;\nint globalArgsCount;
+(uint int unsigned)
+(bool int)
+(array int*)
+)
+#define true 1\n#define false 0\n\n\n
+
+
+
  (functions
 
 (char* getEnv (char* key)(declare)
@@ -82,7 +87,7 @@ typedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n
 	(body
          (set len  100)
          (set target  (calloc len 1))
-         (snprintf target  99  \"%d\"  a)
+         (snprintf target  99  "%d"  a)
          (return target)
 ))
 
@@ -107,60 +112,73 @@ typedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n
          (set  array[index] value)
 ))
     
-    (char* read_file(char * filename) (declare (char* buffer nil) (long length 0) (FILE* f nil))
+(char* read_file(char* filename) (declare (char* buffer nil) (long length 0) (FILE* f nil))
     	(body
-    (set f (fopen filename \"rb\"))
-    (if (f)
-    	(then (fseek f 0 SEEK_END))
-	    (else (set length (ftell f)))
-    (fseek f 0 SEEK_SET)
-    (set buffer (malloc length))
+         (set f (fopen filename "rb"))
+         (if (f)
+             (then
+              (fseek f 0 SEEK_END)
+              (set length (ftell f))
+              (fseek f 0 SEEK_SET)
+              (set buffer (malloc length))
     
-    (if (equal? buffer NULL) 
-    	(then
-		(printf "Malloc failed!\n")
-		(exit 1))
-	(else))
-	(if (buffer)\n  
-	(then fread (buffer, 1, length, f))
-        (else ))
+              (if (nil buffer)
+                  (then
+                   (printf "Malloc failed!\n")
+                   (exit 1))
+                  (else))
+              (if (buffer)
+                  (then (fread buffer 1 length f))
+                  (else ))
 	
-	(fclose f)
-	(return buffer)
-	))
+              (fclose f)
+              )
+             (else ))
+         (return buffer)
+         ))
 
 
-	(void write_file (char * filename char * data)   (declare (char* buffer nil) (long length 0) (FILE* f nil))
-	(set f (fopen filename "w"))
-	(if (nil(f))
-	(then (printf "Error opening file!"))
-	(else (exit 1)))
-	fprintf(f, \"%s\", data);
-	fclose(f)
+(void write_file (char* filename char* data)   (declare (char* buffer nil) (long length 0) (FILE* f nil))
+      (body
+              (set f (fopen filename "w"))
+              (if (nil(f))
+                  (then (printf "Error opening file!"))
+                  (else (exit 1)))
+              (fprintf f  "%s" data)
+              (fclose f)
+ ))
 	
-	(char* getStringArray(int index char** strs) 
-	(return strs[index])
-	))
+(char* getStringArray(int index char** strs)
+       (body(return strs[index])))
 	
 	
-	\nbool globalTrace = false;\nbool globalStepTrace = false;\n\n
-(int main( int argc char *argv[] )  (declare)
+	
+(char** programArgs() {declare}
+        (body
+         (return argv)
+         ))
+(int programArgsCount() (declare)
+     (body
+      (return argc)
+      ))
+
+
+(int main(int argc char** argv )  (declare)
 	(body
-         (set  globalArgs  argv)
-         (set globalArgsCount argc)
          (set caller (calloc 1024 1))
          (return (start))
 ))
 	
-(char* character(int num)  (declare (char* buffer nil))
+(char* character(int num)  (declare (char* buffer nil) (char str nil))
     	(body
-         (char *string = malloc(2))
-         (if (!string) 
+         (set str (malloc 2))
+         (if (!str) 
              (then return 0)
-             (else))
-         (set string[0]  num)
-         (set string[1]  0)
+             (else)
+         (setAt string 0 num)
+         (setAt string 1 0)
          (return string)
+         )
 ))
     
     
@@ -173,9 +191,16 @@ typedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n
 
 
 (void displays (string s) (declare)
-	(body
-         (printf "%s" s)
+      (body
+       (printf "%s" s)
 ))
+)
+ (globals
+  (char* caller nil)
+  (bool globalTrace  false)
+  (bool globalStepTrace false)
+  )
+ )
 
    
 
