@@ -1,0 +1,536 @@
+((includes)
+ (types
+(uint int unsigned))
+typedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n
+(char* caller;\nchar** globalArgs;\nint globalArgsCount;
+ (functions
+
+(char* getEnv (char* key)(declare)
+	(body
+		(return getenv(key))))
+
+(void panic(char* s)(declare)
+	(body
+		(abort)
+		(exit(1))
+))
+
+(int sub (int a  int b) (declare)
+	(body
+		(return (binop a - b))))
+
+(float mult(int a  int b) (declare)
+	(body
+		(return (binop a * b))))
+
+(int greaterthan(int a int b) (declare)
+	(body
+		(return (binop a > b))))
+
+(float subf(float a float b) (declare)
+	(body
+		(return (binop a - b))))
+
+(float multf(float a float b) (declare)
+	(body
+		(return (binop a * b))))
+
+(int greaterthanf(float a float b) (declare)
+	(body
+		(return (binop a > b))))
+
+(int equal(int a int b) (declare)
+	(body
+		(return (binop  a == b))))
+
+(int equalString(char* a char* b) (declare)
+	(body
+		(return (not (strcmp a b)))))
+
+(int andBool(int a int b) (declare)
+	(body
+		(return (binop  a == b))))
+
+(int string_length(char* s) (declare)
+	(body
+		(return (strlen s))
+))
+
+(char* setSubString (char* target int start char* source)(declare)
+	(body
+		(set target[start] source[0])
+		(return target)
+))
+
+(char* sub_string(char* s int start int length) (declare (char* substr ""))
+	(body
+		(set substr  (calloc (add length 1) 1))
+		(strncpy substr  (add s start) length))
+		(return substr)
+))
+
+(char* stringConcatenate(char* a char* b) (declare (int len 0)(char* target nil))
+	(body
+		(set len (add (add (strlen a) + (strlen b)) + 1))
+		(target (calloc len 1))
+		(strncat target  a  len)
+		(strncat target  b  len)
+		(return target)
+))
+	
+(char* intToString(int a) (declare (int len 0)(char* target nil))
+	(body
+(set len  100)
+(set target  (calloc len 1))
+(snprintf target  99  \"%d\"  a)
+(return target))
+
+(void* gc_malloc( uint size ) (declare)
+	(body
+(return (malloc size))
+))
+
+(int* makeArray(int length) (declare (int* array nil))
+	(body
+    (set array (gc_malloc (mult (length (sizeof int)))))
+    (return array)
+    ))
+    
+    (int at(int* arr  int index) (declare)
+    	(body
+    (return arr[index])
+    ))
+    
+    (void setAt(int* array  int index  int value)(declare)
+    	(body
+    (set  array[index] value)
+    ))
+    
+    (char* read_file(char * filename) (declare (char* buffer nil) (long length 0) (FILE* f nil))
+    	(body
+    (set f (fopen filename \"rb\"))
+    (if (f)
+    	(then (fseek f 0 SEEK_END))
+	    (else (set length (ftell f)))
+    (fseek f 0 SEEK_SET)
+    (set buffer (malloc length))
+    
+    (if (equal? buffer NULL) 
+    	(then
+		(printf "Malloc failed!\n")
+		(exit 1))
+	(else))
+	if (buffer)\n  
+	{\n    fread (buffer, 1, length, f);\n  
+	}\n  
+	fclose (f);\n}\n
+	return buffer;\n
+	}\n\n\n
+	(void write_file (char * filename char * data)   (declare (char* buffer nil) (long length 0) (FILE* f nil))
+	(set f (fopen filename "w"))
+	(if (nil(f))
+	(then (printf "Error opening file!"))
+	(else (exit 1)))
+	fprintf(f, \"%s\", data);
+	fclose(f)
+	
+	(char* getStringArray(int index char** strs) 
+	(return strs[index])
+	))
+	
+	
+	\nbool globalTrace = false;\nbool globalStepTrace = false;\n\n
+(int main( int argc char *argv[] )  (declare)
+	(body
+	(set  globalArgs  argv)
+	(set globalArgsCount argc)
+	(set caller (calloc 1024 1)
+	(return (start))
+	))
+	
+(char* character(int num)  (declare (char* buffer nil))
+    	(body
+    (char *string = malloc(2))
+    (if (!string) 
+    (then return 0)
+    (else))
+    (set string[0]  num)
+    (set string[1]  0)
+    (return string)
+    ))
+    
+    
+    (void qlog(char* format ... ...)  (declare (va_list args nil))
+	(body
+    (va_start args format)
+    (vfprintf stderr format args)
+    (va_end args)
+    ))
+
+
+(void displays (string s) (declare)
+	(body
+		(printf "%s" s)
+	)
+)
+
+  (void ansi2FunctionArgs (list tree) (declare)
+   (body
+    (if (isEmpty tree)
+      (then (return))
+      (else
+       (display (ansi2TypeMap (first tree)))
+       (displays " ")
+       (display (second tree))
+       (if (isNil (cddr tree)) (then ) (else (displays ",")))
+       (ansi2FunctionArgs (cddr tree))))))
+
+ 
+
+  (void ansi2Expression (list tree int indent) (declare (list thing nil))
+   (body
+    (if (isList tree)
+		;It is a function call
+      (then 
+	  
+	  (if (equal 1 (listLength  tree))
+				;A function call with no args
+               (then
+                (display (car  tree))
+				;C does not allow "return();"
+                (if (equalBox
+                     (boxString "return")
+                      (car  tree))
+                  (then )
+                  (else (displays "()"))))
+               (else
+			   ;Handle special functions
+                (set thing (first   tree))
+                (if (equalBox (boxSymbol "get-struct") thing)
+				;Get a value from a C struct ref
+                  (then
+                   (printf
+                    "%s->%s"
+                    (stringify (second  tree))
+                    (stringify (third  tree))))
+                  (else
+                   (if (equalBox (boxSymbol "new") thing)
+				   ;Create a new value on the heap
+                     (then
+                      (printf
+                       "malloc(sizeof(%s))"
+                       (stringify  (third tree))))
+					   ;It's a normal expression
+                     (else
+                      (printf
+                       "%s("
+                       (stringify
+                        (ansi2FuncMap (car tree))))
+                      (ansi2RecurList (cdr  tree) indent)
+                      (printf ")")))))))
+	  
+	  
+	  
+	  
+	  )
+	  
+	  ;It is a variable or literal
+      (else (display (ansi2FuncMap  tree))))))
+	  
+  (void
+   ansi2RecurList
+   (list expr int indent)
+   (declare)
+   (body
+    (if (isEmpty expr)
+      (then (return))
+      (else
+       (ansi2Expression (car expr) indent)
+       (if (isNil (cdr expr))
+         (then (displays ""))
+         (else (displays ", ") (ansi2RecurList (cdr expr) indent)))))
+    ))
+	
+	
+
+	
+
+  (void ansi2If (list node int indent) (declare)
+   (body
+    (newLine indent)
+    (displays "if ( ")
+    (ansi2Expression (second node) 0)
+    (displays ") {")
+    (ansi2Body (cdr (third node)) (add1 indent))
+    (newLine indent)
+    (displays "} else {")
+    (ansi2Body (cdr (fourth node)) (add1 indent))
+    (newLine indent)
+    (displays "}")))
+
+  (void ansi2SetStruct (list node int indent) (declare)
+   (body
+    (newLine indent)
+    (printf
+     "%s->%s = "
+     (stringify (second  node))
+     (stringify (third  node)))
+    (ansi2Expression (fourth node) indent)))
+
+  (void ansi2GetStruct (list node int indent) (declare)
+   (body
+    (newLine indent)
+    (printf
+     "%s->%s"
+     (stringify (first  node))
+     (stringify (second  node)))))
+
+  (void ansi2Set (list node int indent) (declare)
+   (body
+    (newLine indent)
+    (printf "%s = " (stringify (first  (cdr node))))
+    (ansi2Expression (third node) indent)))
+	
+  (void ansi2Return (list node int indent) (declare)
+   (body
+    (newLine indent)
+	(if (equal (listLength node) 1) 
+	(then (displays "return;"))
+	(else 
+    (displays "return ")
+    (ansi2Expression (cadr node) indent)
+	(displays ";")
+	))))
+
+  (void ansi2Statement (list node int indent) (declare)
+   (body
+    (if (equalBox (boxString "set") (first node))
+      (then (ansi2Set node indent))
+      (else
+       (if (equalBox (boxString "set-struct") (first node))
+         (then (ansi2SetStruct node indent))
+         (else
+          (if (equalBox (boxString "if") (first node))
+            (then (ansi2If node indent))
+            (else
+             (if (equalBox (boxString "return") (first node))
+               (then (ansi2Return node indent))
+               (else
+                (newLine indent)
+                (ansi2Expression  node indent)))))))))
+    (displays ";\n")))
+
+  (void ansi2Body (list tree int indent) (declare (list code nil))
+   (body
+    (if (isEmpty tree)
+      (then (return))
+      (else
+       (set code  tree)
+       (if (isNil code)
+       (then)
+       (else
+		(set code (car tree))
+        (printf "\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n"  (stringify (getTagFail code  (boxString "filename")  (boxString "Unknown"))) (stringify (getTagFail code (boxString "line") (boxString "Unknown") )))))
+       (printIndent indent)
+       (printf
+        "%s"
+        "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n")
+       (ansi2Statement code indent)
+       (ansi2Body (cdr tree) indent)))))
+
+  (void ansi2Declarations (list decls int indent) (declare (box decl nil))
+   (body
+    (if (isEmpty decls)
+      (then (return))
+      (else
+       (set decl (car decls))
+       (printf
+        "%s %s = "
+        (stringify (ansi2TypeMap (first decl)))
+        (stringify (second decl)))
+       (ansi2Expression (third decl) indent)
+       (printf ";\n")
+       (ansi2Declarations (cdr decls) indent)))))
+
+  (void ansi2Function (list node) (declare (box name nil))
+   (body
+    (set name  (second node))
+    (printf "\n\n//Building function %s from line: %s" (stringify name) (stringify (getTag name (boxString "line"))))
+    (newLine 0)
+    (if (isNil node)
+      (then (return))
+      (else
+       (newLine 0)
+       (printf
+        "%s %s("
+        (stringify (ansi2TypeMap (first node)))
+        (stringify (second node)))
+       (ansi2FunctionArgs (third node))
+       (printf ") {")
+       (newLine 1)
+       (ansi2Declarations (cdr (fourth node)) 1)
+       (if (inList (toStr name) (noStackTrace))
+       (then (printf ""))
+       (else
+           (printf "\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n" (stringify name) (stringify (getTag name (boxString "filename"))) (stringify (getTag name (boxString "line")))   )))
+       (if (inList (toStr name) (noStackTrace))
+         (then (printf ""))
+         (else
+          ;;(printf "\n  stackTracePush(\"%s\", \"%s\", %s, %d );\n" (stringify (getTag name (boxString "filename"))) (stringify name) (stringify (getTag name (boxString "line"))) 0)
+          ))
+	   ;(display (second(fifth node)))
+       (ansi2Body (cdr (fifth node)) 1)
+       (if (inList (toStr name) (noStackTrace))
+         (then (printf ""))
+         (else
+            (printf "\nif (globalTrace)\n    printf(\"Leaving %s\\n\");\n" (stringify name))
+            ))
+       (printf "\n}\n")))))
+
+  (void ansi2ForwardDeclaration (list node) (declare)
+   (body
+    (if (isNil node) (then (return)) (else
+       (printf
+        "\n%s %s("
+        (stringify (ansi2TypeMap (first node)))
+        (stringify (second node)))
+       (ansi2FunctionArgs (third node))
+       (displays ");")))))
+
+  (void ansi2ForwardDeclarations (list tree) (declare)
+   (body
+    (if (isEmpty tree) (then (return)) (else
+       (ansi2ForwardDeclaration (car tree))
+       (ansi2ForwardDeclarations (cdr tree))))))
+
+  (void ansi2Functions (list tree) (declare)
+   (body
+    (if (isEmpty tree) (then (return))(else 
+		(ansi2Function (car tree)) (ansi2Functions (cdr tree))))))
+	  
+	  
+  (void ansi2Includes (list nodes) (declare)
+   (body
+    (printf
+     "%s"
+     "\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nconst char* getEnv(char* key){return getenv(key);}\n void panic(char* s){abort();exit(1);}\nint sub(int a, int b) { return a - b; }\nfloat mult(int a, int b) { return a * b; }\nint greaterthan(int a, int b) { return a > b; }\nfloat subf(float a, float b) { return a - b; }\nfloat multf(float a, float b) { return a * b; }\nint greaterthanf(float a, float b) { return a > b; }\nint equal(int a, int b) { return a == b; }\nint equalString(char* a, char* b) { return !strcmp(a,b); }\nint andBool(int a, int b) { return a == b;}\nint string_length(char* s) { return strlen(s);}\nchar* setSubString(char* target, int start,char *source){target[start]=source[0]; return target;}\nchar* sub_string(char* s, int start, int length) {\nchar* substr = calloc(length+1, 1);\nstrncpy(substr, s+start, length);\nreturn substr;\n}\n\n\n\nchar* stringConcatenate(char* a, char* b) {\nint len = strlen(a) + strlen(b) + 1;\nchar* target = calloc(len,1);\nstrncat(target, a, len);\nstrncat(target, b, len);\nreturn target;\n}\n\nchar* intToString(int a) {\nint len = 100;\nchar* target = calloc(len,1);\nsnprintf(target, 99, \"%d\", a);\nreturn target;\n}\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\nvoid * gc_malloc( unsigned int size ) {\nreturn malloc( size);\n}\n\nint* makeArray(int length) {\n    int * array = gc_malloc(length*sizeof(int));\n    return array;\n}\n\nint at(int* arr, int index) {\n  return arr[index];\n}\n\nvoid setAt(int* array, int index, int value) {\n    array[index] = value;\n}\n\nchar * read_file(char * filename) {\nchar * buffer = 0;\nlong length;\nFILE * f = fopen (filename, \"rb\");\n\nif (f)\n{\n  fseek (f, 0, SEEK_END);\n  length = ftell (f);\n  fseek (f, 0, SEEK_SET);\n  buffer = malloc (length);\n  if (buffer == NULL) {\n  printf(\"Malloc failed!\\n\");\n  exit(1);\n}\n  if (buffer)\n  {\n    fread (buffer, 1, length, f);\n  }\n  fclose (f);\n}\nreturn buffer;\n}\n\n\nvoid write_file (char * filename, char * data) {\nFILE *f = fopen(filename, \"w\");\nif (f == NULL)\n{\n    printf(\"Error opening file!\");\n    exit(1);\n}\n\nfprintf(f, \"%s\", data);\n\nfclose(f);\n}\n\nchar* getStringArray(int index, char** strs) {\nreturn strs[index];\n}\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\nint main( int argc, char *argv[] )  {\n  globalArgs = argv;\n  globalArgsCount = argc;\n  caller=calloc(1024,1);\n\n  return start();\n\n}\n\n")
+    (printf "%s" "char * character(int num) { char *string = malloc(2); if (!string) return 0; string[0] = num; string[1] = 0; return string; }") (printf "%s" "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }")
+))
+
+  (void ansi2TypeDecl (list l) (declare)
+   (body
+    (if (> (listLength l) 2)
+      (then
+       (printIndent 1)
+       (printf
+        "%s %s %s;\n"
+        (stringify (second l))
+        (stringify (ansi2TypeMap (listLast l)))
+        (stringify (first l))))
+      (else
+       (printIndent 1)
+       (printf
+        "%s %s;\n"
+        (stringify (ansi2TypeMap (listLast l)))
+        (stringify (car l)))))))
+
+  (void ansi2StructComponents (list node) (declare)
+   (body
+    (if (isEmpty node)
+      (then (return))
+      (else (ansi2TypeDecl (car node)) (ansi2StructComponents (cdr node))))))
+
+  (void ansi2Struct (list node) (declare)
+   (body (ansi2StructComponents (cdr  node))))
+
+  (box ansi2TypeMap (box aSym) (declare (list symMap nil))
+   (body
+    (set
+     symMap
+     (alistCons
+      (boxSymbol "stringArray")
+      (boxSymbol "char**")
+      (alistCons (boxSymbol "string") (boxSymbol "char*") nil)))
+    (if (truthy (assoc (stringify aSym) symMap))
+      (then (return (cdr (assoc (stringify aSym) symMap))))
+      (else (return aSym)))))
+
+  (box ansi2FuncMap (box aSym) (declare (list symMap nil))
+   (body
+    (if (equalString "symbol" (boxType aSym))
+      (then
+       (set
+        symMap
+        (alistCons
+         (boxSymbol "=")
+         (boxSymbol "equal")
+         (alistCons
+          (boxSymbol "sub-string")
+          (boxSymbol "sub_string")
+          (alistCons
+           (boxSymbol "read-file")
+           (boxSymbol "read_file")
+           (alistCons
+            (boxSymbol "write-file")
+            (boxSymbol "write_file")
+            (alistCons
+             (boxSymbol ">")
+             (boxSymbol "greaterthan")
+             (alistCons
+              (boxSymbol "string-length")
+              (boxSymbol "string_length")
+              (alistCons (boxSymbol "nil") (boxSymbol "NULL") nil))))))))
+
+       (if (truthy (assoc (stringify aSym) symMap))
+         (then (return (cdr (assoc (stringify aSym) symMap))))
+         (else (return aSym))))
+      (else (return aSym)))))
+
+  (void ansi2Type (list node) (declare)
+   (body
+    (if (isList  (second node))
+      (then
+       (printf "\ntypedef struct %s {\n" (stringify (first  node)))
+       (ansi2Struct  (second node))
+       (printf "\n} %s;\n" (stringify (first  node))))
+      (else (displays "typedef ") (ansi2TypeDecl  node)))
+    ))
+
+  (void ansi2Types (list nodes) (declare)
+   (body
+    (if (isEmpty nodes)
+      (then (return))
+      (else  (ansi2Type (car nodes)) (ansi2Types (cdr nodes))))))
+
+
+
+
+
+(void ansi2Compile (string filename) (declare (list tree nil))
+    (body
+  
+
+
+   	(qlog "//Scanning file...%s\n" filename)
+    
+	(set tree (loadQuon filename))
+   	(qlog "//Building sexpr\n")
+    
+	(set tree (loadIncludes tree))
+	(set tree (macrowalk tree))
+  
+
+
+   (qlog "//Printing program\n")
+
+    (ansi2Includes (cdr (first tree)))
+    (ansi2Types (cdr (second tree)))
+	;(display (cdr (second tree)))(exit 1)
+    (displays "Box* globalStackTrace = NULL;\n")
+    (displays
+     "\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n")
+    (ansi2ForwardDeclarations (cdr (third tree)))
+    (displays "\n\n//End forward declarations\n\n")
+    (ansi2Functions (cdr (third tree)))
+    (displays "\n")))
+  ))
