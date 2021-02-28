@@ -1,0 +1,86 @@
+  (( includes )
+(types)
+ (functions
+
+  (list readSexpr (string aStr string filename) (declare (list tokens nil) (list as nil))
+   (body
+    (set tokens (emptyList))
+    (set tokens (filterTokens (filterVoid (scan aStr 0 1 0 0 filename))))
+    (set as (sexprTree tokens))
+    (return (car as))))
+
+  (list sexprTree (list l) (declare (box b nil))
+   (body
+    (if (isEmpty l)
+      (then (return (emptyList)))
+      (else
+       (set b (car l))
+       (if (isOpenBrace b)
+         (then
+          (return (cons (sexprTree (cdr l)) (sexprTree (skipList (cdr l))))))
+         (else
+          (if (isCloseBrace b)
+            (then (return (emptyList)))
+            (else
+             (return
+              (setTag (boxString "line") (getTagFail b (boxString "line") (boxInt -1)) (cons b (sexprTree (cdr l))))
+              )))))))
+
+    ))
+(list loadQuon (string filename) (declare   (string programStr "")  (list tree nil) )
+(body
+
+    (set programStr (read-file filename))
+    (set tree (readSexpr programStr filename))
+	
+  (return tree)
+))
+
+(list getIncludes (list program) (declare)
+  (body
+    (return  (cdr (first program)))))
+
+(list getTypes (list program) (declare)
+  (body
+    (return  (cdr (second program)))))
+
+(list getFunctions (list program) (declare)
+  (body
+    (return  (cdr (third program)))))
+
+
+(list loadIncludes (list tree) (declare (list newProg nil) (string includeFile "") (list functionsCombined nil) (list typesCombined nil) (list includeTree nil) )
+(body
+
+(if ( greaterthan (listLength (getIncludes tree)) 0)
+(then
+
+  ;(printf "Includes: ")
+  ; (display tree)
+  ;(display (getIncludes tree))
+  (set includeFile (stringify (first (getIncludes tree))))
+  ;(printf "\nLoading %s\n" includeFile)
+  (set includeTree (loadQuon includeFile))
+  ;(display tree)
+  (set functionsCombined (concatLists (getFunctions includeTree) (getFunctions tree)))
+  (set typesCombined (concatLists (getTypes includeTree) (getTypes tree)))
+  ;(display typesCombined)
+  (set newProg (buildProg (cdr (getIncludes tree)) typesCombined functionsCombined)) ;FIXME check includes are recursive
+  (return (loadIncludes newProg))
+)
+(else
+  (return tree))
+)))
+
+(list buildProg (list includes list types list functions)(declare (list program nil))
+(body
+(set includes (cons (boxSymbol "includes") includes))
+(set types (cons (boxSymbol "types") types))
+(set functions (cons (boxSymbol "functions") functions))
+  (set program (cons includes
+            (cons types
+              (cons functions nil))))
+  (return program)
+)
+)
+))

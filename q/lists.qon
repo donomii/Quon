@@ -9,13 +9,14 @@
  
   (box car (list l) (declare)
    (body
-    (assertType "list" l __LINE__ __FILE__)
+    
     (if (isNil l)
       (then
        (printf "Cannot call car on empty list!\n")
        (panic "Cannot call car on empty list!\n")
        (return nil))
       (else
+       (assertType "list" l __LINE__ __FILE__)
        (if (isNil (get-struct l car))
          (then (return nil))
          (else (return (get-struct l car))))))))

@@ -1,4 +1,4 @@
-((includes q/base.qon q/macros.qon q/lists.qon q/astaccessors.qon q/perl.qon q/ansi.qon q/ansi2.qon q/tests.qon q/node.qon q/java.qon q/lua.qon q/imaginary.qon)
+((includes q/base.qon q/macros.qon q/lists.qon q/newparser.qon q/perl.qon q/ansi.qon q/ansi2.qon q/tests.qon q/node.qon q/java.qon q/lua.qon q/imaginary.qon)
  (types)
  (functions
 
@@ -66,8 +66,7 @@
       (then (astCompile (unBoxString filename)))
       (else (if runNode
       (then
-      (nodeCompile (unBoxString filename)) (printf "\n")
-      )
+      (nodeCompile (unBoxString filename)) (printf "\n"))
       (else
       (if runPerl
       (then (perlCompile (unBoxString filename)) (printf "\n"))

@@ -1,80 +1,78 @@
 ((includes)
  (types
-(uint int unsigned)
-(bool int)
-(array int*)
+  (uint int unsigned)
+  (bool int)
+  (array int*)
 )
-#define true 1\n#define false 0\n\n\n
+
 
 
 
  (functions
 
-(char* getEnv (char* key)(declare)
+(char* getEnv (char* key) (declare)
 	(body
-		(return getenv(key))))
+		(return (getenv key))))
 
-(void panic(char* s)(declare)
+(void panic (char* s) (declare)
 	(body
 		(abort)
-		(exit(1))
-))
+		(exit 1)))
 
 (int sub (int a  int b) (declare)
 	(body
 		(return (binop a - b))))
 
-(float mult(int a  int b) (declare)
+(float mult (int a  int b) (declare)
 	(body
 		(return (binop a * b))))
 
-(int greaterthan(int a int b) (declare)
+(int greaterthan (int a int b) (declare)
 	(body
 		(return (binop a > b))))
 
-(float subf(float a float b) (declare)
+(float subf (float a float b) (declare)
 	(body
 		(return (binop a - b))))
 
-(float multf(float a float b) (declare)
+(float multf (float a float b) (declare)
 	(body
 		(return (binop a * b))))
 
-(int greaterthanf(float a float b) (declare)
+(int greaterthanf (float a float b) (declare)
 	(body
 		(return (binop a > b))))
 
-(int equal(int a int b) (declare)
+(int equal (int a int b) (declare)
 	(body
 		(return (binop  a == b))))
 
-(int equalString(char* a char* b) (declare)
+(int equalString (char* a char* b) (declare)
 	(body
 		(return (not (strcmp a b)))))
 
-(int andBool(int a int b) (declare)
+(int andBool (int a int b) (declare)
 	(body
 		(return (binop  a == b))))
 
-(int string_length(char* s) (declare)
+(int string_length (char* s) (declare)
 	(body
-		(return (strlen s))
-))
+		(return (strlen s))))
 
 (char* setSubString (char* target int start char* source)(declare)
 	(body
-		(set target[start] source[0])
+		(setAt target start (at source 0))
 		(return target)
 ))
 
-(char* sub_string(char* s int start int length) (declare (char* substr ""))
+(char* sub_string (char* s int start int length) (declare (char* substr ""))
 	(body
 		(set substr  (calloc (add length 1) 1))
 		(strncpy substr  (add s start) length)
 		(return substr)
 ))
 
-(char* stringConcatenate(char* a char* b) (declare (int len 0)(char* target nil))
+(char* stringConcatenate (char* a char* b) (declare (int len 0)(char* target nil))
 	(body
 		(set len (add (add (strlen a) + (strlen b)) + 1))
 		(target (calloc len 1))
@@ -83,7 +81,7 @@
 		(return target)
 ))
 	
-(char* intToString(int a) (declare (int len 0)(char* target nil))
+(char* intToString (int a) (declare (int len 0)(char* target nil))
 	(body
          (set len  100)
          (set target  (calloc len 1))
@@ -91,37 +89,38 @@
          (return target)
 ))
 
-(void* gc_malloc( uint size ) (declare)
+(void* gc_malloc (uint size) (declare)
 	(body
          (return (malloc size))
 ))
 
-(int* makeArray(int length) (declare (int* array nil))
+(int* makeArray (int length) (declare (int* array nil))
 	(body
-         (set array (gc_malloc (mult (length (sizeof int)))))
+         (set array (gc_malloc (mult length (sizeof int))))
          (return array)
 ))
-    
-(int at(int* arr  int index) (declare)
+
+(int at (int* arr  int index) (declare)
     	(body
-         (return arr[index])
+         (return (passthrough "arr[index]"))
 ))
-    
-(void setAt(int* array  int index  int value)(declare)
+
+(void setAt (int* array int index int value) (declare)
     	(body
-         (set  array[index] value)
+         (set (passthrough "array[index]") value)
 ))
-    
-(char* read_file(char* filename) (declare (char* buffer nil) (long length 0) (FILE* f nil))
+
+(char* read_file (char* filename) (declare (char* buffer nil) (long length 0) (FILE* f nil))
     	(body
          (set f (fopen filename "rb"))
-         (if (f)
-             (then
+         (if (nil f)
+             (then (return nil))
+             (else
               (fseek f 0 SEEK_END)
               (set length (ftell f))
               (fseek f 0 SEEK_SET)
               (set buffer (malloc length))
-    
+              
               (if (nil buffer)
                   (then
                    (printf "Malloc failed!\n")
@@ -132,48 +131,47 @@
                   (else ))
 	
               (fclose f)
-              )
-             (else ))
+              ))
+             
          (return buffer)
-         ))
-
+))
 
 (void write_file (char* filename char* data)   (declare (char* buffer nil) (long length 0) (FILE* f nil))
       (body
               (set f (fopen filename "w"))
-              (if (nil(f))
+              (if (nil f)
                   (then (printf "Error opening file!"))
                   (else (exit 1)))
               (fprintf f  "%s" data)
               (fclose f)
  ))
 	
-(char* getStringArray(int index char** strs)
-       (body(return strs[index])))
-	
-	
-	
-(char** programArgs() {declare}
+(string getStringArray (int index char** strs) (declare)
+       (body
+        (return (at strs index))))
+
+(char** programArgs () (declare)
         (body
          (return argv)
          ))
-(int programArgsCount() (declare)
+
+(int programArgsCount () (declare)
      (body
       (return argc)
       ))
 
 
-(int main(int argc char** argv )  (declare)
+(int main (int argc char** argv )  (declare)
 	(body
          (set caller (calloc 1024 1))
          (return (start))
 ))
-	
-(char* character(int num)  (declare (char* buffer nil) (char str nil))
+
+(char* character (int num)  (declare (string buffer nil) (char str nil))
     	(body
          (set str (malloc 2))
          (if (!str) 
-             (then return 0)
+             (then (return 0))
              (else)
          (setAt string 0 num)
          (setAt string 1 0)
@@ -182,7 +180,7 @@
 ))
     
     
-(void qlog(char* format ... ...)  (declare (va_list args nil))
+(void qlog (char* format ... ...)  (declare (va_list args nil))
 	(body
          (va_start args format)
          (vfprintf stderr format args)

@@ -55,6 +55,13 @@
                       (printf
                        "malloc(sizeof(%s))"
                        (stringify  (third tree))))
+                     (else
+                      (if (equalBox (boxSymbol "passthrough") thing)
+				   ;Print the second arg directly into the compiler output.  Hope you got it perfectly right!
+                     (then
+                      (printf
+                       "%s"
+                       (stringify  (second tree))))
 					   ;It's a normal expression
                      (else
                       (printf
@@ -62,7 +69,7 @@
                        (stringify
                         (ansi2FuncMap (car tree))))
                       (ansi2RecurList (cdr  tree) indent)
-                      (printf ")")))))))
+                      (printf ")")))))))))
 	  
 	  
 	  
@@ -123,7 +130,8 @@
   (void ansi2Set (list node int indent) (declare)
    (body
     (newLine indent)
-    (printf "%s = " (stringify (first  (cdr node))))
+    (ansi2Expression (first  (cdr node)) indent)
+    (printf " = " )
     (ansi2Expression (third node) indent)))
 	
   (void ansi2Return (list node int indent) (declare)
@@ -164,8 +172,8 @@
        (if (isNil code)
        (then)
        (else
-		(set code (car tree))
-        (printf "\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n"  (stringify (getTagFail code  (boxString "filename")  (boxString "Unknown"))) (stringify (getTagFail code (boxString "line") (boxString "Unknown") )))))
+	(set code (car tree))
+        (printf "\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n"  (stringify (getTagFail (car code)  (boxString "filename")  (boxString "Unknown file (not provided by parser)"))) (stringify (getTagFail (car code) (boxString "line") (boxString "Line missing") )))))
        (printIndent indent)
        (printf
         "%s"
