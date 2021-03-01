@@ -21,31 +21,31 @@
 
 (int sub (int a  int b) (declare)
 	(body
-		(return (binop a - b))))
+		(return (binop - a b))))
 
 (float mult (int a  int b) (declare)
 	(body
-		(return (binop a * b))))
+		(return (binop * a b))))
 
 (int greaterthan (int a int b) (declare)
 	(body
-		(return (binop a > b))))
+		(return (binop > a b))))
 
 (float subf (float a float b) (declare)
 	(body
-		(return (binop a - b))))
+		(return (binop - a b))))
 
 (float multf (float a float b) (declare)
 	(body
-		(return (binop a * b))))
+		(return (binop * a b))))
 
 (int greaterthanf (float a float b) (declare)
 	(body
-		(return (binop a > b))))
+		(return (binop > a b))))
 
 (int equal (int a int b) (declare)
 	(body
-		(return (binop  a == b))))
+		(return (binop  == a b))))
 
 (int equalString (char* a char* b) (declare)
 	(body
@@ -53,7 +53,7 @@
 
 (int andBool (int a int b) (declare)
 	(body
-		(return (binop  a == b))))
+		(return (binop  == a b))))
 
 (int string_length (char* s) (declare)
 	(body
@@ -178,8 +178,8 @@
          (return string)
          )
 ))
-    
-    
+
+
 (void qlog (char* format ... ...)  (declare (va_list args nil))
 	(body
          (va_start args format)

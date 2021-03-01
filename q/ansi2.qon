@@ -62,6 +62,18 @@
                       (printf
                        "%s"
                        (stringify  (second tree))))
+                     (else
+                      (if (equalBox (boxSymbol "binop") thing)
+				   ;Print the second arg directly into the compiler output.  Hope you got it perfectly right!
+                     (then
+                      (printf "(")
+                      (ansi2Expression (third tree) indent)
+                      (printf
+                       " %s "
+                       (stringify  (second tree)))
+                      (ansi2Expression (fourth tree) indent)
+                      (printf ")")
+                      )
 					   ;It's a normal expression
                      (else
                       (printf
@@ -69,7 +81,7 @@
                        (stringify
                         (ansi2FuncMap (car tree))))
                       (ansi2RecurList (cdr  tree) indent)
-                      (printf ")")))))))))
+                      (printf ")")))))))))))
 	  
 	  
 	  
