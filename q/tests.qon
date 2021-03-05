@@ -275,6 +275,51 @@
                  )
                  ))
 
+(void test22 () (declare 
+       (list original nil)
+       (list out nil)
+       (list replace nil)
+       (list correct nil)
+       )
+             (body
+              (set original (stringList "qlog" "%s" "hello"))
+              (set replace (stringList "fprintf" "stderr"))
+                (set out (macrolist original "qlog" replace))
+                 
+                 (set correct (stringList  "fprintf" "stderr" "%s" "hello"))
+                (if (equalList out correct)
+                  (then (printf "22. pass macroList\n"))
+                  (else (printf "22. fail macroList\n")
+                        (printf "In: ")
+                        (displayList original 0 true)
+                        (printf "\nOut: ")
+                        (displayList out 0 true)
+                        (printf "\n")
+                 )
+                 )))
+
+             (void test23 () (declare 
+       (list original nil)
+       (list out nil)
+       (list replace nil)
+       (list correct nil)
+       )
+             (body
+              (set original (stringList "qlog" "%s" "hello"))
+              (set replace (stringList "fprintf" "stderr"))
+                (set out (concatLists original  replace))
+                 
+                 (set correct (stringList "qlog" "%s" "hello" "fprintf" "stderr"))
+                (if (equalList out correct)
+                  (then (printf "23. pass concatLists\n"))
+                  (else (printf "23. fail concatLists\n")
+                        (printf "In: ")
+                        (displayList original 0 true)
+                        (printf "\nOut: ")
+                        (displayList out 0 true)
+                 )
+                 ))
+
 ;	(void test22 () (declare 
 ;       (list l nil)
 ;       (list l2 nil)
@@ -294,3 +339,4 @@
 ;                 ))
 
   ))
+ )

@@ -55,6 +55,8 @@
        (test19)
        (test20)
        (test21)
+       (test22)
+       (test23)
 	   ;(test22)
        (printf "\n\nAfter all that hard work, I need a beer...\n")
        (beers 9))
@@ -80,7 +82,7 @@
       (if runIma
       (then (imaCompile (unBoxString filename)) (printf "\n"))
       (else
-	  (if runAnsi2
+      (if runAnsi2
       (then (ansi2Compile (unBoxString filename)) (printf "\n"))
 	  (else
       (ansiCompile (unBoxString filename)) (printf "\n")))))))))))))

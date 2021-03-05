@@ -1,7 +1,5 @@
 ((includes )
-
- (types
-  )
+ (types  )
   
  (functions
  
@@ -65,5 +63,32 @@
             (else))
          (return l)
 			))))))
+
+  ;This time, replace is a list, search remains a string.  Every occurence of search is replaced with replace
+  (list macrolist (list l string search list replace ) (declare (box val nil)) (body
+    (if (isEmpty l)
+      (then (return nil))
+      (else
+
+	  ;(printf "//type: %s\n" (get-struct l typ))
+       (if (isList l)
+         (then
+          
+            (return   (concatLists (macrolist (car l) search replace) (macrolist (cdr l) search replace ))))
+         (else
+           ;(printf "---Processing non list: %s\n" (stringify l))
+           ;(printf "--Comparing %s and %s at %s,%s\n" search (stringify l) (stringify (getTagFail l (boxString "line")(boxString "no tag"))) (stringify (getTagFail l (boxString "filename" )(boxString "no tag"))))
+          
+          (if (equalString search (stringify l))
+            (then
+             ;(printf "---Matched!: %s, replacing with %s\n" (stringify l) (stringify replace))
+             (return replace))
+            (else)
+            ;(printf "No match, returning %s\n" (cons l nil))
+            (return (cons l nil)))
+          (return (cons l nil))
+         
+			))))))
 			
+ )
  )

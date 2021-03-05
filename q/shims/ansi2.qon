@@ -113,7 +113,7 @@
 (char* read_file (char* filename) (declare (char* buffer nil) (long length 0) (FILE* f nil))
     	(body
          (set f (fopen filename "rb"))
-         (if (nil f)
+         (if (isNil f)
              (then (return nil))
              (else
               (fseek f 0 SEEK_END)
@@ -121,15 +121,11 @@
               (fseek f 0 SEEK_SET)
               (set buffer (malloc length))
               
-              (if (nil buffer)
+              (if (isNil buffer)
                   (then
                    (printf "Malloc failed!\n")
                    (exit 1))
-                  (else))
-              (if (buffer)
-                  (then (fread buffer 1 length f))
-                  (else ))
-	
+                  (else (fread buffer 1 length f)))
               (fclose f)
               ))
              
@@ -139,7 +135,7 @@
 (void write_file (char* filename char* data)   (declare (char* buffer nil) (long length 0) (FILE* f nil))
       (body
               (set f (fopen filename "w"))
-              (if (nil f)
+              (if (isNil f)
                   (then (printf "Error opening file!"))
                   (else (exit 1)))
               (fprintf f  "%s" data)
@@ -153,24 +149,24 @@
 (char** programArgs () (declare)
         (body
          (return argv)
-         ))
+))
 
 (int programArgsCount () (declare)
      (body
       (return argc)
-      ))
+))
 
 
 (int main (int argc char** argv )  (declare)
 	(body
          (set caller (calloc 1024 1))
-         (return (start))
+         (return (start argc argv))
 ))
 
-(char* character (int num)  (declare (string buffer nil) (char str nil))
+(char* character (int num)  (declare (string buffer nil) (string str NULL))
     	(body
          (set str (malloc 2))
-         (if (!str) 
+         (if (not str) 
              (then (return 0))
              (else)
          (setAt string 0 num)
