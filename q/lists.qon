@@ -181,6 +181,23 @@
             ) nil)
     )
  (return ret))) ))
+
+ (list doSymbolList (list l) (declare (list newlist nil) (list ret nil))
+ (body
+ (if (isNil l)
+ (then (return (cons (boxSymbol "nil") nil)))
+ (else
+ (set newlist (cons (boxSymbol "boxSymbol") (cons (first l) newlist)))
+ (set ret
+    (cons
+            (cons
+                (boxSymbol "cons")
+                (cons
+                   newlist 
+                    (doSymbolList (cdr l)))
+            ) nil)
+    )
+ (return ret))) ))
  
  
  (list doBoxList (list l) (declare)

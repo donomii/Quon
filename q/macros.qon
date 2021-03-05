@@ -28,6 +28,12 @@
             ;(display (doStringList (cdr l)))
           (return (car (doStringList (cdr l)))))
           (else))
+          ;Handle symList
+          (if (equalString (stringConcatenate "symbol" "List") (stringify (car l)))
+          (then
+           
+          (return (car (doSymbolList (cdr l)))))
+          (else))
 		  (if (equalString (stringConcatenate "multi" "List") (stringify (car l)))
           (then
             ;(display (doStringList (cdr l)))
@@ -73,20 +79,22 @@
 	  ;(printf "//type: %s\n" (get-struct l typ))
        (if (isList l)
          (then
+          ;(printf "--Comparing %s and %s at %s,%s\n" search (stringify (car l)) (stringify (getTagFail (car l) (boxString "line")(boxString "no tag"))) (stringify (getTagFail (car l) (boxString "filename" )(boxString "no tag"))))
+          (if (equalString search (stringify (car l)))
+            (then
+             ;(printf "---Matched!: %s, replacing with %s\n" (stringify l) (stringify replace))
+             (return   (concatLists  replace (macrolist (cdr l) search replace ))))
+            (else
+            ;(printf "No match, returning %s\n" (cons l nil))
+            (return (cons (macrolist (car l) search replace) (macrolist (cdr l) search replace )))))
           
-            (return   (concatLists (macrolist (car l) search replace) (macrolist (cdr l) search replace ))))
+            )
          (else
            ;(printf "---Processing non list: %s\n" (stringify l))
            ;(printf "--Comparing %s and %s at %s,%s\n" search (stringify l) (stringify (getTagFail l (boxString "line")(boxString "no tag"))) (stringify (getTagFail l (boxString "filename" )(boxString "no tag"))))
           
-          (if (equalString search (stringify l))
-            (then
-             ;(printf "---Matched!: %s, replacing with %s\n" (stringify l) (stringify replace))
-             (return replace))
-            (else)
-            ;(printf "No match, returning %s\n" (cons l nil))
-            (return (cons l nil)))
-          (return (cons l nil))
+          
+          (return l)
          
 			))))))
 			

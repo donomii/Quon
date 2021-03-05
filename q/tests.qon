@@ -282,9 +282,9 @@
        (list correct nil)
        )
              (body
-              (set original (stringList "qlog" "%s" "hello"))
+              (set original (stringList (stringConcatenate "q" "log") "%s" "hello"))
               (set replace (stringList "fprintf" "stderr"))
-                (set out (macrolist original "qlog" replace))
+                (set out (macrolist original (stringConcatenate "q" "log") replace))
                  
                  (set correct (stringList  "fprintf" "stderr" "%s" "hello"))
                 (if (equalList out correct)
@@ -305,11 +305,11 @@
        (list correct nil)
        )
              (body
-              (set original (stringList "qlog" "%s" "hello"))
+              (set original (stringList (stringConcatenate "q" "log") "%s" "hello"))
               (set replace (stringList "fprintf" "stderr"))
                 (set out (concatLists original  replace))
                  
-                 (set correct (stringList "qlog" "%s" "hello" "fprintf" "stderr"))
+                 (set correct (stringList (stringConcatenate "q" "log") "%s" "hello" "fprintf" "stderr"))
                 (if (equalList out correct)
                   (then (printf "23. pass concatLists\n"))
                   (else (printf "23. fail concatLists\n")

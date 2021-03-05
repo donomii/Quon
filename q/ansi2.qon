@@ -377,8 +377,8 @@
     
 	(set tree (loadIncludes tree))
 	(set tree (macrowalk tree))
-        (set replace (stringList "fprintf" "stderr"))
-        (set tree (macrolist tree "qlog" replace))
+        (set replace (symbolList "fprintf" "stderr"))
+       (set tree (macrolist tree (stringConcatenate "q" "log") replace))
   
 
 

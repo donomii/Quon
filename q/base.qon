@@ -861,7 +861,7 @@
       (return program)
       ))
 
-    (void astCompile (string filename) (declare  (list tree nil) )
+    (void astCompile (string filename) (declare  (list tree nil)(list replace nil) )
     (body
       (set tree (loadQuon filename))
 
@@ -874,6 +874,8 @@
       
       (set tree (macrosingle tree "sub-string" "luaSubstring"))
       (set tree (macrosingle tree "stringLength" "string.len"))
+       (set replace (symbolList "fprintf" "stderr"))
+       (set tree (macrolist tree (stringConcatenate "q" "log") replace))
       (displayList tree 0 true)
       ;(printf "Transformed tree")
       
