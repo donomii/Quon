@@ -178,7 +178,6 @@
        (if (equalBox (boxSymbol "[") b)
          (then (return true))
          (else (return false)))))))
-  (string openBrace () (declare) (body (return "(")))
   (bool
    isCloseBrace
    (box b)
@@ -190,7 +189,6 @@
        (if (equalBox (boxSymbol "]") b)
          (then (return true))
          (else (return false)))))))
-  (string closeBrace () (declare) (body (return ")")))
 
 
 
@@ -208,6 +206,7 @@
             (else (return (skipList (cdr l)))))))))
 
     ))
+
 
 
 
@@ -511,14 +510,6 @@
     (bool isLeaf (list n) (declare)
        (body (return (equalBox (boxString "leaf") (subnameof n)))))
 
-    (void
-   printIndent
-   (int ii)
-   (declare)
-   (body
-    (if (> ii 0)
-      (then (printf "  ") (printIndent (sub1 ii)))
-      (else (return)))))
       (list noStackTrace () (declare)
     (body
     (return

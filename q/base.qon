@@ -86,6 +86,9 @@
          (then (printf "[") (displayList l 0 true) (printf "]"))
          (else (displayList l 0 true)))))))
 
+(string openBrace () (declare) (body (return "(")))
+(string closeBrace () (declare) (body (return ")")))
+
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Types and type converters ;;
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -315,11 +318,6 @@
        (else (return true)))))
 
 
-  (void
-   newLine
-   (int indent)
-   (declare)
-   (body (printf "\n") (printIndent indent)))
 
 (box toStr (box thing) (declare)
     (body (return (boxString (stringify thing)))))
@@ -332,9 +330,19 @@
 
 
 
+  (void newLine (int indent) (declare)
+          (body (printf "\n") (printIndent indent)))
 
 
 
+    (void
+   printIndent
+   (int ii)
+   (declare)
+   (body
+    (if (> ii 0)
+      (then (printf "  ") (printIndent (sub1 ii)))
+      (else (return)))))
 
 
 
