@@ -3,13 +3,13 @@
 
  (functions
 
-(void ansi2displays (string s) (declare)
+(void ansi3displays (string s) (declare)
 	(body
 		(printf "%s" s)
 	)
 )
 
-  (void ansi2FunctionArgs (list tree) (declare)
+  (void ansi3FunctionArgs (list tree) (declare)
    (body
     (if (isEmpty tree)
       (then (return))
@@ -17,16 +17,16 @@
        (if (equalString (stringify (first tree))  "...")
            (then (printf "..."))
            (else 
-            (display (ansi2TypeMap (first tree)))
-            (ansi2displays " ")
+            (display (ansi3TypeMap (first tree)))
+            (ansi3displays " ")
             (display (second tree))
             ))
-       (if ( isNil (cddr tree)) (then ) (else (ansi2displays ", ")))
-       (ansi2FunctionArgs (cddr tree))))))
+       (if ( isNil (cddr tree)) (then ) (else (ansi3displays ", ")))
+       (ansi3FunctionArgs (cddr tree))))))
 
  
 
-  (void ansi2Expression (list tree int indent) (declare (list thing nil))
+  (void ansi3Expression (list tree int indent) (declare (list thing nil))
    (body
     (if (isList tree)
 		;It is a function call
@@ -41,7 +41,7 @@
                      (boxString "return")
                       (car  tree))
                   (then )
-                  (else (ansi2displays "()"))))
+                  (else (ansi3displays "()"))))
                (else
 			   ;Handle special functions
                 (set thing (first   tree))
@@ -71,11 +71,11 @@
 				   ;Print the second arg directly into the compiler output.  Hope you got it perfectly right!
                      (then
                       (printf "(")
-                      (ansi2Expression (third tree) indent)
+                      (ansi3Expression (third tree) indent)
                       (printf
                        " %s "
                        (stringify  (second tree)))
-                      (ansi2Expression (fourth tree) indent)
+                      (ansi3Expression (fourth tree) indent)
                       (printf ")")
                       )
 					   ;It's a normal expression
@@ -83,8 +83,8 @@
                       (printf
                        "%s("
                        (stringify
-                        (ansi2FuncMap (car tree))))
-                      (ansi2RecurList (cdr  tree) indent)
+                        (ansi3FuncMap (car tree))))
+                      (ansi3RecurList (cdr  tree) indent)
                       (printf ")")))))))))))
 	  
 	  
@@ -93,49 +93,49 @@
 	  )
 	  
 	  ;It is a variable or literal
-      (else (display (ansi2FuncMap  tree))))))
+      (else (display (ansi3FuncMap  tree))))))
 	  
   (void
-   ansi2RecurList
+   ansi3RecurList
    (list expr int indent)
    (declare)
    (body
     (if (isEmpty expr)
       (then (return))
       (else
-       (ansi2Expression (car expr) indent)
+       (ansi3Expression (car expr) indent)
        (if (isNil (cdr expr))
-         (then (ansi2displays ""))
-         (else (ansi2displays ", ") (ansi2RecurList (cdr expr) indent)))))
+         (then (ansi3displays ""))
+         (else (ansi3displays ", ") (ansi3RecurList (cdr expr) indent)))))
     ))
 	
 	
 
 	
 
-  (void ansi2If (list node int indent) (declare)
+  (void ansi3If (list node int indent) (declare)
    (body
     (newLine indent)
-    (ansi2displays "if ( ")
-    (ansi2Expression (second node) 0)
-    (ansi2displays ") {")
-    (ansi2Body (cdr (third node)) (add1 indent))
+    (ansi3displays "if ( ")
+    (ansi3Expression (second node) 0)
+    (ansi3displays ") {")
+    (ansi3Body (cdr (third node)) (add1 indent))
     (newLine indent)
-    (ansi2displays "} else {")
-    (ansi2Body (cdr (fourth node)) (add1 indent))
+    (ansi3displays "} else {")
+    (ansi3Body (cdr (fourth node)) (add1 indent))
     (newLine indent)
-    (ansi2displays "}")))
+    (ansi3displays "}")))
 
-  (void ansi2SetStruct (list node int indent) (declare)
+  (void ansi3SetStruct (list node int indent) (declare)
    (body
     (newLine indent)
     (printf
      "%s->%s = "
      (stringify (second  node))
      (stringify (third  node)))
-    (ansi2Expression (fourth node) indent)))
+    (ansi3Expression (fourth node) indent)))
 
-  (void ansi2GetStruct (list node int indent) (declare)
+  (void ansi3GetStruct (list node int indent) (declare)
    (body
     (newLine indent)
     (printf
@@ -143,43 +143,43 @@
      (stringify (first  node))
      (stringify (second  node)))))
 
-  (void ansi2Set (list node int indent) (declare)
+  (void ansi3Set (list node int indent) (declare)
    (body
     (newLine indent)
-    (ansi2Expression (first  (cdr node)) indent)
+    (ansi3Expression (first  (cdr node)) indent)
     (printf " = " )
-    (ansi2Expression (third node) indent)))
+    (ansi3Expression (third node) indent)))
 	
-  (void ansi2Return (list node int indent) (declare)
+  (void ansi3Return (list node int indent) (declare)
    (body
     (newLine indent)
 	(if (equal (listLength node) 1) 
-	(then (ansi2displays "return;"))
+	(then (ansi3displays "return;"))
 	(else 
-    (ansi2displays "return ")
-    (ansi2Expression (cadr node) indent)
-	(ansi2displays ";")
+    (ansi3displays "return ")
+    (ansi3Expression (cadr node) indent)
+	(ansi3displays ";")
 	))))
 
-  (void ansi2Statement (list node int indent) (declare)
+  (void ansi3Statement (list node int indent) (declare)
    (body
     (if (equalBox (boxString "set") (first node))
-      (then (ansi2Set node indent))
+      (then (ansi3Set node indent))
       (else
        (if (equalBox (boxString "set-struct") (first node))
-         (then (ansi2SetStruct node indent))
+         (then (ansi3SetStruct node indent))
          (else
           (if (equalBox (boxString "if") (first node))
-            (then (ansi2If node indent))
+            (then (ansi3If node indent))
             (else
              (if (equalBox (boxString "return") (first node))
-               (then (ansi2Return node indent))
+               (then (ansi3Return node indent))
                (else
                 (newLine indent)
-                (ansi2Expression  node indent)))))))))
-    (ansi2displays ";\n")))
+                (ansi3Expression  node indent)))))))))
+    (ansi3displays ";\n")))
 
-  (void ansi2Body (list tree int indent) (declare (list code nil))
+  (void ansi3Body (list tree int indent) (declare (list code nil))
    (body
     (if (isEmpty tree)
       (then (return))
@@ -194,10 +194,10 @@
        (printf
         "%s"
         "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n")
-       (ansi2Statement code indent)
-       (ansi2Body (cdr tree) indent)))))
+       (ansi3Statement code indent)
+       (ansi3Body (cdr tree) indent)))))
 
-  (void ansi2Declarations (list decls int indent) (declare (box decl nil))
+  (void ansi3Declarations (list decls int indent) (declare (box decl nil))
    (body
     (if (isEmpty decls)
       (then (return))
@@ -205,13 +205,13 @@
        (set decl (car decls))
        (printf
         "%s %s = "
-        (stringify (ansi2TypeMap (first decl)))
+        (stringify (ansi3TypeMap (first decl)))
         (stringify (second decl)))
-       (ansi2Expression (third decl) indent)
+       (ansi3Expression (third decl) indent)
        (printf ";\n")
-       (ansi2Declarations (cdr decls) indent)))))
+       (ansi3Declarations (cdr decls) indent)))))
 
-  (void ansi2Function (list node) (declare (box name nil))
+  (void ansi3Function (list node) (declare (box name nil))
    (body
     (set name  (second node))
     (printf "\n\n//Building function %s from line: %s" (stringify name) (stringify (getTag name (boxString "line"))))
@@ -222,12 +222,12 @@
        (newLine 0)
        (printf
         "%s %s("
-        (stringify (ansi2TypeMap (first node)))
+        (stringify (ansi3TypeMap (first node)))
         (stringify (second node)))
-       (ansi2FunctionArgs (third node))
+       (ansi3FunctionArgs (third node))
        (printf ") {")
        (newLine 1)
-       (ansi2Declarations (cdr (fourth node)) 1)
+       (ansi3Declarations (cdr (fourth node)) 1)
        (if (inList (toStr name) (noStackTrace))
        (then (printf ""))
        (else
@@ -238,7 +238,7 @@
           ;;(printf "\n  stackTracePush(\"%s\", \"%s\", %s, %d );\n" (stringify (getTag name (boxString "filename"))) (stringify name) (stringify (getTag name (boxString "line"))) 0)
           ))
 	   ;(display (second(fifth node)))
-       (ansi2Body (cdr (fifth node)) 1)
+       (ansi3Body (cdr (fifth node)) 1)
        (if (inList (toStr name) (noStackTrace))
          (then (printf ""))
          (else
@@ -246,37 +246,37 @@
             ))
        (printf "\n}\n")))))
 
-  (void ansi2ForwardDeclaration (list node) (declare)
+  (void ansi3ForwardDeclaration (list node) (declare)
    (body
     (if (isNil node) (then (return)) (else
        (printf
         "\n%s %s("
-        (stringify (ansi2TypeMap (first node)))
+        (stringify (ansi3TypeMap (first node)))
         (stringify (second node)))
-       (ansi2FunctionArgs (third node))
-       (ansi2displays ");")))))
+       (ansi3FunctionArgs (third node))
+       (ansi3displays ");")))))
 
-  (void ansi2ForwardDeclarations (list tree) (declare)
+  (void ansi3ForwardDeclarations (list tree) (declare)
    (body
     (if (isEmpty tree) (then (return)) (else
-       (ansi2ForwardDeclaration (car tree))
-       (ansi2ForwardDeclarations (cdr tree))))))
+       (ansi3ForwardDeclaration (car tree))
+       (ansi3ForwardDeclarations (cdr tree))))))
 
-  (void ansi2Functions (list tree) (declare)
+  (void ansi3Functions (list tree) (declare)
    (body
     (if (isEmpty tree) (then (return))(else 
-		(ansi2Function (car tree)) (ansi2Functions (cdr tree))))))
+		(ansi3Function (car tree)) (ansi3Functions (cdr tree))))))
 	  
 	  
-  (void ansi2Includes (list nodes) (declare)
+  (void ansi3Includes (list nodes) (declare)
    (body
     (printf
      "%s"
-     "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nconst char* getEnv(char* key){return getenv(key);}\n void panic(char* s){abort();exit(1);}\nint sub(int a, int b) { return a - b; }\nfloat mult(int a, int b) { return a * b; }\nint greaterthan(int a, int b) { return a > b; }\nfloat subf(float a, float b) { return a - b; }\nfloat multf(float a, float b) { return a * b; }\nint greaterthanf(float a, float b) { return a > b; }\nint equal(int a, int b) { return a == b; }\nint equalString(char* a, char* b) { return !strcmp(a,b); }\nint andBool(int a, int b) { return a == b;}\nint string_length(char* s) { return strlen(s);}\nchar* setSubString(char* target, int start,char *source){target[start]=source[0]; return target;}\nchar* sub_string(char* s, int start, int length) {\nchar* substr = calloc(length+1, 1);\nstrncpy(substr, s+start, length);\nreturn substr;\n}\n\n\n\nchar* stringConcatenate(char* a, char* b) {\nint len = strlen(a) + strlen(b) + 1;\nchar* target = calloc(len,1);\nstrncat(target, a, len);\nstrncat(target, b, len);\nreturn target;\n}\n\nchar* intToString(int a) {\nint len = 100;\nchar* target = calloc(len,1);\nsnprintf(target, 99, \"%d\", a);\nreturn target;\n}\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\nvoid * gc_malloc( unsigned int size ) {\nreturn malloc( size);\n}\n\nint* makeArray(int length) {\n    int * array = gc_malloc(length*sizeof(int));\n    return array;\n}\n\nint at(int* arr, int index) {\n  return arr[index];\n}\n\nvoid setAt(int* array, int index, int value) {\n    array[index] = value;\n}\n\nchar * read_file(char * filename) {\nchar * buffer = 0;\nlong length;\nFILE * f = fopen (filename, \"rb\");\n\nif (f)\n{\n  fseek (f, 0, SEEK_END);\n  length = ftell (f);\n  fseek (f, 0, SEEK_SET);\n  buffer = malloc (length);\n  if (buffer == NULL) {\n  printf(\"Malloc failed!\\n\");\n  exit(1);\n}\n  if (buffer)\n  {\n    fread (buffer, 1, length, f);\n  }\n  fclose (f);\n}\nreturn buffer;\n}\n\n\nvoid write_file (char * filename, char * data) {\nFILE *f = fopen(filename, \"w\");\nif (f == NULL)\n{\n    printf(\"Error opening file!\");\n    exit(1);\n}\n\nfprintf(f, \"%s\", data);\n\nfclose(f);\n}\n\nchar* getStringArray(int index, char** strs) {\nreturn strs[index];\n}\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\nint main( int argc, char *argv[] )  {\n  globalArgs = argv;\n  globalArgsCount = argc;\n  caller=calloc(1024,1);\n\n  return start();\n\n}\n\n")
-    (printf "%s" "char * character(int num) { char *string = malloc(2); if (!string) return 0; string[0] = num; string[1] = 0; return string; }") (printf "%s" "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n")
+     "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\nint* makeArray(int length) {\n    int * array = gc_malloc(length*sizeof(int));\n    return array;\n}\n\nint at(int* arr, int index) {\n  return arr[index];\n}\n\nvoid setAt(int* array, int index, int value) {\n    array[index] = value;\n}\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\nint main( int argc, char *argv[] )  {\n  globalArgs = argv;\n  globalArgsCount = argc;\n  caller=calloc(1024,1);\n\n  return start();\n\n}\n\n")
+     (printf "%s" "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n")
 ))
 
-  (void ansi2TypeDecl (list l) (declare)
+  (void ansi3TypeDecl (list l) (declare)
    (body
     (if (> (listLength l) 2)
       (then
@@ -284,25 +284,25 @@
        (printf
         "%s %s %s;\n"
         (stringify (second l))
-        (stringify (ansi2TypeMap (listLast l)))
+        (stringify (ansi3TypeMap (listLast l)))
         (stringify (first l))))
       (else
        (printIndent 1)
        (printf
         "%s %s;\n"
-        (stringify (ansi2TypeMap (listLast l)))
+        (stringify (ansi3TypeMap (listLast l)))
         (stringify (car l)))))))
 
-  (void ansi2StructComponents (list node) (declare)
+  (void ansi3StructComponents (list node) (declare)
    (body
     (if (isEmpty node)
       (then (return))
-      (else (ansi2TypeDecl (car node)) (ansi2StructComponents (cdr node))))))
+      (else (ansi3TypeDecl (car node)) (ansi3StructComponents (cdr node))))))
 
-  (void ansi2Struct (list node) (declare)
-   (body (ansi2StructComponents (cdr  node))))
+  (void ansi3Struct (list node) (declare)
+   (body (ansi3StructComponents (cdr  node))))
 
-  (box ansi2TypeMap (box aSym) (declare (list symMap nil))
+  (box ansi3TypeMap (box aSym) (declare (list symMap nil))
    (body
     (set
      symMap
@@ -314,7 +314,7 @@
       (then (return (cdr (assoc (stringify aSym) symMap))))
       (else (return aSym)))))
 
-  (box ansi2FuncMap (box aSym) (declare (list symMap nil))
+  (box ansi3FuncMap (box aSym) (declare (list symMap nil))
    (body
     (if (equalString "symbol" (boxType aSym))
       (then
@@ -345,27 +345,27 @@
          (else (return aSym))))
       (else (return aSym)))))
 
-  (void ansi2Type (list node) (declare)
+  (void ansi3Type (list node) (declare)
    (body
     (if (isList  (second node))
       (then
        (printf "\ntypedef struct %s {\n" (stringify (first  node)))
-       (ansi2Struct  (second node))
+       (ansi3Struct  (second node))
        (printf "\n} %s;\n" (stringify (first  node))))
-      (else (ansi2displays "typedef ") (ansi2TypeDecl  node)))
+      (else (ansi3displays "typedef ") (ansi3TypeDecl  node)))
     ))
 
-  (void ansi2Types (list nodes) (declare)
+  (void ansi3Types (list nodes) (declare)
    (body
     (if (isEmpty nodes)
       (then (return))
-      (else  (ansi2Type (car nodes)) (ansi2Types (cdr nodes))))))
+      (else  (ansi3Type (car nodes)) (ansi3Types (cdr nodes))))))
 
 
 
 
 
-(void ansi2Compile (string filename) (declare (list tree nil)(list replace nil))
+(void ansi3Compile (string filename) (declare (list tree nil)(list replace nil))
     (body
   
 
@@ -384,14 +384,14 @@
 
    (qlog "//Printing program\n")
 
-    (ansi2Includes (cdr (first tree)))
-    (ansi2Types (cdr (second tree)))
+    (ansi3Includes (cdr (first tree)))
+    (ansi3Types (cdr (second tree)))
 	;(display (cdr (second tree)))(exit 1)
-    (ansi2displays "Box* globalStackTrace = NULL;\n")
-    (ansi2displays
+    (ansi3displays "Box* globalStackTrace = NULL;\n")
+    (ansi3displays
      "\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n")
-    (ansi2ForwardDeclarations (cdr (third tree)))
-    (ansi2displays "\n\n//End forward declarations\n\n")
-    (ansi2Functions (cdr (third tree)))
-    (ansi2displays "\n")))
+    (ansi3ForwardDeclarations (cdr (third tree)))
+    (ansi3displays "\n\n//End forward declarations\n\n")
+    (ansi3Functions (cdr (third tree)))
+    (ansi3displays "\n")))
   ))
