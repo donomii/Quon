@@ -1,16 +1,20 @@
 rm -rf release
 mkdir release
-gcc -O3   bootstrap\quon.c -o release\quon
+gcc -O3   bootstrap\quon.c -o release\quon.exe
 release\quon --test
 
 
-quon examples\mandelbrot.qon  > mandelbrot.c 
+quon examples/mandelbrot.qon  > mandelbrot.c 
 gcc -O3   mandelbrot.c -o release\mandelbrot
 
 
 quon compiler.qon --perl > quon.pl
 mv quon.pl release/
 quon examples/mandelbrot.qon --perl > release/mandelbrot.pl
+
+
+quon compiler.qon --node  > release/quon.js
+quon examples/mandelbrot.qon --node > release/mandelbrot.js
 
 quon compiler.qon --java > test.java
 mkdir quonverter
