@@ -148,12 +148,12 @@
 
 (char** programArgs () (declare)
         (body
-         (return argv)
+         (return globalArgs)
 ))
 
 (int programArgsCount () (declare)
      (body
-      (return argc)
+      (return globalArgsCount)
 ))
 
 
@@ -166,7 +166,7 @@
 (char* character (int num)  (declare (string buffer nil) (string str NULL))
     	(body
          (set str (malloc 2))
-         (if (not str) 
+         (if (not (equal str 0)) 
              (then (return 0))
              (else)
          (setAt string 0 num)
@@ -183,10 +183,9 @@
        (printf "%s" s)
 ))
 
-(void* gc_malloc(uint size) (declare)
-	(body
-		(return (malloc size))
-))
+(bool nand (bool a bool b) (declare)
+	(body (return (passthrough "(!(a&&b))")))) 
+
 
 )
  (globals
