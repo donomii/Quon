@@ -68,14 +68,14 @@
 (char* sub_string (char* s int start int length) (declare (char* substr ""))
 	(body
 		(set substr  (calloc (add length 1) 1))
-		(strncpy substr  (add s start) length)
+		(strncpy substr  (passthrough s + start) length)
 		(return substr)
 ))
 
 (char* stringConcatenate (char* a char* b) (declare (int len 0)(char* target nil))
 	(body
-		(set len (add (add (strlen a) + (strlen b)) + 1))
-		(target (calloc len 1))
+		(set len (add (add (strlen a) (strlen b)) 1))
+		(set target (calloc len 1))
 		(strncat target  a  len)
 		(strncat target  b  len)
 		(return target)
@@ -135,7 +135,7 @@
 (void write_file (char* filename char* data)   (declare (char* buffer nil) (long length 0) (FILE* f nil))
       (body
               (set f (fopen filename "w"))
-              (if (isNil f)
+              (if (not (equal f NULL))
                   (then (printf "Error opening file!"))
                   (else (exit 1)))
               (fprintf f  "%s" data)
@@ -148,12 +148,12 @@
 
 (char** programArgs () (declare)
         (body
-         (return argv)
+         (return globalArgs)
 ))
 
 (int programArgsCount () (declare)
      (body
-      (return argc)
+      (return globalArgsCount)
 ))
 
 
@@ -166,7 +166,7 @@
 (char* character (int num)  (declare (string buffer nil) (string str NULL))
     	(body
          (set str (malloc 2))
-         (if (not str) 
+         (if (not (equal str 0)) 
              (then (return 0))
              (else)
          (setAt string 0 num)
@@ -176,18 +176,17 @@
 ))
 
 
-(void qlog (char* format ... ...)  (declare (va_list args nil))
-	(body
-         (va_start args format)
-         (vfprintf stderr format args)
-         (va_end args)
-))
 
 
 (void displays (string s) (declare)
       (body
        (printf "%s" s)
 ))
+
+(bool nand (bool a bool b) (declare)
+	(body (return (passthrough "(!(a&&b))")))) 
+
+
 )
  (globals
   (char* caller nil)

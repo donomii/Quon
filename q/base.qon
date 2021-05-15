@@ -52,7 +52,9 @@
   ))
 
 (void nop () (declare)
-(body (printf "")))
+	(body (printf "")))
+
+;(bool not (bool a) (declare) (body (return (nand a a))))
 
   (bool equalBox (box a box b) (declare)
    (body
