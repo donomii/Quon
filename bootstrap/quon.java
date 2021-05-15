@@ -2037,7 +2037,7 @@ Box includeTree = null;
 }
 
 
-//Building function buildProg from line: 74
+//Building function buildProg from line: 81
 
 public Box buildProg(Box includes,Box types,Box functions) {
   Box program = null;
@@ -2762,7 +2762,7 @@ public void ansiSubExpression(Box tree,Integer indent) {
             System.out.printf("%s->%s", stringify(codeof(second(childrenof(tree)))), stringify(codeof(third(childrenof(tree)))));
           } else {            
             if ( equalBox(boxSymbol("new"), thing)) {              
-              System.out.printf("malloc(sizeof(%s))", stringify(codeof(third(childrenof(tree)))));
+              System.out.printf("calloc(sizeof(%s))", stringify(codeof(third(childrenof(tree)))));
             } else {              
               System.out.printf("%s(", stringify(ansiFuncMap(codeof(car(childrenof(tree))))));              
               ansiRecurList(cdr(childrenof(tree)), indent);              
@@ -3007,8 +3007,8 @@ if (globalTrace)
 
 public void ansiIncludes(Box nodes) {
     
-  System.out.printf("%s", "\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nconst char* getEnv(char* key){return getenv(key);}\n void panic(char* s){abort();exit(1);}\nint sub(int a, int b) { return a - b; }\nfloat mult(int a, int b) { return a * b; }\nint greaterthan(int a, int b) { return a > b; }\nfloat subf(float a, float b) { return a - b; }\nfloat multf(float a, float b) { return a * b; }\nint greaterthanf(float a, float b) { return a > b; }\nint equal(int a, int b) { return a == b; }\nint equalString(char* a, char* b) { return !strcmp(a,b); }\nint andBool(int a, int b) { return a == b;}\nint string_length(char* s) { return strlen(s);}\nchar* setSubString(char* target, int start,char *source){target[start]=source[0]; return target;}\nchar* sub_string(char* s, int start, int length) {\nchar* substr = calloc(length+1, 1);\nstrncpy(substr, s+start, length);\nreturn substr;\n}\n\n\n\nchar* stringConcatenate(char* a, char* b) {\nint len = strlen(a) + strlen(b) + 1;\nchar* target = calloc(len,1);\nstrncat(target, a, len);\nstrncat(target, b, len);\nreturn target;\n}\n\nchar* intToString(int a) {\nint len = 100;\nchar* target = calloc(len,1);\nsnprintf(target, 99, \"%d\", a);\nreturn target;\n}\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\nvoid * gc_malloc( unsigned int size ) {\nreturn malloc( size);\n}\n\nint* makeArray(int length) {\n    int * array = gc_malloc(length*sizeof(int));\n    return array;\n}\n\nint at(int* arr, int index) {\n  return arr[index];\n}\n\nvoid setAt(int* array, int index, int value) {\n    array[index] = value;\n}\n\nchar * read_file(char * filename) {\nchar * buffer = 0;\nlong length;\nFILE * f = fopen (filename, \"rb\");\n\nif (f)\n{\n  fseek (f, 0, SEEK_END);\n  length = ftell (f);\n  fseek (f, 0, SEEK_SET);\n  buffer = malloc (length);\n  if (buffer == NULL) {\n  printf(\"Malloc failed!\\n\");\n  exit(1);\n}\n  if (buffer)\n  {\n    fread (buffer, 1, length, f);\n  }\n  fclose (f);\n}\nreturn buffer;\n}\n\n\nvoid write_file (char * filename, char * data) {\nFILE *f = fopen(filename, \"w\");\nif (f == NULL)\n{\n    printf(\"Error opening file!\");\n    exit(1);\n}\n\nfprintf(f, \"%s\", data);\n\nfclose(f);\n}\n\nchar* getStringArray(int index, char** strs) {\nreturn strs[index];\n}\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\nint main( int argc, char *argv[] )  {\n  globalArgs = argv;\n  globalArgsCount = argc;\n  caller=calloc(1024,1);\n\n  return start();\n\n}\n\n");  
-  System.out.printf("%s", "char * character(int num) { char *string = malloc(2); if (!string) return 0; string[0] = num; string[1] = 0; return string; }");  
+  System.out.printf("%s", "\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nconst char* getEnv(char* key){return getenv(key);}\n void panic(char* s){abort();exit(1);}\nint sub(int a, int b) { return a - b; }\nfloat mult(int a, int b) { return a * b; }\nint greaterthan(int a, int b) { return a > b; }\nfloat subf(float a, float b) { return a - b; }\nfloat multf(float a, float b) { return a * b; }\nint greaterthanf(float a, float b) { return a > b; }\nint equal(int a, int b) { return a == b; }\nint equalString(char* a, char* b) { return !strcmp(a,b); }\nint andBool(int a, int b) { return a == b;}\nint string_length(char* s) { return strlen(s);}\nchar* setSubString(char* target, int start,char *source){target[start]=source[0]; return target;}\nchar* sub_string(char* s, int start, int length) {\nchar* substr = calloc(length+1, 1);\nstrncpy(substr, s+start, length);\nreturn substr;\n}\n\n\n\nchar* stringConcatenate(char* a, char* b) {\nint len = strlen(a) + strlen(b) + 1;\nchar* target = calloc(len,1);\nstrncat(target, a, len);\nstrncat(target, b, len);\nreturn target;\n}\n\nchar* intToString(int a) {\nint len = 100;\nchar* target = calloc(len,1);\nsnprintf(target, 99, \"%d\", a);\nreturn target;\n}\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\nvoid * gc_malloc( unsigned int size ) {\nreturn calloc( size);\n}\n\nint* makeArray(int length) {\n    int * array = gc_malloc(length*sizeof(int));\n    return array;\n}\n\nint at(int* arr, int index) {\n  return arr[index];\n}\n\nvoid setAt(int* array, int index, int value) {\n    array[index] = value;\n}\n\nchar * read_file(char * filename) {\nchar * buffer = 0;\nlong length;\nFILE * f = fopen (filename, \"rb\");\n\nif (f)\n{\n  fseek (f, 0, SEEK_END);\n  length = ftell (f);\n  fseek (f, 0, SEEK_SET);\n  buffer = calloc (length+1);\n  if (buffer == NULL) {\n  printf(\"Malloc failed!\\n\");\n  exit(1);\n}\n  if (buffer)\n  {\n    fread (buffer, 1, length, f);\n  }\n  fclose (f);\n}\nreturn buffer;\n}\n\n\nvoid write_file (char * filename, char * data) {\nFILE *f = fopen(filename, \"w\");\nif (f == NULL)\n{\n    printf(\"Error opening file!\");\n    exit(1);\n}\n\nfprintf(f, \"%s\", data);\n\nfclose(f);\n}\n\nchar* getStringArray(int index, char** strs) {\nreturn strs[index];\n}\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\nint main( int argc, char *argv[] )  {\n  globalArgs = argv;\n  globalArgsCount = argc;\n  caller=calloc(1024,1);\n\n  return start();\n\n}\n\n");  
+  System.out.printf("%s", "char * character(int num) { char *string = calloc(2); if (!string) return 0; string[0] = num; string[1] = 0; return string; }");  
   System.out.printf("%s", "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }");
 if (globalTrace)
    System.out. printf("Leaving ansiIncludes\n");
@@ -3158,13 +3158,13 @@ if (globalTrace)
 }
 
 
-//Building function displays from line: 5
+//Building function ansi2displays from line: 5
 
-public void displays(String s) {
+public void ansi2displays(String s) {
     
   System.out.printf("%s", s);
 if (globalTrace)
-   System.out. printf("Leaving displays\n");
+   System.out. printf("Leaving ansi2displays\n");
 
 }
 
@@ -3180,12 +3180,12 @@ public void ansi2FunctionArgs(Box tree) {
       System.out.printf("...");
     } else {      
       display(ansi2TypeMap(first(tree)));      
-      displays(" ");      
+      ansi2displays(" ");      
       display(second(tree));
     }    
     if ( isNil(cddr(tree))) {
     } else {      
-      displays(", ");
+      ansi2displays(", ");
     }    
     ansi2FunctionArgs(cddr(tree));
   }
@@ -3205,7 +3205,7 @@ public void ansi2Expression(Box tree,Integer indent) {
       display(car(tree));      
       if ( equalBox(boxString("return"), car(tree))) {
       } else {        
-        displays("()");
+        ansi2displays("()");
       }
     } else {      
       thing = first(tree);      
@@ -3251,9 +3251,9 @@ public void ansi2RecurList(Box expr,Integer indent) {
   } else {    
     ansi2Expression(car(expr), indent);    
     if ( isNil(cdr(expr))) {      
-      displays("");
+      ansi2displays("");
     } else {      
-      displays(", ");      
+      ansi2displays(", ");      
       ansi2RecurList(cdr(expr), indent);
     }
   }
@@ -3268,15 +3268,15 @@ if (globalTrace)
 public void ansi2If(Box node,Integer indent) {
     
   newLine(indent);  
-  displays("if ( ");  
+  ansi2displays("if ( ");  
   ansi2Expression(second(node), 0);  
-  displays(") {");  
+  ansi2displays(") {");  
   ansi2Body(cdr(third(node)), add1(indent));  
   newLine(indent);  
-  displays("} else {");  
+  ansi2displays("} else {");  
   ansi2Body(cdr(fourth(node)), add1(indent));  
   newLine(indent);  
-  displays("}");
+  ansi2displays("}");
 if (globalTrace)
    System.out. printf("Leaving ansi2If\n");
 
@@ -3328,11 +3328,11 @@ public void ansi2Return(Box node,Integer indent) {
     
   newLine(indent);  
   if ( equal(listLength(node), 1)) {    
-    displays("return;");
+    ansi2displays("return;");
   } else {    
-    displays("return ");    
+    ansi2displays("return ");    
     ansi2Expression(cadr(node), indent);    
-    displays(";");
+    ansi2displays(";");
   }
 if (globalTrace)
    System.out. printf("Leaving ansi2Return\n");
@@ -3362,7 +3362,7 @@ public void ansi2Statement(Box node,Integer indent) {
       }
     }
   }  
-  displays(";\n");
+  ansi2displays(";\n");
 if (globalTrace)
    System.out. printf("Leaving ansi2Statement\n");
 
@@ -3463,7 +3463,7 @@ public void ansi2ForwardDeclaration(Box node) {
   } else {    
     System.out.printf("\n%s %s(", stringify(ansi2TypeMap(first(node))), stringify(second(node)));    
     ansi2FunctionArgs(third(node));    
-    displays(");");
+    ansi2displays(");");
   }
 if (globalTrace)
    System.out. printf("Leaving ansi2ForwardDeclaration\n");
@@ -3601,7 +3601,7 @@ public void ansi2Type(Box node) {
     ansi2Struct(second(node));    
     System.out.printf("\n} %s;\n", stringify(first(node)));
   } else {    
-    displays("typedef ");    
+    ansi2displays("typedef ");    
     ansi2TypeDecl(node);
   }
 if (globalTrace)
@@ -3642,14 +3642,509 @@ Box replace = null;
   qlog("//Printing program\n");  
   ansi2Includes(cdr(first(tree)));  
   ansi2Types(cdr(second(tree)));  
-  displays("Box* globalStackTrace = NULL;\n");  
-  displays("\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n");  
+  ansi2displays("Box* globalStackTrace = NULL;\n");  
+  ansi2displays("\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n");  
   ansi2ForwardDeclarations(cdr(third(tree)));  
-  displays("\n\n//End forward declarations\n\n");  
+  ansi2displays("\n\n//End forward declarations\n\n");  
   ansi2Functions(cdr(third(tree)));  
-  displays("\n");
+  ansi2displays("\n");
 if (globalTrace)
    System.out. printf("Leaving ansi2Compile\n");
+
+}
+
+
+//Building function ansi3displays from line: 5
+
+public void ansi3displays(String s) {
+    
+  System.out.printf("%s", s);
+if (globalTrace)
+   System.out. printf("Leaving ansi3displays\n");
+
+}
+
+
+//Building function ansi3FunctionArgs from line: 11
+
+public void ansi3FunctionArgs(Box tree) {
+    
+  if ( isEmpty(tree)) {    
+    return;
+  } else {    
+    if ( equalString(stringify(first(tree)), "...")) {      
+      System.out.printf("...");
+    } else {      
+      display(ansi3TypeMap(first(tree)));      
+      ansi3displays(" ");      
+      display(second(tree));
+    }    
+    if ( isNil(cddr(tree))) {
+    } else {      
+      ansi3displays(", ");
+    }    
+    ansi3FunctionArgs(cddr(tree));
+  }
+if (globalTrace)
+   System.out. printf("Leaving ansi3FunctionArgs\n");
+
+}
+
+
+//Building function ansi3Expression from line: 28
+
+public void ansi3Expression(Box tree,Integer indent) {
+  Box thing = null;
+  
+  if ( isList(tree)) {    
+    if ( equal(1, listLength(tree))) {      
+      display(car(tree));      
+      if ( equalBox(boxString("return"), car(tree))) {
+      } else {        
+        ansi3displays("()");
+      }
+    } else {      
+      thing = first(tree);      
+      if ( equalBox(boxSymbol("get-struct"), thing)) {        
+        System.out.printf("%s->%s", stringify(second(tree)), stringify(third(tree)));
+      } else {        
+        if ( equalBox(boxSymbol("new"), thing)) {          
+          System.out.printf("malloc(sizeof(%s))", stringify(third(tree)));
+        } else {          
+          if ( equalBox(boxSymbol("passthrough"), thing)) {            
+            System.out.printf("%s", stringify(second(tree)));
+          } else {            
+            if ( equalBox(boxSymbol("binop"), thing)) {              
+              System.out.printf("(");              
+              ansi3Expression(third(tree), indent);              
+              System.out.printf(" %s ", stringify(second(tree)));              
+              ansi3Expression(fourth(tree), indent);              
+              System.out.printf(")");
+            } else {              
+              System.out.printf("%s(", stringify(ansi3FuncMap(car(tree))));              
+              ansi3RecurList(cdr(tree), indent);              
+              System.out.printf(")");
+            }
+          }
+        }
+      }
+    }
+  } else {    
+    display(ansi3FuncMap(tree));
+  }
+if (globalTrace)
+   System.out. printf("Leaving ansi3Expression\n");
+
+}
+
+
+//Building function ansi3RecurList from line: 108
+
+public void ansi3RecurList(Box expr,Integer indent) {
+    
+  if ( isEmpty(expr)) {    
+    return;
+  } else {    
+    ansi3Expression(car(expr), indent);    
+    if ( isNil(cdr(expr))) {      
+      ansi3displays("");
+    } else {      
+      ansi3displays(", ");      
+      ansi3RecurList(cdr(expr), indent);
+    }
+  }
+if (globalTrace)
+   System.out. printf("Leaving ansi3RecurList\n");
+
+}
+
+
+//Building function ansi3If from line: 125
+
+public void ansi3If(Box node,Integer indent) {
+    
+  newLine(indent);  
+  ansi3displays("if ( ");  
+  ansi3Expression(second(node), 0);  
+  ansi3displays(") {");  
+  ansi3Body(cdr(third(node)), add1(indent));  
+  newLine(indent);  
+  ansi3displays("} else {");  
+  ansi3Body(cdr(fourth(node)), add1(indent));  
+  newLine(indent);  
+  ansi3displays("}");
+if (globalTrace)
+   System.out. printf("Leaving ansi3If\n");
+
+}
+
+
+//Building function ansi3SetStruct from line: 138
+
+public void ansi3SetStruct(Box node,Integer indent) {
+    
+  newLine(indent);  
+  System.out.printf("%s->%s = ", stringify(second(node)), stringify(third(node)));  
+  ansi3Expression(fourth(node), indent);
+if (globalTrace)
+   System.out. printf("Leaving ansi3SetStruct\n");
+
+}
+
+
+//Building function ansi3GetStruct from line: 147
+
+public void ansi3GetStruct(Box node,Integer indent) {
+    
+  newLine(indent);  
+  System.out.printf("%s->%s", stringify(first(node)), stringify(second(node)));
+if (globalTrace)
+   System.out. printf("Leaving ansi3GetStruct\n");
+
+}
+
+
+//Building function ansi3Set from line: 155
+
+public void ansi3Set(Box node,Integer indent) {
+    
+  newLine(indent);  
+  ansi3Expression(first(cdr(node)), indent);  
+  System.out.printf(" = ");  
+  ansi3Expression(third(node), indent);
+if (globalTrace)
+   System.out. printf("Leaving ansi3Set\n");
+
+}
+
+
+//Building function ansi3Return from line: 162
+
+public void ansi3Return(Box node,Integer indent) {
+    
+  newLine(indent);  
+  if ( equal(listLength(node), 1)) {    
+    ansi3displays("return;");
+  } else {    
+    ansi3displays("return ");    
+    ansi3Expression(cadr(node), indent);    
+    ansi3displays(";");
+  }
+if (globalTrace)
+   System.out. printf("Leaving ansi3Return\n");
+
+}
+
+
+//Building function ansi3Statement from line: 173
+
+public void ansi3Statement(Box node,Integer indent) {
+    
+  if ( equalBox(boxString("set"), first(node))) {    
+    ansi3Set(node, indent);
+  } else {    
+    if ( equalBox(boxString("set-struct"), first(node))) {      
+      ansi3SetStruct(node, indent);
+    } else {      
+      if ( equalBox(boxString("if"), first(node))) {        
+        ansi3If(node, indent);
+      } else {        
+        if ( equalBox(boxString("return"), first(node))) {          
+          ansi3Return(node, indent);
+        } else {          
+          newLine(indent);          
+          ansi3Expression(node, indent);
+        }
+      }
+    }
+  }  
+  ansi3displays(";\n");
+if (globalTrace)
+   System.out. printf("Leaving ansi3Statement\n");
+
+}
+
+
+//Building function ansi3Body from line: 191
+
+public void ansi3Body(Box tree,Integer indent) {
+  Box code = null;
+  
+  if ( isEmpty(tree)) {    
+    return;
+  } else {    
+    code = tree;    
+    if ( isNil(code)) {
+    } else {      
+      code = car(tree);      
+      System.out.printf("\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n", stringify(getTagFail(car(code), boxString("filename"), boxString("Unknown file (not provided by parser)"))), stringify(getTagFail(car(code), boxString("line"), boxString("Line missing"))));
+    }    
+    printIndent(indent);    
+    System.out.printf("%s", "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n");    
+    ansi3Statement(code, indent);    
+    ansi3Body(cdr(tree), indent);
+  }
+if (globalTrace)
+   System.out. printf("Leaving ansi3Body\n");
+
+}
+
+
+//Building function ansi3Declarations from line: 209
+
+public void ansi3Declarations(Box decls,Integer indent) {
+  Box decl = null;
+  
+  if ( isEmpty(decls)) {    
+    return;
+  } else {    
+    decl = car(decls);    
+    System.out.printf("%s %s = ", stringify(ansi3TypeMap(first(decl))), stringify(second(decl)));    
+    ansi3Expression(third(decl), indent);    
+    System.out.printf(";\n");    
+    ansi3Declarations(cdr(decls), indent);
+  }
+if (globalTrace)
+   System.out. printf("Leaving ansi3Declarations\n");
+
+}
+
+
+//Building function ansi3Function from line: 223
+
+public void ansi3Function(Box node) {
+  Box name = null;
+  
+  name = second(node);  
+  System.out.printf("\n\n//Building function %s from line: %s", stringify(name), stringify(getTag(name, boxString("line"))));  
+  newLine(0);  
+  if ( isNil(node)) {    
+    return;
+  } else {    
+    newLine(0);    
+    System.out.printf("%s %s(", stringify(ansi3TypeMap(first(node))), stringify(second(node)));    
+    ansi3FunctionArgs(third(node));    
+    System.out.printf(") {");    
+    newLine(1);    
+    ansi3Declarations(cdr(fourth(node)), 1);    
+    if ( inList(toStr(name), noStackTrace())) {      
+      System.out.printf("");
+    } else {      
+      System.out.printf("\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n", stringify(name), stringify(getTag(name, boxString("filename"))), stringify(getTag(name, boxString("line"))));
+    }    
+    if ( inList(toStr(name), noStackTrace())) {      
+      System.out.printf("");
+    } else {
+    }    
+    ansi3Body(cdr(fifth(node)), 1);    
+    if ( inList(toStr(name), noStackTrace())) {      
+      System.out.printf("");
+    } else {      
+      System.out.printf("\nif (globalTrace)\n    printf(\"Leaving %s\\n\");\n", stringify(name));
+    }    
+    System.out.printf("\n}\n");
+  }
+if (globalTrace)
+   System.out. printf("Leaving ansi3Function\n");
+
+}
+
+
+//Building function ansi3ForwardDeclaration from line: 260
+
+public void ansi3ForwardDeclaration(Box node) {
+    
+  if ( isNil(node)) {    
+    return;
+  } else {    
+    System.out.printf("\n%s %s(", stringify(ansi3TypeMap(first(node))), stringify(second(node)));    
+    ansi3FunctionArgs(third(node));    
+    ansi3displays(");");
+  }
+if (globalTrace)
+   System.out. printf("Leaving ansi3ForwardDeclaration\n");
+
+}
+
+
+//Building function ansi3ForwardDeclarations from line: 270
+
+public void ansi3ForwardDeclarations(Box tree) {
+    
+  if ( isEmpty(tree)) {    
+    return;
+  } else {    
+    ansi3ForwardDeclaration(car(tree));    
+    ansi3ForwardDeclarations(cdr(tree));
+  }
+if (globalTrace)
+   System.out. printf("Leaving ansi3ForwardDeclarations\n");
+
+}
+
+
+//Building function ansi3Functions from line: 276
+
+public void ansi3Functions(Box tree) {
+    
+  if ( isEmpty(tree)) {    
+    return;
+  } else {    
+    ansi3Function(car(tree));    
+    ansi3Functions(cdr(tree));
+  }
+if (globalTrace)
+   System.out. printf("Leaving ansi3Functions\n");
+
+}
+
+
+//Building function ansi3Includes from line: 282
+
+public void ansi3Includes(Box nodes) {
+    
+  System.out.printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\nint* makeArray(int length) {\n    int * array = gc_malloc(length*sizeof(int));\n    return array;\n}\n\nint at(int* arr, int index) {\n  return arr[index];\n}\n\nvoid setAt(int* array, int index, int value) {\n    array[index] = value;\n}\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\nint main( int argc, char *argv[] )  {\n  globalArgs = argv;\n  globalArgsCount = argc;\n  caller=calloc(1024,1);\n\n  return start();\n\n}\n\n");  
+  System.out.printf("%s", "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n");
+if (globalTrace)
+   System.out. printf("Leaving ansi3Includes\n");
+
+}
+
+
+//Building function ansi3TypeDecl from line: 290
+
+public void ansi3TypeDecl(Box l) {
+    
+  if ( greaterthan(listLength(l), 2)) {    
+    printIndent(1);    
+    System.out.printf("%s %s %s;\n", stringify(second(l)), stringify(ansi3TypeMap(listLast(l))), stringify(first(l)));
+  } else {    
+    printIndent(1);    
+    System.out.printf("%s %s;\n", stringify(ansi3TypeMap(listLast(l))), stringify(car(l)));
+  }
+if (globalTrace)
+   System.out. printf("Leaving ansi3TypeDecl\n");
+
+}
+
+
+//Building function ansi3StructComponents from line: 307
+
+public void ansi3StructComponents(Box node) {
+    
+  if ( isEmpty(node)) {    
+    return;
+  } else {    
+    ansi3TypeDecl(car(node));    
+    ansi3StructComponents(cdr(node));
+  }
+if (globalTrace)
+   System.out. printf("Leaving ansi3StructComponents\n");
+
+}
+
+
+//Building function ansi3Struct from line: 313
+
+public void ansi3Struct(Box node) {
+    
+  ansi3StructComponents(cdr(node));
+if (globalTrace)
+   System.out. printf("Leaving ansi3Struct\n");
+
+}
+
+
+//Building function ansi3TypeMap from line: 316
+
+public Box ansi3TypeMap(Box aSym) {
+  Box symMap = null;
+  
+  symMap = alistCons(boxSymbol("stringArray"), boxSymbol("char**"), alistCons(boxSymbol("string"), boxSymbol("char*"), null));  
+  if ( truthy(assoc(stringify(aSym), symMap))) {    
+    return(cdr(assoc(stringify(aSym), symMap)));
+  } else {    
+    return(aSym);
+  }
+}
+
+
+//Building function ansi3FuncMap from line: 328
+
+public Box ansi3FuncMap(Box aSym) {
+  Box symMap = null;
+  
+  if ( equalString("symbol", boxType(aSym))) {    
+    symMap = alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("sub_string"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("string_length"), alistCons(boxSymbol("nil"), boxSymbol("NULL"), null)))))));    
+    if ( truthy(assoc(stringify(aSym), symMap))) {      
+      return(cdr(assoc(stringify(aSym), symMap)));
+    } else {      
+      return(aSym);
+    }
+  } else {    
+    return(aSym);
+  }
+}
+
+
+//Building function ansi3Type from line: 359
+
+public void ansi3Type(Box node) {
+    
+  if ( isList(second(node))) {    
+    System.out.printf("\ntypedef struct %s {\n", stringify(first(node)));    
+    ansi3Struct(second(node));    
+    System.out.printf("\n} %s;\n", stringify(first(node)));
+  } else {    
+    ansi3displays("typedef ");    
+    ansi3TypeDecl(node);
+  }
+if (globalTrace)
+   System.out. printf("Leaving ansi3Type\n");
+
+}
+
+
+//Building function ansi3Types from line: 369
+
+public void ansi3Types(Box nodes) {
+    
+  if ( isEmpty(nodes)) {    
+    return;
+  } else {    
+    ansi3Type(car(nodes));    
+    ansi3Types(cdr(nodes));
+  }
+if (globalTrace)
+   System.out. printf("Leaving ansi3Types\n");
+
+}
+
+
+//Building function ansi3Compile from line: 379
+
+public void ansi3Compile(String filename) {
+  Box tree = null;
+Box replace = null;
+  
+  qlog("//Scanning file...%s\n", filename);  
+  tree = loadQuon(filename);  
+  qlog("//Building sexpr\n");  
+  tree = loadIncludes(tree);  
+  tree = macrowalk(tree);  
+  replace = cons(boxSymbol("fprintf"), cons(boxSymbol("stderr"), null));  
+  tree = macrolist(tree, stringConcatenate("q", "log"), replace);  
+  qlog("//Printing program\n");  
+  ansi3Includes(cdr(first(tree)));  
+  ansi3Types(cdr(second(tree)));  
+  ansi3displays("Box* globalStackTrace = NULL;\n");  
+  ansi3displays("\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n");  
+  ansi3ForwardDeclarations(cdr(third(tree)));  
+  ansi3displays("\n\n//End forward declarations\n\n");  
+  ansi3Functions(cdr(third(tree)));  
+  ansi3displays("\n");
+if (globalTrace)
+   System.out. printf("Leaving ansi3Compile\n");
 
 }
 
@@ -5816,6 +6311,7 @@ boolean runNode = false;
 boolean runLua = false;
 boolean runIma = false;
 boolean runAnsi2 = false;
+boolean runAnsi3 = false;
 boolean runTree = false;
   
   cmdLine = listReverse(argList(globalArgsCount, 0, globalArgs));  
@@ -5833,6 +6329,7 @@ boolean runTree = false;
   runLua = inList(boxString("--lua"), cmdLine);  
   runIma = inList(boxString("--ima"), cmdLine);  
   runAnsi2 = inList(boxString("--ansi2"), cmdLine);  
+  runAnsi3 = inList(boxString("--ansi3"), cmdLine);  
   globalTrace = inList(boxString("--trace"), cmdLine);  
   globalStepTrace = inList(boxString("--steptrace"), cmdLine);  
   if ( runTests) {    
@@ -5891,8 +6388,13 @@ boolean runTree = false;
                     ansi2Compile(unBoxString(filename));                    
                     System.out.printf("\n");
                   } else {                    
-                    ansiCompile(unBoxString(filename));                    
-                    System.out.printf("\n");
+                    if ( runAnsi3) {                      
+                      ansi3Compile(unBoxString(filename));                      
+                      System.out.printf("\n");
+                    } else {                      
+                      ansiCompile(unBoxString(filename));                      
+                      System.out.printf("\n");
+                    }
                   }
                 }
               }

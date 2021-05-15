@@ -3105,10 +3105,699 @@ caller = ":Unknown file:-1"
   end
 
 end
--- Chose function name displays
-function displays(s)
-print("caller: ", caller, "-> displays")
-caller = "displays:Unknown file:-1"
+-- Chose function name ansi3displays
+function ansi3displays(s)
+print("caller: ", caller, "-> ansi3displays")
+caller = "ansi3displays:Unknown file:-1"
+  printf("%s", s);
+
+end
+-- Chose function name ansi3FunctionArgs
+function ansi3FunctionArgs(tree)
+print("caller: ", caller, "-> ansi3FunctionArgs")
+caller = "ansi3FunctionArgs:Unknown file:-1"
+  if isEmpty(tree) then
+caller = ":Unknown file:-1"
+      return 
+
+  else
+caller = ":Unknown file:-1"
+      if equalString(stringify(first(tree)), "...") then
+caller = ":Unknown file:-1"
+          printf("...");
+
+      else
+caller = ":Unknown file:-1"
+          display(ansi3TypeMap(first(tree)));
+
+caller = ":Unknown file:-1"
+          ansi3displays(" ");
+
+caller = ":Unknown file:-1"
+          display(second(tree));
+
+      end
+
+caller = ":Unknown file:-1"
+      if isNil(cddr(tree)) then
+      else
+caller = ":Unknown file:-1"
+          ansi3displays(", ");
+
+      end
+
+caller = ":Unknown file:-1"
+      ansi3FunctionArgs(cddr(tree));
+
+  end
+
+end
+-- Chose function name ansi3Expression
+function ansi3Expression(tree,indent)
+print("caller: ", caller, "-> ansi3Expression")
+local thing =nil
+caller = "ansi3Expression:Unknown file:-1"
+  if isList(tree) then
+caller = ":Unknown file:-1"
+      if equal(1, listLength(tree)) then
+caller = ":Unknown file:-1"
+          display(car(tree));
+
+caller = ":Unknown file:-1"
+          if equalBox(boxString("return"), car(tree)) then
+          else
+caller = ":Unknown file:-1"
+              ansi3displays("()");
+
+          end
+
+      else
+caller = ":Unknown file:-1"
+          thing = first(tree)
+caller = ":Unknown file:-1"
+          if equalBox(boxSymbol("get-struct"), thing) then
+caller = ":Unknown file:-1"
+              printf("%s->%s", stringify(second(tree)), stringify(third(tree)));
+
+          else
+caller = ":Unknown file:-1"
+              if equalBox(boxSymbol("new"), thing) then
+caller = ":Unknown file:-1"
+                  printf("malloc(sizeof(%s))", stringify(third(tree)));
+
+              else
+caller = ":Unknown file:-1"
+                  if equalBox(boxSymbol("passthrough"), thing) then
+caller = ":Unknown file:-1"
+                      printf("%s", stringify(second(tree)));
+
+                  else
+caller = ":Unknown file:-1"
+                      if equalBox(boxSymbol("binop"), thing) then
+caller = ":Unknown file:-1"
+                          printf("(");
+
+caller = ":Unknown file:-1"
+                          ansi3Expression(third(tree), indent);
+
+caller = ":Unknown file:-1"
+                          printf(" %s ", stringify(second(tree)));
+
+caller = ":Unknown file:-1"
+                          ansi3Expression(fourth(tree), indent);
+
+caller = ":Unknown file:-1"
+                          printf(")");
+
+                      else
+caller = ":Unknown file:-1"
+                          printf("%s(", stringify(ansi3FuncMap(car(tree))));
+
+caller = ":Unknown file:-1"
+                          ansi3RecurList(cdr(tree), indent);
+
+caller = ":Unknown file:-1"
+                          printf(")");
+
+                      end
+
+                  end
+
+              end
+
+          end
+
+      end
+
+  else
+caller = ":Unknown file:-1"
+      display(ansi3FuncMap(tree));
+
+  end
+
+end
+-- Chose function name ansi3RecurList
+function ansi3RecurList(expr,indent)
+print("caller: ", caller, "-> ansi3RecurList")
+caller = "ansi3RecurList:Unknown file:-1"
+  if isEmpty(expr) then
+caller = ":Unknown file:-1"
+      return 
+
+  else
+caller = ":Unknown file:-1"
+      ansi3Expression(car(expr), indent);
+
+caller = ":Unknown file:-1"
+      if isNil(cdr(expr)) then
+caller = ":Unknown file:-1"
+          ansi3displays("");
+
+      else
+caller = ":Unknown file:-1"
+          ansi3displays(", ");
+
+caller = ":Unknown file:-1"
+          ansi3RecurList(cdr(expr), indent);
+
+      end
+
+  end
+
+end
+-- Chose function name ansi3If
+function ansi3If(node,indent)
+print("caller: ", caller, "-> ansi3If")
+caller = "ansi3If:Unknown file:-1"
+  newLine(indent);
+
+caller = "ansi3If:Unknown file:-1"
+  ansi3displays("if ( ");
+
+caller = "ansi3If:Unknown file:-1"
+  ansi3Expression(second(node), 0);
+
+caller = "ansi3If:Unknown file:-1"
+  ansi3displays(") {");
+
+caller = "ansi3If:Unknown file:-1"
+  ansi3Body(cdr(third(node)), add1(indent));
+
+caller = "ansi3If:Unknown file:-1"
+  newLine(indent);
+
+caller = "ansi3If:Unknown file:-1"
+  ansi3displays("} else {");
+
+caller = "ansi3If:Unknown file:-1"
+  ansi3Body(cdr(fourth(node)), add1(indent));
+
+caller = "ansi3If:Unknown file:-1"
+  newLine(indent);
+
+caller = "ansi3If:Unknown file:-1"
+  ansi3displays("}");
+
+end
+-- Chose function name ansi3SetStruct
+function ansi3SetStruct(node,indent)
+print("caller: ", caller, "-> ansi3SetStruct")
+caller = "ansi3SetStruct:Unknown file:-1"
+  newLine(indent);
+
+caller = "ansi3SetStruct:Unknown file:-1"
+  printf("%s->%s = ", stringify(second(node)), stringify(third(node)));
+
+caller = "ansi3SetStruct:Unknown file:-1"
+  ansi3Expression(fourth(node), indent);
+
+end
+-- Chose function name ansi3GetStruct
+function ansi3GetStruct(node,indent)
+print("caller: ", caller, "-> ansi3GetStruct")
+caller = "ansi3GetStruct:Unknown file:-1"
+  newLine(indent);
+
+caller = "ansi3GetStruct:Unknown file:-1"
+  printf("%s->%s", stringify(first(node)), stringify(second(node)));
+
+end
+-- Chose function name ansi3Set
+function ansi3Set(node,indent)
+print("caller: ", caller, "-> ansi3Set")
+caller = "ansi3Set:Unknown file:-1"
+  newLine(indent);
+
+caller = "ansi3Set:Unknown file:-1"
+  ansi3Expression(first(cdr(node)), indent);
+
+caller = "ansi3Set:Unknown file:-1"
+  printf(" = ");
+
+caller = "ansi3Set:Unknown file:-1"
+  ansi3Expression(third(node), indent);
+
+end
+-- Chose function name ansi3Return
+function ansi3Return(node,indent)
+print("caller: ", caller, "-> ansi3Return")
+caller = "ansi3Return:Unknown file:-1"
+  newLine(indent);
+
+caller = "ansi3Return:Unknown file:-1"
+  if equal(listLength(node), 1) then
+caller = ":Unknown file:-1"
+      ansi3displays("return;");
+
+  else
+caller = ":Unknown file:-1"
+      ansi3displays("return ");
+
+caller = ":Unknown file:-1"
+      ansi3Expression(cadr(node), indent);
+
+caller = ":Unknown file:-1"
+      ansi3displays(";");
+
+  end
+
+end
+-- Chose function name ansi3Statement
+function ansi3Statement(node,indent)
+print("caller: ", caller, "-> ansi3Statement")
+caller = "ansi3Statement:Unknown file:-1"
+  if equalBox(boxString("set"), first(node)) then
+caller = ":Unknown file:-1"
+      ansi3Set(node, indent);
+
+  else
+caller = ":Unknown file:-1"
+      if equalBox(boxString("set-struct"), first(node)) then
+caller = ":Unknown file:-1"
+          ansi3SetStruct(node, indent);
+
+      else
+caller = ":Unknown file:-1"
+          if equalBox(boxString("if"), first(node)) then
+caller = ":Unknown file:-1"
+              ansi3If(node, indent);
+
+          else
+caller = ":Unknown file:-1"
+              if equalBox(boxString("return"), first(node)) then
+caller = ":Unknown file:-1"
+                  ansi3Return(node, indent);
+
+              else
+caller = ":Unknown file:-1"
+                  newLine(indent);
+
+caller = ":Unknown file:-1"
+                  ansi3Expression(node, indent);
+
+              end
+
+          end
+
+      end
+
+  end
+
+caller = "ansi3Statement:Unknown file:-1"
+  ansi3displays(";\n");
+
+end
+-- Chose function name ansi3Body
+function ansi3Body(tree,indent)
+print("caller: ", caller, "-> ansi3Body")
+local code =nil
+caller = "ansi3Body:Unknown file:-1"
+  if isEmpty(tree) then
+caller = ":Unknown file:-1"
+      return 
+
+  else
+caller = ":Unknown file:-1"
+      code = tree
+caller = ":Unknown file:-1"
+      if isNil(code) then
+      else
+caller = ":Unknown file:-1"
+          code = car(tree)
+caller = ":Unknown file:-1"
+          printf("\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n", stringify(getTagFail(car(code), boxString("filename"), boxString("Unknown file (not provided by parser)"))), stringify(getTagFail(car(code), boxString("line"), boxString("Line missing"))));
+
+      end
+
+caller = ":Unknown file:-1"
+      printIndent(indent);
+
+caller = ":Unknown file:-1"
+      printf("%s", "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n");
+
+caller = ":Unknown file:-1"
+      ansi3Statement(code, indent);
+
+caller = ":Unknown file:-1"
+      ansi3Body(cdr(tree), indent);
+
+  end
+
+end
+-- Chose function name ansi3Declarations
+function ansi3Declarations(decls,indent)
+print("caller: ", caller, "-> ansi3Declarations")
+local decl =nil
+caller = "ansi3Declarations:Unknown file:-1"
+  if isEmpty(decls) then
+caller = ":Unknown file:-1"
+      return 
+
+  else
+caller = ":Unknown file:-1"
+      decl = car(decls)
+caller = ":Unknown file:-1"
+      printf("%s %s = ", stringify(ansi3TypeMap(first(decl))), stringify(second(decl)));
+
+caller = ":Unknown file:-1"
+      ansi3Expression(third(decl), indent);
+
+caller = ":Unknown file:-1"
+      printf(";\n");
+
+caller = ":Unknown file:-1"
+      ansi3Declarations(cdr(decls), indent);
+
+  end
+
+end
+-- Chose function name ansi3Function
+function ansi3Function(node)
+print("caller: ", caller, "-> ansi3Function")
+local name =nil
+caller = "ansi3Function:Unknown file:-1"
+  name = second(node)
+caller = "ansi3Function:Unknown file:-1"
+  printf("\n\n//Building function %s from line: %s", stringify(name), stringify(getTag(name, boxString("line"))));
+
+caller = "ansi3Function:Unknown file:-1"
+  newLine(0);
+
+caller = "ansi3Function:Unknown file:-1"
+  if isNil(node) then
+caller = ":Unknown file:-1"
+      return 
+
+  else
+caller = ":Unknown file:-1"
+      newLine(0);
+
+caller = ":Unknown file:-1"
+      printf("%s %s(", stringify(ansi3TypeMap(first(node))), stringify(second(node)));
+
+caller = ":Unknown file:-1"
+      ansi3FunctionArgs(third(node));
+
+caller = ":Unknown file:-1"
+      printf(") {");
+
+caller = ":Unknown file:-1"
+      newLine(1);
+
+caller = ":Unknown file:-1"
+      ansi3Declarations(cdr(fourth(node)), 1);
+
+caller = ":Unknown file:-1"
+      if inList(toStr(name), noStackTrace()) then
+caller = ":Unknown file:-1"
+          printf("");
+
+      else
+caller = ":Unknown file:-1"
+          printf("\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n", stringify(name), stringify(getTag(name, boxString("filename"))), stringify(getTag(name, boxString("line"))));
+
+      end
+
+caller = ":Unknown file:-1"
+      if inList(toStr(name), noStackTrace()) then
+caller = ":Unknown file:-1"
+          printf("");
+
+      else
+      end
+
+caller = ":Unknown file:-1"
+      ansi3Body(cdr(fifth(node)), 1);
+
+caller = ":Unknown file:-1"
+      if inList(toStr(name), noStackTrace()) then
+caller = ":Unknown file:-1"
+          printf("");
+
+      else
+caller = ":Unknown file:-1"
+          printf("\nif (globalTrace)\n    printf(\"Leaving %s\\n\");\n", stringify(name));
+
+      end
+
+caller = ":Unknown file:-1"
+      printf("\n}\n");
+
+  end
+
+end
+-- Chose function name ansi3ForwardDeclaration
+function ansi3ForwardDeclaration(node)
+print("caller: ", caller, "-> ansi3ForwardDeclaration")
+caller = "ansi3ForwardDeclaration:Unknown file:-1"
+  if isNil(node) then
+caller = ":Unknown file:-1"
+      return 
+
+  else
+caller = ":Unknown file:-1"
+      printf("\n%s %s(", stringify(ansi3TypeMap(first(node))), stringify(second(node)));
+
+caller = ":Unknown file:-1"
+      ansi3FunctionArgs(third(node));
+
+caller = ":Unknown file:-1"
+      ansi3displays(");");
+
+  end
+
+end
+-- Chose function name ansi3ForwardDeclarations
+function ansi3ForwardDeclarations(tree)
+print("caller: ", caller, "-> ansi3ForwardDeclarations")
+caller = "ansi3ForwardDeclarations:Unknown file:-1"
+  if isEmpty(tree) then
+caller = ":Unknown file:-1"
+      return 
+
+  else
+caller = ":Unknown file:-1"
+      ansi3ForwardDeclaration(car(tree));
+
+caller = ":Unknown file:-1"
+      ansi3ForwardDeclarations(cdr(tree));
+
+  end
+
+end
+-- Chose function name ansi3Functions
+function ansi3Functions(tree)
+print("caller: ", caller, "-> ansi3Functions")
+caller = "ansi3Functions:Unknown file:-1"
+  if isEmpty(tree) then
+caller = ":Unknown file:-1"
+      return 
+
+  else
+caller = ":Unknown file:-1"
+      ansi3Function(car(tree));
+
+caller = ":Unknown file:-1"
+      ansi3Functions(cdr(tree));
+
+  end
+
+end
+-- Chose function name ansi3Includes
+function ansi3Includes(nodes)
+print("caller: ", caller, "-> ansi3Includes")
+caller = "ansi3Includes:Unknown file:-1"
+  printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\nint* makeArray(int length) {\n    int * array = gc_malloc(length*sizeof(int));\n    return array;\n}\n\nint at(int* arr, int index) {\n  return arr[index];\n}\n\nvoid setAt(int* array, int index, int value) {\n    array[index] = value;\n}\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\nint main( int argc, char *argv[] )  {\n  globalArgs = argv;\n  globalArgsCount = argc;\n  caller=calloc(1024,1);\n\n  return start();\n\n}\n\n");
+
+caller = "ansi3Includes:Unknown file:-1"
+  printf("%s", "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n");
+
+end
+-- Chose function name ansi3TypeDecl
+function ansi3TypeDecl(l)
+print("caller: ", caller, "-> ansi3TypeDecl")
+caller = "ansi3TypeDecl:Unknown file:-1"
+  if greaterthan(listLength(l), 2) then
+caller = ":Unknown file:-1"
+      printIndent(1);
+
+caller = ":Unknown file:-1"
+      printf("%s %s %s;\n", stringify(second(l)), stringify(ansi3TypeMap(listLast(l))), stringify(first(l)));
+
+  else
+caller = ":Unknown file:-1"
+      printIndent(1);
+
+caller = ":Unknown file:-1"
+      printf("%s %s;\n", stringify(ansi3TypeMap(listLast(l))), stringify(car(l)));
+
+  end
+
+end
+-- Chose function name ansi3StructComponents
+function ansi3StructComponents(node)
+print("caller: ", caller, "-> ansi3StructComponents")
+caller = "ansi3StructComponents:Unknown file:-1"
+  if isEmpty(node) then
+caller = ":Unknown file:-1"
+      return 
+
+  else
+caller = ":Unknown file:-1"
+      ansi3TypeDecl(car(node));
+
+caller = ":Unknown file:-1"
+      ansi3StructComponents(cdr(node));
+
+  end
+
+end
+-- Chose function name ansi3Struct
+function ansi3Struct(node)
+print("caller: ", caller, "-> ansi3Struct")
+caller = "ansi3Struct:Unknown file:-1"
+  ansi3StructComponents(cdr(node));
+
+end
+-- Chose function name ansi3TypeMap
+function ansi3TypeMap(aSym)
+print("caller: ", caller, "-> ansi3TypeMap")
+local symMap =nil
+caller = "ansi3TypeMap:Unknown file:-1"
+  symMap = alistCons(boxSymbol("stringArray"), boxSymbol("char**"), alistCons(boxSymbol("string"), boxSymbol("char*"), nil))
+caller = "ansi3TypeMap:Unknown file:-1"
+  if truthy(assoc(stringify(aSym), symMap)) then
+caller = ":Unknown file:-1"
+      return cdr(assoc(stringify(aSym), symMap))
+
+  else
+caller = ":Unknown file:-1"
+      return aSym
+
+  end
+
+end
+-- Chose function name ansi3FuncMap
+function ansi3FuncMap(aSym)
+print("caller: ", caller, "-> ansi3FuncMap")
+local symMap =nil
+caller = "ansi3FuncMap:Unknown file:-1"
+  if equalString("symbol", boxType(aSym)) then
+caller = ":Unknown file:-1"
+      symMap = alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("luaSubstring"), boxSymbol("sub_string"), alistCons(boxSymbol("luaReadFile"), boxSymbol("read_file"), alistCons(boxSymbol("luaWriteFile"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string.len"), boxSymbol("string_length"), alistCons(boxSymbol("nil"), boxSymbol("NULL"), nil)))))))
+caller = ":Unknown file:-1"
+      if truthy(assoc(stringify(aSym), symMap)) then
+caller = ":Unknown file:-1"
+          return cdr(assoc(stringify(aSym), symMap))
+
+      else
+caller = ":Unknown file:-1"
+          return aSym
+
+      end
+
+  else
+caller = ":Unknown file:-1"
+      return aSym
+
+  end
+
+end
+-- Chose function name ansi3Type
+function ansi3Type(node)
+print("caller: ", caller, "-> ansi3Type")
+caller = "ansi3Type:Unknown file:-1"
+  if isList(second(node)) then
+caller = ":Unknown file:-1"
+      printf("\ntypedef struct %s {\n", stringify(first(node)));
+
+caller = ":Unknown file:-1"
+      ansi3Struct(second(node));
+
+caller = ":Unknown file:-1"
+      printf("\n} %s;\n", stringify(first(node)));
+
+  else
+caller = ":Unknown file:-1"
+      ansi3displays("typedef ");
+
+caller = ":Unknown file:-1"
+      ansi3TypeDecl(node);
+
+  end
+
+end
+-- Chose function name ansi3Types
+function ansi3Types(nodes)
+print("caller: ", caller, "-> ansi3Types")
+caller = "ansi3Types:Unknown file:-1"
+  if isEmpty(nodes) then
+caller = ":Unknown file:-1"
+      return 
+
+  else
+caller = ":Unknown file:-1"
+      ansi3Type(car(nodes));
+
+caller = ":Unknown file:-1"
+      ansi3Types(cdr(nodes));
+
+  end
+
+end
+-- Chose function name ansi3Compile
+function ansi3Compile(filename)
+print("caller: ", caller, "-> ansi3Compile")
+local tree =nil
+local replace =nil
+caller = "ansi3Compile:Unknown file:-1"
+  qlog("//Scanning file...%s\n", filename);
+
+caller = "ansi3Compile:Unknown file:-1"
+  tree = loadQuon(filename)
+caller = "ansi3Compile:Unknown file:-1"
+  qlog("//Building sexpr\n");
+
+caller = "ansi3Compile:Unknown file:-1"
+  tree = loadIncludes(tree)
+caller = "ansi3Compile:Unknown file:-1"
+  tree = macrowalk(tree)
+caller = "ansi3Compile:Unknown file:-1"
+  replace = cons(boxSymbol("fprintf"), cons(boxSymbol("stderr"), nil))
+caller = "ansi3Compile:Unknown file:-1"
+  tree = macrolist(tree, stringConcatenate("q", "log"), replace)
+caller = "ansi3Compile:Unknown file:-1"
+  qlog("//Printing program\n");
+
+caller = "ansi3Compile:Unknown file:-1"
+  ansi3Includes(cdr(first(tree)));
+
+caller = "ansi3Compile:Unknown file:-1"
+  ansi3Types(cdr(second(tree)));
+
+caller = "ansi3Compile:Unknown file:-1"
+  ansi3displays("Box* globalStackTrace = NULL;\n");
+
+caller = "ansi3Compile:Unknown file:-1"
+  ansi3displays("\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n");
+
+caller = "ansi3Compile:Unknown file:-1"
+  ansi3ForwardDeclarations(cdr(third(tree)));
+
+caller = "ansi3Compile:Unknown file:-1"
+  ansi3displays("\n\n//End forward declarations\n\n");
+
+caller = "ansi3Compile:Unknown file:-1"
+  ansi3Functions(cdr(third(tree)));
+
+caller = "ansi3Compile:Unknown file:-1"
+  ansi3displays("\n");
+
+end
+-- Chose function name ansi2displays
+function ansi2displays(s)
+print("caller: ", caller, "-> ansi2displays")
+caller = "ansi2displays:Unknown file:-1"
   printf("%s", s);
 
 end
@@ -3131,7 +3820,7 @@ caller = ":Unknown file:-1"
           display(ansi2TypeMap(first(tree)));
 
 caller = ":Unknown file:-1"
-          displays(" ");
+          ansi2displays(" ");
 
 caller = ":Unknown file:-1"
           display(second(tree));
@@ -3142,7 +3831,7 @@ caller = ":Unknown file:-1"
       if isNil(cddr(tree)) then
       else
 caller = ":Unknown file:-1"
-          displays(", ");
+          ansi2displays(", ");
 
       end
 
@@ -3167,7 +3856,7 @@ caller = ":Unknown file:-1"
           if equalBox(boxString("return"), car(tree)) then
           else
 caller = ":Unknown file:-1"
-              displays("()");
+              ansi2displays("()");
 
           end
 
@@ -3251,11 +3940,11 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
       if isNil(cdr(expr)) then
 caller = ":Unknown file:-1"
-          displays("");
+          ansi2displays("");
 
       else
 caller = ":Unknown file:-1"
-          displays(", ");
+          ansi2displays(", ");
 
 caller = ":Unknown file:-1"
           ansi2RecurList(cdr(expr), indent);
@@ -3272,13 +3961,13 @@ caller = "ansi2If:Unknown file:-1"
   newLine(indent);
 
 caller = "ansi2If:Unknown file:-1"
-  displays("if ( ");
+  ansi2displays("if ( ");
 
 caller = "ansi2If:Unknown file:-1"
   ansi2Expression(second(node), 0);
 
 caller = "ansi2If:Unknown file:-1"
-  displays(") {");
+  ansi2displays(") {");
 
 caller = "ansi2If:Unknown file:-1"
   ansi2Body(cdr(third(node)), add1(indent));
@@ -3287,7 +3976,7 @@ caller = "ansi2If:Unknown file:-1"
   newLine(indent);
 
 caller = "ansi2If:Unknown file:-1"
-  displays("} else {");
+  ansi2displays("} else {");
 
 caller = "ansi2If:Unknown file:-1"
   ansi2Body(cdr(fourth(node)), add1(indent));
@@ -3296,7 +3985,7 @@ caller = "ansi2If:Unknown file:-1"
   newLine(indent);
 
 caller = "ansi2If:Unknown file:-1"
-  displays("}");
+  ansi2displays("}");
 
 end
 -- Chose function name ansi2SetStruct
@@ -3347,17 +4036,17 @@ caller = "ansi2Return:Unknown file:-1"
 caller = "ansi2Return:Unknown file:-1"
   if equal(listLength(node), 1) then
 caller = ":Unknown file:-1"
-      displays("return;");
+      ansi2displays("return;");
 
   else
 caller = ":Unknown file:-1"
-      displays("return ");
+      ansi2displays("return ");
 
 caller = ":Unknown file:-1"
       ansi2Expression(cadr(node), indent);
 
 caller = ":Unknown file:-1"
-      displays(";");
+      ansi2displays(";");
 
   end
 
@@ -3404,7 +4093,7 @@ caller = ":Unknown file:-1"
   end
 
 caller = "ansi2Statement:Unknown file:-1"
-  displays(";\n");
+  ansi2displays(";\n");
 
 end
 -- Chose function name ansi2Body
@@ -3562,7 +4251,7 @@ caller = ":Unknown file:-1"
       ansi2FunctionArgs(third(node));
 
 caller = ":Unknown file:-1"
-      displays(");");
+      ansi2displays(");");
 
   end
 
@@ -3722,7 +4411,7 @@ caller = ":Unknown file:-1"
 
   else
 caller = ":Unknown file:-1"
-      displays("typedef ");
+      ansi2displays("typedef ");
 
 caller = ":Unknown file:-1"
       ansi2TypeDecl(node);
@@ -3779,22 +4468,22 @@ caller = "ansi2Compile:Unknown file:-1"
   ansi2Types(cdr(second(tree)));
 
 caller = "ansi2Compile:Unknown file:-1"
-  displays("Box* globalStackTrace = NULL;\n");
+  ansi2displays("Box* globalStackTrace = NULL;\n");
 
 caller = "ansi2Compile:Unknown file:-1"
-  displays("\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n");
+  ansi2displays("\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n");
 
 caller = "ansi2Compile:Unknown file:-1"
   ansi2ForwardDeclarations(cdr(third(tree)));
 
 caller = "ansi2Compile:Unknown file:-1"
-  displays("\n\n//End forward declarations\n\n");
+  ansi2displays("\n\n//End forward declarations\n\n");
 
 caller = "ansi2Compile:Unknown file:-1"
   ansi2Functions(cdr(third(tree)));
 
 caller = "ansi2Compile:Unknown file:-1"
-  displays("\n");
+  ansi2displays("\n");
 
 end
 -- Chose function name ansiFunctionArgs
@@ -3948,7 +4637,7 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
                       if equalBox(boxSymbol("new"), thing) then
 caller = ":Unknown file:-1"
-                          printf("malloc(sizeof(%s))", stringify(codeof(third(childrenof(tree)))));
+                          printf("calloc(sizeof(%s))", stringify(codeof(third(childrenof(tree)))));
 
                       else
 caller = ":Unknown file:-1"
@@ -4297,10 +4986,10 @@ end
 function ansiIncludes(nodes)
 print("caller: ", caller, "-> ansiIncludes")
 caller = "ansiIncludes:Unknown file:-1"
-  printf("%s", "\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nconst char* getEnv(char* key){return getenv(key);}\n void panic(char* s){abort();exit(1);}\nint sub(int a, int b) { return a - b; }\nfloat mult(int a, int b) { return a * b; }\nint greaterthan(int a, int b) { return a > b; }\nfloat subf(float a, float b) { return a - b; }\nfloat multf(float a, float b) { return a * b; }\nint greaterthanf(float a, float b) { return a > b; }\nint equal(int a, int b) { return a == b; }\nint equalString(char* a, char* b) { return !strcmp(a,b); }\nint andBool(int a, int b) { return a == b;}\nint string_length(char* s) { return strlen(s);}\nchar* setSubString(char* target, int start,char *source){target[start]=source[0]; return target;}\nchar* sub_string(char* s, int start, int length) {\nchar* substr = calloc(length+1, 1);\nstrncpy(substr, s+start, length);\nreturn substr;\n}\n\n\n\nchar* stringConcatenate(char* a, char* b) {\nint len = strlen(a) + strlen(b) + 1;\nchar* target = calloc(len,1);\nstrncat(target, a, len);\nstrncat(target, b, len);\nreturn target;\n}\n\nchar* intToString(int a) {\nint len = 100;\nchar* target = calloc(len,1);\nsnprintf(target, 99, \"%d\", a);\nreturn target;\n}\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\nvoid * gc_malloc( unsigned int size ) {\nreturn malloc( size);\n}\n\nint* makeArray(int length) {\n    int * array = gc_malloc(length*sizeof(int));\n    return array;\n}\n\nint at(int* arr, int index) {\n  return arr[index];\n}\n\nvoid setAt(int* array, int index, int value) {\n    array[index] = value;\n}\n\nchar * read_file(char * filename) {\nchar * buffer = 0;\nlong length;\nFILE * f = fopen (filename, \"rb\");\n\nif (f)\n{\n  fseek (f, 0, SEEK_END);\n  length = ftell (f);\n  fseek (f, 0, SEEK_SET);\n  buffer = malloc (length);\n  if (buffer == NULL) {\n  printf(\"Malloc failed!\\n\");\n  exit(1);\n}\n  if (buffer)\n  {\n    fread (buffer, 1, length, f);\n  }\n  fclose (f);\n}\nreturn buffer;\n}\n\n\nvoid write_file (char * filename, char * data) {\nFILE *f = fopen(filename, \"w\");\nif (f == NULL)\n{\n    printf(\"Error opening file!\");\n    exit(1);\n}\n\nfprintf(f, \"%s\", data);\n\nfclose(f);\n}\n\nchar* getStringArray(int index, char** strs) {\nreturn strs[index];\n}\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\nint main( int argc, char *argv[] )  {\n  globalArgs = argv;\n  globalArgsCount = argc;\n  caller=calloc(1024,1);\n\n  return start();\n\n}\n\n");
+  printf("%s", "\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nconst char* getEnv(char* key){return getenv(key);}\n void panic(char* s){abort();exit(1);}\nint sub(int a, int b) { return a - b; }\nfloat mult(int a, int b) { return a * b; }\nint greaterthan(int a, int b) { return a > b; }\nfloat subf(float a, float b) { return a - b; }\nfloat multf(float a, float b) { return a * b; }\nint greaterthanf(float a, float b) { return a > b; }\nint equal(int a, int b) { return a == b; }\nint equalString(char* a, char* b) { return !strcmp(a,b); }\nint andBool(int a, int b) { return a == b;}\nint string_length(char* s) { return strlen(s);}\nchar* setSubString(char* target, int start,char *source){target[start]=source[0]; return target;}\nchar* sub_string(char* s, int start, int length) {\nchar* substr = calloc(length+1, 1);\nstrncpy(substr, s+start, length);\nreturn substr;\n}\n\n\n\nchar* stringConcatenate(char* a, char* b) {\nint len = strlen(a) + strlen(b) + 1;\nchar* target = calloc(len,1);\nstrncat(target, a, len);\nstrncat(target, b, len);\nreturn target;\n}\n\nchar* intToString(int a) {\nint len = 100;\nchar* target = calloc(len,1);\nsnprintf(target, 99, \"%d\", a);\nreturn target;\n}\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\nvoid * gc_malloc( unsigned int size ) {\nreturn calloc( size);\n}\n\nint* makeArray(int length) {\n    int * array = gc_malloc(length*sizeof(int));\n    return array;\n}\n\nint at(int* arr, int index) {\n  return arr[index];\n}\n\nvoid setAt(int* array, int index, int value) {\n    array[index] = value;\n}\n\nchar * read_file(char * filename) {\nchar * buffer = 0;\nlong length;\nFILE * f = fopen (filename, \"rb\");\n\nif (f)\n{\n  fseek (f, 0, SEEK_END);\n  length = ftell (f);\n  fseek (f, 0, SEEK_SET);\n  buffer = calloc (length+1);\n  if (buffer == NULL) {\n  printf(\"Malloc failed!\\n\");\n  exit(1);\n}\n  if (buffer)\n  {\n    fread (buffer, 1, length, f);\n  }\n  fclose (f);\n}\nreturn buffer;\n}\n\n\nvoid write_file (char * filename, char * data) {\nFILE *f = fopen(filename, \"w\");\nif (f == NULL)\n{\n    printf(\"Error opening file!\");\n    exit(1);\n}\n\nfprintf(f, \"%s\", data);\n\nfclose(f);\n}\n\nchar* getStringArray(int index, char** strs) {\nreturn strs[index];\n}\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\nint main( int argc, char *argv[] )  {\n  globalArgs = argv;\n  globalArgsCount = argc;\n  caller=calloc(1024,1);\n\n  return start();\n\n}\n\n");
 
 caller = "ansiIncludes:Unknown file:-1"
-  printf("%s", "char * character(int num) { char *string = malloc(2); if (!string) return 0; string[0] = num; string[1] = 0; return string; }");
+  printf("%s", "char * character(int num) { char *string = calloc(2); if (!string) return 0; string[0] = num; string[1] = 0; return string; }");
 
 caller = "ansiIncludes:Unknown file:-1"
   printf("%s", "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }");
@@ -7988,6 +8677,7 @@ local runNode =false
 local runLua =false
 local runIma =false
 local runAnsi2 =false
+local runAnsi3 =false
 local runTree =false
 caller = "start:Unknown file:-1"
   cmdLine = listReverse(argList(globalArgsCount, 0, globalArgs))
@@ -8018,6 +8708,8 @@ caller = "start:Unknown file:-1"
   runIma = inList(boxString("--ima"), cmdLine)
 caller = "start:Unknown file:-1"
   runAnsi2 = inList(boxString("--ansi2"), cmdLine)
+caller = "start:Unknown file:-1"
+  runAnsi3 = inList(boxString("--ansi3"), cmdLine)
 caller = "start:Unknown file:-1"
   globalTrace = inList(boxString("--trace"), cmdLine)
 caller = "start:Unknown file:-1"
@@ -8164,10 +8856,21 @@ caller = ":Unknown file:-1"
 
                                   else
 caller = ":Unknown file:-1"
-                                      ansiCompile(unBoxString(filename));
+                                      if runAnsi3 then
+caller = ":Unknown file:-1"
+                                          ansi3Compile(unBoxString(filename));
 
 caller = ":Unknown file:-1"
-                                      printf("\n");
+                                          printf("\n");
+
+                                      else
+caller = ":Unknown file:-1"
+                                          ansiCompile(unBoxString(filename));
+
+caller = ":Unknown file:-1"
+                                          printf("\n");
+
+                                      end
 
                                   end
 
