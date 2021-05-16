@@ -54,7 +54,6 @@
 (void nop () (declare)
 	(body (printf "")))
 
-;(bool not (bool a) (declare) (body (return (nand a a))))
 
   (bool equalBox (box a box b) (declare)
    (body
@@ -352,18 +351,16 @@
 
 
   ; Return command line args.  FIXME rename
-    (list
-   argList
-   (int count int pos stringArray args)
-   (declare)
+    (list argList
+   (int count int pos stringArray args) (declare)
    (body
     (if (> count pos)
       (then
-       (return
-        (cons
-         (boxString (getStringArray pos args))
-         (argList count (add1 pos) args))))
+       (return (cons
+         		(boxString (getStringArray pos args))
+         		(argList count (add1 pos) args))))
       (else (return nil)))))
+
   (void tron  () (declare) (body (set globalTrace true)))
   (void troff () (declare) (body (set globalTrace false)))
   (void stron  () (declare) (body (set globalStepTrace true)))

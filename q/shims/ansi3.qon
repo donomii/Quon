@@ -144,7 +144,7 @@
 	
 (string getStringArray (int index char** strs) (declare)
        (body
-        (return (at strs index))))
+        (return (passthrough "strs[index]"))))
 
 (char** programArgs () (declare)
         (body
@@ -160,6 +160,8 @@
 (int main (int argc char** argv )  (declare)
 	(body
          (set caller (calloc 1024 1))
+	 (set globalArgs argv)
+	 (set globalArgsCount argc)
          (return (start argc argv))
 ))
 
@@ -186,8 +188,11 @@
 (bool nand (bool a bool b) (declare)
 	(body (return (passthrough "(!(a&&b))")))) 
 
-
+;FIXME move this to base after all outputs have a NAND function
+(bool not (bool a) (declare) (body (return (nand a a))))
 )
+
+
  (globals
   (char* caller nil)
   (bool globalTrace  false)

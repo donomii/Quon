@@ -272,7 +272,7 @@
    (body
     (printf
      "%s"
-     "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nvoid setAt(int* array, int index, int value) {\n    array[index] = value;\n}\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\n")
+     "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\n")
      (printf "%s" "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n")
 ))
 
@@ -306,9 +306,7 @@
    (body
     (set
      symMap
-     (alistCons
-      (boxSymbol "stringArray")
-      (boxSymbol "char**")
+     (alistCons (boxSymbol "stringArray") (boxSymbol "char**")
       (alistCons (boxSymbol "string") (boxSymbol "char*") nil)))
     (if (truthy (assoc (stringify aSym) symMap))
       (then (return (cdr (assoc (stringify aSym) symMap))))
@@ -375,6 +373,7 @@
 	(set tree (loadQuon filename))
    	(qlog "//Building sexpr\n")
     
+  (set tree (buildProg (cons (boxString "q/shims/ansi3.qon") (getIncludes tree)) (getTypes tree) (getFunctions tree))) ;FIXME check includes are recursive
 	(set tree (loadIncludes tree))
 	(set tree (macrowalk tree))
         (set replace (symbolList "fprintf" "stderr"))
