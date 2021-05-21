@@ -1,6 +1,6 @@
 #!/bin/bash
 mkdir build
-./quon compiler.qon > working/quon.c
+./build/quon compiler.qon --ansi3 > working/quon.c
 rm build/quon_new
 gcc -O2 -flto   working/quon.c -Wl,-stack_size,4000000 -o build/quon_new
 build/quon_new --test

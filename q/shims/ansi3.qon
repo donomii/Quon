@@ -134,13 +134,12 @@
              (else
               (fseek f 0 SEEK_END)
               (set length (ftell f))
+		(qlog "File has length %ld\n" length)
               (fseek f 0 SEEK_SET)
-              (set buffer (malloc length))
+              (set buffer (calloc (add 1 length) 1))
               
               (if (ansi3IsNil buffer)
-                  (then
-                   (printf "Malloc failed!\n")
-                   (exit 1))
+                  (then (panic "Malloc failed!\n"))
                   (else (fread buffer 1 length f)))
               (fclose f)
               ))
@@ -152,10 +151,11 @@
       (body
               (set f (fopen filename "w"))
               (if (ansi3IsNil f)
-                  (then (exit 1))
-                  (then (printf "Error opening file!")))
+                  (then (panic "Error opening file!"))
+                  (else 
               (fprintf f  "%s" data)
               (fclose f)
+		))
  ))
 	
 (string getStringArray (int index char** strs) (declare)
