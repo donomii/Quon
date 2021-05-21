@@ -2772,11 +2772,158 @@ caller = "test9:Unknown file:-1"
 caller = "test9:Unknown file:-1"
   if equal(answer, 17) then
 caller = ":Unknown file:-1"
-      printf("9.  pass arithmetic works\n");
+      printf("9.1  pass sub works\n");
 
   else
 caller = ":Unknown file:-1"
-      printf("9.  fail arithmetic\n");
+      printf("9.1  fail sub\n");
+
+  end
+
+caller = "test9:Unknown file:-1"
+  answer = add(2, 3)
+caller = "test9:Unknown file:-1"
+  if equal(answer, 5) then
+caller = ":Unknown file:-1"
+      printf("9.2  pass add works\n");
+
+  else
+caller = ":Unknown file:-1"
+      printf("9.2  fail add\n");
+
+  end
+
+caller = "test9:Unknown file:-1"
+  answer = mult(2, 3)
+caller = "test9:Unknown file:-1"
+  if equal(answer, 6) then
+caller = ":Unknown file:-1"
+      printf("9.3  pass mult works\n");
+
+  else
+caller = ":Unknown file:-1"
+      printf("9.3  fail mult\n");
+
+  end
+
+caller = "test9:Unknown file:-1"
+  if greaterthan(2, 1) then
+caller = ":Unknown file:-1"
+      printf("9.4  pass greaterthan works\n");
+
+  else
+caller = ":Unknown file:-1"
+      printf("9.4  fail greaterthan\n");
+
+  end
+
+caller = "test9:Unknown file:-1"
+  if equal(1, 1) then
+caller = ":Unknown file:-1"
+      printf("9.5  pass integer equal works\n");
+
+  else
+caller = ":Unknown file:-1"
+      printf("9.5  fail integer equal\n");
+
+  end
+
+caller = "test9:Unknown file:-1"
+  if equalString("hello", "hello") then
+caller = ":Unknown file:-1"
+      printf("9.6  pass string equal works\n");
+
+  else
+caller = ":Unknown file:-1"
+      printf("9.6  fail string equal\n");
+
+  end
+
+caller = "test9:Unknown file:-1"
+  if equalString("hello", "world") then
+caller = ":Unknown file:-1"
+      printf("9.7  fail string equal\n");
+
+  else
+caller = ":Unknown file:-1"
+      printf("9.7  pass string equal\n");
+
+  end
+
+caller = "test9:Unknown file:-1"
+  if andBool(false, false) then
+caller = ":Unknown file:-1"
+      printf("9.8  fail andBool\n");
+
+  else
+caller = ":Unknown file:-1"
+      printf("9.8  pass andBool works\n");
+
+  end
+
+caller = "test9:Unknown file:-1"
+  if andBool(true, true) then
+caller = ":Unknown file:-1"
+      printf("9.9  pass andBool works\n");
+
+  else
+caller = ":Unknown file:-1"
+      printf("9.9  fail andBool\n");
+
+  end
+
+caller = "test9:Unknown file:-1"
+  if andBool(true, false) then
+caller = ":Unknown file:-1"
+      printf("9.10  fail andBool\n");
+
+  else
+caller = ":Unknown file:-1"
+      printf("9.10  pass andBool works\n");
+
+  end
+
+caller = "test9:Unknown file:-1"
+  if equalString("hello", "hello") then
+caller = ":Unknown file:-1"
+      printf("9.11  pass string equal\n");
+
+  else
+caller = ":Unknown file:-1"
+      printf("9.11  fail string equal\n");
+
+  end
+
+caller = "test9:Unknown file:-1"
+  if equalString("!", character(33)) then
+caller = ":Unknown file:-1"
+      printf("9.12  pass character\n");
+
+  else
+caller = ":Unknown file:-1"
+      printf("9.12  fail character\n");
+
+  end
+
+caller = "test9:Unknown file:-1"
+  if equalString("33", intToString(33)) then
+caller = ":Unknown file:-1"
+      printf("9.13  pass intToString\n");
+
+  else
+caller = ":Unknown file:-1"
+      printf("9.13  fail intToString\n");
+
+  end
+
+caller = "test9:Unknown file:-1"
+  if equalString("llo", sub_string("hello", 2, 3)) then
+caller = ":Unknown file:-1"
+      printf("9.14  pass sub_string\n");
+
+  else
+caller = ":Unknown file:-1"
+      printf("9.14  fail sub_string: %s\n", sub_string("hello", 2, 3));
 
   end
 
@@ -3607,7 +3754,7 @@ end
 function ansi3Includes(nodes)
 print("caller: ", caller, "-> ansi3Includes")
 caller = "ansi3Includes:Unknown file:-1"
-  printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nvoid setAt(int* array, int index, int value) {\n    array[index] = value;\n}\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\nint main( int argc, char *argv[] )  {\n  globalArgs = argv;\n  globalArgsCount = argc;\n  caller=calloc(1024,1);\n\n  return start();\n\n}\n\n");
+  printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\n");
 
 caller = "ansi3Includes:Unknown file:-1"
   printf("%s", "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n");
@@ -3759,7 +3906,18 @@ caller = "ansi3Compile:Unknown file:-1"
   qlog("//Building sexpr\n");
 
 caller = "ansi3Compile:Unknown file:-1"
+  qlog("Loading shim ansi3\n");
+
+caller = "ansi3Compile:Unknown file:-1"
+  tree = buildProg(cons(boxString("q/shims/ansi3.qon"), getIncludes(tree)), getTypes(tree), getFunctions(tree))
+caller = "ansi3Compile:Unknown file:-1"
+  qlog("Loading all includes\n");
+
+caller = "ansi3Compile:Unknown file:-1"
   tree = loadIncludes(tree)
+caller = "ansi3Compile:Unknown file:-1"
+  qlog("Applying macros\n");
+
 caller = "ansi3Compile:Unknown file:-1"
   tree = macrowalk(tree)
 caller = "ansi3Compile:Unknown file:-1"
@@ -3792,6 +3950,9 @@ caller = "ansi3Compile:Unknown file:-1"
 
 caller = "ansi3Compile:Unknown file:-1"
   ansi3displays("\n");
+
+caller = "ansi3Compile:Unknown file:-1"
+  qlog("//Done printing program\n");
 
 end
 -- Chose function name ansi2displays
@@ -4296,13 +4457,16 @@ end
 function ansi2Includes(nodes)
 print("caller: ", caller, "-> ansi2Includes")
 caller = "ansi2Includes:Unknown file:-1"
-  printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nconst char* getEnv(char* key){return getenv(key);}\n void panic(char* s){abort();exit(1);}\nint sub(int a, int b) { return a - b; }\nfloat mult(int a, int b) { return a * b; }\nint greaterthan(int a, int b) { return a > b; }\nfloat subf(float a, float b) { return a - b; }\nfloat multf(float a, float b) { return a * b; }\nint greaterthanf(float a, float b) { return a > b; }\nint equal(int a, int b) { return a == b; }\nint equalString(char* a, char* b) { return !strcmp(a,b); }\nint andBool(int a, int b) { return a == b;}\nint string_length(char* s) { return strlen(s);}\nchar* setSubString(char* target, int start,char *source){target[start]=source[0]; return target;}\nchar* sub_string(char* s, int start, int length) {\nchar* substr = calloc(length+1, 1);\nstrncpy(substr, s+start, length);\nreturn substr;\n}\n\n\n\nchar* stringConcatenate(char* a, char* b) {\nint len = strlen(a) + strlen(b) + 1;\nchar* target = calloc(len,1);\nstrncat(target, a, len);\nstrncat(target, b, len);\nreturn target;\n}\n\nchar* intToString(int a) {\nint len = 100;\nchar* target = calloc(len,1);\nsnprintf(target, 99, \"%d\", a);\nreturn target;\n}\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\nvoid * gc_malloc( unsigned int size ) {\nreturn malloc( size);\n}\n\nint* makeArray(int length) {\n    int * array = gc_malloc(length*sizeof(int));\n    return array;\n}\n\nint at(int* arr, int index) {\n  return arr[index];\n}\n\nvoid setAt(int* array, int index, int value) {\n    array[index] = value;\n}\n\nchar * read_file(char * filename) {\nchar * buffer = 0;\nlong length;\nFILE * f = fopen (filename, \"rb\");\n\nif (f)\n{\n  fseek (f, 0, SEEK_END);\n  length = ftell (f);\n  fseek (f, 0, SEEK_SET);\n  buffer = malloc (length);\n  if (buffer == NULL) {\n  printf(\"Malloc failed!\\n\");\n  exit(1);\n}\n  if (buffer)\n  {\n    fread (buffer, 1, length, f);\n  }\n  fclose (f);\n}\nreturn buffer;\n}\n\n\nvoid write_file (char * filename, char * data) {\nFILE *f = fopen(filename, \"w\");\nif (f == NULL)\n{\n    printf(\"Error opening file!\");\n    exit(1);\n}\n\nfprintf(f, \"%s\", data);\n\nfclose(f);\n}\n\nchar* getStringArray(int index, char** strs) {\nreturn strs[index];\n}\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\nint main( int argc, char *argv[] )  {\n  globalArgs = argv;\n  globalArgsCount = argc;\n  caller=calloc(1024,1);\n\n  return start();\n\n}\n\n");
+  printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nconst char* getEnv(char* key){return getenv(key);}\n void panic(char* s){abort();exit(1);}\nint sub(int a, int b) { return a - b; }\nfloat mult(int a, int b) { return a * b; }\nint greaterthan(int a, int b) { return a > b; }\nfloat subf(float a, float b) { return a - b; }\nfloat multf(float a, float b) { return a * b; }\nint greaterthanf(float a, float b) { return a > b; }\nint equal(int a, int b) { return a == b; }\nint equalString(char* a, char* b) { return !strcmp(a,b); }\nint andBool(int a, int b) { return a && b;}\nint string_length(char* s) { return strlen(s);}\nchar* setSubString(char* target, int start,char *source){target[start]=source[0]; return target;}\nchar* sub_string(char* s, int start, int length) {\nchar* substr = calloc(length+1, 1);\nstrncpy(substr, s+start, length);\nreturn substr;\n}\n\n\n\nchar* stringConcatenate(char* a, char* b) {\nint len = strlen(a) + strlen(b) + 1;\nchar* target = calloc(len,1);\nstrncat(target, a, len);\nstrncat(target, b, len);\nreturn target;\n}\n\nchar* intToString(int a) {\nint len = 100;\nchar* target = calloc(len,1);\nsnprintf(target, 99, \"%d\", a);\nreturn target;\n}\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\nvoid * gc_malloc( unsigned int size ) {\nreturn malloc( size);\n}\n\nint* makeArray(int length) {\n    int * array = gc_malloc(length*sizeof(int));\n    return array;\n}\n\nint at(int* arr, int index) {\n  return arr[index];\n}\n\nvoid setAt(int* array, int index, int value) {\n    array[index] = value;\n}\n\nchar * read_file(char * filename) {\nchar * buffer = 0;\nlong length;\nFILE * f = fopen (filename, \"rb\");\n\nif (f)\n{\n  fseek (f, 0, SEEK_END);\n  length = ftell (f);\n  fseek (f, 0, SEEK_SET);\n  buffer = malloc (length);\n  if (buffer == NULL) {\n  printf(\"Malloc failed!\\n\");\n  exit(1);\n}\n  if (buffer)\n  {\n    fread (buffer, 1, length, f);\n  }\n  fclose (f);\n}\nreturn buffer;\n}\n\n\nvoid write_file (char * filename, char * data) {\nFILE *f = fopen(filename, \"w\");\nif (f == NULL)\n{\n    printf(\"Error opening file!\");\n    exit(1);\n}\n\nfprintf(f, \"%s\", data);\n\nfclose(f);\n}\n\nchar* getStringArray(int index, char** strs) {\nreturn strs[index];\n}\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\nint main( int argc, char *argv[] )  {\n  globalArgs = argv;\n  globalArgsCount = argc;\n  caller=calloc(1024,1);\n\n  return start();\n\n}\n\n");
 
 caller = "ansi2Includes:Unknown file:-1"
   printf("%s", "char * character(int num) { char *string = malloc(2); if (!string) return 0; string[0] = num; string[1] = 0; return string; }");
 
 caller = "ansi2Includes:Unknown file:-1"
-  printf("%s", "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n");
+  printf("%s", "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n\n");
+
+caller = "ansi2Includes:Unknown file:-1"
+  printf("%s", "bool nand(bool a, bool b) { return !(a&&b); }\n//End include block\n");
 
 end
 -- Chose function name ansi2TypeDecl
@@ -4986,13 +5150,16 @@ end
 function ansiIncludes(nodes)
 print("caller: ", caller, "-> ansiIncludes")
 caller = "ansiIncludes:Unknown file:-1"
-  printf("%s", "\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nconst char* getEnv(char* key){return getenv(key);}\n void panic(char* s){abort();exit(1);}\nint sub(int a, int b) { return a - b; }\nfloat mult(int a, int b) { return a * b; }\nint greaterthan(int a, int b) { return a > b; }\nfloat subf(float a, float b) { return a - b; }\nfloat multf(float a, float b) { return a * b; }\nint greaterthanf(float a, float b) { return a > b; }\nint equal(int a, int b) { return a == b; }\nint equalString(char* a, char* b) { return !strcmp(a,b); }\nint andBool(int a, int b) { return a == b;}\nint string_length(char* s) { return strlen(s);}\nchar* setSubString(char* target, int start,char *source){target[start]=source[0]; return target;}\nchar* sub_string(char* s, int start, int length) {\nchar* substr = calloc(length+1, 1);\nstrncpy(substr, s+start, length);\nreturn substr;\n}\n\n\n\nchar* stringConcatenate(char* a, char* b) {\nint len = strlen(a) + strlen(b) + 1;\nchar* target = calloc(len,1);\nstrncat(target, a, len);\nstrncat(target, b, len);\nreturn target;\n}\n\nchar* intToString(int a) {\nint len = 100;\nchar* target = calloc(len,1);\nsnprintf(target, 99, \"%d\", a);\nreturn target;\n}\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\nvoid * gc_malloc( unsigned int size ) {\nreturn malloc(size);\n}\n\nint* makeArray(int length) {\n    int * array = gc_malloc(length*sizeof(int));\n    return array;\n}\n\nint at(int* arr, int index) {\n  return arr[index];\n}\n\nvoid setAt(int* array, int index, int value) {\n    array[index] = value;\n}\n\nchar * read_file(char * filename) {\nchar * buffer = 0;\nlong length;\nFILE * f = fopen (filename, \"rb\");\n\nif (f)\n{\n  fseek (f, 0, SEEK_END);\n  length = ftell (f);\n  fseek (f, 0, SEEK_SET);\n  buffer = calloc (length+1,1);\n  if (buffer == NULL) {\n  printf(\"Malloc failed!\\n\");\n  exit(1);\n}\n  if (buffer)\n  {\n    fread (buffer, 1, length, f);\n  }\n  fclose (f);\n}\nreturn buffer;\n}\n\n\nvoid write_file (char * filename, char * data) {\nFILE *f = fopen(filename, \"w\");\nif (f == NULL)\n{\n    printf(\"Error opening file!\");\n    exit(1);\n}\n\nfprintf(f, \"%s\", data);\n\nfclose(f);\n}\n\nchar* getStringArray(int index, char** strs) {\nreturn strs[index];\n}\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\nint main( int argc, char *argv[] )  {\n  globalArgs = argv;\n  globalArgsCount = argc;\n  caller=calloc(1024,1);\n\n  return start();\n\n}\n\n");
+  printf("%s", "\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nconst char* getEnv(char* key){return getenv(key);}\n void panic(char* s){abort();exit(1);}\nint not(int a){return !a;}\nint sub(int a, int b) { return a - b; }\nfloat mult(int a, int b) { return a * b; }\nint greaterthan(int a, int b) { return a > b; }\nfloat subf(float a, float b) { return a - b; }\nfloat multf(float a, float b) { return a * b; }\nint greaterthanf(float a, float b) { return a > b; }\nint equal(int a, int b) { return a == b; }\nint equalString(char* a, char* b) { return !strcmp(a,b); }\nint andBool(int a, int b) { return a && b;}\nint string_length(char* s) { return strlen(s);}\nchar* setSubString(char* target, int start,char *source){target[start]=source[0]; return target;}\nchar* sub_string(char* s, int start, int length) {\nchar* substr = calloc(length+1, 1);\nstrncpy(substr, s+start, length);\nreturn substr;\n}\n\n\n\nchar* stringConcatenate(char* a, char* b) {\nint len = strlen(a) + strlen(b) + 1;\nchar* target = calloc(len,1);\nstrncat(target, a, len);\nstrncat(target, b, len);\nreturn target;\n}\n\nchar* intToString(int a) {\nint len = 100;\nchar* target = calloc(len,1);\nsnprintf(target, 99, \"%d\", a);\nreturn target;\n}\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\nvoid * gc_malloc( unsigned int size ) {\nreturn malloc(size);\n}\n\nint* makeArray(int length) {\n    int * array = gc_malloc(length*sizeof(int));\n    return array;\n}\n\nint at(int* arr, int index) {\n  return arr[index];\n}\n\nvoid setAt(int* array, int index, int value) {\n    array[index] = value;\n}\n\nchar * read_file(char * filename) {\nchar * buffer = 0;\nlong length;\nFILE * f = fopen (filename, \"rb\");\n\nif (f)\n{\n  fseek (f, 0, SEEK_END);\n  length = ftell (f);\n  fseek (f, 0, SEEK_SET);\n  buffer = calloc (length+1,1);\n  if (buffer == NULL) {\n  printf(\"Malloc failed!\\n\");\n  exit(1);\n}\n  if (buffer)\n  {\n    fread (buffer, 1, length, f);\n  }\n  fclose (f);\n}\nreturn buffer;\n}\n\n\nvoid write_file (char * filename, char * data) {\nFILE *f = fopen(filename, \"w\");\nif (f == NULL)\n{\n    printf(\"Error opening file!\");\n    exit(1);\n}\n\nfprintf(f, \"%s\", data);\n\nfclose(f);\n}\n\nchar* getStringArray(int index, char** strs) {\nreturn strs[index];\n}\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\nint main( int argc, char *argv[] )  {\n  globalArgs = argv;\n  globalArgsCount = argc;\n  caller=calloc(1024,1);\n\n  return start();\n\n}\n\n");
 
 caller = "ansiIncludes:Unknown file:-1"
   printf("%s", "char * character(int num) { char *string = malloc(2); if (!string) return 0; string[0] = num; string[1] = 0; return string; }");
 
 caller = "ansiIncludes:Unknown file:-1"
   printf("%s", "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }");
+
+caller = "ansiIncludes:Unknown file:-1"
+  printf("%s", "bool nand(bool a, bool b) { return !(a&&b); }\n//End include block\n");
 
 end
 -- Chose function name ansiTypeDecl
@@ -6379,7 +6546,7 @@ function assoc(searchTerm,l)
 print("caller: ", caller, "-> assoc")
 local elem =nil
 caller = "assoc:Unknown file:-1"
-  assertType("list", l, 91, "q/lists.qon");
+  assertType("list", l, 88, "q/lists.qon");
 
 caller = "assoc:Unknown file:-1"
   if isEmpty(l) then
@@ -6390,7 +6557,7 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
       elem = car(l)
 caller = ":Unknown file:-1"
-      assertType("list", elem, 97, "q/lists.qon");
+      assertType("list", elem, 94, "q/lists.qon");
 
 caller = ":Unknown file:-1"
       if isEmpty(elem) then
@@ -6952,529 +7119,6 @@ caller = ":Unknown file:-1"
   end
 
 end
--- Chose function name add
-function add(a,b)
-print("caller: ", caller, "-> add")
-caller = "add:Unknown file:-1"
-  return sub(a, sub(0, b))
-
-end
--- Chose function name addf
-function addf(a,b)
-print("caller: ", caller, "-> addf")
-caller = "addf:Unknown file:-1"
-  return subf(a, subf(0, b))
-
-end
--- Chose function name sub1
-function sub1(a)
-print("caller: ", caller, "-> sub1")
-caller = "sub1:Unknown file:-1"
-  return sub(a, 1)
-
-end
--- Chose function name add1
-function add1(a)
-print("caller: ", caller, "-> add1")
-caller = "add1:Unknown file:-1"
-  return add(a, 1)
-
-end
--- Chose function name clone
-function clone(b)
-print("caller: ", caller, "-> clone")
-local newb =nil
-caller = "clone:Unknown file:-1"
-  newb = makeBox()
-caller = "clone:Unknown file:-1"
-newb.typ = b.typ
-caller = "clone:Unknown file:-1"
-newb.tag = b.tag
-caller = "clone:Unknown file:-1"
-newb.lis = b.lis
-caller = "clone:Unknown file:-1"
-newb.str = b.str
-caller = "clone:Unknown file:-1"
-newb.i = b.i
-caller = "clone:Unknown file:-1"
-newb.lengt = b.lengt
-caller = "clone:Unknown file:-1"
-  return newb
-
-end
--- Chose function name newVoid
-function newVoid()
-print("caller: ", caller, "-> newVoid")
-local newb =nil
-caller = "newVoid:Unknown file:-1"
-  newb = makeBox()
-caller = "newVoid:Unknown file:-1"
-newb.voi = true
-caller = "newVoid:Unknown file:-1"
-newb.typ = "void"
-caller = "newVoid:Unknown file:-1"
-  return newb
-
-end
--- Chose function name stackDump
-function stackDump()
-print("caller: ", caller, "-> stackDump")
-caller = "stackDump:Unknown file:-1"
-  printf("");
-
-end
--- Chose function name nop
-function nop()
-print("caller: ", caller, "-> nop")
-caller = "nop:Unknown file:-1"
-  printf("");
-
-end
--- Chose function name equalBox
-function equalBox(a,b)
-print("caller: ", caller, "-> equalBox")
-caller = "equalBox:Unknown file:-1"
-  if isList(b) then
-caller = ":Unknown file:-1"
-      return false
-
-  else
-caller = ":Unknown file:-1"
-      if equalString("string", boxType(a)) then
-caller = ":Unknown file:-1"
-          return equalString(unBoxString(a), stringify(b))
-
-      else
-caller = ":Unknown file:-1"
-          if equalString("bool", boxType(a)) then
-caller = ":Unknown file:-1"
-              return andBool(unBoxBool(a), unBoxBool(b))
-
-          else
-caller = ":Unknown file:-1"
-              if equalString("symbol", boxType(a)) then
-caller = ":Unknown file:-1"
-                  if equalString("symbol", boxType(b)) then
-caller = ":Unknown file:-1"
-                      return equalString(unBoxSymbol(a), unBoxSymbol(b))
-
-                  else
-caller = ":Unknown file:-1"
-                      return false
-
-                  end
-
-              else
-caller = ":Unknown file:-1"
-                  if equalString("int", boxType(a)) then
-caller = ":Unknown file:-1"
-                      return equal(unBoxInt(a), unBoxInt(b))
-
-                  else
-caller = ":Unknown file:-1"
-                      return false
-
-                  end
-
-              end
-
-          end
-
-      end
-
-  end
-
-end
--- Chose function name display
-function display(l)
-print("caller: ", caller, "-> display")
-caller = "display:Unknown file:-1"
-  if isEmpty(l) then
-caller = ":Unknown file:-1"
-      printf("nil ");
-
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      if isList(l) then
-caller = ":Unknown file:-1"
-          printf("[");
-
-caller = ":Unknown file:-1"
-          displayList(l, 0, true);
-
-caller = ":Unknown file:-1"
-          printf("]");
-
-      else
-caller = ":Unknown file:-1"
-          displayList(l, 0, true);
-
-      end
-
-  end
-
-end
--- Chose function name boxType
-function boxType(b)
-print("caller: ", caller, "-> boxType")
-caller = "boxType:Unknown file:-1"
-  return b.typ
-
-end
--- Chose function name makeBox
-function makeBox()
-print("caller: ", caller, "-> makeBox")
-local b =nil
-caller = "makeBox:Unknown file:-1"
-  b = new(box, Box)
-caller = "makeBox:Unknown file:-1"
-  if isNil(b) then
-caller = ":Unknown file:-1"
-      panic("failed to create box!");
-
-  else
-  end
-
-caller = "makeBox:Unknown file:-1"
-b.tag = nil
-caller = "makeBox:Unknown file:-1"
-b.car = nil
-caller = "makeBox:Unknown file:-1"
-b.cdr = nil
-caller = "makeBox:Unknown file:-1"
-b.lis = nil
-caller = "makeBox:Unknown file:-1"
-b.typ = "None - error!"
-caller = "makeBox:Unknown file:-1"
-  return b
-
-end
--- Chose function name makePair
-function makePair()
-print("caller: ", caller, "-> makePair")
-caller = "makePair:Unknown file:-1"
-  return makeBox()
-
-end
--- Chose function name boxString
-function boxString(s)
-print("caller: ", caller, "-> boxString")
-local b =nil
-caller = "boxString:Unknown file:-1"
-  b = makeBox()
-caller = "boxString:Unknown file:-1"
-b.str = s
-caller = "boxString:Unknown file:-1"
-b.lengt = string.len(s)
-caller = "boxString:Unknown file:-1"
-b.typ = "string"
-caller = "boxString:Unknown file:-1"
-  return b
-
-end
--- Chose function name boxSymbol
-function boxSymbol(s)
-print("caller: ", caller, "-> boxSymbol")
-local b =nil
-caller = "boxSymbol:Unknown file:-1"
-  b = boxString(s)
-caller = "boxSymbol:Unknown file:-1"
-b.typ = "symbol"
-caller = "boxSymbol:Unknown file:-1"
-  return b
-
-end
--- Chose function name boxBool
-function boxBool(boo)
-print("caller: ", caller, "-> boxBool")
-local b =nil
-caller = "boxBool:Unknown file:-1"
-  b = makeBox()
-caller = "boxBool:Unknown file:-1"
-b.boo = boo
-caller = "boxBool:Unknown file:-1"
-b.typ = "bool"
-caller = "boxBool:Unknown file:-1"
-  return b
-
-end
--- Chose function name boxInt
-function boxInt(val)
-print("caller: ", caller, "-> boxInt")
-local b =nil
-caller = "boxInt:Unknown file:-1"
-  b = makeBox()
-caller = "boxInt:Unknown file:-1"
-b.i = val
-caller = "boxInt:Unknown file:-1"
-b.typ = "int"
-caller = "boxInt:Unknown file:-1"
-  return b
-
-end
--- Chose function name assertType
-function assertType(atype,abox,line,file)
-print("caller: ", caller, "-> assertType")
-caller = "assertType:Unknown file:-1"
-  if isNil(abox) then
-caller = ":Unknown file:-1"
-      if equalString(atype, "nil") then
-caller = ":Unknown file:-1"
-          return 
-
-      else
-caller = ":Unknown file:-1"
-          return 
-
-      end
-
-  else
-caller = ":Unknown file:-1"
-      if equalString(atype, boxType(abox)) then
-caller = ":Unknown file:-1"
-          return 
-
-      else
-caller = ":Unknown file:-1"
-          printf("Assertion failure at line %d, in file %s: provided value is not a '%s'!  It was actually (%s):", line, file, atype, abox.typ);
-
-caller = ":Unknown file:-1"
-          display(abox);
-
-caller = ":Unknown file:-1"
-          panic("Invalid type!");
-
-      end
-
-  end
-
-end
--- Chose function name unBoxString
-function unBoxString(b)
-print("caller: ", caller, "-> unBoxString")
-caller = "unBoxString:Unknown file:-1"
-  assertType("string", b, 167, "q/base.qon");
-
-caller = "unBoxString:Unknown file:-1"
-  return b.str
-
-end
--- Chose function name unBoxSymbol
-function unBoxSymbol(b)
-print("caller: ", caller, "-> unBoxSymbol")
-caller = "unBoxSymbol:Unknown file:-1"
-  return b.str
-
-end
--- Chose function name unBoxBool
-function unBoxBool(b)
-print("caller: ", caller, "-> unBoxBool")
-caller = "unBoxBool:Unknown file:-1"
-  return b.boo
-
-end
--- Chose function name unBoxInt
-function unBoxInt(b)
-print("caller: ", caller, "-> unBoxInt")
-caller = "unBoxInt:Unknown file:-1"
-  return b.i
-
-end
--- Chose function name stringify_rec
-function stringify_rec(b)
-print("caller: ", caller, "-> stringify_rec")
-caller = "stringify_rec:Unknown file:-1"
-  if isNil(b) then
-caller = ":Unknown file:-1"
-      return ""
-
-  else
-caller = ":Unknown file:-1"
-      return stringConcatenate(stringify(car(b)), stringConcatenate(" ", stringify_rec(cdr(b))))
-
-  end
-
-end
--- Chose function name stringify
-function stringify(b)
-print("caller: ", caller, "-> stringify")
-caller = "stringify:Unknown file:-1"
-  if isNil(b) then
-caller = ":Unknown file:-1"
-      return "()"
-
-  else
-caller = ":Unknown file:-1"
-      if equalString("string", boxType(b)) then
-caller = ":Unknown file:-1"
-          return unBoxString(b)
-
-      else
-caller = ":Unknown file:-1"
-          if equalString("bool", boxType(b)) then
-caller = ":Unknown file:-1"
-              if unBoxBool(b) then
-caller = ":Unknown file:-1"
-                  return "true"
-
-              else
-caller = ":Unknown file:-1"
-                  return "false"
-
-              end
-
-          else
-caller = ":Unknown file:-1"
-              if equalString("int", boxType(b)) then
-caller = ":Unknown file:-1"
-                  return intToString(unBoxInt(b))
-
-              else
-caller = ":Unknown file:-1"
-                  if equalString("symbol", boxType(b)) then
-caller = ":Unknown file:-1"
-                      return unBoxSymbol(b)
-
-                  else
-caller = ":Unknown file:-1"
-                      if equalString("list", boxType(b)) then
-caller = ":Unknown file:-1"
-                          return stringConcatenate("(", stringConcatenate(stringify(car(b)), stringConcatenate(" ", stringConcatenate(stringify_rec(cdr(b)), ")"))))
-
-                      else
-caller = ":Unknown file:-1"
-                          return stringConcatenate("Unsupported type: ", boxType(b))
-
-                      end
-
-                  end
-
-              end
-
-          end
-
-      end
-
-  end
-
-end
--- Chose function name hasTag
-function hasTag(aBox,key)
-print("caller: ", caller, "-> hasTag")
-caller = "hasTag:Unknown file:-1"
-  if isNil(aBox) then
-caller = ":Unknown file:-1"
-      return false
-
-  else
-caller = ":Unknown file:-1"
-      return isNotFalse(assoc(stringify(key), aBox.tag))
-
-  end
-
-end
--- Chose function name getTag
-function getTag(aBox,key)
-print("caller: ", caller, "-> getTag")
-caller = "getTag:Unknown file:-1"
-  if false then
-caller = ":Unknown file:-1"
-      printf("Getting %s from: ", stringify(key));
-
-caller = ":Unknown file:-1"
-      display(alistKeys(aBox.tag));
-
-caller = ":Unknown file:-1"
-      printf("\n");
-
-  else
-caller = ":Unknown file:-1"
-      printf("");
-
-  end
-
-caller = "getTag:Unknown file:-1"
-  return cdr(assoc(stringify(key), aBox.tag))
-
-end
--- Chose function name getTagFail
-function getTagFail(aBox,key,onFail)
-print("caller: ", caller, "-> getTagFail")
-caller = "getTagFail:Unknown file:-1"
-  if hasTag(aBox, key) then
-caller = ":Unknown file:-1"
-      return getTag(aBox, key)
-
-  else
-caller = ":Unknown file:-1"
-      return onFail
-
-  end
-
-end
--- Chose function name assocExists
-function assocExists(key,aBox)
-print("caller: ", caller, "-> assocExists")
-caller = "assocExists:Unknown file:-1"
-  if isNil(aBox) then
-caller = ":Unknown file:-1"
-      return false
-
-  else
-caller = ":Unknown file:-1"
-      return isNotFalse(assoc(key, aBox))
-
-  end
-
-end
--- Chose function name assocFail
-function assocFail(key,aBox,onFail)
-print("caller: ", caller, "-> assocFail")
-caller = "assocFail:Unknown file:-1"
-  if assocExists(key, aBox) then
-caller = ":Unknown file:-1"
-      return assoc(key, aBox)
-
-  else
-caller = ":Unknown file:-1"
-      return cons(boxString(key), onFail)
-
-  end
-
-end
--- Chose function name assocPanic
-function assocPanic(key,aBox,onFail)
-print("caller: ", caller, "-> assocPanic")
-caller = "assocPanic:Unknown file:-1"
-  if assocExists(key, aBox) then
-caller = ":Unknown file:-1"
-      return assoc(key, aBox)
-
-  else
-caller = ":Unknown file:-1"
-      panic(onFail);
-
-  end
-
-caller = "assocPanic:Unknown file:-1"
-  panic("Inconceivable");
-
-caller = "assocPanic:Unknown file:-1"
-  return nil
-
-end
--- Chose function name setTag
-function setTag(key,val,aStruct)
-print("caller: ", caller, "-> setTag")
-caller = "setTag:Unknown file:-1"
-aStruct.tag = alistCons(key, val, aStruct.tag)
-caller = "setTag:Unknown file:-1"
-  return aStruct
-
-end
 -- Chose function name filterVoid
 function filterVoid(l)
 print("caller: ", caller, "-> filterVoid")
@@ -7788,13 +7432,6 @@ caller = ":Unknown file:-1"
   end
 
 end
--- Chose function name openBrace
-function openBrace()
-print("caller: ", caller, "-> openBrace")
-caller = "openBrace:Unknown file:-1"
-  return "("
-
-end
 -- Chose function name isCloseBrace
 function isCloseBrace(b)
 print("caller: ", caller, "-> isCloseBrace")
@@ -7816,13 +7453,6 @@ caller = ":Unknown file:-1"
       end
 
   end
-
-end
--- Chose function name closeBrace
-function closeBrace()
-print("caller: ", caller, "-> closeBrace")
-caller = "closeBrace:Unknown file:-1"
-  return ")"
 
 end
 -- Chose function name skipList
@@ -8066,16 +7696,6 @@ caller = ":Unknown file:-1"
       return cons(astStatement(car(tree), fname), astBody(cdr(tree), fname))
 
   end
-
-end
--- Chose function name locPanic
-function locPanic(file,line,message)
-print("caller: ", caller, "-> locPanic")
-caller = "locPanic:Unknown file:-1"
-  printf("%s %s:%s\n", file, line, message);
-
-caller = "locPanic:Unknown file:-1"
-  panic(message);
 
 end
 -- Chose function name astFunction
@@ -8395,36 +8015,6 @@ caller = ":Unknown file:-1"
   end
 
 end
--- Chose function name truthy
-function truthy(aVal)
-print("caller: ", caller, "-> truthy")
-caller = "truthy:Unknown file:-1"
-  return isNotFalse(aVal)
-
-end
--- Chose function name isNotFalse
-function isNotFalse(aVal)
-print("caller: ", caller, "-> isNotFalse")
-caller = "isNotFalse:Unknown file:-1"
-  if equalString(boxType(aVal), "bool") then
-caller = ":Unknown file:-1"
-      if unBoxBool(aVal) then
-caller = ":Unknown file:-1"
-          return true
-
-      else
-caller = ":Unknown file:-1"
-          return false
-
-      end
-
-  else
-caller = ":Unknown file:-1"
-      return true
-
-  end
-
-end
 -- Chose function name isLeaf
 function isLeaf(n)
 print("caller: ", caller, "-> isLeaf")
@@ -8432,61 +8022,11 @@ caller = "isLeaf:Unknown file:-1"
   return equalBox(boxString("leaf"), subnameof(n))
 
 end
--- Chose function name printIndent
-function printIndent(ii)
-print("caller: ", caller, "-> printIndent")
-caller = "printIndent:Unknown file:-1"
-  if greaterthan(ii, 0) then
-caller = ":Unknown file:-1"
-      printf("  ");
-
-caller = ":Unknown file:-1"
-      printIndent(sub1(ii));
-
-  else
-caller = ":Unknown file:-1"
-      return 
-
-  end
-
-end
--- Chose function name newLine
-function newLine(indent)
-print("caller: ", caller, "-> newLine")
-caller = "newLine:Unknown file:-1"
-  printf("\n");
-
-caller = "newLine:Unknown file:-1"
-  printIndent(indent);
-
-end
 -- Chose function name noStackTrace
 function noStackTrace()
 print("caller: ", caller, "-> noStackTrace")
 caller = "noStackTrace:Unknown file:-1"
   return cons(boxString("boxType"), cons(boxString("stringify"), cons(boxString("isEmpty"), cons(boxString("unBoxString"), cons(boxString("isList"), cons(boxString("unBoxBool"), cons(boxString("unBoxSymbol"), cons(boxString("equalBox"), cons(boxString("assoc"), cons(boxString("inList"), cons(boxString("unBoxInt"), cons(boxString("listLength"), cons(boxString("stroff"), cons(boxString("troff"), cons(boxString("tron"), cons(boxString("stron"), cons(boxString("car"), cons(boxString("cdr"), cons(boxString("cons"), cons(boxString("stackTracePush"), cons(boxString("stackTracePop"), cons(boxString("assertType"), cons(boxString("boxString"), cons(boxString("boxSymbol"), cons(boxString("boxInt"), nil)))))))))))))))))))))))))
-
-end
--- Chose function name toStr
-function toStr(thing)
-print("caller: ", caller, "-> toStr")
-caller = "toStr:Unknown file:-1"
-  return boxString(stringify(thing))
-
-end
--- Chose function name listLast
-function listLast(alist)
-print("caller: ", caller, "-> listLast")
-caller = "listLast:Unknown file:-1"
-  if isEmpty(cdr(alist)) then
-caller = ":Unknown file:-1"
-      return car(alist)
-
-  else
-caller = ":Unknown file:-1"
-      return listLast(cdr(alist))
-
-  end
 
 end
 -- Chose function name treeCompile
@@ -8621,6 +8161,633 @@ caller = ":Unknown file:-1"
       newProgram = alistCons(boxString("functions"), newFunctionNode, alistCons(boxString("types"), newTypeNode, alistCons(boxString("includes"), cons(boxSymbol("includes"), nil), newProgram)))
 caller = ":Unknown file:-1"
       return newProgram
+
+  end
+
+end
+-- Chose function name add
+function add(a,b)
+print("caller: ", caller, "-> add")
+caller = "add:Unknown file:-1"
+  return sub(a, sub(0, b))
+
+end
+-- Chose function name addf
+function addf(a,b)
+print("caller: ", caller, "-> addf")
+caller = "addf:Unknown file:-1"
+  return subf(a, subf(0, b))
+
+end
+-- Chose function name sub1
+function sub1(a)
+print("caller: ", caller, "-> sub1")
+caller = "sub1:Unknown file:-1"
+  return sub(a, 1)
+
+end
+-- Chose function name add1
+function add1(a)
+print("caller: ", caller, "-> add1")
+caller = "add1:Unknown file:-1"
+  return add(a, 1)
+
+end
+-- Chose function name clone
+function clone(b)
+print("caller: ", caller, "-> clone")
+local newb =nil
+caller = "clone:Unknown file:-1"
+  newb = makeBox()
+caller = "clone:Unknown file:-1"
+newb.typ = b.typ
+caller = "clone:Unknown file:-1"
+newb.tag = b.tag
+caller = "clone:Unknown file:-1"
+newb.lis = b.lis
+caller = "clone:Unknown file:-1"
+newb.str = b.str
+caller = "clone:Unknown file:-1"
+newb.i = b.i
+caller = "clone:Unknown file:-1"
+newb.lengt = b.lengt
+caller = "clone:Unknown file:-1"
+  return newb
+
+end
+-- Chose function name newVoid
+function newVoid()
+print("caller: ", caller, "-> newVoid")
+local newb =nil
+caller = "newVoid:Unknown file:-1"
+  newb = makeBox()
+caller = "newVoid:Unknown file:-1"
+newb.voi = true
+caller = "newVoid:Unknown file:-1"
+newb.typ = "void"
+caller = "newVoid:Unknown file:-1"
+  return newb
+
+end
+-- Chose function name stackDump
+function stackDump()
+print("caller: ", caller, "-> stackDump")
+caller = "stackDump:Unknown file:-1"
+  printf("");
+
+end
+-- Chose function name nop
+function nop()
+print("caller: ", caller, "-> nop")
+caller = "nop:Unknown file:-1"
+  printf("");
+
+end
+-- Chose function name equalBox
+function equalBox(a,b)
+print("caller: ", caller, "-> equalBox")
+caller = "equalBox:Unknown file:-1"
+  if isList(b) then
+caller = ":Unknown file:-1"
+      return false
+
+  else
+caller = ":Unknown file:-1"
+      if equalString("string", boxType(a)) then
+caller = ":Unknown file:-1"
+          return equalString(unBoxString(a), stringify(b))
+
+      else
+caller = ":Unknown file:-1"
+          if equalString("bool", boxType(a)) then
+caller = ":Unknown file:-1"
+              return andBool(unBoxBool(a), unBoxBool(b))
+
+          else
+caller = ":Unknown file:-1"
+              if equalString("symbol", boxType(a)) then
+caller = ":Unknown file:-1"
+                  if equalString("symbol", boxType(b)) then
+caller = ":Unknown file:-1"
+                      return equalString(unBoxSymbol(a), unBoxSymbol(b))
+
+                  else
+caller = ":Unknown file:-1"
+                      return false
+
+                  end
+
+              else
+caller = ":Unknown file:-1"
+                  if equalString("int", boxType(a)) then
+caller = ":Unknown file:-1"
+                      return equal(unBoxInt(a), unBoxInt(b))
+
+                  else
+caller = ":Unknown file:-1"
+                      return false
+
+                  end
+
+              end
+
+          end
+
+      end
+
+  end
+
+end
+-- Chose function name display
+function display(l)
+print("caller: ", caller, "-> display")
+caller = "display:Unknown file:-1"
+  if isEmpty(l) then
+caller = ":Unknown file:-1"
+      printf("nil ");
+
+caller = ":Unknown file:-1"
+      return 
+
+  else
+caller = ":Unknown file:-1"
+      if isList(l) then
+caller = ":Unknown file:-1"
+          printf("[");
+
+caller = ":Unknown file:-1"
+          displayList(l, 0, true);
+
+caller = ":Unknown file:-1"
+          printf("]");
+
+      else
+caller = ":Unknown file:-1"
+          displayList(l, 0, true);
+
+      end
+
+  end
+
+end
+-- Chose function name openBrace
+function openBrace()
+print("caller: ", caller, "-> openBrace")
+caller = "openBrace:Unknown file:-1"
+  return "("
+
+end
+-- Chose function name closeBrace
+function closeBrace()
+print("caller: ", caller, "-> closeBrace")
+caller = "closeBrace:Unknown file:-1"
+  return ")"
+
+end
+-- Chose function name boxType
+function boxType(b)
+print("caller: ", caller, "-> boxType")
+caller = "boxType:Unknown file:-1"
+  return b.typ
+
+end
+-- Chose function name makeBox
+function makeBox()
+print("caller: ", caller, "-> makeBox")
+local b =nil
+caller = "makeBox:Unknown file:-1"
+  b = new(box, Box)
+caller = "makeBox:Unknown file:-1"
+  if isNil(b) then
+caller = ":Unknown file:-1"
+      panic("failed to create box!");
+
+  else
+  end
+
+caller = "makeBox:Unknown file:-1"
+b.tag = nil
+caller = "makeBox:Unknown file:-1"
+b.car = nil
+caller = "makeBox:Unknown file:-1"
+b.cdr = nil
+caller = "makeBox:Unknown file:-1"
+b.lis = nil
+caller = "makeBox:Unknown file:-1"
+b.typ = "None - error!"
+caller = "makeBox:Unknown file:-1"
+  return b
+
+end
+-- Chose function name makePair
+function makePair()
+print("caller: ", caller, "-> makePair")
+caller = "makePair:Unknown file:-1"
+  return makeBox()
+
+end
+-- Chose function name boxString
+function boxString(s)
+print("caller: ", caller, "-> boxString")
+local b =nil
+caller = "boxString:Unknown file:-1"
+  b = makeBox()
+caller = "boxString:Unknown file:-1"
+b.str = s
+caller = "boxString:Unknown file:-1"
+b.lengt = string.len(s)
+caller = "boxString:Unknown file:-1"
+b.typ = "string"
+caller = "boxString:Unknown file:-1"
+  return b
+
+end
+-- Chose function name boxSymbol
+function boxSymbol(s)
+print("caller: ", caller, "-> boxSymbol")
+local b =nil
+caller = "boxSymbol:Unknown file:-1"
+  b = boxString(s)
+caller = "boxSymbol:Unknown file:-1"
+b.typ = "symbol"
+caller = "boxSymbol:Unknown file:-1"
+  return b
+
+end
+-- Chose function name boxBool
+function boxBool(boo)
+print("caller: ", caller, "-> boxBool")
+local b =nil
+caller = "boxBool:Unknown file:-1"
+  b = makeBox()
+caller = "boxBool:Unknown file:-1"
+b.boo = boo
+caller = "boxBool:Unknown file:-1"
+b.typ = "bool"
+caller = "boxBool:Unknown file:-1"
+  return b
+
+end
+-- Chose function name boxInt
+function boxInt(val)
+print("caller: ", caller, "-> boxInt")
+local b =nil
+caller = "boxInt:Unknown file:-1"
+  b = makeBox()
+caller = "boxInt:Unknown file:-1"
+b.i = val
+caller = "boxInt:Unknown file:-1"
+b.typ = "int"
+caller = "boxInt:Unknown file:-1"
+  return b
+
+end
+-- Chose function name assertType
+function assertType(atype,abox,line,file)
+print("caller: ", caller, "-> assertType")
+caller = "assertType:Unknown file:-1"
+  if isNil(abox) then
+caller = ":Unknown file:-1"
+      if equalString(atype, "nil") then
+caller = ":Unknown file:-1"
+          return 
+
+      else
+caller = ":Unknown file:-1"
+          return 
+
+      end
+
+  else
+caller = ":Unknown file:-1"
+      if equalString(atype, boxType(abox)) then
+caller = ":Unknown file:-1"
+          return 
+
+      else
+caller = ":Unknown file:-1"
+          printf("Assertion failure at line %d, in file %s: provided value is not a '%s'!  It was actually '%s'. Contents:", line, file, atype, boxType(abox));
+
+caller = ":Unknown file:-1"
+          display(abox);
+
+caller = ":Unknown file:-1"
+          panic("Invalid type!");
+
+      end
+
+  end
+
+end
+-- Chose function name unBoxString
+function unBoxString(b)
+print("caller: ", caller, "-> unBoxString")
+caller = "unBoxString:Unknown file:-1"
+  assertType("string", b, 167, "q/base.qon");
+
+caller = "unBoxString:Unknown file:-1"
+  return b.str
+
+end
+-- Chose function name unBoxSymbol
+function unBoxSymbol(b)
+print("caller: ", caller, "-> unBoxSymbol")
+caller = "unBoxSymbol:Unknown file:-1"
+  return b.str
+
+end
+-- Chose function name unBoxBool
+function unBoxBool(b)
+print("caller: ", caller, "-> unBoxBool")
+caller = "unBoxBool:Unknown file:-1"
+  return b.boo
+
+end
+-- Chose function name unBoxInt
+function unBoxInt(b)
+print("caller: ", caller, "-> unBoxInt")
+caller = "unBoxInt:Unknown file:-1"
+  return b.i
+
+end
+-- Chose function name stringify_rec
+function stringify_rec(b)
+print("caller: ", caller, "-> stringify_rec")
+caller = "stringify_rec:Unknown file:-1"
+  if isNil(b) then
+caller = ":Unknown file:-1"
+      return ""
+
+  else
+caller = ":Unknown file:-1"
+      return stringConcatenate(stringify(car(b)), stringConcatenate(" ", stringify_rec(cdr(b))))
+
+  end
+
+end
+-- Chose function name stringify
+function stringify(b)
+print("caller: ", caller, "-> stringify")
+caller = "stringify:Unknown file:-1"
+  if isNil(b) then
+caller = ":Unknown file:-1"
+      return "()"
+
+  else
+caller = ":Unknown file:-1"
+      if equalString("string", boxType(b)) then
+caller = ":Unknown file:-1"
+          return unBoxString(b)
+
+      else
+caller = ":Unknown file:-1"
+          if equalString("bool", boxType(b)) then
+caller = ":Unknown file:-1"
+              if unBoxBool(b) then
+caller = ":Unknown file:-1"
+                  return "true"
+
+              else
+caller = ":Unknown file:-1"
+                  return "false"
+
+              end
+
+          else
+caller = ":Unknown file:-1"
+              if equalString("int", boxType(b)) then
+caller = ":Unknown file:-1"
+                  return intToString(unBoxInt(b))
+
+              else
+caller = ":Unknown file:-1"
+                  if equalString("symbol", boxType(b)) then
+caller = ":Unknown file:-1"
+                      return unBoxSymbol(b)
+
+                  else
+caller = ":Unknown file:-1"
+                      if equalString("list", boxType(b)) then
+caller = ":Unknown file:-1"
+                          return stringConcatenate("(", stringConcatenate(stringify(car(b)), stringConcatenate(" ", stringConcatenate(stringify_rec(cdr(b)), ")"))))
+
+                      else
+caller = ":Unknown file:-1"
+                          return stringConcatenate("Unsupported type: ", boxType(b))
+
+                      end
+
+                  end
+
+              end
+
+          end
+
+      end
+
+  end
+
+end
+-- Chose function name hasTag
+function hasTag(aBox,key)
+print("caller: ", caller, "-> hasTag")
+caller = "hasTag:Unknown file:-1"
+  if isNil(aBox) then
+caller = ":Unknown file:-1"
+      return false
+
+  else
+caller = ":Unknown file:-1"
+      return isNotFalse(assoc(stringify(key), aBox.tag))
+
+  end
+
+end
+-- Chose function name getTag
+function getTag(aBox,key)
+print("caller: ", caller, "-> getTag")
+caller = "getTag:Unknown file:-1"
+  if false then
+caller = ":Unknown file:-1"
+      printf("Getting %s from: ", stringify(key));
+
+caller = ":Unknown file:-1"
+      display(alistKeys(aBox.tag));
+
+caller = ":Unknown file:-1"
+      printf("\n");
+
+  else
+caller = ":Unknown file:-1"
+      printf("");
+
+  end
+
+caller = "getTag:Unknown file:-1"
+  return cdr(assoc(stringify(key), aBox.tag))
+
+end
+-- Chose function name getTagFail
+function getTagFail(aBox,key,onFail)
+print("caller: ", caller, "-> getTagFail")
+caller = "getTagFail:Unknown file:-1"
+  if hasTag(aBox, key) then
+caller = ":Unknown file:-1"
+      return getTag(aBox, key)
+
+  else
+caller = ":Unknown file:-1"
+      return onFail
+
+  end
+
+end
+-- Chose function name assocExists
+function assocExists(key,aBox)
+print("caller: ", caller, "-> assocExists")
+caller = "assocExists:Unknown file:-1"
+  if isNil(aBox) then
+caller = ":Unknown file:-1"
+      return false
+
+  else
+caller = ":Unknown file:-1"
+      return isNotFalse(assoc(key, aBox))
+
+  end
+
+end
+-- Chose function name assocFail
+function assocFail(key,aBox,onFail)
+print("caller: ", caller, "-> assocFail")
+caller = "assocFail:Unknown file:-1"
+  if assocExists(key, aBox) then
+caller = ":Unknown file:-1"
+      return assoc(key, aBox)
+
+  else
+caller = ":Unknown file:-1"
+      return cons(boxString(key), onFail)
+
+  end
+
+end
+-- Chose function name assocPanic
+function assocPanic(key,aBox,onFail)
+print("caller: ", caller, "-> assocPanic")
+caller = "assocPanic:Unknown file:-1"
+  if assocExists(key, aBox) then
+caller = ":Unknown file:-1"
+      return assoc(key, aBox)
+
+  else
+caller = ":Unknown file:-1"
+      panic(onFail);
+
+  end
+
+caller = "assocPanic:Unknown file:-1"
+  panic("Inconceivable");
+
+caller = "assocPanic:Unknown file:-1"
+  return nil
+
+end
+-- Chose function name setTag
+function setTag(key,val,aStruct)
+print("caller: ", caller, "-> setTag")
+caller = "setTag:Unknown file:-1"
+aStruct.tag = alistCons(key, val, aStruct.tag)
+caller = "setTag:Unknown file:-1"
+  return aStruct
+
+end
+-- Chose function name locPanic
+function locPanic(file,line,message)
+print("caller: ", caller, "-> locPanic")
+caller = "locPanic:Unknown file:-1"
+  printf("%s %s:%s\n", file, line, message);
+
+caller = "locPanic:Unknown file:-1"
+  panic(message);
+
+end
+-- Chose function name truthy
+function truthy(aVal)
+print("caller: ", caller, "-> truthy")
+caller = "truthy:Unknown file:-1"
+  return isNotFalse(aVal)
+
+end
+-- Chose function name isNotFalse
+function isNotFalse(aVal)
+print("caller: ", caller, "-> isNotFalse")
+caller = "isNotFalse:Unknown file:-1"
+  if equalString(boxType(aVal), "bool") then
+caller = ":Unknown file:-1"
+      if unBoxBool(aVal) then
+caller = ":Unknown file:-1"
+          return true
+
+      else
+caller = ":Unknown file:-1"
+          return false
+
+      end
+
+  else
+caller = ":Unknown file:-1"
+      return true
+
+  end
+
+end
+-- Chose function name toStr
+function toStr(thing)
+print("caller: ", caller, "-> toStr")
+caller = "toStr:Unknown file:-1"
+  return boxString(stringify(thing))
+
+end
+-- Chose function name listLast
+function listLast(alist)
+print("caller: ", caller, "-> listLast")
+caller = "listLast:Unknown file:-1"
+  if isEmpty(cdr(alist)) then
+caller = ":Unknown file:-1"
+      return car(alist)
+
+  else
+caller = ":Unknown file:-1"
+      return listLast(cdr(alist))
+
+  end
+
+end
+-- Chose function name newLine
+function newLine(indent)
+print("caller: ", caller, "-> newLine")
+caller = "newLine:Unknown file:-1"
+  printf("\n");
+
+caller = "newLine:Unknown file:-1"
+  printIndent(indent);
+
+end
+-- Chose function name printIndent
+function printIndent(ii)
+print("caller: ", caller, "-> printIndent")
+caller = "printIndent:Unknown file:-1"
+  if greaterthan(ii, 0) then
+caller = ":Unknown file:-1"
+      printf("  ");
+
+caller = ":Unknown file:-1"
+      printIndent(sub1(ii));
+
+  else
+caller = ":Unknown file:-1"
+      return 
 
   end
 
