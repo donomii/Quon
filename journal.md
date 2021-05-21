@@ -131,3 +131,13 @@ The next enhancements after errors seem to be:
 * networking
 * subprocesses and system functions
 * some kind of gui?
+
+## Friday, 21st March, 2021
+
+Quon now has multiple C backends, each one with a new feature.
+
+It also appears to be quite robust.  Apparently I was in a very odd frame of mind while I was writing the ansi C emitter, because I wrote this:
+
+    int andBool(int a, int b) { return a == b;}
+
+That has been in there right from the beginning, and somehow it still worked.  I'm amazed.
