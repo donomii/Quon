@@ -36,20 +36,14 @@
     (printf "3.2 pass Two arg call, second arg: %s\n" c)))
   (void test3 () (declare) (body (test3_do 42 "Fourty-two")))
   (string test4_do () (declare) (body (return "pass Return works")))
-  (string
-   returnThis
-   (string returnMessage)
-   (declare)
+
+  (string returnThis (string returnMessage) (declare)
    (body (return returnMessage)))
-  (void
-   test4
-   ()
-   (declare (string message "fail"))
+
+  (void test4 () (declare (string message "fail"))
    (body (set message (test4_do)) (printf "4.  %s\n" message)))
-  (void
-   test5
-   ()
-   (declare (string message "fail"))
+
+  (void test5 () (declare (string message "fail"))
    (body
     (set message (returnThis "pass return passthrough string"))
     (printf "5.  %s\n" message)))
@@ -122,8 +116,54 @@
    (body
     (set answer (sub (sub 20 1) (sub 3 1)))
     (if (equal answer 17)
-      (then (printf "9.  pass arithmetic works\n"))
-      (else (printf "9.  fail arithmetic\n")))))
+      (then (printf "9.1  pass sub works\n"))
+      (else (printf "9.1  fail sub\n")))
+    (set answer (add 2 3))
+    (if (equal answer 5)
+      (then (printf "9.2  pass add works\n"))
+      (else (printf "9.2  fail add\n")))
+    (set answer (mult 2 3))
+    (if (equal answer 6)
+      (then (printf "9.3  pass mult works\n"))
+      (else (printf "9.3  fail mult\n")))
+    (if (greaterthan 2 1)
+      (then (printf "9.4  pass greaterthan works\n"))
+      (else (printf "9.4  fail greaterthan\n")))
+    (if (equal 1 1)
+      (then (printf "9.5  pass integer equal works\n"))
+      (else (printf "9.5  fail integer equal\n")))
+    (if (equalString "hello" "hello")
+      (then (printf "9.6  pass string equal works\n"))
+      (else (printf "9.6  fail string equal\n")))
+    (if (equalString "hello" "world")
+      (then (printf "9.7  fail string equal\n"))
+      (else (printf "9.7  pass string equal\n")))
+    (if (andBool false false)
+      (then (printf "9.8  fail andBool\n"))
+      (else (printf "9.8  pass andBool works\n")))
+    (if (andBool true true)
+      (then (printf "9.9  pass andBool works\n"))
+      (else (printf "9.9  fail andBool\n")))
+    (if (andBool true false)
+      (then (printf "9.10  fail andBool\n"))
+      (else (printf "9.10  pass andBool works\n")))
+    (if (equalString "hello" "hello")
+      (then (printf "9.11  pass string equal\n"))
+      (else (printf "9.11  fail string equal\n")))
+    (if (equalString "!" (character 33))
+      (then (printf "9.12  pass character\n"))
+      (else (printf "9.12  fail character\n")))
+    (if (equalString "33" (intToString 33))
+      (then (printf "9.13  pass intToString\n"))
+      (else (printf "9.13  fail intToString\n")))
+    ;(if (not false)
+      ;(then (printf "9.14  pass not\n"))
+      ;(else (printf "9.14  fail not\n")))
+    (if (equalString "llo" (sub_string "hello" 2 3 ))
+      (then (printf "9.14  pass sub_string\n"))
+      (else (printf "9.14  fail sub_string: %s\n" (sub_string "hello" 2 3 ))))
+
+))
   (void
    test10
    ()

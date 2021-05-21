@@ -10,6 +10,16 @@
 
  (functions
 
+(bool ansi3IsNil (void* a) (declare)
+	(body
+		(if (binop == a NULL)
+			(then (return true))
+			(else (return false)))
+))
+(void* pointerAdd (void* a int b) (declare)
+	(body
+		(return (binop + a b))))
+
 (char* getEnv (char* key) (declare)
 	(body
 		(return (getenv key))))
@@ -49,11 +59,11 @@
 
 (int equalString (char* a char* b) (declare)
 	(body
-		(return (not (strcmp a b)))))
+		(return (binop == 0 (strcmp a b)))))
 
 (int andBool (int a int b) (declare)
 	(body
-		(return (binop  == a b))))
+		(return (binop  && a b))))
 
 (int string_length (char* s) (declare)
 	(body
@@ -61,14 +71,14 @@
 
 (char* setSubString (char* target int start char* source)(declare)
 	(body
-		(setAt target start (at source 0))
+		(passthrough "target[start]=source[0]")
 		(return target)
 ))
 
 (char* sub_string (char* s int start int length) (declare (char* substr ""))
 	(body
 		(set substr  (calloc (add length 1) 1))
-		(strncpy substr  (passthrough s + start) length)
+		(strncpy substr  (binop + s start) length)
 		(return substr)
 ))
 
@@ -78,6 +88,7 @@
 		(set target (calloc len 1))
 		(strncat target  a  len)
 		(strncat target  b  len)
+		(qlog "Concatenated %s\n" target)
 		(return target)
 ))
 	
@@ -110,10 +121,15 @@
          (set (passthrough "array[index]") value)
 ))
 
+(void setCharAt (char* array int index int value) (declare)
+    	(body
+         (set (passthrough "array[index]") value)
+))
+
 (char* read_file (char* filename) (declare (char* buffer nil) (long length 0) (FILE* f nil))
     	(body
          (set f (fopen filename "rb"))
-         (if (isNil f)
+         (if (ansi3IsNil f)
              (then (return nil))
              (else
               (fseek f 0 SEEK_END)
@@ -121,7 +137,7 @@
               (fseek f 0 SEEK_SET)
               (set buffer (malloc length))
               
-              (if (isNil buffer)
+              (if (ansi3IsNil buffer)
                   (then
                    (printf "Malloc failed!\n")
                    (exit 1))
@@ -135,9 +151,9 @@
 (void write_file (char* filename char* data)   (declare (char* buffer nil) (long length 0) (FILE* f nil))
       (body
               (set f (fopen filename "w"))
-              (if (not (equal f NULL))
-                  (then (printf "Error opening file!"))
-                  (else (exit 1)))
+              (if (ansi3IsNil f)
+                  (then (exit 1))
+                  (then (printf "Error opening file!")))
               (fprintf f  "%s" data)
               (fclose f)
  ))
@@ -168,13 +184,13 @@
 (char* character (int num)  (declare (string buffer nil) (string str NULL))
     	(body
          (set str (malloc 2))
-         (if (not (equal str 0)) 
+         (if (ansi3IsNil str) 
              (then (return 0))
-             (else)
-         (setAt string 0 num)
-         (setAt string 1 0)
-         (return string)
-         )
+             (else
+         (setCharAt str 0 num)
+         (setCharAt str 1 0)
+         (return str)
+         ))
 ))
 
 

@@ -373,8 +373,11 @@
 	(set tree (loadQuon filename))
    	(qlog "//Building sexpr\n")
     
+(qlog "Loading shim ansi3\n")
   (set tree (buildProg (cons (boxString "q/shims/ansi3.qon") (getIncludes tree)) (getTypes tree) (getFunctions tree))) ;FIXME check includes are recursive
+(qlog "Loading all includes\n")
 	(set tree (loadIncludes tree))
+(qlog "Applying macros\n")
 	(set tree (macrowalk tree))
         (set replace (symbolList "fprintf" "stderr"))
        (set tree (macrolist tree (stringConcatenate "q" "log") replace))
@@ -392,5 +395,7 @@
     (ansi3ForwardDeclarations (cdr (third tree)))
     (ansi3displays "\n\n//End forward declarations\n\n")
     (ansi3Functions (cdr (third tree)))
-    (ansi3displays "\n")))
+    (ansi3displays "\n")
+   (qlog "//Done printing program\n")
+))
   ))
