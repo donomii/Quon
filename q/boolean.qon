@@ -1,0 +1,25 @@
+((includes)
+ (types)
+ (functions
+	(bool not ( bool a)  (declare)
+		(body
+			(if a 
+			(then (return false))
+			(else (return true)))
+	))
+
+	(bool andBool ( bool a bool b)  (declare)
+		(body
+			(if a 
+			(then 
+				(if b
+					(then (return true))
+					(else (return false))))
+			(else (return false)))
+	))
+
+	(bool nand (bool a bool b) (declare)
+		(body
+		(return (not (andBool a b)))
+	))
+))

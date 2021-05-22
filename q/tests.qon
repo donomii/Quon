@@ -159,9 +159,9 @@
     ;(if (not false)
       ;(then (printf "9.14  pass not\n"))
       ;(else (printf "9.14  fail not\n")))
-    (if (equalString "llo" (sub_string "hello" 2 3 ))
-      (then (printf "9.14  pass sub_string\n"))
-      (else (printf "9.14  fail sub_string: %s\n" (sub_string "hello" 2 3 ))))
+    (if (equalString "llo" (sub-string "hello" 2 3 ))
+      (then (printf "9.14  pass sub-string\n"))
+      (else (printf "9.14  fail sub-string: %s\n" (sub-string "hello" 2 3 ))))
 
 ))
   (void

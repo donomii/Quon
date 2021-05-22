@@ -61,10 +61,6 @@
 	(body
 		(return (binop == 0 (strcmp a b)))))
 
-(int andBool (int a int b) (declare)
-	(body
-		(return (binop  && a b))))
-
 (int string_length (char* s) (declare)
 	(body
 		(return (strlen s))))
@@ -88,7 +84,6 @@
 		(set target (calloc len 1))
 		(strncat target  a  len)
 		(strncat target  b  len)
-		(qlog "Concatenated %s\n" target)
 		(return target)
 ))
 	
@@ -134,7 +129,6 @@
              (else
               (fseek f 0 SEEK_END)
               (set length (ftell f))
-		(qlog "File has length %ld\n" length)
               (fseek f 0 SEEK_SET)
               (set buffer (calloc (add 1 length) 1))
               
@@ -200,12 +194,6 @@
       (body
        (printf "%s" s)
 ))
-
-(bool nand (bool a bool b) (declare)
-	(body (return (passthrough "(!(a&&b))")))) 
-
-;FIXME move this to base after all outputs have a NAND function
-(bool not (bool a) (declare) (body (return (nand a a))))
 )
 
 
