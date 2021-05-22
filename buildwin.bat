@@ -7,8 +7,3 @@ working\quon_new compiler.qon --perl > working\quon.pl
 perl working\quon.pl --test
 working\quon_new compiler.qon --node > working\quon.js
 node working\quon.js --test
-mkdir build
-quon compiler.qon --ansi3 --release > working\quon_release.c
-rm build\quon.exe
-gcc -O3  -Wl,--stack,167108864  working\quon_release.c -o build\quon.exe
-cp -r q build/
