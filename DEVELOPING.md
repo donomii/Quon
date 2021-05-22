@@ -16,7 +16,7 @@ So rather than having a complicated parser like RecDescent or Combinator, it use
 
 == The files
 
-compiler.qon is the command line frontend to start the compiler
+compiler.qon is the compiler source.
 
 base.qon Holds all the parsing and lexing code.  The parser is a simple S-Expression reader (written in qon), and so the language looks very lisp-like even though it isn't a lisp at all.
 
@@ -36,10 +36,10 @@ The payoff to this limition is that you can convert your code into 4 different l
 
 == The AST
 
-The AST is a direct reflection of the code.  Additional data for compilation is stored in "tags".  Tags are hash tables that are "attached" to other data.  At the moment, this only works for boxes.  So an AST node would just be a symbol, with the followng tags attached
+The AST is a direct reflection of the quon code.  Additional data for compilation is stored in "tags".  Tags are hash tables that are "attached" to other data.  At the moment, this only works for boxes.  So an AST node would just be a symbol, with the followng tags attached
 
         ("line"    -1)              Line number of source file, deprecated
-        ("file"    base)              Line number of source file, deprecated
+        ("file"    base)            File name of source file, deprecated
         ("name"    "node type")     e.g. statement, expression
         ("subname" "subtype")       node subtype, e.g. setter, getter
 
@@ -59,7 +59,3 @@ Types are not currently checked.  Quon simply believes you when you use a type, 
 Structs
 
 Structs are fully supported.  You can define structs made of structs, and access and set members.
-    
-
-
-

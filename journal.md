@@ -80,7 +80,7 @@ The driving need for tagging is to be able to add information to the parse tree,
 Addendum:  I reversed the "then" and "else" clauses in an if statement and spent 3 hours debugging it.  I desperately need better error messages and debugging tools.
 
 
-## Tuesday 26th March
+## Tuesday 26th March, 2020
 
 I implemented tagging, and it worked better than expected.  I have built three error handling mechanisms on top of it, and I look forwards to working with it more.  I wish I had attempted it earler, it would have made my code so much shorter and more importantly, nice to read.
 
@@ -94,7 +94,7 @@ No surprises here.
 	[printf "%s defined at line %d\n" [unBoxString function_name] [getTag "line" function_name]]
 	>382
 
-```function_name``` holds the name of the function.  But it is also tagged with other information like the line number and file name.  This allows me to print error messages with a location, while still keeping the parser code reasonably simple.
+The item ```function_name``` holds the name of the function.  But it is also tagged with other information like the line number and file name.  This allows me to print error messages with a location, while still keeping the parser code reasonably simple.
 
 Could I do all of this with objects?  Of course.  But there are several reasons not to.  First of all, I would have to implement objects, and I would have to implement them without the help of error messages.  I have worked like this before, and it was an utterly miserable experience that I never want to repeat.  I think good error messages are more important than almost any other part of the programming language.
 
@@ -110,7 +110,7 @@ And some thoughts for the future: debugging could become even easier if I record
 
 Addendum:  I could get the same by just modifying the set function to print a line to the log every time I set a variable, which is probably better overall.  No need to write a complicated solution when the simple one works just fine.
 
-## Thursday, 24th August
+## Thursday, 24th August, 2020
 
 The big features are all in, and they seem to work.  Tags are fantastic, and now all that remains is putting error messages at the right point.
 
@@ -134,10 +134,28 @@ The next enhancements after errors seem to be:
 
 ## Friday, 21st March, 2021
 
-Quon now has multiple C backends, each one with a new feature.
+Quon now has multiple C backends, each one with a new feature.  There are so many features, with the big new one being that there are now "base functions" written in Quon.
 
-It also appears to be quite robust.  Apparently I was in a very odd frame of mind while I was writing the ansi C emitter, because I wrote this:
+The base functions are things like add, multiply, substring, malloc and all the other functions that are unique or different on each backend.  These need to be defined for each backend.  Previously, this happened by simply including a giant string that Quon would print out at the top of the output.  e.g.
+
+```
+(printf
+ "%s"
+ "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nconst char* getEnv(char* key){return getenv(key);}\n void panic(char* s){abort();exit(1);}\nint sub(int a, int b) { return a - b; }\nfloat mult(int a, int b) { return a * b; }\nint greaterthan(int a, int b) { return a > b; }\nfloat subf(float a, float b) { return a - b; }\nfloat multf(float a, float b) { return a * b; }\nint greaterthanf(float a, float b) { return a > b; }\nint equal(int a, int b) { return a == b; }\nint equalString(char* a, char* b) { return !strcmp(a,b); }\nint andBool(int a, int b) { return a && b;}\nint string_length(char* s) { return strlen(s);}\nchar* setSubString(char* target, int start,char *source){target[start]=source[0]; return target;}\nchar* sub_string(char* s, int start, int length) {\nchar* substr = calloc(length+1, 1);\nstrncpy(substr, s+start, length);\nreturn substr;\n}\n\n\n\nchar* stringConcatenate(char* a, char* b) {\nint len = strlen(a) + strlen(b) + 1;\nchar* target = calloc(len,1);\nstrncat(target, a, len);\nstrncat(target, b, len);\nreturn target;\n}\n\nchar* intToString(int a) {\nint len = 100;\nchar* target = calloc(len,1);\nsnprintf(target, 99, \"%d\", a);\nreturn target;\n}\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\nvoid * gc_malloc( unsigned int size ) {\nreturn malloc( size);\n}\n\nint* makeArray(int length) {\n    int * array = gc_malloc(length*sizeof(int));\n    return array;\n}\n\nint at(int* arr, int index) {\n  return arr[index];\n}\n\nvoid setAt(int* array, int index, int value) {\n    array[index] = value;\n}\n\nchar * read_file(char * filename) {\nchar * buffer = 0;\nlong length;\nFILE * f = fopen (filename, \"rb\");\n\nif (f)\n{\n  fseek (f, 0, SEEK_END);\n  length = ftell (f);\n  fseek (f, 0, SEEK_SET);\n  buffer = calloc (length+1,1);\n  if (buffer == NULL) {\n  printf(\"Malloc failed!\\n\");\n  exit(1);\n}\n  if (buffer)\n  {\n    fread (buffer, 1, length, f);\n  }\n  fclose (f);\n}\nreturn buffer;\n}\n\n\nvoid write_file (char * filename, char * data) {\nFILE *f = fopen(filename, \"w\");\nif (f == NULL)\n{\n    printf(\"Error opening file!\");\n    exit(1);\n}\n\nfprintf(f, \"%s\", data);\n\nfclose(f);\n}\n\nchar* getStringArray(int index, char** strs) {\nreturn strs[index];\n}\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\nint main( int argc, char *argv[] )  {\n  globalArgs = argv;\n  globalArgsCount = argc;\n  caller=calloc(1024,1);\n\n  return start();\n\n}\n\n")
+(printf "%s" "char * character(int num) { char *string = malloc(2); if (!string) return 0; string[0] = num; string[1] = 0; return string; }") (printf "%s" "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n\n")
+(printf "%s" "bool nand(bool a, bool b) { return !(a&&b); }\n//End include block\n")
+```
+
+As you can see, that is completely unmaintainable.  Finding and fixing bugs was almost impossible.  Now with ansi3, the base functions are defined in Quon, and are compiled into the target program just like any other user function.  To deal with target features that can't be written in Quon, there are two new compiler functions:
+
+(passthrough "array[x]")  Passthrough simply prints the string straight into the output.  It's entirely up to you to get the code right.
+
+(binop + 2 2) Binop swaps the first two arguments and prints the expression, allowing Quon to handle languages which require binary operations for arithmetic.
+
+There is still a small header, which contains the definitions that can't be turned into functions.
+
+Quon is working nicely now, and also appears to be quite robust.  Even small mistakes that I make don't seem to affect it too much.  For instance ,apparently I was in a very odd frame of mind while I was writing the ansi C emitter, because I wrote this:
 
     int andBool(int a, int b) { return a == b;}
 
-That has been in there right from the beginning, and somehow it still worked.  I'm amazed.
+That has been in there right from the beginning, and somehow Quon still worked.  I'm amazed.
