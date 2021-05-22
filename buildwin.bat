@@ -1,9 +1,14 @@
 mkdir working
-quon compiler.qon --ansi3 --release > quon.c
-rm quon_new.exe
-gcc -O3  -Wl,--stack,167108864  quon.c -o quon_new -g
-quon_new --test
-quon_new compiler.qon --perl > working\quon.pl
+quon compiler.qon --ansi3 > working\quon.c
+rm working\quon_new.exe
+gcc -O3  -Wl,--stack,167108864  quon.c -o working\quon_new
+working\quon_new --test
+working\quon_new compiler.qon --perl > working\quon.pl
 perl working\quon.pl --test
-quon_new compiler.qon --node > working\quon.js
+working\quon_new compiler.qon --node > working\quon.js
 node working\quon.js --test
+mkdir build
+quon compiler.qon --ansi3 --release > working\quon_release.c
+rm build\quon.exe
+gcc -O3  -Wl,--stack,167108864  working\quon_release.c -o build\quon.exe
+cp -r q build/
