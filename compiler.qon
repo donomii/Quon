@@ -91,7 +91,7 @@
       (if runAnsi3
       (then (ansi3Compile (unBoxString filename)) (printf "\n"))
 	  (else
-      (ansiCompile (unBoxString filename)) (printf "\n")))))))))))))))
+      (ansi3Compile (unBoxString filename)) (printf "\n")))))))))))))))
       ))))))
     (return 0)
     ))
