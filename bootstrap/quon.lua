@@ -709,6 +709,58 @@ caller = "imaCompile:Unknown file:-1"
   printf("main()");
 
 end
+-- Chose function name not
+function not(a)
+print("caller: ", caller, "-> not")
+caller = "not:Unknown file:-1"
+  if a then
+caller = ":Unknown file:-1"
+      return false
+
+  else
+caller = ":Unknown file:-1"
+      return true
+
+  end
+
+end
+-- Chose function name andBool
+function andBool(a,b)
+print("caller: ", caller, "-> andBool")
+caller = "andBool:Unknown file:-1"
+  if a then
+caller = ":Unknown file:-1"
+      if b then
+caller = ":Unknown file:-1"
+          return true
+
+      else
+caller = ":Unknown file:-1"
+          return false
+
+      end
+
+  else
+caller = ":Unknown file:-1"
+      return false
+
+  end
+
+end
+-- Chose function name nand
+function nand(a,b)
+print("caller: ", caller, "-> nand")
+caller = "nand:Unknown file:-1"
+  return not(andBool(a, b))
+
+end
+-- Chose function name xor
+function xor(a,b)
+print("caller: ", caller, "-> xor")
+caller = "xor:Unknown file:-1"
+  return nand(nand(a, nand(a, b)), nand(b, nand(a, b)))
+
+end
 -- Chose function name luaFunctionArgs
 function luaFunctionArgs(indent,tree)
 print("caller: ", caller, "-> luaFunctionArgs")
@@ -1810,6 +1862,9 @@ caller = "javaCompile:Unknown file:-1"
   printf("public boolean globalTrace = false;\n");
 
 caller = "javaCompile:Unknown file:-1"
+  printf("public boolean releaseMode = false;\n");
+
+caller = "javaCompile:Unknown file:-1"
   printf("public String FILE = null;\n");
 
 caller = "javaCompile:Unknown file:-1"
@@ -2210,7 +2265,7 @@ caller = ":Unknown file:-1"
       nodeDeclarations(declarationsof(node), 1);
 
 caller = ":Unknown file:-1"
-      if inList(toStr(name), noStackTrace()) then
+      if releaseMode then
 caller = ":Unknown file:-1"
           printf("");
 
@@ -2221,7 +2276,7 @@ caller = ":Unknown file:-1"
       end
 
 caller = ":Unknown file:-1"
-      if inList(toStr(name), noStackTrace()) then
+      if releaseMode then
 caller = ":Unknown file:-1"
           printf("");
 
@@ -2232,7 +2287,7 @@ caller = ":Unknown file:-1"
       nodeBody(childrenof(node), 1);
 
 caller = ":Unknown file:-1"
-      if inList(toStr(name), noStackTrace()) then
+      if releaseMode then
 caller = ":Unknown file:-1"
           printf("");
 
@@ -2390,7 +2445,7 @@ caller = "nodeIncludes:Unknown file:-1"
   printf("%s", "var NULL = null;");
 
 caller = "nodeIncludes:Unknown file:-1"
-  printf("%s", "var globalArgs;\nvar globalArgsCount;\nvar globalTrace = false;\nvar globalStepTrace = false;");
+  printf("%s", "var globalArgs;\nvar globalArgsCount;\nvar globalTrace = false;\nvar globalStepTrace = false;\nvar releaseMode = false;\n");
 
 caller = "nodeIncludes:Unknown file:-1"
   printf("%s", "function character(num) {}");
@@ -2917,13 +2972,13 @@ caller = ":Unknown file:-1"
   end
 
 caller = "test9:Unknown file:-1"
-  if equalString("llo", sub_string("hello", 2, 3)) then
+  if equalString("llo", luaSubstring("hello", 2, 3)) then
 caller = ":Unknown file:-1"
-      printf("9.14  pass sub_string\n");
+      printf("9.14  pass sub-string\n");
 
   else
 caller = ":Unknown file:-1"
-      printf("9.14  fail sub_string: %s\n", sub_string("hello", 2, 3));
+      printf("9.14  fail sub-string: %s\n", luaSubstring("hello", 2, 3));
 
   end
 
@@ -3572,15 +3627,25 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
           code = car(tree)
 caller = ":Unknown file:-1"
-          printf("\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n", stringify(getTagFail(car(code), boxString("filename"), boxString("Unknown file (not provided by parser)"))), stringify(getTagFail(car(code), boxString("line"), boxString("Line missing"))));
+          if not(releaseMode) then
+caller = ":Unknown file:-1"
+              printf("\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n", stringify(getTagFail(car(code), boxString("filename"), boxString("Unknown file (not provided by parser)"))), stringify(getTagFail(car(code), boxString("line"), boxString("Line missing"))));
+
+          else
+          end
 
       end
 
 caller = ":Unknown file:-1"
-      printIndent(indent);
+      if not(releaseMode) then
+caller = ":Unknown file:-1"
+          printIndent(indent);
 
 caller = ":Unknown file:-1"
-      printf("%s", "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n");
+          printf("%s", "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n");
+
+      else
+      end
 
 caller = ":Unknown file:-1"
       ansi3Statement(code, indent);
@@ -3655,7 +3720,7 @@ caller = ":Unknown file:-1"
       ansi3Declarations(cdr(fourth(node)), 1);
 
 caller = ":Unknown file:-1"
-      if inList(toStr(name), noStackTrace()) then
+      if releaseMode then
 caller = ":Unknown file:-1"
           printf("");
 
@@ -3666,7 +3731,7 @@ caller = ":Unknown file:-1"
       end
 
 caller = ":Unknown file:-1"
-      if inList(toStr(name), noStackTrace()) then
+      if releaseMode then
 caller = ":Unknown file:-1"
           printf("");
 
@@ -3677,7 +3742,7 @@ caller = ":Unknown file:-1"
       ansi3Body(cdr(fifth(node)), 1);
 
 caller = ":Unknown file:-1"
-      if inList(toStr(name), noStackTrace()) then
+      if releaseMode then
 caller = ":Unknown file:-1"
           printf("");
 
@@ -3754,7 +3819,7 @@ end
 function ansi3Includes(nodes)
 print("caller: ", caller, "-> ansi3Includes")
 caller = "ansi3Includes:Unknown file:-1"
-  printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\n");
+  printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n");
 
 caller = "ansi3Includes:Unknown file:-1"
   printf("%s", "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n");
@@ -4457,7 +4522,7 @@ end
 function ansi2Includes(nodes)
 print("caller: ", caller, "-> ansi2Includes")
 caller = "ansi2Includes:Unknown file:-1"
-  printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nconst char* getEnv(char* key){return getenv(key);}\n void panic(char* s){abort();exit(1);}\nint sub(int a, int b) { return a - b; }\nfloat mult(int a, int b) { return a * b; }\nint greaterthan(int a, int b) { return a > b; }\nfloat subf(float a, float b) { return a - b; }\nfloat multf(float a, float b) { return a * b; }\nint greaterthanf(float a, float b) { return a > b; }\nint equal(int a, int b) { return a == b; }\nint equalString(char* a, char* b) { return !strcmp(a,b); }\nint andBool(int a, int b) { return a && b;}\nint string_length(char* s) { return strlen(s);}\nchar* setSubString(char* target, int start,char *source){target[start]=source[0]; return target;}\nchar* sub_string(char* s, int start, int length) {\nchar* substr = calloc(length+1, 1);\nstrncpy(substr, s+start, length);\nreturn substr;\n}\n\n\n\nchar* stringConcatenate(char* a, char* b) {\nint len = strlen(a) + strlen(b) + 1;\nchar* target = calloc(len,1);\nstrncat(target, a, len);\nstrncat(target, b, len);\nreturn target;\n}\n\nchar* intToString(int a) {\nint len = 100;\nchar* target = calloc(len,1);\nsnprintf(target, 99, \"%d\", a);\nreturn target;\n}\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\nvoid * gc_malloc( unsigned int size ) {\nreturn malloc( size);\n}\n\nint* makeArray(int length) {\n    int * array = gc_malloc(length*sizeof(int));\n    return array;\n}\n\nint at(int* arr, int index) {\n  return arr[index];\n}\n\nvoid setAt(int* array, int index, int value) {\n    array[index] = value;\n}\n\nchar * read_file(char * filename) {\nchar * buffer = 0;\nlong length;\nFILE * f = fopen (filename, \"rb\");\n\nif (f)\n{\n  fseek (f, 0, SEEK_END);\n  length = ftell (f);\n  fseek (f, 0, SEEK_SET);\n  buffer = malloc (length);\n  if (buffer == NULL) {\n  printf(\"Malloc failed!\\n\");\n  exit(1);\n}\n  if (buffer)\n  {\n    fread (buffer, 1, length, f);\n  }\n  fclose (f);\n}\nreturn buffer;\n}\n\n\nvoid write_file (char * filename, char * data) {\nFILE *f = fopen(filename, \"w\");\nif (f == NULL)\n{\n    printf(\"Error opening file!\");\n    exit(1);\n}\n\nfprintf(f, \"%s\", data);\n\nfclose(f);\n}\n\nchar* getStringArray(int index, char** strs) {\nreturn strs[index];\n}\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\nint main( int argc, char *argv[] )  {\n  globalArgs = argv;\n  globalArgsCount = argc;\n  caller=calloc(1024,1);\n\n  return start();\n\n}\n\n");
+  printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nconst char* getEnv(char* key){return getenv(key);}\n void panic(char* s){abort();exit(1);}\nint sub(int a, int b) { return a - b; }\nfloat mult(int a, int b) { return a * b; }\nint greaterthan(int a, int b) { return a > b; }\nfloat subf(float a, float b) { return a - b; }\nfloat multf(float a, float b) { return a * b; }\nint greaterthanf(float a, float b) { return a > b; }\nint equal(int a, int b) { return a == b; }\nint equalString(char* a, char* b) { return !strcmp(a,b); }\nint andBool(int a, int b) { return a && b;}\nint string_length(char* s) { return strlen(s);}\nchar* setSubString(char* target, int start,char *source){target[start]=source[0]; return target;}\nchar* sub_string(char* s, int start, int length) {\nchar* substr = calloc(length+1, 1);\nstrncpy(substr, s+start, length);\nreturn substr;\n}\n\n\n\nchar* stringConcatenate(char* a, char* b) {\nint len = strlen(a) + strlen(b) + 1;\nchar* target = calloc(len,1);\nstrncat(target, a, len);\nstrncat(target, b, len);\nreturn target;\n}\n\nchar* intToString(int a) {\nint len = 100;\nchar* target = calloc(len,1);\nsnprintf(target, 99, \"%d\", a);\nreturn target;\n}\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\nvoid * gc_malloc( unsigned int size ) {\nreturn malloc( size);\n}\n\nint* makeArray(int length) {\n    int * array = gc_malloc(length*sizeof(int));\n    return array;\n}\n\nint at(int* arr, int index) {\n  return arr[index];\n}\n\nvoid setAt(int* array, int index, int value) {\n    array[index] = value;\n}\n\nchar * read_file(char * filename) {\nchar * buffer = 0;\nlong length;\nFILE * f = fopen (filename, \"rb\");\n\nif (f)\n{\n  fseek (f, 0, SEEK_END);\n  length = ftell (f);\n  fseek (f, 0, SEEK_SET);\n  buffer = calloc (length+1,1);\n  if (buffer == NULL) {\n  printf(\"Malloc failed!\\n\");\n  exit(1);\n}\n  if (buffer)\n  {\n    fread (buffer, 1, length, f);\n  }\n  fclose (f);\n}\nreturn buffer;\n}\n\n\nvoid write_file (char * filename, char * data) {\nFILE *f = fopen(filename, \"w\");\nif (f == NULL)\n{\n    printf(\"Error opening file!\");\n    exit(1);\n}\n\nfprintf(f, \"%s\", data);\n\nfclose(f);\n}\n\nchar* getStringArray(int index, char** strs) {\nreturn strs[index];\n}\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\nint main( int argc, char *argv[] )  {\n  globalArgs = argv;\n  globalArgsCount = argc;\n  caller=calloc(1024,1);\n\n  return start();\n\n}\n\n");
 
 caller = "ansi2Includes:Unknown file:-1"
   printf("%s", "char * character(int num) { char *string = malloc(2); if (!string) return 0; string[0] = num; string[1] = 0; return string; }");
@@ -5937,6 +6002,9 @@ caller = "perlIncludes:Unknown file:-1"
   printf("%s%s%s", "my ", dollar(), "caller;\n");
 
 caller = "perlIncludes:Unknown file:-1"
+  printf("%s%s%s", "my ", dollar(), "releaseMode;\n");
+
+caller = "perlIncludes:Unknown file:-1"
   printf("%s\n", "use Carp;");
 
 caller = "perlIncludes:Unknown file:-1"
@@ -6546,7 +6614,7 @@ function assoc(searchTerm,l)
 print("caller: ", caller, "-> assoc")
 local elem =nil
 caller = "assoc:Unknown file:-1"
-  assertType("list", l, 88, "q/lists.qon");
+  assertType("list", l, 91, "q/lists.qon");
 
 caller = "assoc:Unknown file:-1"
   if isEmpty(l) then
@@ -6557,7 +6625,7 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
       elem = car(l)
 caller = ":Unknown file:-1"
-      assertType("list", elem, 94, "q/lists.qon");
+      assertType("list", elem, 97, "q/lists.qon");
 
 caller = ":Unknown file:-1"
       if isEmpty(elem) then
@@ -7794,9 +7862,6 @@ local programStr =""
 local tree =nil
 local library =nil
 caller = "loadLib:Unknown file:-1"
-  qlog("Loading library %s\n", path);
-
-caller = "loadLib:Unknown file:-1"
   programStr = luaReadFile(path)
 caller = "loadLib:Unknown file:-1"
   tree = readSexpr(programStr, path)
@@ -8068,7 +8133,7 @@ local replace =nil
 caller = "astCompile:Unknown file:-1"
   tree = loadQuon(filename)
 caller = "astCompile:Unknown file:-1"
-  printf("Final program: \n");
+  qlog("Final program: \n");
 
 caller = "astCompile:Unknown file:-1"
   tree = loadIncludes(tree)
@@ -8090,6 +8155,9 @@ caller = "astCompile:Unknown file:-1"
   tree = macrolist(tree, stringConcatenate("q", "log"), replace)
 caller = "astCompile:Unknown file:-1"
   displayList(tree, 0, true);
+
+caller = "astCompile:Unknown file:-1"
+  qlog("Transformed tree");
 
 caller = "astCompile:Unknown file:-1"
   printf("\n");
@@ -8483,7 +8551,7 @@ end
 function unBoxString(b)
 print("caller: ", caller, "-> unBoxString")
 caller = "unBoxString:Unknown file:-1"
-  assertType("string", b, 167, "q/base.qon");
+  assertType("string", b, 171, "q/base.qon");
 
 caller = "unBoxString:Unknown file:-1"
   return b.str
@@ -8857,6 +8925,8 @@ caller = ":Unknown file:-1"
       filename = boxString("compiler.qon")
   end
 
+caller = "start:Unknown file:-1"
+  releaseMode = inList(boxString("--release"), cmdLine)
 caller = "start:Unknown file:-1"
   runTests = inList(boxString("--test"), cmdLine)
 caller = "start:Unknown file:-1"
