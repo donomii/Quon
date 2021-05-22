@@ -16,7 +16,7 @@
       (else
        (if (equalString (stringify (first tree))  "...")
            (then (printf "..."))
-           (else 
+           (else
             (display (ansi3TypeMap (first tree)))
             (ansi3displays " ")
             (display (second tree))
@@ -24,14 +24,14 @@
        (if ( isNil (cddr tree)) (then ) (else (ansi3displays ", ")))
        (ansi3FunctionArgs (cddr tree))))))
 
- 
+
 
   (void ansi3Expression (list tree int indent) (declare (list thing nil))
    (body
     (if (isList tree)
 		;It is a function call
-      (then 
-	  
+      (then
+
 	  (if (equal 1 (listLength  tree))
 				;A function call with no args
                (then
@@ -86,15 +86,15 @@
                         (ansi3FuncMap (car tree))))
                       (ansi3RecurList (cdr  tree) indent)
                       (printf ")")))))))))))
-	  
-	  
-	  
-	  
+
+
+
+
 	  )
-	  
+
 	  ;It is a variable or literal
       (else (display (ansi3FuncMap  tree))))))
-	  
+
   (void
    ansi3RecurList
    (list expr int indent)
@@ -108,10 +108,10 @@
          (then (ansi3displays ""))
          (else (ansi3displays ", ") (ansi3RecurList (cdr expr) indent)))))
     ))
-	
-	
 
-	
+
+
+
 
   (void ansi3If (list node int indent) (declare)
    (body
@@ -149,13 +149,13 @@
     (ansi3Expression (first  (cdr node)) indent)
     (printf " = " )
     (ansi3Expression (third node) indent)))
-	
+
   (void ansi3Return (list node int indent) (declare)
    (body
     (newLine indent)
-	(if (equal (listLength node) 1) 
+	(if (equal (listLength node) 1)
 	(then (ansi3displays "return;"))
-	(else 
+	(else
     (ansi3displays "return ")
     (ansi3Expression (cadr node) indent)
 	(ansi3displays ";")
@@ -188,12 +188,19 @@
        (if (isNil code)
        (then)
        (else
-	(set code (car tree))
-        (printf "\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n"  (stringify (getTagFail (car code)  (boxString "filename")  (boxString "Unknown file (not provided by parser)"))) (stringify (getTagFail (car code) (boxString "line") (boxString "Line missing") )))))
-       (printIndent indent)
-       (printf
-        "%s"
-        "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n")
+       (set code (car tree))
+       (if (not releaseMode)
+       (then
+
+	      (printf "\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n"  (stringify (getTagFail (car code)  (boxString "filename")  (boxString "Unknown file (not provided by parser)"))) (stringify (getTagFail (car code) (boxString "line") (boxString "Line missing") )))
+        )
+        (else))
+        ))
+        (if (not releaseMode) (then
+      (printIndent indent)
+	    (printf "%s" "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n")
+      )(else)
+    )
        (ansi3Statement code indent)
        (ansi3Body (cdr tree) indent)))))
 
@@ -228,18 +235,18 @@
        (printf ") {")
        (newLine 1)
        (ansi3Declarations (cdr (fourth node)) 1)
-       (if (inList (toStr name) (noStackTrace))
+       (if releaseMode
        (then (printf ""))
        (else
            (printf "\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n" (stringify name) (stringify (getTag name (boxString "filename"))) (stringify (getTag name (boxString "line")))   )))
-       (if (inList (toStr name) (noStackTrace))
+       (if releaseMode
          (then (printf ""))
          (else
           ;;(printf "\n  stackTracePush(\"%s\", \"%s\", %s, %d );\n" (stringify (getTag name (boxString "filename"))) (stringify name) (stringify (getTag name (boxString "line"))) 0)
           ))
 	   ;(display (second(fifth node)))
        (ansi3Body (cdr (fifth node)) 1)
-       (if (inList (toStr name) (noStackTrace))
+       (if releaseMode
          (then (printf ""))
          (else
             (printf "\nif (globalTrace)\n    printf(\"Leaving %s\\n\");\n" (stringify name))
@@ -264,15 +271,15 @@
 
   (void ansi3Functions (list tree) (declare)
    (body
-    (if (isEmpty tree) (then (return))(else 
+    (if (isEmpty tree) (then (return))(else
 		(ansi3Function (car tree)) (ansi3Functions (cdr tree))))))
-	  
-	  
+
+
   (void ansi3Includes (list nodes) (declare)
    (body
     (printf
      "%s"
-     "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\n")
+     "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n")
      (printf "%s" "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n")
 ))
 
@@ -365,14 +372,14 @@
 
 (void ansi3Compile (string filename) (declare (list tree nil)(list replace nil))
     (body
-  
+
 
 
    	(qlog "//Scanning file...%s\n" filename)
-    
+
 	(set tree (loadQuon filename))
    	(qlog "//Building sexpr\n")
-    
+
 (qlog "Loading shim ansi3\n")
   (set tree (buildProg (cons (boxString "q/shims/ansi3.qon") (getIncludes tree)) (getTypes tree) (getFunctions tree))) ;FIXME check includes are recursive
 (qlog "Loading all includes\n")
@@ -381,7 +388,7 @@
 	(set tree (macrowalk tree))
         (set replace (symbolList "fprintf" "stderr"))
        (set tree (macrolist tree (stringConcatenate "q" "log") replace))
-  
+
 
 
    (qlog "//Printing program\n")

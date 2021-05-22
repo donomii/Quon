@@ -394,7 +394,7 @@
 
   (list loadLib (string path) (declare (string programStr "") (list tree nil) (list library nil))
    (body
-    (qlog "Loading library %s\n" path)
+    ;(qlog "Loading library %s\n" path)
     (set programStr (read-file path))
     (set tree (readSexpr programStr path))
     (set tree (macrowalk tree))
@@ -569,7 +569,7 @@
     (body
       (set tree (loadQuon filename))
 
-      (printf "Final program: \n")
+      (qlog "Final program: \n")
       (set tree (loadIncludes tree))
       (set tree (macrowalk tree))
       (set tree (macrosingle tree "write-file" "luaWriteFile"))
@@ -581,7 +581,7 @@
        (set replace (symbolList "fprintf" "stderr"))
        (set tree (macrolist tree (stringConcatenate "q" "log") replace))
       (displayList tree 0 true)
-      ;(printf "Transformed tree")
+      (qlog "Transformed tree")
       
       ;(set program (astBuild filename))
       ;(display program)

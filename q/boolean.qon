@@ -22,4 +22,8 @@
 		(body
 		(return (not (andBool a b)))
 	))
+	
+	(bool xor (bool a bool b) (declare)
+		(body
+			(return (nand (nand a (nand a b)) (nand b (nand a b)))))
 ))

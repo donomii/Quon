@@ -135,7 +135,7 @@
                (else
                 (newLine indent)
                 (javaExpression (childrenof node) indent)
-               (printf ";") 
+               (printf ";")
                 ))))))))
     ))
 
@@ -238,7 +238,7 @@
        (printIndent 1)
        (printf
         "%s %s;\n"
-        
+
         (stringify (javaTypeMap (listLast l)))
         (stringify (first l))))
       (else
@@ -279,8 +279,8 @@
    (body
     (set
      syms
-     (cons (boxString "pair") 
-     (cons (boxString "box") 
+     (cons (boxString "pair")
+     (cons (boxString "box")
       nil)))
     (return syms)))
 
@@ -320,9 +320,10 @@
       (then
        (printf "\npublic class %s {\n" (stringify (first (codeof node))))
        (printf "\npublic String caller =\"\";")
+
        (javaStruct (cdr (codeof node)))
        (printf "\n};\n"))
-      (else 
+      (else
       (if (inList (boxString (stringify (first (codeof node)))) (javaTypesNoDeclare))
       (then (printf ""))
       (else
@@ -363,6 +364,7 @@
     (printf "public boolean globalStackTrace = false;\n")
     (printf "public boolean globalStepTrace = false;\n")
     (printf "public boolean globalTrace = false;\n")
+    (printf "public boolean releaseMode = false;\n")
     (printf "public String FILE = null;\n")
     (printf "public Integer LINE = 0;\n")
     (printf "public static Integer globalArgsCount = 0;\n")

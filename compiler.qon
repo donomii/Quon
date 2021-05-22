@@ -3,7 +3,7 @@
  (functions
 
  (int start ()
- (declare 
+ (declare
   (bool runTests false)
   (list cmdLine nil)
   (box filename nil)
@@ -15,7 +15,7 @@
    (bool runIma false)
    (bool runAnsi2 false)
    (bool runAnsi3 false)
-  (bool runTree false))
+   (bool runTree false))
    (body
     (set cmdLine (listReverse (argList globalArgsCount 0 globalArgs)))
     ;(printf "//") (display cmdLine)
@@ -23,6 +23,7 @@
       (then (set filename (second cmdLine)))
       (else (set filename (boxString "compiler.qon"))))
     ;(printf "#Parsing file: ")(display filename)(newLine 0)
+    (set releaseMode (inList (boxString "--release") cmdLine))
     (set runTests (inList (boxString "--test") cmdLine))
     (set runJava (inList (boxString "--java") cmdLine))
     (set runPerl (inList (boxString "--perl") cmdLine))

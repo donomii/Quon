@@ -180,17 +180,17 @@
        (printf ") {")
        (newLine 1)
        (nodeDeclarations (declarationsof node) 1)
-       (if (inList (toStr name) (noStackTrace))
+       (if releaseMode
        (then (printf ""))
        (else
            (printf "\nif (globalTrace)\n    {printf(\"%s at %s:%s\\n\");}\n" (stringify name) (stringify (getTag name (boxString "filename"))) (stringify (getTag name (boxString "line"))))))
-       (if (inList (toStr name) (noStackTrace))
+       (if releaseMode
          (then (printf ""))
          (else
           ;;(printf "\n  stackTracePush(\"%s\", \"%s\", %s, %d );\n" (stringify (getTag name (boxString "filename"))) (stringify name) (stringify (getTag name (boxString "line"))) 0)
           ))
        (nodeBody (childrenof node) 1)
-       (if (inList (toStr name) (noStackTrace))
+       (if releaseMode
          (then (printf ""))
          (else
             (printf "\nif (globalTrace)\n    {printf(\"Leaving %s\\n\");}\n" (stringify name))
@@ -256,7 +256,7 @@
     (printf "%s" "function setAt(array, index, value) {\n    array[index] = value;\n}\n\n")
     (printf "%s" "function getStringArray(index, strs) {\nreturn strs[index];\n}\n\n")
     (printf "%s" "var NULL = null;")
-    (printf "%s" "var globalArgs;\nvar globalArgsCount;\nvar globalTrace = false;\nvar globalStepTrace = false;")
+    (printf "%s" "var globalArgs;\nvar globalArgsCount;\nvar globalTrace = false;\nvar globalStepTrace = false;\nvar releaseMode = false;\n")
     (printf "%s" "function character(num) {}")
 ))
 

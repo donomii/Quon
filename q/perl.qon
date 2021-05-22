@@ -18,7 +18,7 @@
                 (if (inList  (boxString (sub-string (stringify abox) 0 1)) (numbers 9))
                     (then (return "number"))
                     (else (return "symbol")))))
-           
+
            ))
 
   (void perlLeaf (list thisNode int indent) (declare)
@@ -267,6 +267,7 @@
         (body
          (printf "%s\n" "use strict;")
          (printf "%s%s%s" "my " (dollar) "caller;\n" )
+         (printf "%s%s%s" "my " (dollar) "releaseMode;\n" )
          (printf "%s\n" "use Carp;")
          (dollar)
          (printf "%s\n" "use Carp::Always;")
@@ -300,7 +301,7 @@
 
   (void perlTypeDecl (list l) (declare)
         (body
-         
+
          ))
 
   (void perlStructComponents (list node) (declare)
@@ -353,7 +354,7 @@
 
   (void perlType (list node) (declare)
         (body
-         
+
          ))
 
   (void perlTypes (list nodes) (declare)
