@@ -1,5 +1,4 @@
-mkdir working
-quon compiler.qon --ansi3 > working\quon.c
+working\quon compiler.qon --ansi3 > working\quon.c
 rm working\quon_new.exe
 gcc -O3  -Wl,--stack,167108864  quon.c -o working\quon_new
 working\quon_new --test

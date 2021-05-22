@@ -1,6 +1,5 @@
 rm -rf release
 mkdir release
-gcc -O3  -Wl,--stack,167108864 bootstrap\quon.c -o working\quon.exe
 working\quon.exe compiler.qon --ansi3 --release > working\quon_release.c
 rm release\quon.exe
 gcc -O3  -Wl,--stack,167108864  working\quon_release.c -o release\quon.exe
