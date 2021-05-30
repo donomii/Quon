@@ -1,0 +1,398 @@
+((includes)
+ (types)
+
+ (functions
+
+(void bashdisplays (string s) (declare)
+	(body
+		(printf "%s" s)
+	)
+)
+
+  (void bashFunctionArgs (list tree) (declare)
+   (body
+    (if (isEmpty tree)
+      (then (return))
+      (else
+       (display (second tree))
+       (if ( isNil (cddr tree)) (then ) (else (bashdisplays ", ")))
+       (bashFunctionArgs (cddr tree))))))
+
+
+
+  (void bashExpression (list tree int indent) (declare (list thing nil))
+   (body
+    (if (isList tree)
+		;It is a function call
+      (then
+
+	  (if (equal 1 (listLength  tree))
+				;A function call with no args
+               (then
+                (display (car  tree))
+				;C does not allow "return();"
+                (if (equalBox
+                     (boxString "return")
+                      (car  tree))
+                  (then )
+                  (else (bashdisplays "()"))))
+               (else
+			   ;Handle special functions
+                (set thing (first   tree))
+                (if (equalBox (boxSymbol "get-struct") thing)
+				;Get a value from a C struct ref
+                  (then
+                   (printf
+                    "%s->%s"
+                    (stringify (second  tree))
+                    (stringify (third  tree))))
+                  (else
+                   (if (equalBox (boxSymbol "new") thing)
+				   ;Create a new value on the heap
+                     (then
+                      (printf
+                       "malloc(sizeof(%s))"
+                       (stringify  (third tree))))
+                     (else
+                      (if (equalBox (boxSymbol "passthrough") thing)
+				   ;Print the second arg directly into the compiler output.  Hope you got it perfectly right!
+                     (then
+                      (printf
+                       "%s"
+                       (stringify  (second tree))))
+                     (else
+                      (if (equalBox (boxSymbol "binop") thing)
+				   ;Print the second arg directly into the compiler output.  Hope you got it perfectly right!
+                     (then
+                      (printf "(")
+                      (bashExpression (third tree) indent)
+                      (printf
+                       " %s "
+                       (stringify  (second tree)))
+                      (bashExpression (fourth tree) indent)
+                      (printf ")")
+                      )
+					   ;It's a normal expression
+                     (else
+                      (printf
+                       "%s("
+                       (stringify
+                        (bashFuncMap (car tree))))
+                      (bashRecurList (cdr  tree) indent)
+                      (printf ")")))))))))))
+
+
+
+
+	  )
+
+	  ;It is a variable or literal
+      (else (display (bashFuncMap  tree))))))
+
+  (void
+   bashRecurList
+   (list expr int indent)
+   (declare)
+   (body
+    (if (isEmpty expr)
+      (then (return))
+      (else
+       (bashExpression (car expr) indent)
+       (if (isNil (cdr expr))
+         (then (bashdisplays ""))
+         (else (bashdisplays ", ") (bashRecurList (cdr expr) indent)))))
+    ))
+
+
+
+
+
+  (void bashIf (list node int indent) (declare)
+   (body
+    (newLine indent)
+    (bashdisplays "if (( ")
+    (bashExpression (second node) 0)
+    (bashdisplays ")) ; then ")
+    (bashBody (cdr (third node)) (add1 indent))
+    (newLine indent)
+    (bashdisplays " else ")
+    (bashBody (cdr (fourth node)) (add1 indent))
+    (newLine indent)
+    (bashdisplays "fi")))
+
+  (void bashSetStruct (list node int indent) (declare)
+   (body
+    (newLine indent)
+    (printf
+     "%s->%s = "
+     (stringify (second  node))
+     (stringify (third  node)))
+    (bashExpression (fourth node) indent)))
+
+  (void bashGetStruct (list node int indent) (declare)
+   (body
+    (newLine indent)
+    (printf
+     "%s->%s"
+     (stringify (first  node))
+     (stringify (second  node)))))
+
+  (void bashSet (list node int indent) (declare)
+   (body
+    (newLine indent)
+    (bashExpression (first  (cdr node)) indent)
+    (printf " = " )
+    (bashExpression (third node) indent)))
+
+  (void bashReturn (list node int indent) (declare)
+   (body
+    (newLine indent)
+	(if (equal (listLength node) 1)
+	(then (bashdisplays "return;"))
+	(else
+    (bashdisplays "return ")
+    (bashExpression (cadr node) indent)
+	(bashdisplays ";")
+	))))
+
+  (void bashStatement (list node int indent) (declare)
+   (body
+    (if (equalBox (boxString "set") (first node))
+      (then (bashSet node indent))
+      (else
+       (if (equalBox (boxString "set-struct") (first node))
+         (then (bashSetStruct node indent))
+         (else
+          (if (equalBox (boxString "if") (first node))
+            (then (bashIf node indent))
+            (else
+             (if (equalBox (boxString "return") (first node))
+               (then (bashReturn node indent))
+               (else
+                (newLine indent)
+                (bashExpression  node indent)))))))))
+    (bashdisplays ";\n")))
+
+  (void bashBody (list tree int indent) (declare (list code nil))
+   (body
+    (if (isEmpty tree)
+      (then (return))
+      (else
+       (set code  tree)
+       (if (isNil code)
+       (then)
+       (else
+       (set code (car tree))
+       (if (not releaseMode)
+       (then
+
+	      (printf "\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n"  (stringify (getTagFail (car code)  (boxString "filename")  (boxString "Unknown file (not provided by parser)"))) (stringify (getTagFail (car code) (boxString "line") (boxString "Line missing") )))
+        )
+        (else))
+        ))
+        (if (not releaseMode) (then
+      (printIndent indent)
+	    (printf "%s" "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n")
+      )(else)
+    )
+       (bashStatement code indent)
+       (bashBody (cdr tree) indent)))))
+
+  (void bashDeclarations (list decls int indent) (declare (box decl nil))
+   (body
+    (if (isEmpty decls)
+      (then (return))
+      (else
+       (set decl (car decls))
+       (printf
+        "local %s=\""
+        (stringify (second decl)))
+       (bashExpression (third decl) indent)
+       (printf "\";\n")
+       (bashDeclarations (cdr decls) indent)))))
+
+  (void bashFunction (list node) (declare (box name nil))
+   (body
+    (set name  (second node))
+    (printf "\n\n#Building function %s from line:%s" (stringify name) (stringify (getTag name (boxString "line"))))
+    (newLine 0)
+    (if (isNil node)
+      (then (return))
+      (else
+       (newLine 0)
+       (printf "%s(" (stringify (second node)))
+       (bashFunctionArgs (third node))
+       (printf ") {")
+       (newLine 1)
+       (bashDeclarations (cdr (fourth node)) 1)
+       (if releaseMode
+       (then (printf ""))
+       (else
+           (printf "\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n" (stringify name) (stringify (getTag name (boxString "filename"))) (stringify (getTag name (boxString "line")))   )))
+       (if releaseMode
+         (then (printf ""))
+         (else
+          ;;(printf "\n  stackTracePush(\"%s\", \"%s\", %s, %d );\n" (stringify (getTag name (boxString "filename"))) (stringify name) (stringify (getTag name (boxString "line"))) 0)
+          ))
+	   ;(display (second(fifth node)))
+       (bashBody (cdr (fifth node)) 1)
+       (if releaseMode
+         (then (printf ""))
+         (else
+            (printf "\nif (globalTrace)\n    printf(\"Leaving %s\\n\");\n" (stringify name))
+            ))
+       (printf "\n}\n")))))
+
+  (void bashForwardDeclaration (list node) (declare)
+   (body
+    (if (isNil node) (then (return)) (else
+       (printf
+        "\n%s %s("
+        (stringify (bashTypeMap (first node)))
+        (stringify (second node)))
+       (bashFunctionArgs (third node))
+       (bashdisplays ");")))))
+
+  (void bashForwardDeclarations (list tree) (declare)
+   (body
+    (if (isEmpty tree) (then (return)) (else
+       (bashForwardDeclaration (car tree))
+       (bashForwardDeclarations (cdr tree))))))
+
+  (void bashFunctions (list tree) (declare)
+   (body
+    (if (isEmpty tree) (then (return))(else
+		(bashFunction (car tree)) (bashFunctions (cdr tree))))))
+
+
+  (void bashIncludes (list nodes) (declare)
+   (body
+    (printf
+     "%s"
+     "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n")
+     (printf "%s" "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n")
+))
+
+  (void bashTypeDecl (list l) (declare)
+   (body
+    (if (> (listLength l) 2)
+      (then
+       (printIndent 1)
+       (printf
+        "%s %s %s;\n"
+        (stringify (second l))
+        (stringify (bashTypeMap (listLast l)))
+        (stringify (first l))))
+      (else
+       (printIndent 1)
+       (printf
+        "%s %s;\n"
+        (stringify (bashTypeMap (listLast l)))
+        (stringify (car l)))))))
+
+  (void bashStructComponents (list node) (declare)
+   (body
+    (if (isEmpty node)
+      (then (return))
+      (else (bashTypeDecl (car node)) (bashStructComponents (cdr node))))))
+
+  (void bashStruct (list node) (declare)
+   (body (bashStructComponents (cdr  node))))
+
+  (box bashTypeMap (box aSym) (declare (list symMap nil))
+   (body
+    (set
+     symMap
+     (alistCons (boxSymbol "stringArray") (boxSymbol "char**")
+      (alistCons (boxSymbol "string") (boxSymbol "char*") nil)))
+    (if (truthy (assoc (stringify aSym) symMap))
+      (then (return (cdr (assoc (stringify aSym) symMap))))
+      (else (return aSym)))))
+
+  (box bashFuncMap (box aSym) (declare (list symMap nil))
+   (body
+    (if (equalString "symbol" (boxType aSym))
+      (then
+       (set
+        symMap
+        (alistCons
+         (boxSymbol "=")
+         (boxSymbol "equal")
+         (alistCons
+          (boxSymbol "sub-string")
+          (boxSymbol "sub_string")
+          (alistCons
+           (boxSymbol "read-file")
+           (boxSymbol "read_file")
+           (alistCons
+            (boxSymbol "write-file")
+            (boxSymbol "write_file")
+            (alistCons
+             (boxSymbol ">")
+             (boxSymbol "greaterthan")
+             (alistCons
+              (boxSymbol "string-length")
+              (boxSymbol "string_length")
+              (alistCons (boxSymbol "nil") (boxSymbol "NULL") nil))))))))
+
+       (if (truthy (assoc (stringify aSym) symMap))
+         (then (return (cdr (assoc (stringify aSym) symMap))))
+         (else (return aSym))))
+      (else (return aSym)))))
+
+  (void bashType (list node) (declare)
+   (body
+    (if (isList  (second node))
+      (then
+       (printf "\ntypedef struct %s {\n" (stringify (first  node)))
+       (bashStruct  (second node))
+       (printf "\n} %s;\n" (stringify (first  node))))
+      (else (bashdisplays "typedef ") (bashTypeDecl  node)))
+    ))
+
+  (void bashTypes (list nodes) (declare)
+   (body
+    (if (isEmpty nodes)
+      (then (return))
+      (else  (bashType (car nodes)) (bashTypes (cdr nodes))))))
+
+
+
+
+
+(void bashCompile (string filename) (declare (list tree nil)(list replace nil))
+    (body
+
+
+
+   	(qlog "//Scanning file...%s\n" filename)
+
+	(set tree (loadQuon filename))
+   	(qlog "//Building sexpr\n")
+
+(qlog "Loading shim bash\n")
+  (set tree (buildProg (cons (boxString "q/shims/bash.qon") (getIncludes tree)) (getTypes tree) (getFunctions tree))) ;FIXME check includes are recursive
+(qlog "Loading all includes\n")
+	(set tree (loadIncludes tree))
+(qlog "Applying macros\n")
+	(set tree (macrowalk tree))
+        (set replace (symbolList "fprintf" "stderr"))
+       (set tree (macrolist tree (stringConcatenate "q" "log") replace))
+
+
+
+   (qlog "//Printing program\n")
+
+    (bashIncludes (cdr (first tree)))
+    (bashTypes (cdr (second tree)))
+	;(display (cdr (second tree)))(exit 1)
+    (bashdisplays "Box* globalStackTrace = NULL;\n")
+    (bashdisplays
+     "\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n")
+    (bashForwardDeclarations (cdr (third tree)))
+    (bashdisplays "\n\n//End forward declarations\n\n")
+    (bashFunctions (cdr (third tree)))
+    (bashdisplays "\n")
+   (qlog "//Done printing program\n")
+))
+  ))

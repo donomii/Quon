@@ -1,0 +1,209 @@
+((includes)
+ (types
+  (uint int unsigned)
+  (bool int)
+  (array int*)
+)
+
+
+
+
+ (functions
+
+(bool ansi3IsNil (void* a) (declare)
+	(body
+		(if (binop == a NULL)
+			(then (return true))
+			(else (return false)))
+))
+(void* pointerAdd (void* a int b) (declare)
+	(body
+		(return (binop + a b))))
+
+(char* getEnv (char* key) (declare)
+	(body
+		(return (getenv key))))
+
+(void panic (char* s) (declare)
+	(body
+		(abort)
+		(exit 1)))
+
+(int sub (int a  int b) (declare)
+	(body
+		(return (binop - a b))))
+
+(float mult (int a  int b) (declare)
+	(body
+		(return (binop * a b))))
+
+(int greaterthan (int a int b) (declare)
+	(body
+		(return (binop > a b))))
+
+(float subf (float a float b) (declare)
+	(body
+		(return (binop - a b))))
+
+(float multf (float a float b) (declare)
+	(body
+		(return (binop * a b))))
+
+(int greaterthanf (float a float b) (declare)
+	(body
+		(return (binop > a b))))
+
+(int equal (int a int b) (declare)
+	(body
+		(return (binop  == a b))))
+
+(int equalString (char* a char* b) (declare)
+	(body
+		(return (binop == 0 (strcmp a b)))))
+
+(int string_length (char* s) (declare)
+	(body
+		(return (strlen s))))
+
+(char* setSubString (char* target int start char* source)(declare)
+	(body
+		(passthrough "target[start]=source[0]")
+		(return target)
+))
+
+(char* sub_string (char* s int start int length) (declare (char* substr ""))
+	(body
+		(set substr  (calloc (add length 1) 1))
+		(strncpy substr  (binop + s start) length)
+		(return substr)
+))
+
+(char* stringConcatenate (char* a char* b) (declare (int len 0)(char* target nil))
+	(body
+		(set len (add (add (strlen a) (strlen b)) 1))
+		(set target (calloc len 1))
+		(strncat target  a  len)
+		(strncat target  b  len)
+		(return target)
+))
+	
+(char* intToString (int a) (declare (int len 0)(char* target nil))
+	(body
+         (set len  100)
+         (set target  (calloc len 1))
+         (snprintf target  99  "%d"  a)
+         (return target)
+))
+
+(void* gc_malloc (uint size) (declare)
+	(body
+         (return (malloc size))
+))
+
+(int* makeArray (int length) (declare (int* array nil))
+	(body
+         (set array (gc_malloc (mult length (sizeof int))))
+         (return array)
+))
+
+(int at (int* arr  int index) (declare)
+    	(body
+         (return (passthrough "arr[index]"))
+))
+
+(void setAt (int* array int index int value) (declare)
+    	(body
+         (set (passthrough "array[index]") value)
+))
+
+(void setCharAt (char* array int index int value) (declare)
+    	(body
+         (set (passthrough "array[index]") value)
+))
+
+(char* read_file (char* filename) (declare (char* buffer nil) (long length 0) (FILE* f nil))
+    	(body
+         (set f (fopen filename "rb"))
+         (if (ansi3IsNil f)
+             (then (return nil))
+             (else
+              (fseek f 0 SEEK_END)
+              (set length (ftell f))
+              (fseek f 0 SEEK_SET)
+              (set buffer (calloc (add 1 length) 1))
+              
+              (if (ansi3IsNil buffer)
+                  (then (panic "Malloc failed!\n"))
+                  (else (fread buffer 1 length f)))
+              (fclose f)
+              ))
+             
+         (return buffer)
+))
+
+(void write_file (char* filename char* data)   (declare (char* buffer nil) (long length 0) (FILE* f nil))
+      (body
+              (set f (fopen filename "w"))
+              (if (ansi3IsNil f)
+                  (then (panic "Error opening file!"))
+                  (else 
+              (fprintf f  "%s" data)
+              (fclose f)
+		))
+ ))
+	
+(string getStringArray (int index char** strs) (declare)
+       (body
+        (return (passthrough "strs[index]"))))
+
+(char** programArgs () (declare)
+        (body
+         (return globalArgs)
+))
+
+(int programArgsCount () (declare)
+     (body
+      (return globalArgsCount)
+))
+
+
+(int main (int argc char** argv )  (declare)
+	(body
+         (set caller (calloc 1024 1))
+	 (set globalArgs argv)
+	 (set globalArgsCount argc)
+         (return (start argc argv))
+))
+
+(char* character (int num)  (declare (string buffer nil) (string str NULL))
+    	(body
+         (set str (malloc 2))
+         (if (ansi3IsNil str) 
+             (then (return 0))
+             (else
+         (setCharAt str 0 num)
+         (setCharAt str 1 0)
+         (return str)
+         ))
+))
+
+
+
+
+(void displays (string s) (declare)
+      (body
+       (printf "%s" s)
+))
+)
+
+
+ (globals
+  (char* caller nil)
+  (bool globalTrace  false)
+  (bool globalStepTrace false)
+  )
+ )
+
+   
+
+ 
