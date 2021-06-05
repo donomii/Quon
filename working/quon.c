@@ -672,19 +672,19 @@ if (globalTrace)
     snprintf(caller, 1024, "from q/bash.qon:76");
               if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-              printf("%s ", stringify(bashFuncMap(car(tree))));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:80");
-              if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-              bashRecurList(cdr(tree), indent);
+              printf("%s(%s ", dollar(), stringify(bashFuncMap(car(tree))));
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/bash.qon:81");
               if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-              printf(" ");
+              bashRecurList(cdr(tree), indent);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/bash.qon:82");
+              if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+              printf(")");
 
             };
 
@@ -698,7 +698,7 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:89");
+    snprintf(caller, 1024, "from q/bash.qon:90");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     display(bashVarOrLit(tree));
@@ -711,27 +711,27 @@ if (globalTrace)
 }
 
 
-//Building function bashVarOrLit from line: 91
+//Building function bashVarOrLit from line: 92
 
 box bashVarOrLit(box a) {
   
 if (globalTrace)
-    printf("bashVarOrLit at q/bash.qon:91 (%s)\n", caller);
+    printf("bashVarOrLit at q/bash.qon:92 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:93");
+    snprintf(caller, 1024, "from q/bash.qon:94");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( equalString("symbol", boxType(a))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:94");
+    snprintf(caller, 1024, "from q/bash.qon:95");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return boxSymbol(stringConcatenate(dollar(), stringify(a)));;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:95");
+    snprintf(caller, 1024, "from q/bash.qon:96");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return a;;
@@ -744,51 +744,51 @@ if (globalTrace)
 }
 
 
-//Building function bashRecurList from line: 100
+//Building function bashRecurList from line: 101
 
 void bashRecurList(list expr, int indent) {
   
 if (globalTrace)
-    printf("bashRecurList at q/bash.qon:100 (%s)\n", caller);
+    printf("bashRecurList at q/bash.qon:101 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:104");
+    snprintf(caller, 1024, "from q/bash.qon:105");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isEmpty(expr)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:105");
+    snprintf(caller, 1024, "from q/bash.qon:106");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return;;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:107");
+    snprintf(caller, 1024, "from q/bash.qon:108");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashExpression(car(expr), indent);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:108");
+    snprintf(caller, 1024, "from q/bash.qon:109");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( isNil(cdr(expr))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:109");
+    snprintf(caller, 1024, "from q/bash.qon:110");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       bashdisplays("");
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:110");
+    snprintf(caller, 1024, "from q/bash.qon:111");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       bashdisplays(" ");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:110");
+    snprintf(caller, 1024, "from q/bash.qon:111");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       bashRecurList(cdr(expr), indent);
@@ -803,69 +803,69 @@ if (globalTrace)
 }
 
 
-//Building function bashIf from line: 117
+//Building function bashIf from line: 118
 
 void bashIf(list node, int indent) {
   
 if (globalTrace)
-    printf("bashIf at q/bash.qon:117 (%s)\n", caller);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:119");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  newLine(indent);
+    printf("bashIf at q/bash.qon:118 (%s)\n", caller);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/bash.qon:120");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  bashdisplays("if (( ");
+  newLine(indent);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/bash.qon:121");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  bashExpression(second(node), 0);
+  bashdisplays("if (( ");
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/bash.qon:122");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  bashdisplays(")) ; then ");
+  bashExpression(second(node), 0);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/bash.qon:123");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  bashBody(cdr(third(node)), add1(indent));
+  bashdisplays(")) ; then ");
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/bash.qon:124");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  newLine(indent);
+  bashBody(cdr(third(node)), add1(indent));
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/bash.qon:125");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  bashdisplays(" else ");
+  newLine(indent);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/bash.qon:126");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  bashBody(cdr(fourth(node)), add1(indent));
+  bashdisplays(" else ");
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/bash.qon:127");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  newLine(indent);
+  bashBody(cdr(fourth(node)), add1(indent));
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/bash.qon:128");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  newLine(indent);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/bash.qon:129");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   bashdisplays("fi");
@@ -876,27 +876,27 @@ if (globalTrace)
 }
 
 
-//Building function bashSetStruct from line: 130
+//Building function bashSetStruct from line: 131
 
 void bashSetStruct(list node, int indent) {
   
 if (globalTrace)
-    printf("bashSetStruct at q/bash.qon:130 (%s)\n", caller);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:132");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  newLine(indent);
+    printf("bashSetStruct at q/bash.qon:131 (%s)\n", caller);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/bash.qon:133");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
+  newLine(indent);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/bash.qon:134");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
   printf("%s->%s = ", stringify(second(node)), stringify(third(node)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:137");
+    snprintf(caller, 1024, "from q/bash.qon:138");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   bashExpression(fourth(node), indent);
@@ -907,21 +907,21 @@ if (globalTrace)
 }
 
 
-//Building function bashGetStruct from line: 139
+//Building function bashGetStruct from line: 140
 
 void bashGetStruct(list node, int indent) {
   
 if (globalTrace)
-    printf("bashGetStruct at q/bash.qon:139 (%s)\n", caller);
+    printf("bashGetStruct at q/bash.qon:140 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:141");
+    snprintf(caller, 1024, "from q/bash.qon:142");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   newLine(indent);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:142");
+    snprintf(caller, 1024, "from q/bash.qon:143");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("%s->%s", stringify(first(node)), stringify(second(node)));
@@ -932,33 +932,33 @@ if (globalTrace)
 }
 
 
-//Building function bashSet from line: 147
+//Building function bashSet from line: 148
 
 void bashSet(list node, int indent) {
   
 if (globalTrace)
-    printf("bashSet at q/bash.qon:147 (%s)\n", caller);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:149");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  newLine(indent);
+    printf("bashSet at q/bash.qon:148 (%s)\n", caller);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/bash.qon:150");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  display(first(cdr(node)));
+  newLine(indent);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/bash.qon:151");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  printf("=");
+  display(first(cdr(node)));
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/bash.qon:152");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  printf("=");
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/bash.qon:153");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   bashExpression(third(node), indent);
@@ -969,45 +969,45 @@ if (globalTrace)
 }
 
 
-//Building function bashReturn from line: 154
+//Building function bashReturn from line: 155
 
 void bashReturn(list node, int indent) {
   
 if (globalTrace)
-    printf("bashReturn at q/bash.qon:154 (%s)\n", caller);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:156");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  newLine(indent);
+    printf("bashReturn at q/bash.qon:155 (%s)\n", caller);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/bash.qon:157");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  if ( equal(listLength(node), 1)) {
+  newLine(indent);
+
 if (globalTrace)
     snprintf(caller, 1024, "from q/bash.qon:158");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equal(listLength(node), 1)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/bash.qon:159");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashdisplays("return;");
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:160");
+    snprintf(caller, 1024, "from q/bash.qon:161");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashdisplays("return ");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:161");
+    snprintf(caller, 1024, "from q/bash.qon:162");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashExpression(cadr(node), indent);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:162");
+    snprintf(caller, 1024, "from q/bash.qon:163");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashdisplays(";");
@@ -1020,69 +1020,69 @@ if (globalTrace)
 }
 
 
-//Building function bashStatement from line: 165
+//Building function bashStatement from line: 166
 
 void bashStatement(list node, int indent) {
   
 if (globalTrace)
-    printf("bashStatement at q/bash.qon:165 (%s)\n", caller);
+    printf("bashStatement at q/bash.qon:166 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:167");
+    snprintf(caller, 1024, "from q/bash.qon:168");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( equalBox(boxString("set"), first(node))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:168");
+    snprintf(caller, 1024, "from q/bash.qon:169");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashSet(node, indent);
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:170");
+    snprintf(caller, 1024, "from q/bash.qon:171");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( equalBox(boxString("set-struct"), first(node))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:171");
+    snprintf(caller, 1024, "from q/bash.qon:172");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       bashSetStruct(node, indent);
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:173");
+    snprintf(caller, 1024, "from q/bash.qon:174");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       if ( equalBox(boxString("if"), first(node))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:174");
+    snprintf(caller, 1024, "from q/bash.qon:175");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         bashIf(node, indent);
 
       } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:176");
+    snprintf(caller, 1024, "from q/bash.qon:177");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         if ( equalBox(boxString("return"), first(node))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:177");
+    snprintf(caller, 1024, "from q/bash.qon:178");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
           bashReturn(node, indent);
 
         } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:179");
+    snprintf(caller, 1024, "from q/bash.qon:180");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
           newLine(indent);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:180");
+    snprintf(caller, 1024, "from q/bash.qon:181");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
           bashExpression(node, indent);
@@ -1096,7 +1096,7 @@ if (globalTrace)
   };
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:181");
+    snprintf(caller, 1024, "from q/bash.qon:182");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   bashdisplays(";\n");
@@ -1107,51 +1107,51 @@ if (globalTrace)
 }
 
 
-//Building function bashBody from line: 183
+//Building function bashBody from line: 184
 
 void bashBody(list tree, int indent) {
   list code = NULL;
 
 if (globalTrace)
-    printf("bashBody at q/bash.qon:183 (%s)\n", caller);
+    printf("bashBody at q/bash.qon:184 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:185");
+    snprintf(caller, 1024, "from q/bash.qon:186");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isEmpty(tree)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:186");
+    snprintf(caller, 1024, "from q/bash.qon:187");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return;;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:188");
+    snprintf(caller, 1024, "from q/bash.qon:189");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     code = tree;
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:189");
+    snprintf(caller, 1024, "from q/bash.qon:190");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( isNil(code)) {
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:192");
+    snprintf(caller, 1024, "from q/bash.qon:193");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       code = car(tree);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:193");
+    snprintf(caller, 1024, "from q/bash.qon:194");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       if ( not(releaseMode)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:196");
+    snprintf(caller, 1024, "from q/bash.qon:197");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         printf("\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n", stringify(getTagFail(car(code), boxString("filename"), boxString("Unknown file (not provided by parser)"))), stringify(getTagFail(car(code), boxString("line"), boxString("Line missing"))));
@@ -1162,18 +1162,18 @@ if (globalTrace)
     };
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:200");
+    snprintf(caller, 1024, "from q/bash.qon:201");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( not(releaseMode)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:201");
+    snprintf(caller, 1024, "from q/bash.qon:202");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       printIndent(indent);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:202");
+    snprintf(caller, 1024, "from q/bash.qon:203");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       printf("%s", "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n");
@@ -1182,13 +1182,13 @@ if (globalTrace)
     };
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:205");
+    snprintf(caller, 1024, "from q/bash.qon:206");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashStatement(code, indent);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:206");
+    snprintf(caller, 1024, "from q/bash.qon:207");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashBody(cdr(tree), indent);
@@ -1201,52 +1201,52 @@ if (globalTrace)
 }
 
 
-//Building function bashDeclarations from line: 208
+//Building function bashDeclarations from line: 209
 
 void bashDeclarations(list decls, int indent) {
   box decl = NULL;
 
 if (globalTrace)
-    printf("bashDeclarations at q/bash.qon:208 (%s)\n", caller);
+    printf("bashDeclarations at q/bash.qon:209 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:210");
+    snprintf(caller, 1024, "from q/bash.qon:211");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isEmpty(decls)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:211");
+    snprintf(caller, 1024, "from q/bash.qon:212");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return;;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:213");
+    snprintf(caller, 1024, "from q/bash.qon:214");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     decl = car(decls);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:214");
+    snprintf(caller, 1024, "from q/bash.qon:215");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("local %s=\"", stringify(second(decl)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:217");
+    snprintf(caller, 1024, "from q/bash.qon:218");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashExpression(third(decl), indent);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:218");
+    snprintf(caller, 1024, "from q/bash.qon:219");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("\";\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:219");
+    snprintf(caller, 1024, "from q/bash.qon:220");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashDeclarations(cdr(decls), indent);
@@ -1259,94 +1259,94 @@ if (globalTrace)
 }
 
 
-//Building function bashFunction from line: 221
+//Building function bashFunction from line: 222
 
 void bashFunction(list node) {
   box name = NULL;
 
 if (globalTrace)
-    printf("bashFunction at q/bash.qon:221 (%s)\n", caller);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:223");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  name = second(node);
+    printf("bashFunction at q/bash.qon:222 (%s)\n", caller);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/bash.qon:224");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  printf("\n\n#Building function %s from line:%s", stringify(name), stringify(getTag(name, boxString("line"))));
+  name = second(node);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/bash.qon:225");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  newLine(0);
+  printf("\n\n#Building function %s from line:%s", stringify(name), stringify(getTag(name, boxString("line"))));
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/bash.qon:226");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  if ( isNil(node)) {
+  newLine(0);
+
 if (globalTrace)
     snprintf(caller, 1024, "from q/bash.qon:227");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isNil(node)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/bash.qon:228");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return;;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:229");
+    snprintf(caller, 1024, "from q/bash.qon:230");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     newLine(0);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:230");
+    snprintf(caller, 1024, "from q/bash.qon:231");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("%s(", stringify(second(node)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:231");
+    snprintf(caller, 1024, "from q/bash.qon:232");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashFunctionArgs(third(node));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:232");
+    snprintf(caller, 1024, "from q/bash.qon:233");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf(") {");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:233");
+    snprintf(caller, 1024, "from q/bash.qon:234");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     newLine(1);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:234");
+    snprintf(caller, 1024, "from q/bash.qon:235");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashDeclarations(cdr(fourth(node)), 1);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:235");
+    snprintf(caller, 1024, "from q/bash.qon:236");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( releaseMode) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:236");
+    snprintf(caller, 1024, "from q/bash.qon:237");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       printf("");
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:238");
+    snprintf(caller, 1024, "from q/bash.qon:239");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       printf("\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n", stringify(name), stringify(getTag(name, boxString("filename"))), stringify(getTag(name, boxString("line"))));
@@ -1354,12 +1354,12 @@ if (globalTrace)
     };
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:239");
+    snprintf(caller, 1024, "from q/bash.qon:240");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( releaseMode) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:240");
+    snprintf(caller, 1024, "from q/bash.qon:241");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       printf("");
@@ -1368,25 +1368,25 @@ if (globalTrace)
     };
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:245");
+    snprintf(caller, 1024, "from q/bash.qon:246");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashBody(cdr(fifth(node)), 1);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:246");
+    snprintf(caller, 1024, "from q/bash.qon:247");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( releaseMode) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:247");
+    snprintf(caller, 1024, "from q/bash.qon:248");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       printf("");
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:249");
+    snprintf(caller, 1024, "from q/bash.qon:250");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       printf("\nif (globalTrace)\n    printf(\"Leaving %s\\n\");\n", stringify(name));
@@ -1394,7 +1394,7 @@ if (globalTrace)
     };
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:251");
+    snprintf(caller, 1024, "from q/bash.qon:252");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("\n}\n");
@@ -1407,39 +1407,39 @@ if (globalTrace)
 }
 
 
-//Building function bashForwardDeclaration from line: 253
+//Building function bashForwardDeclaration from line: 254
 
 void bashForwardDeclaration(list node) {
   
 if (globalTrace)
-    printf("bashForwardDeclaration at q/bash.qon:253 (%s)\n", caller);
+    printf("bashForwardDeclaration at q/bash.qon:254 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:255");
+    snprintf(caller, 1024, "from q/bash.qon:256");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isNil(node)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:255");
+    snprintf(caller, 1024, "from q/bash.qon:256");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return;;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:256");
+    snprintf(caller, 1024, "from q/bash.qon:257");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("\n%s %s(", stringify(bashTypeMap(first(node))), stringify(second(node)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:260");
+    snprintf(caller, 1024, "from q/bash.qon:261");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashFunctionArgs(third(node));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:261");
+    snprintf(caller, 1024, "from q/bash.qon:262");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashdisplays(");");
@@ -1452,33 +1452,33 @@ if (globalTrace)
 }
 
 
-//Building function bashForwardDeclarations from line: 263
+//Building function bashForwardDeclarations from line: 264
 
 void bashForwardDeclarations(list tree) {
   
 if (globalTrace)
-    printf("bashForwardDeclarations at q/bash.qon:263 (%s)\n", caller);
+    printf("bashForwardDeclarations at q/bash.qon:264 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:265");
+    snprintf(caller, 1024, "from q/bash.qon:266");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isEmpty(tree)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:265");
+    snprintf(caller, 1024, "from q/bash.qon:266");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return;;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:266");
+    snprintf(caller, 1024, "from q/bash.qon:267");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashForwardDeclaration(car(tree));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:267");
+    snprintf(caller, 1024, "from q/bash.qon:268");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashForwardDeclarations(cdr(tree));
@@ -1491,33 +1491,33 @@ if (globalTrace)
 }
 
 
-//Building function bashFunctions from line: 269
+//Building function bashFunctions from line: 270
 
 void bashFunctions(list tree) {
   
 if (globalTrace)
-    printf("bashFunctions at q/bash.qon:269 (%s)\n", caller);
+    printf("bashFunctions at q/bash.qon:270 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:271");
+    snprintf(caller, 1024, "from q/bash.qon:272");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isEmpty(tree)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:271");
+    snprintf(caller, 1024, "from q/bash.qon:272");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return;;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:272");
+    snprintf(caller, 1024, "from q/bash.qon:273");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashFunction(car(tree));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:272");
+    snprintf(caller, 1024, "from q/bash.qon:273");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashFunctions(cdr(tree));
@@ -1530,21 +1530,21 @@ if (globalTrace)
 }
 
 
-//Building function bashIncludes from line: 275
+//Building function bashIncludes from line: 276
 
 void bashIncludes(list nodes) {
   
 if (globalTrace)
-    printf("bashIncludes at q/bash.qon:275 (%s)\n", caller);
+    printf("bashIncludes at q/bash.qon:276 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:277");
+    snprintf(caller, 1024, "from q/bash.qon:278");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:280");
+    snprintf(caller, 1024, "from q/bash.qon:281");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("%s", "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n");
@@ -1555,39 +1555,39 @@ if (globalTrace)
 }
 
 
-//Building function bashTypeDecl from line: 283
+//Building function bashTypeDecl from line: 284
 
 void bashTypeDecl(list l) {
   
 if (globalTrace)
-    printf("bashTypeDecl at q/bash.qon:283 (%s)\n", caller);
+    printf("bashTypeDecl at q/bash.qon:284 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:285");
+    snprintf(caller, 1024, "from q/bash.qon:286");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( greaterthan(listLength(l), 2)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:287");
+    snprintf(caller, 1024, "from q/bash.qon:288");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printIndent(1);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:288");
+    snprintf(caller, 1024, "from q/bash.qon:289");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("%s %s %s;\n", stringify(second(l)), stringify(bashTypeMap(listLast(l))), stringify(first(l)));
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:294");
+    snprintf(caller, 1024, "from q/bash.qon:295");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printIndent(1);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:295");
+    snprintf(caller, 1024, "from q/bash.qon:296");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("%s %s;\n", stringify(bashTypeMap(listLast(l))), stringify(car(l)));
@@ -1600,33 +1600,33 @@ if (globalTrace)
 }
 
 
-//Building function bashStructComponents from line: 300
+//Building function bashStructComponents from line: 301
 
 void bashStructComponents(list node) {
   
 if (globalTrace)
-    printf("bashStructComponents at q/bash.qon:300 (%s)\n", caller);
+    printf("bashStructComponents at q/bash.qon:301 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:302");
+    snprintf(caller, 1024, "from q/bash.qon:303");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isEmpty(node)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:303");
+    snprintf(caller, 1024, "from q/bash.qon:304");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return;;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:304");
+    snprintf(caller, 1024, "from q/bash.qon:305");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashTypeDecl(car(node));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:304");
+    snprintf(caller, 1024, "from q/bash.qon:305");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashStructComponents(cdr(node));
@@ -1639,15 +1639,15 @@ if (globalTrace)
 }
 
 
-//Building function bashStruct from line: 306
+//Building function bashStruct from line: 307
 
 void bashStruct(list node) {
   
 if (globalTrace)
-    printf("bashStruct at q/bash.qon:306 (%s)\n", caller);
+    printf("bashStruct at q/bash.qon:307 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:307");
+    snprintf(caller, 1024, "from q/bash.qon:308");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   bashStructComponents(cdr(node));
@@ -1658,34 +1658,34 @@ if (globalTrace)
 }
 
 
-//Building function bashTypeMap from line: 309
+//Building function bashTypeMap from line: 310
 
 box bashTypeMap(box aSym) {
   list symMap = NULL;
 
 if (globalTrace)
-    printf("bashTypeMap at q/bash.qon:309 (%s)\n", caller);
+    printf("bashTypeMap at q/bash.qon:310 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:311");
+    snprintf(caller, 1024, "from q/bash.qon:312");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   symMap = alistCons(boxSymbol("stringArray"), boxSymbol("char**"), alistCons(boxSymbol("string"), boxSymbol("char*"), NULL));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:315");
+    snprintf(caller, 1024, "from q/bash.qon:316");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( truthy(assoc(stringify(aSym), symMap))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:316");
+    snprintf(caller, 1024, "from q/bash.qon:317");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return cdr(assoc(stringify(aSym), symMap));;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:317");
+    snprintf(caller, 1024, "from q/bash.qon:318");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return aSym;;
@@ -1698,39 +1698,39 @@ if (globalTrace)
 }
 
 
-//Building function bashFuncMap from line: 319
+//Building function bashFuncMap from line: 320
 
 box bashFuncMap(box aSym) {
   list symMap = NULL;
 
 if (globalTrace)
-    printf("bashFuncMap at q/bash.qon:319 (%s)\n", caller);
+    printf("bashFuncMap at q/bash.qon:320 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:321");
+    snprintf(caller, 1024, "from q/bash.qon:322");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( equalString("symbol", boxType(aSym))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:323");
+    snprintf(caller, 1024, "from q/bash.qon:324");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     symMap = alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("sub_string"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("string_length"), alistCons(boxSymbol("nil"), boxSymbol("NULL"), NULL)))))));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:345");
+    snprintf(caller, 1024, "from q/bash.qon:346");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( truthy(assoc(stringify(aSym), symMap))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:346");
+    snprintf(caller, 1024, "from q/bash.qon:347");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       return cdr(assoc(stringify(aSym), symMap));;
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:347");
+    snprintf(caller, 1024, "from q/bash.qon:348");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       return aSym;;
@@ -1739,7 +1739,7 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:348");
+    snprintf(caller, 1024, "from q/bash.qon:349");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return aSym;;
@@ -1752,45 +1752,45 @@ if (globalTrace)
 }
 
 
-//Building function bashType from line: 350
+//Building function bashType from line: 351
 
 void bashType(list node) {
   
 if (globalTrace)
-    printf("bashType at q/bash.qon:350 (%s)\n", caller);
+    printf("bashType at q/bash.qon:351 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:352");
+    snprintf(caller, 1024, "from q/bash.qon:353");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isList(second(node))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:354");
+    snprintf(caller, 1024, "from q/bash.qon:355");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("\ntypedef struct %s {\n", stringify(first(node)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:355");
+    snprintf(caller, 1024, "from q/bash.qon:356");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashStruct(second(node));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:356");
+    snprintf(caller, 1024, "from q/bash.qon:357");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("\n} %s;\n", stringify(first(node)));
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:357");
+    snprintf(caller, 1024, "from q/bash.qon:358");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashdisplays("typedef ");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:357");
+    snprintf(caller, 1024, "from q/bash.qon:358");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashTypeDecl(node);
@@ -1803,33 +1803,33 @@ if (globalTrace)
 }
 
 
-//Building function bashTypes from line: 360
+//Building function bashTypes from line: 361
 
 void bashTypes(list nodes) {
   
 if (globalTrace)
-    printf("bashTypes at q/bash.qon:360 (%s)\n", caller);
+    printf("bashTypes at q/bash.qon:361 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:362");
+    snprintf(caller, 1024, "from q/bash.qon:363");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isEmpty(nodes)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:363");
+    snprintf(caller, 1024, "from q/bash.qon:364");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return;;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:364");
+    snprintf(caller, 1024, "from q/bash.qon:365");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashType(car(nodes));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:364");
+    snprintf(caller, 1024, "from q/bash.qon:365");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     bashTypes(cdr(nodes));
@@ -1842,14 +1842,14 @@ if (globalTrace)
 }
 
 
-//Building function bashCompile from line: 370
+//Building function bashCompile from line: 371
 
 void bashCompile(char* filename) {
   list tree = NULL;
 list replace = NULL;
 
 if (globalTrace)
-    printf("bashCompile at q/bash.qon:370 (%s)\n", caller);
+    printf("bashCompile at q/bash.qon:371 (%s)\n", caller);
 
 if (globalTrace)
     snprintf(caller, 1024, "from Unknown file (not provided by parser):Line missing");
@@ -1858,7 +1858,7 @@ if (globalTrace)
   fprintf(stderr, "//Scanning file...%s\n", filename);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:377");
+    snprintf(caller, 1024, "from q/bash.qon:378");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   tree = loadQuon(filename);
@@ -1876,7 +1876,7 @@ if (globalTrace)
   fprintf(stderr, "Loading shim bash\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:381");
+    snprintf(caller, 1024, "from q/bash.qon:382");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   tree = buildProg(cons(boxString("q/shims/bash.qon"), getIncludes(tree)), getTypes(tree), getFunctions(tree));
@@ -1888,7 +1888,7 @@ if (globalTrace)
   fprintf(stderr, "Loading all includes\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:383");
+    snprintf(caller, 1024, "from q/bash.qon:384");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   tree = loadIncludes(tree);
@@ -1900,19 +1900,19 @@ if (globalTrace)
   fprintf(stderr, "Applying macros\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:385");
+    snprintf(caller, 1024, "from q/bash.qon:386");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   tree = macrowalk(tree);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:386");
+    snprintf(caller, 1024, "from q/bash.qon:387");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   replace = cons(boxSymbol("fprintf"), cons(boxSymbol("stderr"), NULL));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:387");
+    snprintf(caller, 1024, "from q/bash.qon:388");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   tree = macrolist(tree, stringConcatenate("q", "log"), replace);
@@ -1924,49 +1924,49 @@ if (globalTrace)
   fprintf(stderr, "//Printing program\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:393");
+    snprintf(caller, 1024, "from q/bash.qon:394");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   bashIncludes(cdr(first(tree)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:394");
+    snprintf(caller, 1024, "from q/bash.qon:395");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   bashTypes(cdr(second(tree)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:396");
+    snprintf(caller, 1024, "from q/bash.qon:397");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   bashdisplays("Box* globalStackTrace = NULL;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:397");
+    snprintf(caller, 1024, "from q/bash.qon:398");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   bashdisplays("\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:399");
+    snprintf(caller, 1024, "from q/bash.qon:400");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   bashForwardDeclarations(cdr(third(tree)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:400");
+    snprintf(caller, 1024, "from q/bash.qon:401");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   bashdisplays("\n\n//End forward declarations\n\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:401");
+    snprintf(caller, 1024, "from q/bash.qon:402");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   bashFunctions(cdr(third(tree)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/bash.qon:402");
+    snprintf(caller, 1024, "from q/bash.qon:403");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   bashdisplays("\n");

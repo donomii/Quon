@@ -75,11 +75,12 @@
 					   ;It's a normal expression
                      (else
                       (printf
-                       "%s "
+                       "%s(%s "
+                       (dollar)
                        (stringify
                         (bashFuncMap (car tree))))
                       (bashRecurList (cdr  tree) indent)
-                      (printf " ")))))))))))
+                      (printf ")")))))))))))
 
 
 
