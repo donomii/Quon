@@ -75,11 +75,11 @@
 					   ;It's a normal expression
                      (else
                       (printf
-                       "%s("
+                       "%s "
                        (stringify
                         (bashFuncMap (car tree))))
                       (bashRecurList (cdr  tree) indent)
-                      (printf ")")))))))))))
+                      (printf " ")))))))))))
 
 
 
@@ -87,7 +87,15 @@
 	  )
 
 	  ;It is a variable or literal
-      (else (display (bashFuncMap  tree))))))
+      (else (display (bashVarOrLit  tree))))))
+
+      (box bashVarOrLit (box a) (declare)
+      (body
+        (if (equalString "symbol" (boxType a))
+        (then (return (boxSymbol (stringConcatenate (dollar) (stringify a)))))
+        (else (return a))
+        )
+      ))
 
   (void
    bashRecurList
@@ -100,7 +108,7 @@
        (bashExpression (car expr) indent)
        (if (isNil (cdr expr))
          (then (bashdisplays ""))
-         (else (bashdisplays ", ") (bashRecurList (cdr expr) indent)))))
+         (else (bashdisplays " ") (bashRecurList (cdr expr) indent)))))
     ))
 
 
@@ -140,8 +148,8 @@
   (void bashSet (list node int indent) (declare)
    (body
     (newLine indent)
-    (bashExpression (first  (cdr node)) indent)
-    (printf " = " )
+     (display (first  (cdr node)))
+    (printf "=" )
     (bashExpression (third node) indent)))
 
   (void bashReturn (list node int indent) (declare)
