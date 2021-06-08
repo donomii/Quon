@@ -20,7 +20,7 @@
 
 
 
-  (void bashExpression (list tree int indent) (declare (list thing nil))
+  (void bashExpression (list tree int indent bool statement) (declare (list thing nil))
    (body
     (if (isList tree)
 		;It is a function call
@@ -65,22 +65,25 @@
 				   ;Print the second arg directly into the compiler output.  Hope you got it perfectly right!
                      (then
                       (printf "(")
-                      (bashExpression (third tree) indent)
+                      (bashExpression (third tree) indent false)
                       (printf
                        " %s "
                        (stringify  (second tree)))
-                      (bashExpression (fourth tree) indent)
+                      (bashExpression (fourth tree) indent false)
                       (printf ")")
                       )
 					   ;It's a normal expression
                      (else
+                    (if statement
+                    (then (printf "%s" (stringify (bashFuncMap (car tree)))))
+                    (else 
                       (printf
                        "%s(%s "
                        (dollar)
                        (stringify
                         (bashFuncMap (car tree))))
                       (bashRecurList (cdr  tree) indent)
-                      (printf ")")))))))))))
+                      (printf ")")))))))))))))
 
 
 
@@ -106,7 +109,7 @@
     (if (isEmpty expr)
       (then (return))
       (else
-       (bashExpression (car expr) indent)
+       (bashExpression (car expr) indent false)
        (if (isNil (cdr expr))
          (then (bashdisplays ""))
          (else (bashdisplays " ") (bashRecurList (cdr expr) indent)))))
@@ -120,7 +123,7 @@
    (body
     (newLine indent)
     (bashdisplays "if (( ")
-    (bashExpression (second node) 0)
+    (bashExpression (second node) 0 false)
     (bashdisplays ")) ; then ")
     (bashBody (cdr (third node)) (add1 indent))
     (newLine indent)
@@ -136,7 +139,7 @@
      "%s->%s = "
      (stringify (second  node))
      (stringify (third  node)))
-    (bashExpression (fourth node) indent)))
+    (bashExpression (fourth node) indent false)))
 
   (void bashGetStruct (list node int indent) (declare)
    (body
@@ -151,7 +154,7 @@
     (newLine indent)
      (display (first  (cdr node)))
     (printf "=" )
-    (bashExpression (third node) indent)))
+    (bashExpression (third node) indent false)))
 
   (void bashReturn (list node int indent) (declare)
    (body
@@ -160,7 +163,7 @@
 	(then (bashdisplays "return;"))
 	(else
     (bashdisplays "return ")
-    (bashExpression (cadr node) indent)
+    (bashExpression (cadr node) indent false)
 	(bashdisplays ";")
 	))))
 
@@ -179,7 +182,7 @@
                (then (bashReturn node indent))
                (else
                 (newLine indent)
-                (bashExpression  node indent)))))))))
+                (bashExpression  node indent true)))))))))
     (bashdisplays ";\n")))
 
   (void bashBody (list tree int indent) (declare (list code nil))
@@ -216,7 +219,7 @@
        (printf
         "local %s=\""
         (stringify (second decl)))
-       (bashExpression (third decl) indent)
+       (bashExpression (third decl) indent false)
        (printf "\";\n")
        (bashDeclarations (cdr decls) indent)))))
 
