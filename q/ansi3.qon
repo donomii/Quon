@@ -68,7 +68,7 @@
                        (stringify  (second tree))))
                      (else
                       (if (equalBox (boxSymbol "binop") thing)
-				   ;Print the second arg directly into the compiler output.  Hope you got it perfectly right!
+				   ;Print the expression as a binop, i.e. the first element is moved to the middle
                      (then
                       (printf "(")
                       (ansi3Expression (third tree) indent)

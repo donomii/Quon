@@ -124,7 +124,7 @@
     (newLine indent)
     (bashdisplays "if (( ")
     (bashExpression (second node) 0 false)
-    (bashdisplays ")) ; then ")
+    (bashdisplays " )) ; then ")
     (bashBody (cdr (third node)) (add1 indent))
     (newLine indent)
     (bashdisplays " else ")
@@ -183,7 +183,7 @@
                (else
                 (newLine indent)
                 (bashExpression  node indent true)))))))))
-    (bashdisplays ";\n")))
+    (bashdisplays " ;\n")))
 
   (void bashBody (list tree int indent) (declare (list code nil))
    (body
@@ -198,13 +198,11 @@
        (if (not releaseMode)
        (then
 
-	      (printf "\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n"  (stringify (getTagFail (car code)  (boxString "filename")  (boxString "Unknown file (not provided by parser)"))) (stringify (getTagFail (car code) (boxString "line") (boxString "Line missing") )))
+	      (printf "\nif (( $globalTrace ))\n    caller=$(printf(caller, 1024, \"from %s:%s\")) ;\n"  (stringify (getTagFail (car code)  (boxString "filename")  (boxString "Unknown file (not provided by parser)"))) (stringify (getTagFail (car code) (boxString "line") (boxString "Line missing") )))
         )
         (else))
         ))
         (if (not releaseMode) (then
-      (printIndent indent)
-	    (printf "%s" "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n")
       )(else)
     )
        (bashStatement code indent)
@@ -374,9 +372,6 @@
 
 (void bashCompile (string filename) (declare (list tree nil)(list replace nil))
     (body
-
-
-
    	(qlog "//Scanning file...%s\n" filename)
 
 	(set tree (loadQuon filename))
