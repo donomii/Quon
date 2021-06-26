@@ -9,15 +9,19 @@
 	)
 )
 
-  (void bashFunctionArgs (list tree) (declare)
+  (void bashFunctionArgs (list decls int argNum int indent) (declare )
    (body
-    (if (isEmpty tree)
+    (if (isEmpty decls)
       (then (return))
       (else
-       (display (second tree))
-       (if ( isNil (cddr tree)) (then ) (else (bashdisplays ", ")))
-       (bashFunctionArgs (cddr tree))))))
-
+       (printf
+        "local %s=\"%s%s"
+        (stringify (second decls))
+        (dollar)
+       (stringify (boxInt argNum) ))
+       (printf "\" ;\n")
+       (bashFunctionArgs (cdr (cdr decls)) (add 1 argNum) indent)))
+    ))
 
 
   (void bashExpression (list tree int indent bool statement) (declare (list thing nil))
@@ -198,7 +202,7 @@
        (if (not releaseMode)
        (then
 
-	      (printf "\nif (( $globalTrace ))\n    caller=$(printf(caller, 1024, \"from %s:%s\")) ;\n"  (stringify (getTagFail (car code)  (boxString "filename")  (boxString "Unknown file (not provided by parser)"))) (stringify (getTagFail (car code) (boxString "line") (boxString "Line missing") )))
+	      (printf "\nif (( $globalTrace )) ; then\n    caller=\"from %s:%s\"\nfi"  (stringify (getTagFail (car code)  (boxString "filename")  (boxString "Unknown file (not provided by parser)"))) (stringify (getTagFail (car code) (boxString "line") (boxString "Line missing") )))
         )
         (else))
         ))
@@ -231,14 +235,15 @@
       (else
        (newLine 0)
        (printf "%s(" (stringify (second node)))
-       (bashFunctionArgs (third node))
+       
        (printf ") {")
        (newLine 1)
+       (bashFunctionArgs (third node) 1 1)
        (bashDeclarations (cdr (fourth node)) 1)
        (if releaseMode
        (then (printf ""))
        (else
-           (printf "\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n" (stringify name) (stringify (getTag name (boxString "filename"))) (stringify (getTag name (boxString "line")))   )))
+           (printf "\nif (( $globalTrace )) ; then\n    echo \"%s at %s:%s \" $caller\nfi" (stringify name) (stringify (getTag name (boxString "filename"))) (stringify (getTag name (boxString "line")))   )))
        (if releaseMode
          (then (printf ""))
          (else
@@ -249,7 +254,7 @@
        (if releaseMode
          (then (printf ""))
          (else
-            (printf "\nif (globalTrace)\n    printf(\"Leaving %s\\n\");\n" (stringify name))
+            (printf "\nif (( $globalTrace ))\n    echo \"Leaving %s\\n\"\n" (stringify name))
             ))
        (printf "\n}\n")))))
 
@@ -260,7 +265,7 @@
         "\n%s %s("
         (stringify (bashTypeMap (first node)))
         (stringify (second node)))
-       (bashFunctionArgs (third node))
+       
        (bashdisplays ");")))))
 
   (void bashForwardDeclarations (list tree) (declare)
