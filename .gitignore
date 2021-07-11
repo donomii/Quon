@@ -1,1 +1,4 @@
 *.bak
+errlog
+build/quon_new
+log

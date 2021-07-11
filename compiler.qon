@@ -1,4 +1,4 @@
-((includes q/base.qon q/compiler.qon q/macros.qon q/lists.qon q/newparser.qon q/perl.qon q/ansi.qon q/ansi2.qon q/ansi3.qon q/tests.qon q/node.qon q/java.qon q/lua.qon q/boolean.qon q/imaginary.qon )
+((includes q/base.qon q/compiler.qon q/macros.qon q/lists.qon q/newparser.qon q/perl.qon q/ansi.qon q/ansi2.qon q/ansi3.qon q/tests.qon q/node.qon q/java.qon q/lua.qon q/boolean.qon q/imaginary.qon q/bash.qon )
  (types)
  (functions
 
@@ -15,6 +15,7 @@
    (bool runIma false)
    (bool runAnsi2 false)
    (bool runAnsi3 false)
+   (bool runBash false)
    (bool runTree false))
    (body
     (set cmdLine (listReverse (argList globalArgsCount 0 globalArgs)))
@@ -34,6 +35,7 @@
     (set runIma (inList (boxString "--ima") cmdLine))
     (set runAnsi2 (inList (boxString "--ansi2") cmdLine))
     (set runAnsi3 (inList (boxString "--ansi3") cmdLine))
+    (set runBash (inList (boxString "--bash") cmdLine))
     (set globalTrace (inList (boxString "--trace") cmdLine))
     (set globalStepTrace (inList (boxString "--steptrace") cmdLine))
     (if runTests
@@ -91,7 +93,10 @@
       (if runAnsi3
       (then (ansi3Compile (unBoxString filename)) (printf "\n"))
 	  (else
-      (ansi3Compile (unBoxString filename)) (printf "\n")))))))))))))))
+      (if runBash
+      (then (bashCompile (unBoxString filename)) (printf "\n"))
+	  (else
+      (ansi3Compile (unBoxString filename)) (printf "\n")))))))))))))))))
       ))))))
     (return 0)
     ))

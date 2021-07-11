@@ -3,30 +3,28 @@
 
  (functions
 
-(void ansi3displays (string s) (declare)
+(void bashdisplays (string s) (declare)
 	(body
 		(printf "%s" s)
 	)
 )
 
-  (void ansi3FunctionArgs (list tree) (declare)
+  (void bashFunctionArgs (list decls int argNum int indent) (declare )
    (body
-    (if (isEmpty tree)
+    (if (isEmpty decls)
       (then (return))
       (else
-       (if (equalString (stringify (first tree))  "...")
-           (then (printf "..."))
-           (else
-            (display (ansi3TypeMap (first tree)))
-            (ansi3displays " ")
-            (display (second tree))
-            ))
-       (if ( isNil (cddr tree)) (then ) (else (ansi3displays ", ")))
-       (ansi3FunctionArgs (cddr tree))))))
+       (printf
+        "local %s=\"%s%s"
+        (stringify (second decls))
+        (dollar)
+       (stringify (boxInt argNum) ))
+       (printf "\" ;\n")
+       (bashFunctionArgs (cdr (cdr decls)) (add 1 argNum) indent)))
+    ))
 
 
-
-  (void ansi3Expression (list tree int indent) (declare (list thing nil))
+  (void bashExpression (list tree int indent bool statement) (declare (list thing nil))
    (body
     (if (isList tree)
 		;It is a function call
@@ -41,7 +39,7 @@
                      (boxString "return")
                       (car  tree))
                   (then )
-                  (else (ansi3displays "()"))))
+                  (else (bashdisplays "()"))))
                (else
 			   ;Handle special functions
                 (set thing (first   tree))
@@ -68,24 +66,28 @@
                        (stringify  (second tree))))
                      (else
                       (if (equalBox (boxSymbol "binop") thing)
-				   ;Print the expression as a binop, i.e. the first element is moved to the middle
+				   ;Print the second arg directly into the compiler output.  Hope you got it perfectly right!
                      (then
                       (printf "(")
-                      (ansi3Expression (third tree) indent)
+                      (bashExpression (third tree) indent false)
                       (printf
                        " %s "
                        (stringify  (second tree)))
-                      (ansi3Expression (fourth tree) indent)
+                      (bashExpression (fourth tree) indent false)
                       (printf ")")
                       )
 					   ;It's a normal expression
                      (else
+                    (if statement
+                    (then (printf "%s" (stringify (bashFuncMap (car tree)))))
+                    (else 
                       (printf
-                       "%s("
+                       "%s(%s "
+                       (dollar)
                        (stringify
-                        (ansi3FuncMap (car tree))))
-                      (ansi3RecurList (cdr  tree) indent)
-                      (printf ")")))))))))))
+                        (bashFuncMap (car tree))))
+                      (bashRecurList (cdr  tree) indent)
+                      (printf ")")))))))))))))
 
 
 
@@ -93,49 +95,57 @@
 	  )
 
 	  ;It is a variable or literal
-      (else (display (ansi3FuncMap  tree))))))
+      (else (display (bashVarOrLit  tree))))))
+
+      (box bashVarOrLit (box a) (declare)
+      (body
+        (if (equalString "symbol" (boxType a))
+        (then (return (boxSymbol (stringConcatenate (dollar) (stringify a)))))
+        (else (return a))
+        )
+      ))
 
   (void
-   ansi3RecurList
+   bashRecurList
    (list expr int indent)
    (declare)
    (body
     (if (isEmpty expr)
       (then (return))
       (else
-       (ansi3Expression (car expr) indent)
+       (bashExpression (car expr) indent false)
        (if (isNil (cdr expr))
-         (then (ansi3displays ""))
-         (else (ansi3displays ", ") (ansi3RecurList (cdr expr) indent)))))
+         (then (bashdisplays ""))
+         (else (bashdisplays " ") (bashRecurList (cdr expr) indent)))))
     ))
 
 
 
 
 
-  (void ansi3If (list node int indent) (declare)
+  (void bashIf (list node int indent) (declare)
    (body
     (newLine indent)
-    (ansi3displays "if ( ")
-    (ansi3Expression (second node) 0)
-    (ansi3displays ") {")
-    (ansi3Body (cdr (third node)) (add1 indent))
+    (bashdisplays "if (( ")
+    (bashExpression (second node) 0 false)
+    (bashdisplays " )) ; then ")
+    (bashBody (cdr (third node)) (add1 indent))
     (newLine indent)
-    (ansi3displays "} else {")
-    (ansi3Body (cdr (fourth node)) (add1 indent))
+    (bashdisplays " else ")
+    (bashBody (cdr (fourth node)) (add1 indent))
     (newLine indent)
-    (ansi3displays "}")))
+    (bashdisplays "fi")))
 
-  (void ansi3SetStruct (list node int indent) (declare)
+  (void bashSetStruct (list node int indent) (declare)
    (body
     (newLine indent)
     (printf
      "%s->%s = "
      (stringify (second  node))
      (stringify (third  node)))
-    (ansi3Expression (fourth node) indent)))
+    (bashExpression (fourth node) indent false)))
 
-  (void ansi3GetStruct (list node int indent) (declare)
+  (void bashGetStruct (list node int indent) (declare)
    (body
     (newLine indent)
     (printf
@@ -143,43 +153,43 @@
      (stringify (first  node))
      (stringify (second  node)))))
 
-  (void ansi3Set (list node int indent) (declare)
+  (void bashSet (list node int indent) (declare)
    (body
     (newLine indent)
-    (ansi3Expression (first  (cdr node)) indent)
-    (printf " = " )
-    (ansi3Expression (third node) indent)))
+     (display (first  (cdr node)))
+    (printf "=" )
+    (bashExpression (third node) indent false)))
 
-  (void ansi3Return (list node int indent) (declare)
+  (void bashReturn (list node int indent) (declare)
    (body
     (newLine indent)
 	(if (equal (listLength node) 1)
-	(then (ansi3displays "return;"))
+	(then (bashdisplays "return;"))
 	(else
-    (ansi3displays "return ")
-    (ansi3Expression (cadr node) indent)
-	(ansi3displays ";")
+    (bashdisplays "return ")
+    (bashExpression (cadr node) indent false)
+	(bashdisplays ";")
 	))))
 
-  (void ansi3Statement (list node int indent) (declare)
+  (void bashStatement (list node int indent) (declare)
    (body
     (if (equalBox (boxString "set") (first node))
-      (then (ansi3Set node indent))
+      (then (bashSet node indent))
       (else
        (if (equalBox (boxString "set-struct") (first node))
-         (then (ansi3SetStruct node indent))
+         (then (bashSetStruct node indent))
          (else
           (if (equalBox (boxString "if") (first node))
-            (then (ansi3If node indent))
+            (then (bashIf node indent))
             (else
              (if (equalBox (boxString "return") (first node))
-               (then (ansi3Return node indent))
+               (then (bashReturn node indent))
                (else
                 (newLine indent)
-                (ansi3Expression  node indent)))))))))
-    (ansi3displays ";\n")))
+                (bashExpression  node indent true)))))))))
+    (bashdisplays " ;\n")))
 
-  (void ansi3Body (list tree int indent) (declare (list code nil))
+  (void bashBody (list tree int indent) (declare (list code nil))
    (body
     (if (isEmpty tree)
       (then (return))
@@ -192,90 +202,85 @@
        (if (not releaseMode)
        (then
 
-	      (printf "\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n"  (stringify (getTagFail (car code)  (boxString "filename")  (boxString "Unknown file (not provided by parser)"))) (stringify (getTagFail (car code) (boxString "line") (boxString "Line missing") )))
+	      (printf "\nif (( $globalTrace )) ; then\n    caller=\"from %s:%s\"\nfi"  (stringify (getTagFail (car code)  (boxString "filename")  (boxString "Unknown file (not provided by parser)"))) (stringify (getTagFail (car code) (boxString "line") (boxString "Line missing") )))
         )
         (else))
         ))
         (if (not releaseMode) (then
-      (printIndent indent)
-	    (printf "%s" "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n")
       )(else)
     )
-       (ansi3Statement code indent)
-       (ansi3Body (cdr tree) indent)))))
+       (bashStatement code indent)
+       (bashBody (cdr tree) indent)))))
 
-  (void ansi3Declarations (list decls int indent) (declare (box decl nil))
+  (void bashDeclarations (list decls int indent) (declare (box decl nil))
    (body
     (if (isEmpty decls)
       (then (return))
       (else
        (set decl (car decls))
        (printf
-        "%s %s = "
-        (stringify (ansi3TypeMap (first decl)))
+        "local %s=\""
         (stringify (second decl)))
-       (ansi3Expression (third decl) indent)
-       (printf ";\n")
-       (ansi3Declarations (cdr decls) indent)))))
+       (bashExpression (third decl) indent false)
+       (printf "\";\n")
+       (bashDeclarations (cdr decls) indent)))))
 
-  (void ansi3Function (list node) (declare (box name nil))
+  (void bashFunction (list node) (declare (box name nil))
    (body
     (set name  (second node))
-    (printf "\n\n//Building function %s from line: %s" (stringify name) (stringify (getTag name (boxString "line"))))
+    (printf "\n\n#Building function %s from line:%s" (stringify name) (stringify (getTag name (boxString "line"))))
     (newLine 0)
     (if (isNil node)
       (then (return))
       (else
        (newLine 0)
-       (printf
-        "%s %s("
-        (stringify (ansi3TypeMap (first node)))
-        (stringify (second node)))
-       (ansi3FunctionArgs (third node))
+       (printf "%s(" (stringify (second node)))
+       
        (printf ") {")
        (newLine 1)
-       (ansi3Declarations (cdr (fourth node)) 1)
+       (bashFunctionArgs (third node) 1 1)
+       (bashDeclarations (cdr (fourth node)) 1)
        (if releaseMode
        (then (printf ""))
        (else
-           (printf "\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n" (stringify name) (stringify (getTag name (boxString "filename"))) (stringify (getTag name (boxString "line")))   )))
+           (printf "\nif (( $globalTrace )) ; then\n    echo \"%s at %s:%s \" $caller\nfi" (stringify name) (stringify (getTag name (boxString "filename"))) (stringify (getTag name (boxString "line")))   )))
        (if releaseMode
          (then (printf ""))
          (else
           ;;(printf "\n  stackTracePush(\"%s\", \"%s\", %s, %d );\n" (stringify (getTag name (boxString "filename"))) (stringify name) (stringify (getTag name (boxString "line"))) 0)
           ))
 	   ;(display (second(fifth node)))
-       (ansi3Body (cdr (fifth node)) 1)
+       (bashBody (cdr (fifth node)) 1)
        (if releaseMode
          (then (printf ""))
          (else
-            (printf "\nif (globalTrace)\n    printf(\"Leaving %s\\n\");\n" (stringify name))
+            (printf "\nif (( $globalTrace ))\n    echo \"Leaving %s\\n\"\n" (stringify name))
             ))
        (printf "\n}\n")))))
 
-  (void ansi3ForwardDeclaration (list node) (declare)
+  (void bashForwardDeclaration (list node) (declare)
    (body
     (if (isNil node) (then (return)) (else
        (printf
         "\n%s %s("
-        (stringify (ansi3TypeMap (first node)))
+        (stringify (bashTypeMap (first node)))
         (stringify (second node)))
-       (ansi3FunctionArgs (third node))
-       (ansi3displays ");")))))
+       
+       (bashdisplays ");")))))
 
-  (void ansi3ForwardDeclarations (list tree) (declare)
+  (void bashForwardDeclarations (list tree) (declare)
    (body
     (if (isEmpty tree) (then (return)) (else
-       (ansi3ForwardDeclaration (car tree))
-       (ansi3ForwardDeclarations (cdr tree))))))
+       (bashForwardDeclaration (car tree))
+       (bashForwardDeclarations (cdr tree))))))
 
-  (void ansi3Functions (list tree) (declare)
+  (void bashFunctions (list tree) (declare)
    (body
     (if (isEmpty tree) (then (return))(else
-		(ansi3Function (car tree)) (ansi3Functions (cdr tree))))))
+		(bashFunction (car tree)) (bashFunctions (cdr tree))))))
 
 
-  (void ansi3Includes (list nodes) (declare)
+  (void bashIncludes (list nodes) (declare)
    (body
     (printf
      "%s"
@@ -283,7 +288,7 @@
      (printf "%s" "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n")
 ))
 
-  (void ansi3TypeDecl (list l) (declare)
+  (void bashTypeDecl (list l) (declare)
    (body
     (if (> (listLength l) 2)
       (then
@@ -291,25 +296,25 @@
        (printf
         "%s %s %s;\n"
         (stringify (second l))
-        (stringify (ansi3TypeMap (listLast l)))
+        (stringify (bashTypeMap (listLast l)))
         (stringify (first l))))
       (else
        (printIndent 1)
        (printf
         "%s %s;\n"
-        (stringify (ansi3TypeMap (listLast l)))
+        (stringify (bashTypeMap (listLast l)))
         (stringify (car l)))))))
 
-  (void ansi3StructComponents (list node) (declare)
+  (void bashStructComponents (list node) (declare)
    (body
     (if (isEmpty node)
       (then (return))
-      (else (ansi3TypeDecl (car node)) (ansi3StructComponents (cdr node))))))
+      (else (bashTypeDecl (car node)) (bashStructComponents (cdr node))))))
 
-  (void ansi3Struct (list node) (declare)
-   (body (ansi3StructComponents (cdr  node))))
+  (void bashStruct (list node) (declare)
+   (body (bashStructComponents (cdr  node))))
 
-  (box ansi3TypeMap (box aSym) (declare (list symMap nil))
+  (box bashTypeMap (box aSym) (declare (list symMap nil))
    (body
     (set
      symMap
@@ -319,7 +324,7 @@
       (then (return (cdr (assoc (stringify aSym) symMap))))
       (else (return aSym)))))
 
-  (box ansi3FuncMap (box aSym) (declare (list symMap nil))
+  (box bashFuncMap (box aSym) (declare (list symMap nil))
    (body
     (if (equalString "symbol" (boxType aSym))
       (then
@@ -350,38 +355,35 @@
          (else (return aSym))))
       (else (return aSym)))))
 
-  (void ansi3Type (list node) (declare)
+  (void bashType (list node) (declare)
    (body
     (if (isList  (second node))
       (then
        (printf "\ntypedef struct %s {\n" (stringify (first  node)))
-       (ansi3Struct  (second node))
+       (bashStruct  (second node))
        (printf "\n} %s;\n" (stringify (first  node))))
-      (else (ansi3displays "typedef ") (ansi3TypeDecl  node)))
+      (else (bashdisplays "typedef ") (bashTypeDecl  node)))
     ))
 
-  (void ansi3Types (list nodes) (declare)
+  (void bashTypes (list nodes) (declare)
    (body
     (if (isEmpty nodes)
       (then (return))
-      (else  (ansi3Type (car nodes)) (ansi3Types (cdr nodes))))))
+      (else  (bashType (car nodes)) (bashTypes (cdr nodes))))))
 
 
 
 
 
-(void ansi3Compile (string filename) (declare (list tree nil)(list replace nil))
+(void bashCompile (string filename) (declare (list tree nil)(list replace nil))
     (body
-
-
-
    	(qlog "//Scanning file...%s\n" filename)
 
 	(set tree (loadQuon filename))
    	(qlog "//Building sexpr\n")
 
-(qlog "Loading shim ansi3\n")
-  (set tree (buildProg (cons (boxString "q/shims/ansi3.qon") (getIncludes tree)) (getTypes tree) (getFunctions tree))) ;FIXME check includes are recursive
+(qlog "Loading shim bash\n")
+  (set tree (buildProg (cons (boxString "q/shims/bash.qon") (getIncludes tree)) (getTypes tree) (getFunctions tree))) ;FIXME check includes are recursive
 (qlog "Loading all includes\n")
 	(set tree (loadIncludes tree))
 (qlog "Applying macros\n")
@@ -393,16 +395,16 @@
 
    (qlog "//Printing program\n")
 
-    (ansi3Includes (cdr (first tree)))
-    (ansi3Types (cdr (second tree)))
+    (bashIncludes (cdr (first tree)))
+    (bashTypes (cdr (second tree)))
 	;(display (cdr (second tree)))(exit 1)
-    (ansi3displays "Box* globalStackTrace = NULL;\n")
-    (ansi3displays
+    (bashdisplays "Box* globalStackTrace = NULL;\n")
+    (bashdisplays
      "\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n")
-    (ansi3ForwardDeclarations (cdr (third tree)))
-    (ansi3displays "\n\n//End forward declarations\n\n")
-    (ansi3Functions (cdr (third tree)))
-    (ansi3displays "\n")
+    (bashForwardDeclarations (cdr (third tree)))
+    (bashdisplays "\n\n//End forward declarations\n\n")
+    (bashFunctions (cdr (third tree)))
+    (bashdisplays "\n")
    (qlog "//Done printing program\n")
 ))
   ))
