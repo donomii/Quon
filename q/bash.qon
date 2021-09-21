@@ -66,7 +66,7 @@
                        (stringify  (second tree))))
                      (else
                       (if (equalBox (boxSymbol "binop") thing)
-				   ;Print the second arg directly into the compiler output.  Hope you got it perfectly right!
+				   ;Print the second and third args directly into the compiler output.  Hope you got it perfectly right!
                      (then
                       (printf "(")
                       (bashExpression (third tree) indent false)
@@ -79,7 +79,10 @@
 					   ;It's a normal expression
                      (else
                     (if statement
-                    (then (printf "%s" (stringify (bashFuncMap (car tree)))))
+                    (then 
+                    (printf "%s " (stringify (bashFuncMap (car tree))))
+                    (bashRecurList (cdr  tree) indent)
+                    )
                     (else 
                       (printf
                        "%s(%s "
@@ -140,8 +143,10 @@
    (body
     (newLine indent)
     (printf
-     "%s->%s = "
+     "%s%s_%s%s="
+     (dollar)
      (stringify (second  node))
+     (dollar)
      (stringify (third  node)))
     (bashExpression (fourth node) indent false)))
 
@@ -149,8 +154,10 @@
    (body
     (newLine indent)
     (printf
-     "%s->%s"
+     "%s%s_%s%s"
+     (dollar)
      (stringify (first  node))
+     (dollar)
      (stringify (second  node)))))
 
   (void bashSet (list node int indent) (declare)
@@ -187,7 +194,7 @@
                (else
                 (newLine indent)
                 (bashExpression  node indent true)))))))))
-    (bashdisplays " ;\n")))
+    (bashdisplays " \n")))
 
   (void bashBody (list tree int indent) (declare (list code nil))
    (body
@@ -259,14 +266,7 @@
        (printf "\n}\n")))))
 
   (void bashForwardDeclaration (list node) (declare)
-   (body
-    (if (isNil node) (then (return)) (else
-       (printf
-        "\n%s %s("
-        (stringify (bashTypeMap (first node)))
-        (stringify (second node)))
-       
-       (bashdisplays ");")))))
+   (body))
 
   (void bashForwardDeclarations (list tree) (declare)
    (body
@@ -284,26 +284,13 @@
    (body
     (printf
      "%s"
-     "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n")
+     "\n\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n")
      (printf "%s" "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n")
 ))
 
   (void bashTypeDecl (list l) (declare)
    (body
-    (if (> (listLength l) 2)
-      (then
-       (printIndent 1)
-       (printf
-        "%s %s %s;\n"
-        (stringify (second l))
-        (stringify (bashTypeMap (listLast l)))
-        (stringify (first l))))
-      (else
-       (printIndent 1)
-       (printf
-        "%s %s;\n"
-        (stringify (bashTypeMap (listLast l)))
-        (stringify (car l)))))))
+   ))
 
   (void bashStructComponents (list node) (declare)
    (body
@@ -357,12 +344,7 @@
 
   (void bashType (list node) (declare)
    (body
-    (if (isList  (second node))
-      (then
-       (printf "\ntypedef struct %s {\n" (stringify (first  node)))
-       (bashStruct  (second node))
-       (printf "\n} %s;\n" (stringify (first  node))))
-      (else (bashdisplays "typedef ") (bashTypeDecl  node)))
+   
     ))
 
   (void bashTypes (list nodes) (declare)
