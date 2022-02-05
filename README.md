@@ -1,18 +1,10 @@
 # Quon
 
-Quon is a self-compiling compiler.
-
-This is the program I always wanted someone to write.  It took me a long time to realise that person was me.
-
-I have no idea what I'm doing but somehow this still works.  It's bizarre.
+Quon is a self-compiling compiler, or a kind of portable macro language.  It can compile itself into many other programming languages, and then compile itself again from there.
 
 ## Write your program in every language
 
-It's a question that comes up often in IT.  Why can't we just take some code in one language and automatically convert it to another?
-
-Everyone agrees that would be great, but then someone points out that there is a unique language feature that can't be converted, and everyone shrugs and moves on.
-
-But it is possible.  The trick is to choose a really simple source langauge, and then you can easily transpile programs.
+Quon is a self-hosting compiler that targets other languages, rather than direct machine code.  It uses the data types and functions of the host language, and is completely interoperable with it.  This provides access to all the libraries and abilities of the host language, (but then the program is no longer portable).
 
 ## Build portable libraries
 
@@ -59,7 +51,7 @@ See build.bat and build.bash for more detailed examples
 
 ### Unicode
 
-Quon does not support unicode.  I rely on the underlying programming language for string support, so if that language does not have unicode support, then Quon can't have it either.  Worse, Quon cannot detect unicode, so instead it silently corrupts the string and gets confused.  If your compile starts failing and the code looks ok, check for unicode characters.
+Quon does not support unicode.  I rely on the underlying programming language for string support, so if that language does not have unicode support, then Quon can't have it either.  Worse, Quon cannot detect unicode support, so instead it silently corrupts the string and gets confused.  If your compile starts failing and the code looks ok, check for unicode characters.
 
 ### Garbage collection
 
@@ -211,12 +203,10 @@ Some languages solve this by having generics, or inheritence but quon doesn't ha
 
 ## Boxes
 
-Boxes "solve" the problem of static type systems, by wrapping data and turning it into an "any" type.
+Boxes are data structures that can wrap any other type.  They are a "any" type, or a "varying" type.  Most compile-time type systems allow you to create a list of strings, or a list of integers, but not combine the two in list of strings and integers.  But if you wrap your strings and integers in boxes, then you can mix and match them however you like.
+
+Boxes solve a problem of static type systems, by wrapping data and turning it into an "any" type.
 
 While compile-time type systems have many benefits, they have a massive drawback as well:  dealing with flexible data structures.  Compile-time typed languages have immense difficulty dealing with JSON and the (moderately) complicated data structures that you tend to find being passed around in JSON.
 
 If you don't know  what the JSON structure will be ahead of time, then you have to dedicate thousands of lines of code, or complex libraries, to dealing with it.  Quon uses a little bit of both, with boxes.
-
-Boxes are data structures that can wrap any other type.  They are a "any" type, or a "varying" type.  Most compile-time type systems allow you to create a list of strings, or a list of integers, but not combine the two in list of strings and integers.  But if you wrap your strings and integers in boxes, then you can mix and match them however you like.
-
-The drawback is that you have to box and unbox your values, but with compiler support, most of that can be automated.
