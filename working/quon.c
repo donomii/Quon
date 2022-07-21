@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 typedef int*  array;
 typedef int bool;
@@ -21914,6 +21915,12 @@ if (globalTrace)
 
 if (globalTrace)
     snprintf(caller, 1024, "from compiler.qon:100");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  sleep(20);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from compiler.qon:101");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return 0;;

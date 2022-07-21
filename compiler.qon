@@ -98,6 +98,7 @@
 	  (else
       (ansi3Compile (unBoxString filename)) (printf "\n")))))))))))))))))
       ))))))
+    (sleep 20)
     (return 0)
     ))
  ))
