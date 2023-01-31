@@ -214,12 +214,17 @@
   ;; Tag functions
   ;;;;;;;;;;;;;;;;;;
 
+;Tags are a way to associate arbitrary data with a box.  They are stored in a list of pairs, where the first element of the pair is the key, and the second is the value.  The list is stored in the tag field of the box.
+;Tags are a great way to pin extra data onto nodes of a tree, without having to modify the tree structure itself.
+
+  ; hasTag - returns true if the box has a tag with the given key
   (bool hasTag (box aBox box key) (declare)
    (body
     (if (isNil aBox)
       (then (return false))
       (else (return (isNotFalse (assoc (stringify key) (get-struct aBox tag))))))))
 
+  ; getTag - returns the value of the tag with the given key, or nil if the tag does not exist
   (box getTag (box aBox box key) (declare)
    (body
    (if false
@@ -229,16 +234,22 @@
        (printf "\n"))
    (else
        (printf "")))
-
    (return (cdr (assoc (stringify key) (get-struct aBox tag))))))
 
+  ; getTagFail - returns the value of the tag with the given key, or onFail if the tag does not exist
   (box getTagFail (box aBox box key box onFail) (declare)
    (body
     (if (hasTag aBox key)
       (then (return (getTag aBox key)))
       (else (return onFail)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Association list functions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  
   (bool assocExists ( string key box aBox ) (declare)
+  ; assocExists - returns true if the box has an association with the given key
    (body
    ;(printf "//Checking exists: %s\n" key)
     (if (isNil aBox)
@@ -247,12 +258,14 @@
 
 
   (box assocFail (string key box aBox box onFail) (declare)
+  ; assocFail - returns the value of the association with the given key, or onFail if the association does not exist
    (body
     (if (assocExists key aBox)
       (then (return (assoc key aBox)))
       (else (return (cons (boxString key) onFail))))))
 
   (box assocPanic (string key box aBox string onFail) (declare)
+  ; assocPanic - returns the value of the association with the given key, or panics if the association does not exist
    (body
     (if (assocExists key aBox)
       (then (return (assoc key aBox)))
@@ -264,6 +277,7 @@
 
 ;arg order is different to aconslist!
   (box setTag (box key list val box aStruct ) (declare)
+  ; setTag - sets the value of the tag with the given key to val
    (body
     (set-struct aStruct tag (alistCons key val (get-struct aStruct tag)))
     (return aStruct)))
@@ -271,46 +285,19 @@
 
 
 
-
-
-
-
-
-
-
-
-
       (void locPanic (string file string line string message) (declare)
+      ; locPanic - panics with the given message, and the file and line number
        (body
         (printf "%s %s:%s\n" file line message)
         (panic message)))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   (bool truthy (box aVal) (declare)
+  ; truthy - returns true if the value in the box is true, according to some loose interpretation of truth
    (body
     (return (isNotFalse aVal))))
 
    (bool isNotFalse (box aVal) (declare)
+   ; isNotFalse - returns true if the value in the box is not false
     (body
      (if (equalString (boxType aVal) "bool")
        (then (if (unBoxBool aVal) (then (return true))(else (return false))))
@@ -319,9 +306,11 @@
 
 
 (box toStr (box thing) (declare)
+; toStr - returns a string representation of the box
     (body (return (boxString (stringify thing)))))
 
 (box listLast (list alist) (declare)
+; listLast - returns the last element of the list
    (body
     (if (isEmpty (cdr alist))
       (then (return (car alist)))
@@ -330,14 +319,11 @@
 
 
   (void newLine (int indent) (declare)
+  ; newLine - prints a newline, and indents the given number of spaces
           (body (printf "\n") (printIndent indent)))
 
-
-
-    (void
-   printIndent
-   (int ii)
-   (declare)
+  (void printIndent (int ii) (declare)
+    ; printIndent - prints the given number of spaces
    (body
     (if (> ii 0)
       (then (printf "  ") (printIndent (sub1 ii)))

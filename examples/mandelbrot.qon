@@ -1,9 +1,12 @@
 (
           (includes q/base.qon q/lists.qon q/boolean.qon)
           (types)
+
+          
           (functions
 
            ;16 tones " .:-;!/>)|&IH%*#"
+           ;"asciiShade" maps a value from 0 to 15 to a shade of ASCII characters.
            (string asciiShade (int val) (declare (string dithers " .:!/>o+*%98O0G#"))
                    (body
                     (if (> val 15)
@@ -11,7 +14,7 @@
                          (return (asciiShade 15)))
                         (else (return (sub-string dithers val 1))))
                     ))
-
+            ;"escape" calculates the number of iterations needed for a point to escape the Mandelbrot set.
            (int escape (float x float y float c1 float c2 int iteration int max) (declare)
                 (body
                  (if (greaterthanf 4 (addf (multf x x)  (multf y y)))
@@ -21,7 +24,7 @@
                                (else (return iteration))))
                      (else (return iteration)))
                  ))
-
+            ;"mandelRow" generates a single row of the ASCII representation of the Mandelbrot set.
            (void mandelRow (float start float end float step float y) (declare)
                  (body
                   (if (greaterthanf end start)
@@ -31,7 +34,7 @@
                       (else
                        (return)))
                   ))
-
+            ;"mandelRows" generates all the rows of the ASCII representation of the Mandelbrot set.
            (void mandelRows (float start float end float step) (declare)
                  (body
                   (if (greaterthanf end start)
@@ -42,12 +45,13 @@
                       (else
                        (return)))
                   ))
+            ;"mandelPic" generates the entire ASCII representation of the Mandelbrot set.
 
            (void mandelPic () (declare)
                  (body
                   (mandelRows -1.1 1.1 0.035)
            ))
-
+    ;"start" is the entry point of the program.
      (int start () (declare (list cmdLine nil))
            (body
              (set cmdLine (listReverse (argList globalArgsCount 0 globalArgs)))
