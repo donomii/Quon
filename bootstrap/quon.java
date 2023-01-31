@@ -5571,7 +5571,7 @@ public void javaIncludes(Box nodes) {
   System.out.printf("%s", "public void panic(String s) {System.exit(1);}\n");  
   System.out.printf("%s", "public void exit(Integer s) {System.exit(s);}\n");  
   System.out.printf("%s", "public int sub(int a, int b) { return a - b; }\n");  
-  System.out.printf("%s", "public double mult(int a, int b) { return a * b; }\n");  
+  System.out.printf("%s", "public Integer mult(int a, int b) { return a * b; }\n");  
   System.out.printf("%s", "public boolean greaterthan(int a, int b) { return a > b; }\n");  
   System.out.printf("%s", "public double subf(double a, double b) { return a - b; }\n");  
   System.out.printf("%s", "public double multf(double a, double b) { return a * b; }\n");  

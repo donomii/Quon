@@ -4927,7 +4927,7 @@ if (globalTrace)
     snprintf(caller, 1024, "from q/java.qon:215");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  printf("%s", "public double mult(int a, int b) { return a * b; }\n");
+  printf("%s", "public Integer mult(int a, int b) { return a * b; }\n");
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/java.qon:216");

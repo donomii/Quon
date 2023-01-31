@@ -14311,7 +14311,7 @@ if ($globalTrace) { printf("javaIncludes at q/java.qon:210\n") }
 
 #standard expression
 
-  printf("%s", "public double mult(int a, int b) { return a * b; }\n")
+  printf("%s", "public Integer mult(int a, int b) { return a * b; }\n")
   ;
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 

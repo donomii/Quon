@@ -10651,7 +10651,7 @@ if (globalTrace)
   printf("%s", "public int sub(int a, int b) { return a - b; }\n");
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
-  printf("%s", "public double mult(int a, int b) { return a * b; }\n");
+  printf("%s", "public Integer mult(int a, int b) { return a * b; }\n");
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   printf("%s", "public boolean greaterthan(int a, int b) { return a > b; }\n");
