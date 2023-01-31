@@ -5569,6 +5569,7 @@ if (globalTrace)
 public void javaIncludes(Box nodes) {
     
   System.out.printf("%s", "public void panic(String s) {System.exit(1);}\n");  
+  System.out.printf("%s", "public void exit(Integer s) {System.exit(s);}\n");  
   System.out.printf("%s", "public int sub(int a, int b) { return a - b; }\n");  
   System.out.printf("%s", "public double mult(int a, int b) { return a * b; }\n");  
   System.out.printf("%s", "public boolean greaterthan(int a, int b) { return a > b; }\n");  
@@ -5577,7 +5578,6 @@ public void javaIncludes(Box nodes) {
   System.out.printf("%s", "public boolean greaterthanf(double a, double b) { return a > b; }\n");  
   System.out.printf("%s", "public boolean equal(int a, int b) { return a == b; }\n");  
   System.out.printf("%s", "public boolean equalString(String a, String b) { return a.equals(b); }\n");  
-  System.out.printf("%s", "public boolean andBool(boolean a, boolean b) { return a == b;}\n");  
   System.out.printf("%s", "public int string_length(String s) { return s.length();}\n");  
   System.out.printf("%s", "public String stringConcatenate(String s1, String s2) { return s1 + s2; }\n");  
   System.out.printf("%s", "public int strcmp(String s1, String s2) { return s1.compareTo(s2);}\n");  

@@ -10645,6 +10645,9 @@ if (globalTrace)
   printf("%s", "public void panic(String s) {System.exit(1);}\n");
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
+  printf("%s", "public void exit(Integer s) {System.exit(s);}\n");
+  if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
   printf("%s", "public int sub(int a, int b) { return a - b; }\n");
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
@@ -10667,9 +10670,6 @@ if (globalTrace)
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   printf("%s", "public boolean equalString(String a, String b) { return a.equals(b); }\n");
-  if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-  printf("%s", "public boolean andBool(boolean a, boolean b) { return a == b;}\n");
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   printf("%s", "public int string_length(String s) { return s.length();}\n");

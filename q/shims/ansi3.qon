@@ -10,6 +10,7 @@
 
  (functions
 
+
 (bool ansi3IsNil (void* a) (declare)
 	(body
 		(if (binop == a NULL)

@@ -14299,6 +14299,12 @@ if ($globalTrace) { printf("javaIncludes at q/java.qon:210\n") }
 
 #standard expression
 
+  printf("%s", "public void exit(Integer s) {System.exit(s);}\n")
+  ;
+  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
   printf("%s", "public int sub(int a, int b) { return a - b; }\n")
   ;
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
@@ -14342,12 +14348,6 @@ if ($globalTrace) { printf("javaIncludes at q/java.qon:210\n") }
 #standard expression
 
   printf("%s", "public boolean equalString(String a, String b) { return a.equals(b); }\n")
-  ;
-  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-#standard expression
-
-  printf("%s", "public boolean andBool(boolean a, boolean b) { return a == b;}\n")
   ;
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 

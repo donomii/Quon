@@ -4915,55 +4915,55 @@ if (globalTrace)
     snprintf(caller, 1024, "from q/java.qon:213");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  printf("%s", "public int sub(int a, int b) { return a - b; }\n");
+  printf("%s", "public void exit(Integer s) {System.exit(s);}\n");
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/java.qon:214");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  printf("%s", "public double mult(int a, int b) { return a * b; }\n");
+  printf("%s", "public int sub(int a, int b) { return a - b; }\n");
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/java.qon:215");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  printf("%s", "public boolean greaterthan(int a, int b) { return a > b; }\n");
+  printf("%s", "public double mult(int a, int b) { return a * b; }\n");
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/java.qon:216");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  printf("%s", "public double subf(double a, double b) { return a - b; }\n");
+  printf("%s", "public boolean greaterthan(int a, int b) { return a > b; }\n");
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/java.qon:217");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  printf("%s", "public double multf(double a, double b) { return a * b; }\n");
+  printf("%s", "public double subf(double a, double b) { return a - b; }\n");
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/java.qon:218");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  printf("%s", "public boolean greaterthanf(double a, double b) { return a > b; }\n");
+  printf("%s", "public double multf(double a, double b) { return a * b; }\n");
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/java.qon:219");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  printf("%s", "public boolean equal(int a, int b) { return a == b; }\n");
+  printf("%s", "public boolean greaterthanf(double a, double b) { return a > b; }\n");
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/java.qon:220");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  printf("%s", "public boolean equalString(String a, String b) { return a.equals(b); }\n");
+  printf("%s", "public boolean equal(int a, int b) { return a == b; }\n");
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/java.qon:221");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  printf("%s", "public boolean andBool(boolean a, boolean b) { return a == b;}\n");
+  printf("%s", "public boolean equalString(String a, String b) { return a.equals(b); }\n");
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/java.qon:222");
@@ -20618,27 +20618,27 @@ if (globalTrace)
 }
 
 
-//Building function ansi3IsNil from line: 12
+//Building function ansi3IsNil from line: 13
 
 bool ansi3IsNil(void* a) {
   
 if (globalTrace)
-    printf("ansi3IsNil at q/shims/ansi3.qon:12 (%s)\n", caller);
+    printf("ansi3IsNil at q/shims/ansi3.qon:13 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:14");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:15");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( (a == NULL)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:15");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:16");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return true;;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:16");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:17");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return false;;
@@ -20651,15 +20651,15 @@ if (globalTrace)
 }
 
 
-//Building function pointerAdd from line: 18
+//Building function pointerAdd from line: 19
 
 void* pointerAdd(void* a, int b) {
   
 if (globalTrace)
-    printf("pointerAdd at q/shims/ansi3.qon:18 (%s)\n", caller);
+    printf("pointerAdd at q/shims/ansi3.qon:19 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:20");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:21");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return (a + b);;
@@ -20670,15 +20670,15 @@ if (globalTrace)
 }
 
 
-//Building function getEnv from line: 22
+//Building function getEnv from line: 23
 
 char* getEnv(char* key) {
   
 if (globalTrace)
-    printf("getEnv at q/shims/ansi3.qon:22 (%s)\n", caller);
+    printf("getEnv at q/shims/ansi3.qon:23 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:24");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:25");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return getenv(key);;
@@ -20689,21 +20689,21 @@ if (globalTrace)
 }
 
 
-//Building function panic from line: 26
+//Building function panic from line: 27
 
 void panic(char* s) {
   
 if (globalTrace)
-    printf("panic at q/shims/ansi3.qon:26 (%s)\n", caller);
+    printf("panic at q/shims/ansi3.qon:27 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:28");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:29");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   abort();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:29");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:30");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   exit(1);
@@ -20714,15 +20714,15 @@ if (globalTrace)
 }
 
 
-//Building function sub from line: 31
+//Building function sub from line: 32
 
 int sub(int a, int b) {
   
 if (globalTrace)
-    printf("sub at q/shims/ansi3.qon:31 (%s)\n", caller);
+    printf("sub at q/shims/ansi3.qon:32 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:33");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:34");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return (a - b);;
@@ -20733,15 +20733,15 @@ if (globalTrace)
 }
 
 
-//Building function mult from line: 35
+//Building function mult from line: 36
 
 float mult(int a, int b) {
   
 if (globalTrace)
-    printf("mult at q/shims/ansi3.qon:35 (%s)\n", caller);
+    printf("mult at q/shims/ansi3.qon:36 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:37");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:38");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return (a * b);;
@@ -20752,15 +20752,15 @@ if (globalTrace)
 }
 
 
-//Building function greaterthan from line: 39
+//Building function greaterthan from line: 40
 
 int greaterthan(int a, int b) {
   
 if (globalTrace)
-    printf("greaterthan at q/shims/ansi3.qon:39 (%s)\n", caller);
+    printf("greaterthan at q/shims/ansi3.qon:40 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:41");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:42");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return (a > b);;
@@ -20771,15 +20771,15 @@ if (globalTrace)
 }
 
 
-//Building function subf from line: 43
+//Building function subf from line: 44
 
 float subf(float a, float b) {
   
 if (globalTrace)
-    printf("subf at q/shims/ansi3.qon:43 (%s)\n", caller);
+    printf("subf at q/shims/ansi3.qon:44 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:45");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:46");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return (a - b);;
@@ -20790,15 +20790,15 @@ if (globalTrace)
 }
 
 
-//Building function multf from line: 47
+//Building function multf from line: 48
 
 float multf(float a, float b) {
   
 if (globalTrace)
-    printf("multf at q/shims/ansi3.qon:47 (%s)\n", caller);
+    printf("multf at q/shims/ansi3.qon:48 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:49");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:50");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return (a * b);;
@@ -20809,15 +20809,15 @@ if (globalTrace)
 }
 
 
-//Building function greaterthanf from line: 51
+//Building function greaterthanf from line: 52
 
 int greaterthanf(float a, float b) {
   
 if (globalTrace)
-    printf("greaterthanf at q/shims/ansi3.qon:51 (%s)\n", caller);
+    printf("greaterthanf at q/shims/ansi3.qon:52 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:53");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:54");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return (a > b);;
@@ -20828,15 +20828,15 @@ if (globalTrace)
 }
 
 
-//Building function equal from line: 55
+//Building function equal from line: 56
 
 int equal(int a, int b) {
   
 if (globalTrace)
-    printf("equal at q/shims/ansi3.qon:55 (%s)\n", caller);
+    printf("equal at q/shims/ansi3.qon:56 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:57");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:58");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return (a == b);;
@@ -20847,15 +20847,15 @@ if (globalTrace)
 }
 
 
-//Building function equalString from line: 59
+//Building function equalString from line: 60
 
 int equalString(char* a, char* b) {
   
 if (globalTrace)
-    printf("equalString at q/shims/ansi3.qon:59 (%s)\n", caller);
+    printf("equalString at q/shims/ansi3.qon:60 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:61");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:62");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return (0 == strcmp(a, b));;
@@ -20866,15 +20866,15 @@ if (globalTrace)
 }
 
 
-//Building function string_length from line: 63
+//Building function string_length from line: 64
 
 int string_length(char* s) {
   
 if (globalTrace)
-    printf("string_length at q/shims/ansi3.qon:63 (%s)\n", caller);
+    printf("string_length at q/shims/ansi3.qon:64 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:65");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:66");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return strlen(s);;
@@ -20885,21 +20885,21 @@ if (globalTrace)
 }
 
 
-//Building function setSubString from line: 67
+//Building function setSubString from line: 68
 
 char* setSubString(char* target, int start, char* source) {
   
 if (globalTrace)
-    printf("setSubString at q/shims/ansi3.qon:67 (%s)\n", caller);
+    printf("setSubString at q/shims/ansi3.qon:68 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:69");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:70");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   target[start]=source[0];
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:70");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:71");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return target;;
@@ -20910,28 +20910,28 @@ if (globalTrace)
 }
 
 
-//Building function sub_string from line: 73
+//Building function sub_string from line: 74
 
 char* sub_string(char* s, int start, int length) {
   char* substr = "";
 
 if (globalTrace)
-    printf("sub_string at q/shims/ansi3.qon:73 (%s)\n", caller);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:75");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  substr = calloc(add(length, 1), 1);
+    printf("sub_string at q/shims/ansi3.qon:74 (%s)\n", caller);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/shims/ansi3.qon:76");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  strncpy(substr, (s + start), length);
+  substr = calloc(add(length, 1), 1);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/shims/ansi3.qon:77");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  strncpy(substr, (s + start), length);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:78");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return substr;;
@@ -20942,41 +20942,41 @@ if (globalTrace)
 }
 
 
-//Building function stringConcatenate from line: 80
+//Building function stringConcatenate from line: 81
 
 char* stringConcatenate(char* a, char* b) {
   int len = 0;
 char* target = NULL;
 
 if (globalTrace)
-    printf("stringConcatenate at q/shims/ansi3.qon:80 (%s)\n", caller);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:82");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  len = add(add(strlen(a), strlen(b)), 1);
+    printf("stringConcatenate at q/shims/ansi3.qon:81 (%s)\n", caller);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/shims/ansi3.qon:83");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  target = calloc(len, 1);
+  len = add(add(strlen(a), strlen(b)), 1);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/shims/ansi3.qon:84");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  strncat(target, a, len);
+  target = calloc(len, 1);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/shims/ansi3.qon:85");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  strncat(target, b, len);
+  strncat(target, a, len);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/shims/ansi3.qon:86");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  strncat(target, b, len);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:87");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return target;;
@@ -20987,35 +20987,35 @@ if (globalTrace)
 }
 
 
-//Building function intToString from line: 89
+//Building function intToString from line: 90
 
 char* intToString(int a) {
   int len = 0;
 char* target = NULL;
 
 if (globalTrace)
-    printf("intToString at q/shims/ansi3.qon:89 (%s)\n", caller);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:91");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  len = 100;
+    printf("intToString at q/shims/ansi3.qon:90 (%s)\n", caller);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/shims/ansi3.qon:92");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  target = calloc(len, 1);
+  len = 100;
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/shims/ansi3.qon:93");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  snprintf(target, 99, "%d", a);
+  target = calloc(len, 1);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/shims/ansi3.qon:94");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  snprintf(target, 99, "%d", a);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:95");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return target;;
@@ -21026,15 +21026,15 @@ if (globalTrace)
 }
 
 
-//Building function gc_malloc from line: 97
+//Building function gc_malloc from line: 98
 
 void* gc_malloc(uint size) {
   
 if (globalTrace)
-    printf("gc_malloc at q/shims/ansi3.qon:97 (%s)\n", caller);
+    printf("gc_malloc at q/shims/ansi3.qon:98 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:99");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:100");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return malloc(size);;
@@ -21045,22 +21045,22 @@ if (globalTrace)
 }
 
 
-//Building function makeArray from line: 102
+//Building function makeArray from line: 103
 
 int* makeArray(int length) {
   int* array = NULL;
 
 if (globalTrace)
-    printf("makeArray at q/shims/ansi3.qon:102 (%s)\n", caller);
+    printf("makeArray at q/shims/ansi3.qon:103 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:104");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:105");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   array = gc_malloc(mult(length, sizeof(int)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:105");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:106");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return array;;
@@ -21071,15 +21071,15 @@ if (globalTrace)
 }
 
 
-//Building function at from line: 108
+//Building function at from line: 109
 
 int at(int* arr, int index) {
   
 if (globalTrace)
-    printf("at at q/shims/ansi3.qon:108 (%s)\n", caller);
+    printf("at at q/shims/ansi3.qon:109 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:110");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:111");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return arr[index];;
@@ -21090,15 +21090,15 @@ if (globalTrace)
 }
 
 
-//Building function setAt from line: 113
+//Building function setAt from line: 114
 
 void setAt(int* array, int index, int value) {
   
 if (globalTrace)
-    printf("setAt at q/shims/ansi3.qon:113 (%s)\n", caller);
+    printf("setAt at q/shims/ansi3.qon:114 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:115");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:116");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   array[index] = value;
@@ -21109,15 +21109,15 @@ if (globalTrace)
 }
 
 
-//Building function setCharAt from line: 118
+//Building function setCharAt from line: 119
 
 void setCharAt(char* array, int index, int value) {
   
 if (globalTrace)
-    printf("setCharAt at q/shims/ansi3.qon:118 (%s)\n", caller);
+    printf("setCharAt at q/shims/ansi3.qon:119 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:120");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:121");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   array[index] = value;
@@ -21128,7 +21128,7 @@ if (globalTrace)
 }
 
 
-//Building function read_file from line: 123
+//Building function read_file from line: 124
 
 char* read_file(char* filename) {
   char* buffer = NULL;
@@ -21136,64 +21136,64 @@ long length = 0;
 FILE* f = NULL;
 
 if (globalTrace)
-    printf("read_file at q/shims/ansi3.qon:123 (%s)\n", caller);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:125");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  f = fopen(filename, "rb");
+    printf("read_file at q/shims/ansi3.qon:124 (%s)\n", caller);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/shims/ansi3.qon:126");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  if ( ansi3IsNil(f)) {
+  f = fopen(filename, "rb");
+
 if (globalTrace)
     snprintf(caller, 1024, "from q/shims/ansi3.qon:127");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( ansi3IsNil(f)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:128");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return NULL;;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:129");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:130");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     fseek(f, 0, SEEK_END);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:130");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:131");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     length = ftell(f);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:131");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:132");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     fseek(f, 0, SEEK_SET);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:132");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:133");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     buffer = calloc(add(1, length), 1);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:134");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:135");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( ansi3IsNil(buffer)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:135");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:136");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       panic("Malloc failed!\n");
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:136");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:137");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       fread(buffer, 1, length, f);
@@ -21201,7 +21201,7 @@ if (globalTrace)
     };
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:137");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:138");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     fclose(f);
@@ -21209,7 +21209,7 @@ if (globalTrace)
   };
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:140");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:141");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return buffer;;
@@ -21220,7 +21220,7 @@ if (globalTrace)
 }
 
 
-//Building function write_file from line: 143
+//Building function write_file from line: 144
 
 void write_file(char* filename, char* data) {
   char* buffer = NULL;
@@ -21228,34 +21228,34 @@ long length = 0;
 FILE* f = NULL;
 
 if (globalTrace)
-    printf("write_file at q/shims/ansi3.qon:143 (%s)\n", caller);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:145");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  f = fopen(filename, "w");
+    printf("write_file at q/shims/ansi3.qon:144 (%s)\n", caller);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/shims/ansi3.qon:146");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  if ( ansi3IsNil(f)) {
+  f = fopen(filename, "w");
+
 if (globalTrace)
     snprintf(caller, 1024, "from q/shims/ansi3.qon:147");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( ansi3IsNil(f)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:148");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     panic("Error opening file!");
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:149");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:150");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     fprintf(f, "%s", data);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:150");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:151");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     fclose(f);
@@ -21268,15 +21268,15 @@ if (globalTrace)
 }
 
 
-//Building function getStringArray from line: 154
+//Building function getStringArray from line: 155
 
 char* getStringArray(int index, char** strs) {
   
 if (globalTrace)
-    printf("getStringArray at q/shims/ansi3.qon:154 (%s)\n", caller);
+    printf("getStringArray at q/shims/ansi3.qon:155 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:156");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:157");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return strs[index];;
@@ -21287,15 +21287,15 @@ if (globalTrace)
 }
 
 
-//Building function programArgs from line: 158
+//Building function programArgs from line: 159
 
 char** programArgs() {
   
 if (globalTrace)
-    printf("programArgs at q/shims/ansi3.qon:158 (%s)\n", caller);
+    printf("programArgs at q/shims/ansi3.qon:159 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:160");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:161");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return globalArgs;;
@@ -21306,15 +21306,15 @@ if (globalTrace)
 }
 
 
-//Building function programArgsCount from line: 163
+//Building function programArgsCount from line: 164
 
 int programArgsCount() {
   
 if (globalTrace)
-    printf("programArgsCount at q/shims/ansi3.qon:163 (%s)\n", caller);
+    printf("programArgsCount at q/shims/ansi3.qon:164 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:165");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:166");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return globalArgsCount;;
@@ -21325,33 +21325,33 @@ if (globalTrace)
 }
 
 
-//Building function main from line: 169
+//Building function main from line: 170
 
 int main(int argc, char** argv) {
   
 if (globalTrace)
-    printf("main at q/shims/ansi3.qon:169 (%s)\n", caller);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:171");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  caller = calloc(1024, 1);
+    printf("main at q/shims/ansi3.qon:170 (%s)\n", caller);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/shims/ansi3.qon:172");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  globalArgs = argv;
+  caller = calloc(1024, 1);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/shims/ansi3.qon:173");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  globalArgsCount = argc;
+  globalArgs = argv;
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/shims/ansi3.qon:174");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  globalArgsCount = argc;
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:175");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return start(argc, argv);;
@@ -21362,47 +21362,47 @@ if (globalTrace)
 }
 
 
-//Building function character from line: 177
+//Building function character from line: 178
 
 char* character(int num) {
   char* buffer = NULL;
 char* str = NULL;
 
 if (globalTrace)
-    printf("character at q/shims/ansi3.qon:177 (%s)\n", caller);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:179");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  str = malloc(2);
+    printf("character at q/shims/ansi3.qon:178 (%s)\n", caller);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/shims/ansi3.qon:180");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  if ( ansi3IsNil(str)) {
+  str = malloc(2);
+
 if (globalTrace)
     snprintf(caller, 1024, "from q/shims/ansi3.qon:181");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( ansi3IsNil(str)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:182");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return 0;;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:183");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:184");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     setCharAt(str, 0, num);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:184");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:185");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     setCharAt(str, 1, 0);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:185");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:186");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return str;;
@@ -21415,15 +21415,15 @@ if (globalTrace)
 }
 
 
-//Building function displays from line: 192
+//Building function displays from line: 193
 
 void displays(char* s) {
   
 if (globalTrace)
-    printf("displays at q/shims/ansi3.qon:192 (%s)\n", caller);
+    printf("displays at q/shims/ansi3.qon:193 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/shims/ansi3.qon:194");
+    snprintf(caller, 1024, "from q/shims/ansi3.qon:195");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("%s", s);

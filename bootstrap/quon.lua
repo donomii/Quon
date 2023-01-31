@@ -2267,6 +2267,9 @@ caller = "javaIncludes:Unknown file:-1"
   printf("%s", "public void panic(String s) {System.exit(1);}\n");
 
 caller = "javaIncludes:Unknown file:-1"
+  printf("%s", "public void exit(Integer s) {System.exit(s);}\n");
+
+caller = "javaIncludes:Unknown file:-1"
   printf("%s", "public int sub(int a, int b) { return a - b; }\n");
 
 caller = "javaIncludes:Unknown file:-1"
@@ -2289,9 +2292,6 @@ caller = "javaIncludes:Unknown file:-1"
 
 caller = "javaIncludes:Unknown file:-1"
   printf("%s", "public boolean equalString(String a, String b) { return a.equals(b); }\n");
-
-caller = "javaIncludes:Unknown file:-1"
-  printf("%s", "public boolean andBool(boolean a, boolean b) { return a == b;}\n");
 
 caller = "javaIncludes:Unknown file:-1"
   printf("%s", "public int string_length(String s) { return s.length();}\n");
