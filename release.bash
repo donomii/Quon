@@ -19,7 +19,7 @@ java -Xss100M -jar MyProgram.jar --test
 mv MyProgram.jar release/quon.jar
 
 
-./quon_new examples/mandelbrot.qon --java > test.java
+./quon examples/mandelbrot.qon --java > test.java
 rm -r quonverter
 mkdir quonverter
 javac -d ./ test.java

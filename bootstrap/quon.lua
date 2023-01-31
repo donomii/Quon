@@ -249,7 +249,10 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
                           if statement then
 caller = ":Unknown file:-1"
-                              printf("%s", stringify(bashFuncMap(car(tree))));
+                              printf("%s ", stringify(bashFuncMap(car(tree))));
+
+caller = ":Unknown file:-1"
+                              bashRecurList(cdr(tree), indent);
 
                           else
 caller = ":Unknown file:-1"
@@ -365,7 +368,7 @@ caller = "bashSetStruct:Unknown file:-1"
   newLine(indent);
 
 caller = "bashSetStruct:Unknown file:-1"
-  printf("%s->%s = ", stringify(second(node)), stringify(third(node)));
+  printf("%s%s_%s%s=", dollar(), stringify(second(node)), dollar(), stringify(third(node)));
 
 caller = "bashSetStruct:Unknown file:-1"
   bashExpression(fourth(node), indent, false);
@@ -378,7 +381,7 @@ caller = "bashGetStruct:Unknown file:-1"
   newLine(indent);
 
 caller = "bashGetStruct:Unknown file:-1"
-  printf("%s->%s", stringify(first(node)), stringify(second(node)));
+  printf("%s%s_%s%s", dollar(), stringify(first(node)), dollar(), stringify(second(node)));
 
 end
 -- Chose function name bashSet
@@ -463,7 +466,7 @@ caller = ":Unknown file:-1"
   end
 
 caller = "bashStatement:Unknown file:-1"
-  bashdisplays(" ;\n");
+  bashdisplays(" \n");
 
 end
 -- Chose function name bashBody
@@ -612,20 +615,6 @@ end
 -- Chose function name bashForwardDeclaration
 function bashForwardDeclaration(node)
 print("caller: ", caller, "-> bashForwardDeclaration")
-caller = "bashForwardDeclaration:Unknown file:-1"
-  if isNil(node) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      printf("\n%s %s(", stringify(bashTypeMap(first(node))), stringify(second(node)));
-
-caller = ":Unknown file:-1"
-      bashdisplays(");");
-
-  end
-
 end
 -- Chose function name bashForwardDeclarations
 function bashForwardDeclarations(tree)
@@ -667,7 +656,7 @@ end
 function bashIncludes(nodes)
 print("caller: ", caller, "-> bashIncludes")
 caller = "bashIncludes:Unknown file:-1"
-  printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n");
+  printf("%s", "\n\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n");
 
 caller = "bashIncludes:Unknown file:-1"
   printf("%s", "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n");
@@ -676,23 +665,6 @@ end
 -- Chose function name bashTypeDecl
 function bashTypeDecl(l)
 print("caller: ", caller, "-> bashTypeDecl")
-caller = "bashTypeDecl:Unknown file:-1"
-  if greaterthan(listLength(l), 2) then
-caller = ":Unknown file:-1"
-      printIndent(1);
-
-caller = ":Unknown file:-1"
-      printf("%s %s %s;\n", stringify(second(l)), stringify(bashTypeMap(listLast(l))), stringify(first(l)));
-
-  else
-caller = ":Unknown file:-1"
-      printIndent(1);
-
-caller = ":Unknown file:-1"
-      printf("%s %s;\n", stringify(bashTypeMap(listLast(l))), stringify(car(l)));
-
-  end
-
 end
 -- Chose function name bashStructComponents
 function bashStructComponents(node)
@@ -766,26 +738,6 @@ end
 -- Chose function name bashType
 function bashType(node)
 print("caller: ", caller, "-> bashType")
-caller = "bashType:Unknown file:-1"
-  if isList(second(node)) then
-caller = ":Unknown file:-1"
-      printf("\ntypedef struct %s {\n", stringify(first(node)));
-
-caller = ":Unknown file:-1"
-      bashStruct(second(node));
-
-caller = ":Unknown file:-1"
-      printf("\n} %s;\n", stringify(first(node)));
-
-  else
-caller = ":Unknown file:-1"
-      bashdisplays("typedef ");
-
-caller = ":Unknown file:-1"
-      bashTypeDecl(node);
-
-  end
-
 end
 -- Chose function name bashTypes
 function bashTypes(nodes)
@@ -4527,7 +4479,7 @@ end
 function ansi3Includes(nodes)
 print("caller: ", caller, "-> ansi3Includes")
 caller = "ansi3Includes:Unknown file:-1"
-  printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n");
+  printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#include <unistd.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n");
 
 caller = "ansi3Includes:Unknown file:-1"
   printf("%s", "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n");
@@ -9662,6 +9614,68 @@ caller = "start:Unknown file:-1"
   globalTrace = inList(boxString("--trace"), cmdLine)
 caller = "start:Unknown file:-1"
   globalStepTrace = inList(boxString("--steptrace"), cmdLine)
+caller = "start:Unknown file:-1"
+  if inList(boxString("--help"), cmdLine) then
+caller = ":Unknown file:-1"
+      printf("Usage: quon file [options]\n\nNote the options go after the file name\n");
+
+caller = ":Unknown file:-1"
+      printf("Options:\n");
+
+caller = ":Unknown file:-1"
+      printf("  --help      Display this help\n");
+
+caller = ":Unknown file:-1"
+      printf("  --release   Compile in release mode\n");
+
+caller = ":Unknown file:-1"
+      printf("  --test      Run the test suite\n");
+
+caller = ":Unknown file:-1"
+      printf("  --java      Compile to Java\n");
+
+caller = ":Unknown file:-1"
+      printf("  --perl      Compile to Perl\n");
+
+caller = ":Unknown file:-1"
+      printf("  --ast       Compile to the Abstract Syntax Tree\n");
+
+caller = ":Unknown file:-1"
+      printf("  --tree      Compile to an s-expression tree\n");
+
+caller = ":Unknown file:-1"
+      printf("  --node      Compile to Node.js\n");
+
+caller = ":Unknown file:-1"
+      printf("  --lua       Compile to Lua\n");
+
+caller = ":Unknown file:-1"
+      printf("  --ima       Compile to Imaginary, the human-friendly language\n");
+
+caller = ":Unknown file:-1"
+      printf("  --ansi2     Compile to ANSI C, (quon version 2)\n");
+
+caller = ":Unknown file:-1"
+      printf("  --ansi3     Compile to ANSI C (quon version 3)\n");
+
+caller = ":Unknown file:-1"
+      printf("  --bash      Compile to Bash\n");
+
+caller = ":Unknown file:-1"
+      printf("  --trace     Trace execution\n");
+
+caller = ":Unknown file:-1"
+      printf("  --steptrace Step trace execution\n");
+
+caller = ":Unknown file:-1"
+      printf("  --help      Display this help\n");
+
+caller = ":Unknown file:-1"
+      exit(0);
+
+  else
+  end
+
 caller = "start:Unknown file:-1"
   if runTests then
 caller = ":Unknown file:-1"

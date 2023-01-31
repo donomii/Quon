@@ -291,23 +291,14 @@
        (set
         symMap
         (alistCons (boxSymbol "printf") (boxSymbol "System.out.printf")
-        (alistCons (boxSymbol "=") (boxSymbol "equal")
-         (alistCons
-          (boxSymbol "sub-string")
-          (boxSymbol "sub_string")
-          (alistCons
-           (boxSymbol "read-file")
-           (boxSymbol "read_file")
-           (alistCons
-            (boxSymbol "write-file")
-            (boxSymbol "write_file")
-            (alistCons
-             (boxSymbol ">")
-             (boxSymbol "greaterthan")
-             (alistCons
-              (boxSymbol "string-length")
-              (boxSymbol "string_length")
-              (alistCons (boxSymbol "nil") (boxSymbol "null") nil)))))))))
+         (alistCons (boxSymbol (stringConcatenate "q" "log") ) (boxSymbol "System.err.printf")
+            (alistCons (boxSymbol "=") (boxSymbol "equal")
+              (alistCons (boxSymbol "sub-string") (boxSymbol "sub_string")
+                (alistCons (boxSymbol "read-file") (boxSymbol "read_file")
+                  (alistCons (boxSymbol "write-file") (boxSymbol "write_file")
+                    (alistCons (boxSymbol ">") (boxSymbol "greaterthan")
+                      (alistCons (boxSymbol "string-length") (boxSymbol "string_length")
+                        (alistCons (boxSymbol "nil") (boxSymbol "null") nil))))))))))
 
        (if (truthy (assoc (stringify aSym) symMap))
          (then (return (cdr (assoc (stringify aSym) symMap))))

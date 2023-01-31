@@ -10484,7 +10484,7 @@ if ($globalTrace) { printf("ansi3Includes at q/ansi3.qon:277\n") }
 
 #standard expression
 
-  printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n")
+  printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#include <unistd.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n")
   ;
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
@@ -16829,7 +16829,13 @@ if ($globalTrace) { printf("bashExpression at q/bash.qon:26\n") }
 
 #standard expression
 
-                printf("%s", stringify(bashFuncMap(car($tree))))
+                printf("%s ", stringify(bashFuncMap(car($tree))))
+                ;
+                if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+                bashRecurList(cdr($tree), $indent)
                 ;
 
               } else {                if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
@@ -16875,13 +16881,13 @@ if ($globalTrace) { printf("bashExpression at q/bash.qon:26\n") }
 }
 
 
-#Building function bashVarOrLit from line: 99
+#Building function bashVarOrLit from line: 102
 
 sub bashVarOrLit {
   my $a = shift;
 
   
-if ($globalTrace) { printf("bashVarOrLit at q/bash.qon:99\n") }
+if ($globalTrace) { printf("bashVarOrLit at q/bash.qon:102\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   if ( equalString("symbol", boxType($a))) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
@@ -16905,14 +16911,14 @@ if ($globalTrace) { printf("bashVarOrLit at q/bash.qon:99\n") }
 }
 
 
-#Building function bashRecurList from line: 108
+#Building function bashRecurList from line: 111
 
 sub bashRecurList {
   my $expr = shift;
 my $indent = shift;
 
   
-if ($globalTrace) { printf("bashRecurList at q/bash.qon:108\n") }
+if ($globalTrace) { printf("bashRecurList at q/bash.qon:111\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   if ( isEmpty($expr)) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
@@ -16957,14 +16963,14 @@ if ($globalTrace) { printf("bashRecurList at q/bash.qon:108\n") }
 }
 
 
-#Building function bashIf from line: 125
+#Building function bashIf from line: 128
 
 sub bashIf {
   my $node = shift;
 my $indent = shift;
 
   
-if ($globalTrace) { printf("bashIf at q/bash.qon:125\n") }
+if ($globalTrace) { printf("bashIf at q/bash.qon:128\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
 #standard expression
@@ -17029,14 +17035,14 @@ if ($globalTrace) { printf("bashIf at q/bash.qon:125\n") }
 }
 
 
-#Building function bashSetStruct from line: 138
+#Building function bashSetStruct from line: 141
 
 sub bashSetStruct {
   my $node = shift;
 my $indent = shift;
 
   
-if ($globalTrace) { printf("bashSetStruct at q/bash.qon:138\n") }
+if ($globalTrace) { printf("bashSetStruct at q/bash.qon:141\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
 #standard expression
@@ -17047,7 +17053,7 @@ if ($globalTrace) { printf("bashSetStruct at q/bash.qon:138\n") }
 
 #standard expression
 
-  printf("%s->%s = ", stringify(second($node)), stringify(third($node)))
+  printf("%s%s_%s%s=", dollar(), stringify(second($node)), dollar(), stringify(third($node)))
   ;
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
@@ -17059,14 +17065,14 @@ if ($globalTrace) { printf("bashSetStruct at q/bash.qon:138\n") }
 }
 
 
-#Building function bashGetStruct from line: 147
+#Building function bashGetStruct from line: 152
 
 sub bashGetStruct {
   my $node = shift;
 my $indent = shift;
 
   
-if ($globalTrace) { printf("bashGetStruct at q/bash.qon:147\n") }
+if ($globalTrace) { printf("bashGetStruct at q/bash.qon:152\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
 #standard expression
@@ -17077,20 +17083,20 @@ if ($globalTrace) { printf("bashGetStruct at q/bash.qon:147\n") }
 
 #standard expression
 
-  printf("%s->%s", stringify(first($node)), stringify(second($node)))
+  printf("%s%s_%s%s", dollar(), stringify(first($node)), dollar(), stringify(second($node)))
   ;
 
 }
 
 
-#Building function bashSet from line: 155
+#Building function bashSet from line: 162
 
 sub bashSet {
   my $node = shift;
 my $indent = shift;
 
   
-if ($globalTrace) { printf("bashSet at q/bash.qon:155\n") }
+if ($globalTrace) { printf("bashSet at q/bash.qon:162\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
 #standard expression
@@ -17119,14 +17125,14 @@ if ($globalTrace) { printf("bashSet at q/bash.qon:155\n") }
 }
 
 
-#Building function bashReturn from line: 162
+#Building function bashReturn from line: 169
 
 sub bashReturn {
   my $node = shift;
 my $indent = shift;
 
   
-if ($globalTrace) { printf("bashReturn at q/bash.qon:162\n") }
+if ($globalTrace) { printf("bashReturn at q/bash.qon:169\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
 #standard expression
@@ -17166,14 +17172,14 @@ if ($globalTrace) { printf("bashReturn at q/bash.qon:162\n") }
 }
 
 
-#Building function bashStatement from line: 173
+#Building function bashStatement from line: 180
 
 sub bashStatement {
   my $node = shift;
 my $indent = shift;
 
   
-if ($globalTrace) { printf("bashStatement at q/bash.qon:173\n") }
+if ($globalTrace) { printf("bashStatement at q/bash.qon:180\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   if ( equalBox(boxString("set"), first($node))) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
@@ -17234,13 +17240,13 @@ if ($globalTrace) { printf("bashStatement at q/bash.qon:173\n") }
 
 #standard expression
 
-  bashdisplays(" ;\n")
+  bashdisplays(" \n")
   ;
 
 }
 
 
-#Building function bashBody from line: 191
+#Building function bashBody from line: 198
 
 sub bashBody {
   my $tree = shift;
@@ -17248,7 +17254,7 @@ my $indent = shift;
 
   my $code = undef;
 
-if ($globalTrace) { printf("bashBody at q/bash.qon:191\n") }
+if ($globalTrace) { printf("bashBody at q/bash.qon:198\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   if ( isEmpty($tree)) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
@@ -17303,7 +17309,7 @@ if ($globalTrace) { printf("bashBody at q/bash.qon:191\n") }
 }
 
 
-#Building function bashDeclarations from line: 214
+#Building function bashDeclarations from line: 221
 
 sub bashDeclarations {
   my $decls = shift;
@@ -17311,7 +17317,7 @@ my $indent = shift;
 
   my $decl = undef;
 
-if ($globalTrace) { printf("bashDeclarations at q/bash.qon:214\n") }
+if ($globalTrace) { printf("bashDeclarations at q/bash.qon:221\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   if ( isEmpty($decls)) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
@@ -17354,14 +17360,14 @@ if ($globalTrace) { printf("bashDeclarations at q/bash.qon:214\n") }
 }
 
 
-#Building function bashFunction from line: 227
+#Building function bashFunction from line: 234
 
 sub bashFunction {
   my $node = shift;
 
   my $name = undef;
 
-if ($globalTrace) { printf("bashFunction at q/bash.qon:227\n") }
+if ($globalTrace) { printf("bashFunction at q/bash.qon:234\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   $name = second($node);
@@ -17485,36 +17491,13 @@ if ($globalTrace) { printf("bashFunction at q/bash.qon:227\n") }
 }
 
 
-#Building function bashForwardDeclaration from line: 260
+#Building function bashForwardDeclaration from line: 267
 
 sub bashForwardDeclaration {
   my $node = shift;
 
   
-if ($globalTrace) { printf("bashForwardDeclaration at q/bash.qon:260\n") }
-  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-  if ( isNil($node)) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-#Returnvoid
-
-    
-    return;
-
-  } else {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-#standard expression
-
-    printf("\n%s %s(", stringify(bashTypeMap(first($node))), stringify(second($node)))
-    ;
-    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-#standard expression
-
-    bashdisplays(");")
-    ;
-
-  };
+if ($globalTrace) { printf("bashForwardDeclaration at q/bash.qon:267\n") }
 
 }
 
@@ -17598,7 +17581,7 @@ if ($globalTrace) { printf("bashIncludes at q/bash.qon:282\n") }
 
 #standard expression
 
-  printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n")
+  printf("%s", "\n\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n")
   ;
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
@@ -17617,46 +17600,17 @@ sub bashTypeDecl {
 
   
 if ($globalTrace) { printf("bashTypeDecl at q/bash.qon:290\n") }
-  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-  if ( greaterthan(listLength($l), 2)) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-#standard expression
-
-    printIndent(1)
-    ;
-    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-#standard expression
-
-    printf("%s %s %s;\n", stringify(second($l)), stringify(bashTypeMap(listLast($l))), stringify(first($l)))
-    ;
-
-  } else {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-#standard expression
-
-    printIndent(1)
-    ;
-    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-#standard expression
-
-    printf("%s %s;\n", stringify(bashTypeMap(listLast($l))), stringify(car($l)))
-    ;
-
-  };
 
 }
 
 
-#Building function bashStructComponents from line: 307
+#Building function bashStructComponents from line: 294
 
 sub bashStructComponents {
   my $node = shift;
 
   
-if ($globalTrace) { printf("bashStructComponents at q/bash.qon:307\n") }
+if ($globalTrace) { printf("bashStructComponents at q/bash.qon:294\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   if ( isEmpty($node)) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
@@ -17684,13 +17638,13 @@ if ($globalTrace) { printf("bashStructComponents at q/bash.qon:307\n") }
 }
 
 
-#Building function bashStruct from line: 313
+#Building function bashStruct from line: 300
 
 sub bashStruct {
   my $node = shift;
 
   
-if ($globalTrace) { printf("bashStruct at q/bash.qon:313\n") }
+if ($globalTrace) { printf("bashStruct at q/bash.qon:300\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
 #standard expression
@@ -17701,14 +17655,14 @@ if ($globalTrace) { printf("bashStruct at q/bash.qon:313\n") }
 }
 
 
-#Building function bashTypeMap from line: 316
+#Building function bashTypeMap from line: 303
 
 sub bashTypeMap {
   my $aSym = shift;
 
   my $symMap = undef;
 
-if ($globalTrace) { printf("bashTypeMap at q/bash.qon:316\n") }
+if ($globalTrace) { printf("bashTypeMap at q/bash.qon:303\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   $symMap = alistCons(boxSymbol("stringArray"), boxSymbol("char**"), alistCons(boxSymbol("string"), boxSymbol("char*"), $undef));
@@ -17735,14 +17689,14 @@ if ($globalTrace) { printf("bashTypeMap at q/bash.qon:316\n") }
 }
 
 
-#Building function bashFuncMap from line: 326
+#Building function bashFuncMap from line: 313
 
 sub bashFuncMap {
   my $aSym = shift;
 
   my $symMap = undef;
 
-if ($globalTrace) { printf("bashFuncMap at q/bash.qon:326\n") }
+if ($globalTrace) { printf("bashFuncMap at q/bash.qon:313\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   if ( equalString("symbol", boxType($aSym))) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
@@ -17781,59 +17735,24 @@ if ($globalTrace) { printf("bashFuncMap at q/bash.qon:326\n") }
 }
 
 
-#Building function bashType from line: 357
+#Building function bashType from line: 344
 
 sub bashType {
   my $node = shift;
 
   
-if ($globalTrace) { printf("bashType at q/bash.qon:357\n") }
-  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-  if ( isList(second($node))) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-#standard expression
-
-    printf("\ntypedef struct %s {\n", stringify(first($node)))
-    ;
-    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-#standard expression
-
-    bashStruct(second($node))
-    ;
-    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-#standard expression
-
-    printf("\n} %s;\n", stringify(first($node)))
-    ;
-
-  } else {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-#standard expression
-
-    bashdisplays("typedef ")
-    ;
-    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-#standard expression
-
-    bashTypeDecl($node)
-    ;
-
-  };
+if ($globalTrace) { printf("bashType at q/bash.qon:344\n") }
 
 }
 
 
-#Building function bashTypes from line: 367
+#Building function bashTypes from line: 349
 
 sub bashTypes {
   my $nodes = shift;
 
   
-if ($globalTrace) { printf("bashTypes at q/bash.qon:367\n") }
+if ($globalTrace) { printf("bashTypes at q/bash.qon:349\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   if ( isEmpty($nodes)) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
@@ -17861,7 +17780,7 @@ if ($globalTrace) { printf("bashTypes at q/bash.qon:367\n") }
 }
 
 
-#Building function bashCompile from line: 377
+#Building function bashCompile from line: 359
 
 sub bashCompile {
   my $filename = shift;
@@ -17869,7 +17788,7 @@ sub bashCompile {
   my $tree = undef;
 my $replace = undef;
 
-if ($globalTrace) { printf("bashCompile at q/bash.qon:377\n") }
+if ($globalTrace) { printf("bashCompile at q/bash.qon:359\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
 #standard expression
@@ -18057,6 +17976,125 @@ if ($globalTrace) { printf("start at compiler.qon:4\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   $globalStepTrace = inList(boxString("--steptrace"), $cmdLine);
+  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+  if ( inList(boxString("--help"), $cmdLine)) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    printf("Usage: quon file [options]\n\nNote the options go after the file name\n")
+    ;
+    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    printf("Options:\n")
+    ;
+    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    printf("  --help      Display this help\n")
+    ;
+    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    printf("  --release   Compile in release mode\n")
+    ;
+    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    printf("  --test      Run the test suite\n")
+    ;
+    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    printf("  --java      Compile to Java\n")
+    ;
+    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    printf("  --perl      Compile to Perl\n")
+    ;
+    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    printf("  --ast       Compile to the Abstract Syntax Tree\n")
+    ;
+    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    printf("  --tree      Compile to an s-expression tree\n")
+    ;
+    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    printf("  --node      Compile to Node.js\n")
+    ;
+    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    printf("  --lua       Compile to Lua\n")
+    ;
+    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    printf("  --ima       Compile to Imaginary, the human-friendly language\n")
+    ;
+    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    printf("  --ansi2     Compile to ANSI C, (quon version 2)\n")
+    ;
+    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    printf("  --ansi3     Compile to ANSI C (quon version 3)\n")
+    ;
+    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    printf("  --bash      Compile to Bash\n")
+    ;
+    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    printf("  --trace     Trace execution\n")
+    ;
+    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    printf("  --steptrace Step trace execution\n")
+    ;
+    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    printf("  --help      Display this help\n")
+    ;
+    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    exit(0)
+    ;
+
+  } else {
+  };
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   if ( $runTests) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}

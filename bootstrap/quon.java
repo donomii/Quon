@@ -4013,7 +4013,7 @@ if (globalTrace)
 
 public void ansi3Includes(Box nodes) {
     
-  System.out.printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n");  
+  System.out.printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#include <unistd.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n");  
   System.out.printf("%s", "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n");
 if (globalTrace)
    System.out. printf("Leaving ansi3Includes\n");
@@ -6484,7 +6484,8 @@ public void bashExpression(Box tree,Integer indent,boolean statement) {
               System.out.printf(")");
             } else {              
               if ( statement) {                
-                System.out.printf("%s", stringify(bashFuncMap(car(tree))));
+                System.out.printf("%s ", stringify(bashFuncMap(car(tree))));                
+                bashRecurList(cdr(tree), indent);
               } else {                
                 System.out.printf("%s(%s ", dollar(), stringify(bashFuncMap(car(tree))));                
                 bashRecurList(cdr(tree), indent);                
@@ -6504,7 +6505,7 @@ if (globalTrace)
 }
 
 
-//Building function bashVarOrLit from line: 99
+//Building function bashVarOrLit from line: 102
 
 public Box bashVarOrLit(Box a) {
     
@@ -6516,7 +6517,7 @@ public Box bashVarOrLit(Box a) {
 }
 
 
-//Building function bashRecurList from line: 108
+//Building function bashRecurList from line: 111
 
 public void bashRecurList(Box expr,Integer indent) {
     
@@ -6537,7 +6538,7 @@ if (globalTrace)
 }
 
 
-//Building function bashIf from line: 125
+//Building function bashIf from line: 128
 
 public void bashIf(Box node,Integer indent) {
     
@@ -6557,12 +6558,12 @@ if (globalTrace)
 }
 
 
-//Building function bashSetStruct from line: 138
+//Building function bashSetStruct from line: 141
 
 public void bashSetStruct(Box node,Integer indent) {
     
   newLine(indent);  
-  System.out.printf("%s->%s = ", stringify(second(node)), stringify(third(node)));  
+  System.out.printf("%s%s_%s%s=", dollar(), stringify(second(node)), dollar(), stringify(third(node)));  
   bashExpression(fourth(node), indent, false);
 if (globalTrace)
    System.out. printf("Leaving bashSetStruct\n");
@@ -6570,19 +6571,19 @@ if (globalTrace)
 }
 
 
-//Building function bashGetStruct from line: 147
+//Building function bashGetStruct from line: 152
 
 public void bashGetStruct(Box node,Integer indent) {
     
   newLine(indent);  
-  System.out.printf("%s->%s", stringify(first(node)), stringify(second(node)));
+  System.out.printf("%s%s_%s%s", dollar(), stringify(first(node)), dollar(), stringify(second(node)));
 if (globalTrace)
    System.out. printf("Leaving bashGetStruct\n");
 
 }
 
 
-//Building function bashSet from line: 155
+//Building function bashSet from line: 162
 
 public void bashSet(Box node,Integer indent) {
     
@@ -6596,7 +6597,7 @@ if (globalTrace)
 }
 
 
-//Building function bashReturn from line: 162
+//Building function bashReturn from line: 169
 
 public void bashReturn(Box node,Integer indent) {
     
@@ -6614,7 +6615,7 @@ if (globalTrace)
 }
 
 
-//Building function bashStatement from line: 173
+//Building function bashStatement from line: 180
 
 public void bashStatement(Box node,Integer indent) {
     
@@ -6636,14 +6637,14 @@ public void bashStatement(Box node,Integer indent) {
       }
     }
   }  
-  bashdisplays(" ;\n");
+  bashdisplays(" \n");
 if (globalTrace)
    System.out. printf("Leaving bashStatement\n");
 
 }
 
 
-//Building function bashBody from line: 191
+//Building function bashBody from line: 198
 
 public void bashBody(Box tree,Integer indent) {
   Box code = null;
@@ -6672,7 +6673,7 @@ if (globalTrace)
 }
 
 
-//Building function bashDeclarations from line: 214
+//Building function bashDeclarations from line: 221
 
 public void bashDeclarations(Box decls,Integer indent) {
   Box decl = null;
@@ -6692,7 +6693,7 @@ if (globalTrace)
 }
 
 
-//Building function bashFunction from line: 227
+//Building function bashFunction from line: 234
 
 public void bashFunction(Box node) {
   Box name = null;
@@ -6732,16 +6733,10 @@ if (globalTrace)
 }
 
 
-//Building function bashForwardDeclaration from line: 260
+//Building function bashForwardDeclaration from line: 267
 
 public void bashForwardDeclaration(Box node) {
-    
-  if ( isNil(node)) {    
-    return;
-  } else {    
-    System.out.printf("\n%s %s(", stringify(bashTypeMap(first(node))), stringify(second(node)));    
-    bashdisplays(");");
-  }
+  
 if (globalTrace)
    System.out. printf("Leaving bashForwardDeclaration\n");
 
@@ -6784,7 +6779,7 @@ if (globalTrace)
 
 public void bashIncludes(Box nodes) {
     
-  System.out.printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n");  
+  System.out.printf("%s", "\n\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n");  
   System.out.printf("%s", "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n");
 if (globalTrace)
    System.out. printf("Leaving bashIncludes\n");
@@ -6795,21 +6790,14 @@ if (globalTrace)
 //Building function bashTypeDecl from line: 290
 
 public void bashTypeDecl(Box l) {
-    
-  if ( greaterthan(listLength(l), 2)) {    
-    printIndent(1);    
-    System.out.printf("%s %s %s;\n", stringify(second(l)), stringify(bashTypeMap(listLast(l))), stringify(first(l)));
-  } else {    
-    printIndent(1);    
-    System.out.printf("%s %s;\n", stringify(bashTypeMap(listLast(l))), stringify(car(l)));
-  }
+  
 if (globalTrace)
    System.out. printf("Leaving bashTypeDecl\n");
 
 }
 
 
-//Building function bashStructComponents from line: 307
+//Building function bashStructComponents from line: 294
 
 public void bashStructComponents(Box node) {
     
@@ -6825,7 +6813,7 @@ if (globalTrace)
 }
 
 
-//Building function bashStruct from line: 313
+//Building function bashStruct from line: 300
 
 public void bashStruct(Box node) {
     
@@ -6836,7 +6824,7 @@ if (globalTrace)
 }
 
 
-//Building function bashTypeMap from line: 316
+//Building function bashTypeMap from line: 303
 
 public Box bashTypeMap(Box aSym) {
   Box symMap = null;
@@ -6850,7 +6838,7 @@ public Box bashTypeMap(Box aSym) {
 }
 
 
-//Building function bashFuncMap from line: 326
+//Building function bashFuncMap from line: 313
 
 public Box bashFuncMap(Box aSym) {
   Box symMap = null;
@@ -6868,25 +6856,17 @@ public Box bashFuncMap(Box aSym) {
 }
 
 
-//Building function bashType from line: 357
+//Building function bashType from line: 344
 
 public void bashType(Box node) {
-    
-  if ( isList(second(node))) {    
-    System.out.printf("\ntypedef struct %s {\n", stringify(first(node)));    
-    bashStruct(second(node));    
-    System.out.printf("\n} %s;\n", stringify(first(node)));
-  } else {    
-    bashdisplays("typedef ");    
-    bashTypeDecl(node);
-  }
+  
 if (globalTrace)
    System.out. printf("Leaving bashType\n");
 
 }
 
 
-//Building function bashTypes from line: 367
+//Building function bashTypes from line: 349
 
 public void bashTypes(Box nodes) {
     
@@ -6902,7 +6882,7 @@ if (globalTrace)
 }
 
 
-//Building function bashCompile from line: 377
+//Building function bashCompile from line: 359
 
 public void bashCompile(String filename) {
   Box tree = null;
@@ -6972,6 +6952,28 @@ boolean runTree = false;
   runBash = inList(boxString("--bash"), cmdLine);  
   globalTrace = inList(boxString("--trace"), cmdLine);  
   globalStepTrace = inList(boxString("--steptrace"), cmdLine);  
+  if ( inList(boxString("--help"), cmdLine)) {    
+    System.out.printf("Usage: quon file [options]\n\nNote the options go after the file name\n");    
+    System.out.printf("Options:\n");    
+    System.out.printf("  --help      Display this help\n");    
+    System.out.printf("  --release   Compile in release mode\n");    
+    System.out.printf("  --test      Run the test suite\n");    
+    System.out.printf("  --java      Compile to Java\n");    
+    System.out.printf("  --perl      Compile to Perl\n");    
+    System.out.printf("  --ast       Compile to the Abstract Syntax Tree\n");    
+    System.out.printf("  --tree      Compile to an s-expression tree\n");    
+    System.out.printf("  --node      Compile to Node.js\n");    
+    System.out.printf("  --lua       Compile to Lua\n");    
+    System.out.printf("  --ima       Compile to Imaginary, the human-friendly language\n");    
+    System.out.printf("  --ansi2     Compile to ANSI C, (quon version 2)\n");    
+    System.out.printf("  --ansi3     Compile to ANSI C (quon version 3)\n");    
+    System.out.printf("  --bash      Compile to Bash\n");    
+    System.out.printf("  --trace     Trace execution\n");    
+    System.out.printf("  --steptrace Step trace execution\n");    
+    System.out.printf("  --help      Display this help\n");    
+    exit(0);
+  } else {
+  }  
   if ( runTests) {    
     test0();    
     test1();    

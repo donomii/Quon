@@ -7778,7 +7778,7 @@ if (globalTrace)
     {printf("ansi3Includes at q/ansi3.qon:277\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
-  printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n");
+  printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#include <unistd.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n");
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   printf("%s", "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n");
@@ -12433,7 +12433,10 @@ if (globalTrace)
 
               if ( statement) {                if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
-                printf("%s", stringify(bashFuncMap(car(tree))));
+                printf("%s ", stringify(bashFuncMap(car(tree))));
+                if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+                bashRecurList(cdr(tree), indent);
 
               } else {                if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
@@ -12469,12 +12472,12 @@ if (globalTrace)
 }
 
 
-//Building function bashVarOrLit from line: 99
+//Building function bashVarOrLit from line: 102
 
 function bashVarOrLit(a) {
   
 if (globalTrace)
-    {printf("bashVarOrLit at q/bash.qon:99\n");}
+    {printf("bashVarOrLit at q/bash.qon:102\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( equalString("symbol", boxType(a))) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -12493,12 +12496,12 @@ if (globalTrace)
 }
 
 
-//Building function bashRecurList from line: 108
+//Building function bashRecurList from line: 111
 
 function bashRecurList(expr,indent) {
   
 if (globalTrace)
-    {printf("bashRecurList at q/bash.qon:108\n");}
+    {printf("bashRecurList at q/bash.qon:111\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isEmpty(expr)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -12531,12 +12534,12 @@ if (globalTrace)
 }
 
 
-//Building function bashIf from line: 125
+//Building function bashIf from line: 128
 
 function bashIf(node,indent) {
   
 if (globalTrace)
-    {printf("bashIf at q/bash.qon:125\n");}
+    {printf("bashIf at q/bash.qon:128\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   newLine(indent);
@@ -12574,18 +12577,18 @@ if (globalTrace)
 }
 
 
-//Building function bashSetStruct from line: 138
+//Building function bashSetStruct from line: 141
 
 function bashSetStruct(node,indent) {
   
 if (globalTrace)
-    {printf("bashSetStruct at q/bash.qon:138\n");}
+    {printf("bashSetStruct at q/bash.qon:141\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   newLine(indent);
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
-  printf("%s->%s = ", stringify(second(node)), stringify(third(node)));
+  printf("%s%s_%s%s=", dollar(), stringify(second(node)), dollar(), stringify(third(node)));
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   bashExpression(fourth(node), indent, false);
@@ -12596,18 +12599,18 @@ if (globalTrace)
 }
 
 
-//Building function bashGetStruct from line: 147
+//Building function bashGetStruct from line: 152
 
 function bashGetStruct(node,indent) {
   
 if (globalTrace)
-    {printf("bashGetStruct at q/bash.qon:147\n");}
+    {printf("bashGetStruct at q/bash.qon:152\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   newLine(indent);
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
-  printf("%s->%s", stringify(first(node)), stringify(second(node)));
+  printf("%s%s_%s%s", dollar(), stringify(first(node)), dollar(), stringify(second(node)));
 
 if (globalTrace)
     {printf("Leaving bashGetStruct\n");}
@@ -12615,12 +12618,12 @@ if (globalTrace)
 }
 
 
-//Building function bashSet from line: 155
+//Building function bashSet from line: 162
 
 function bashSet(node,indent) {
   
 if (globalTrace)
-    {printf("bashSet at q/bash.qon:155\n");}
+    {printf("bashSet at q/bash.qon:162\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   newLine(indent);
@@ -12640,12 +12643,12 @@ if (globalTrace)
 }
 
 
-//Building function bashReturn from line: 162
+//Building function bashReturn from line: 169
 
 function bashReturn(node,indent) {
   
 if (globalTrace)
-    {printf("bashReturn at q/bash.qon:162\n");}
+    {printf("bashReturn at q/bash.qon:169\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   newLine(indent);
@@ -12673,12 +12676,12 @@ if (globalTrace)
 }
 
 
-//Building function bashStatement from line: 173
+//Building function bashStatement from line: 180
 
 function bashStatement(node,indent) {
   
 if (globalTrace)
-    {printf("bashStatement at q/bash.qon:173\n");}
+    {printf("bashStatement at q/bash.qon:180\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( equalBox(boxString("set"), first(node))) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -12719,7 +12722,7 @@ if (globalTrace)
   };
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
-  bashdisplays(" ;\n");
+  bashdisplays(" \n");
 
 if (globalTrace)
     {printf("Leaving bashStatement\n");}
@@ -12727,13 +12730,13 @@ if (globalTrace)
 }
 
 
-//Building function bashBody from line: 191
+//Building function bashBody from line: 198
 
 function bashBody(tree,indent) {
   var code = NULL;
 
 if (globalTrace)
-    {printf("bashBody at q/bash.qon:191\n");}
+    {printf("bashBody at q/bash.qon:198\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isEmpty(tree)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -12779,13 +12782,13 @@ if (globalTrace)
 }
 
 
-//Building function bashDeclarations from line: 214
+//Building function bashDeclarations from line: 221
 
 function bashDeclarations(decls,indent) {
   var decl = NULL;
 
 if (globalTrace)
-    {printf("bashDeclarations at q/bash.qon:214\n");}
+    {printf("bashDeclarations at q/bash.qon:221\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isEmpty(decls)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -12816,13 +12819,13 @@ if (globalTrace)
 }
 
 
-//Building function bashFunction from line: 227
+//Building function bashFunction from line: 234
 
 function bashFunction(node) {
   var name = NULL;
 
 if (globalTrace)
-    {printf("bashFunction at q/bash.qon:227\n");}
+    {printf("bashFunction at q/bash.qon:234\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   name = second(node);
@@ -12901,26 +12904,12 @@ if (globalTrace)
 }
 
 
-//Building function bashForwardDeclaration from line: 260
+//Building function bashForwardDeclaration from line: 267
 
 function bashForwardDeclaration(node) {
   
 if (globalTrace)
-    {printf("bashForwardDeclaration at q/bash.qon:260\n");}
-  if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-  if ( isNil(node)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-    return;
-
-  } else {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-    printf("\n%s %s(", stringify(bashTypeMap(first(node))), stringify(second(node)));
-    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-    bashdisplays(");");
-
-  };
+    {printf("bashForwardDeclaration at q/bash.qon:267\n");}
 
 if (globalTrace)
     {printf("Leaving bashForwardDeclaration\n");}
@@ -12990,7 +12979,7 @@ if (globalTrace)
     {printf("bashIncludes at q/bash.qon:282\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
-  printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n");
+  printf("%s", "\n\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n");
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   printf("%s", "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n");
@@ -13007,23 +12996,6 @@ function bashTypeDecl(l) {
   
 if (globalTrace)
     {printf("bashTypeDecl at q/bash.qon:290\n");}
-  if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-  if ( greaterthan(listLength(l), 2)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-    printIndent(1);
-    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-    printf("%s %s %s;\n", stringify(second(l)), stringify(bashTypeMap(listLast(l))), stringify(first(l)));
-
-  } else {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-    printIndent(1);
-    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-    printf("%s %s;\n", stringify(bashTypeMap(listLast(l))), stringify(car(l)));
-
-  };
 
 if (globalTrace)
     {printf("Leaving bashTypeDecl\n");}
@@ -13031,12 +13003,12 @@ if (globalTrace)
 }
 
 
-//Building function bashStructComponents from line: 307
+//Building function bashStructComponents from line: 294
 
 function bashStructComponents(node) {
   
 if (globalTrace)
-    {printf("bashStructComponents at q/bash.qon:307\n");}
+    {printf("bashStructComponents at q/bash.qon:294\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isEmpty(node)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -13058,12 +13030,12 @@ if (globalTrace)
 }
 
 
-//Building function bashStruct from line: 313
+//Building function bashStruct from line: 300
 
 function bashStruct(node) {
   
 if (globalTrace)
-    {printf("bashStruct at q/bash.qon:313\n");}
+    {printf("bashStruct at q/bash.qon:300\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   bashStructComponents(cdr(node));
@@ -13074,13 +13046,13 @@ if (globalTrace)
 }
 
 
-//Building function bashTypeMap from line: 316
+//Building function bashTypeMap from line: 303
 
 function bashTypeMap(aSym) {
   var symMap = NULL;
 
 if (globalTrace)
-    {printf("bashTypeMap at q/bash.qon:316\n");}
+    {printf("bashTypeMap at q/bash.qon:303\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   symMap = alistCons(boxSymbol("stringArray"), boxSymbol("char**"), alistCons(boxSymbol("string"), boxSymbol("char*"), NULL));
@@ -13102,13 +13074,13 @@ if (globalTrace)
 }
 
 
-//Building function bashFuncMap from line: 326
+//Building function bashFuncMap from line: 313
 
 function bashFuncMap(aSym) {
   var symMap = NULL;
 
 if (globalTrace)
-    {printf("bashFuncMap at q/bash.qon:326\n");}
+    {printf("bashFuncMap at q/bash.qon:313\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( equalString("symbol", boxType(aSym))) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -13138,32 +13110,12 @@ if (globalTrace)
 }
 
 
-//Building function bashType from line: 357
+//Building function bashType from line: 344
 
 function bashType(node) {
   
 if (globalTrace)
-    {printf("bashType at q/bash.qon:357\n");}
-  if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-  if ( isList(second(node))) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-    printf("\ntypedef struct %s {\n", stringify(first(node)));
-    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-    bashStruct(second(node));
-    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-    printf("\n} %s;\n", stringify(first(node)));
-
-  } else {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-    bashdisplays("typedef ");
-    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-    bashTypeDecl(node);
-
-  };
+    {printf("bashType at q/bash.qon:344\n");}
 
 if (globalTrace)
     {printf("Leaving bashType\n");}
@@ -13171,12 +13123,12 @@ if (globalTrace)
 }
 
 
-//Building function bashTypes from line: 367
+//Building function bashTypes from line: 349
 
 function bashTypes(nodes) {
   
 if (globalTrace)
-    {printf("bashTypes at q/bash.qon:367\n");}
+    {printf("bashTypes at q/bash.qon:349\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isEmpty(nodes)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -13198,14 +13150,14 @@ if (globalTrace)
 }
 
 
-//Building function bashCompile from line: 377
+//Building function bashCompile from line: 359
 
 function bashCompile(filename) {
   var tree = NULL;
 var replace = NULL;
 
 if (globalTrace)
-    {printf("bashCompile at q/bash.qon:377\n");}
+    {printf("bashCompile at q/bash.qon:359\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   qlog("//Scanning file...%s\n", filename);
@@ -13351,6 +13303,68 @@ if (globalTrace)
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   globalStepTrace = inList(boxString("--steptrace"), cmdLine);
+  if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+  if ( inList(boxString("--help"), cmdLine)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    printf("Usage: quon file [options]\n\nNote the options go after the file name\n");
+    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    printf("Options:\n");
+    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    printf("  --help      Display this help\n");
+    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    printf("  --release   Compile in release mode\n");
+    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    printf("  --test      Run the test suite\n");
+    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    printf("  --java      Compile to Java\n");
+    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    printf("  --perl      Compile to Perl\n");
+    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    printf("  --ast       Compile to the Abstract Syntax Tree\n");
+    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    printf("  --tree      Compile to an s-expression tree\n");
+    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    printf("  --node      Compile to Node.js\n");
+    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    printf("  --lua       Compile to Lua\n");
+    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    printf("  --ima       Compile to Imaginary, the human-friendly language\n");
+    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    printf("  --ansi2     Compile to ANSI C, (quon version 2)\n");
+    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    printf("  --ansi3     Compile to ANSI C (quon version 3)\n");
+    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    printf("  --bash      Compile to Bash\n");
+    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    printf("  --trace     Trace execution\n");
+    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    printf("  --steptrace Step trace execution\n");
+    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    printf("  --help      Display this help\n");
+    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    exit(0);
+
+  } else {
+  };
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( runTests) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
