@@ -3482,6 +3482,8 @@ end
 function test9()
 print("caller: ", caller, "-> test9")
 local answer =-999999
+local a =2
+local b =3
 caller = "test9:Unknown file:-1"
   answer = sub(sub(20, 1), sub(3, 1))
 caller = "test9:Unknown file:-1"
@@ -3509,7 +3511,7 @@ caller = ":Unknown file:-1"
   end
 
 caller = "test9:Unknown file:-1"
-  answer = mult(2, 3)
+  answer = mult(a, b)
 caller = "test9:Unknown file:-1"
   if equal(answer, 6) then
 caller = ":Unknown file:-1"
@@ -3632,13 +3634,13 @@ caller = ":Unknown file:-1"
   end
 
 caller = "test9:Unknown file:-1"
-  if equalString("llo", luaSubstring("hello", 2, 3)) then
+  if equalString("llo", luaSubstring("hello", a, b)) then
 caller = ":Unknown file:-1"
       printf("9.14  pass sub-string\n");
 
   else
 caller = ":Unknown file:-1"
-      printf("9.14  fail sub-string: %s\n", luaSubstring("hello", 2, 3));
+      printf("9.14  fail sub-string: %s\n", luaSubstring("hello", a, b));
 
   end
 

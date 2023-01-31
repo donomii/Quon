@@ -112,7 +112,10 @@
   (void
    test9
    ()
-   (declare (int answer -999999))
+   (declare 
+    (int answer -999999)
+    (int a 2)
+    (int b 3))
    (body
     (set answer (sub (sub 20 1) (sub 3 1)))
     (if (equal answer 17)
@@ -122,7 +125,7 @@
     (if (equal answer 5)
       (then (printf "9.2  pass add works\n"))
       (else (printf "9.2  fail add\n")))
-    (set answer (mult 2 3))
+    (set answer (mult a b))
     (if (equal answer 6)
       (then (printf "9.3  pass mult works\n"))
       (else (printf "9.3  fail mult\n")))
@@ -159,9 +162,9 @@
     ;(if (not false)
       ;(then (printf "9.14  pass not\n"))
       ;(else (printf "9.14  fail not\n")))
-    (if (equalString "llo" (sub-string "hello" 2 3 ))
+    (if (equalString "llo" (sub-string "hello" a b ))
       (then (printf "9.14  pass sub-string\n"))
-      (else (printf "9.14  fail sub-string: %s\n" (sub-string "hello" 2 3 ))))
+      (else (printf "9.14  fail sub-string: %s\n" (sub-string "hello" a b ))))
 
 ))
   (void

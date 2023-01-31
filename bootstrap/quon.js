@@ -8434,6 +8434,8 @@ if (globalTrace)
 
 function test9() {
   var answer = -999999;
+var a = 2;
+var b = 3;
 
 if (globalTrace)
     {printf("test9 at q/tests.qon:112\n");}
@@ -8467,7 +8469,7 @@ if (globalTrace)
   };
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
-  answer = mult(2, 3);
+  answer = mult(a, b);
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( equal(answer, 6)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -8591,13 +8593,13 @@ if (globalTrace)
   };
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
-  if ( equalString("llo", sub_string("hello", 2, 3))) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+  if ( equalString("llo", sub_string("hello", a, b))) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
     printf("9.14  pass sub-string\n");
 
   } else {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
-    printf("9.14  fail sub-string: %s\n", sub_string("hello", 2, 3));
+    printf("9.14  fail sub-string: %s\n", sub_string("hello", a, b));
 
   };
 
@@ -8607,13 +8609,13 @@ if (globalTrace)
 }
 
 
-//Building function test10 from line: 167
+//Building function test10 from line: 170
 
 function test10() {
   var testString = "This is a test string";
 
 if (globalTrace)
-    {printf("test10 at q/tests.qon:167\n");}
+    {printf("test10 at q/tests.qon:170\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( equalString(testString, unBoxString(car(cons(boxString(testString), NULL))))) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -8632,13 +8634,13 @@ if (globalTrace)
 }
 
 
-//Building function test12 from line: 177
+//Building function test12 from line: 180
 
 function test12() {
   var b = NULL;
 
 if (globalTrace)
-    {printf("test12 at q/tests.qon:177\n");}
+    {printf("test12 at q/tests.qon:180\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   b = {};
@@ -8655,14 +8657,14 @@ if (globalTrace)
 }
 
 
-//Building function test13 from line: 185
+//Building function test13 from line: 188
 
 function test13() {
   var testString = "Hello from the filesystem!";
 var contents = "";
 
 if (globalTrace)
-    {printf("test13 at q/tests.qon:185\n");}
+    {printf("test13 at q/tests.qon:188\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   write_file("test.txt", testString);
@@ -8693,7 +8695,7 @@ if (globalTrace)
 }
 
 
-//Building function test15 from line: 201
+//Building function test15 from line: 204
 
 function test15() {
   var a = "hello";
@@ -8701,7 +8703,7 @@ var b = " world";
 var c = "";
 
 if (globalTrace)
-    {printf("test15 at q/tests.qon:201\n");}
+    {printf("test15 at q/tests.qon:204\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   c = stringConcatenate(a, b);
@@ -8723,7 +8725,7 @@ if (globalTrace)
 }
 
 
-//Building function test16 from line: 209
+//Building function test16 from line: 212
 
 function test16() {
   var assocCell1 = NULL;
@@ -8732,7 +8734,7 @@ var assocCell2 = NULL;
 var assocCell3 = NULL;
 
 if (globalTrace)
-    {printf("test16 at q/tests.qon:209\n");}
+    {printf("test16 at q/tests.qon:212\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   assocCell1 = cons(boxString("Hello"), boxString("world"));
@@ -8780,13 +8782,13 @@ if (globalTrace)
 }
 
 
-//Building function test17 from line: 233
+//Building function test17 from line: 236
 
 function test17() {
   var l = NULL;
 
 if (globalTrace)
-    {printf("test17 at q/tests.qon:233\n");}
+    {printf("test17 at q/tests.qon:236\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   l = cons(boxInt(1), cons(boxInt(2), cons(boxInt(3), NULL)));
@@ -8808,7 +8810,7 @@ if (globalTrace)
 }
 
 
-//Building function test18 from line: 244
+//Building function test18 from line: 247
 
 function test18() {
   var val1 = "a";
@@ -8816,7 +8818,7 @@ var val2 = "b";
 var l = NULL;
 
 if (globalTrace)
-    {printf("test18 at q/tests.qon:244\n");}
+    {printf("test18 at q/tests.qon:247\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   l = cons(boxString(val1), cons(boxString(val2), cons(boxString("c"), NULL)));
@@ -8838,7 +8840,7 @@ if (globalTrace)
 }
 
 
-//Building function test19 from line: 258
+//Building function test19 from line: 261
 
 function test19() {
   var val1 = "a";
@@ -8848,7 +8850,7 @@ var revlist = NULL;
 var answer = NULL;
 
 if (globalTrace)
-    {printf("test19 at q/tests.qon:258\n");}
+    {printf("test19 at q/tests.qon:261\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   l = cons(boxString(val1), cons(boxString(val2), cons(boxString("c"), NULL)));
@@ -8876,12 +8878,12 @@ if (globalTrace)
 }
 
 
-//Building function concatenateLists from line: 276
+//Building function concatenateLists from line: 279
 
 function concatenateLists(oldL,newL) {
   
 if (globalTrace)
-    {printf("concatenateLists at q/tests.qon:276\n");}
+    {printf("concatenateLists at q/tests.qon:279\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   return(reverseRec(reverseList(oldL), newL));
@@ -8892,7 +8894,7 @@ if (globalTrace)
 }
 
 
-//Building function test20 from line: 281
+//Building function test20 from line: 284
 
 function test20() {
   var val1 = "a";
@@ -8904,7 +8906,7 @@ var l3 = NULL;
 var combined = NULL;
 
 if (globalTrace)
-    {printf("test20 at q/tests.qon:281\n");}
+    {printf("test20 at q/tests.qon:284\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   l = cons(boxString(val1), cons(boxString(val2), cons(boxString("c"), NULL)));
@@ -8935,7 +8937,7 @@ if (globalTrace)
 }
 
 
-//Building function test21 from line: 301
+//Building function test21 from line: 304
 
 function test21() {
   var val1 = "a";
@@ -8945,7 +8947,7 @@ var l = NULL;
 var l2 = NULL;
 
 if (globalTrace)
-    {printf("test21 at q/tests.qon:301\n");}
+    {printf("test21 at q/tests.qon:304\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   l = cons(boxString(val1), cons(boxString(val2), cons(boxString(val3), NULL)));
@@ -8970,7 +8972,7 @@ if (globalTrace)
 }
 
 
-//Building function test22 from line: 317
+//Building function test22 from line: 320
 
 function test22() {
   var original = NULL;
@@ -8979,7 +8981,7 @@ var replace = NULL;
 var correct = NULL;
 
 if (globalTrace)
-    {printf("test22 at q/tests.qon:317\n");}
+    {printf("test22 at q/tests.qon:320\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   original = cons(boxString(stringConcatenate("q", "log")), cons(boxString("%s"), cons(boxString("hello"), NULL)));
@@ -9025,7 +9027,7 @@ if (globalTrace)
 }
 
 
-//Building function test23 from line: 340
+//Building function test23 from line: 343
 
 function test23() {
   var original = NULL;
@@ -9034,7 +9036,7 @@ var replace = NULL;
 var correct = NULL;
 
 if (globalTrace)
-    {printf("test23 at q/tests.qon:340\n");}
+    {printf("test23 at q/tests.qon:343\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   original = cons(boxString(stringConcatenate("q", "log")), cons(boxString("%s"), cons(boxString("hello"), NULL)));

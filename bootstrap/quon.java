@@ -4384,6 +4384,8 @@ if (globalTrace)
 
 public void test9() {
   Integer answer = -999999;
+Integer a = 2;
+Integer b = 3;
   
   answer = sub(sub(20, 1), sub(3, 1));  
   if ( equal(answer, 17)) {    
@@ -4397,7 +4399,7 @@ public void test9() {
   } else {    
     System.out.printf("9.2  fail add\n");
   }  
-  answer = mult(2, 3);  
+  answer = mult(a, b);  
   if ( equal(answer, 6)) {    
     System.out.printf("9.3  pass mult works\n");
   } else {    
@@ -4453,10 +4455,10 @@ public void test9() {
   } else {    
     System.out.printf("9.13  fail intToString\n");
   }  
-  if ( equalString("llo", sub_string("hello", 2, 3))) {    
+  if ( equalString("llo", sub_string("hello", a, b))) {    
     System.out.printf("9.14  pass sub-string\n");
   } else {    
-    System.out.printf("9.14  fail sub-string: %s\n", sub_string("hello", 2, 3));
+    System.out.printf("9.14  fail sub-string: %s\n", sub_string("hello", a, b));
   }
 if (globalTrace)
    System.out. printf("Leaving test9\n");
@@ -4464,7 +4466,7 @@ if (globalTrace)
 }
 
 
-//Building function test10 from line: 167
+//Building function test10 from line: 170
 
 public void test10() {
   String testString = "This is a test string";
@@ -4480,7 +4482,7 @@ if (globalTrace)
 }
 
 
-//Building function test12 from line: 177
+//Building function test12 from line: 180
 
 public void test12() {
   Box b = null;
@@ -4494,7 +4496,7 @@ if (globalTrace)
 }
 
 
-//Building function test13 from line: 185
+//Building function test13 from line: 188
 
 public void test13() {
   String testString = "Hello from the filesystem!";
@@ -4515,7 +4517,7 @@ if (globalTrace)
 }
 
 
-//Building function test15 from line: 201
+//Building function test15 from line: 204
 
 public void test15() {
   String a = "hello";
@@ -4534,7 +4536,7 @@ if (globalTrace)
 }
 
 
-//Building function test16 from line: 209
+//Building function test16 from line: 212
 
 public void test16() {
   Box assocCell1 = null;
@@ -4564,7 +4566,7 @@ if (globalTrace)
 }
 
 
-//Building function test17 from line: 233
+//Building function test17 from line: 236
 
 public void test17() {
   Box l = null;
@@ -4581,7 +4583,7 @@ if (globalTrace)
 }
 
 
-//Building function test18 from line: 244
+//Building function test18 from line: 247
 
 public void test18() {
   String val1 = "a";
@@ -4600,7 +4602,7 @@ if (globalTrace)
 }
 
 
-//Building function test19 from line: 258
+//Building function test19 from line: 261
 
 public void test19() {
   String val1 = "a";
@@ -4623,7 +4625,7 @@ if (globalTrace)
 }
 
 
-//Building function concatenateLists from line: 276
+//Building function concatenateLists from line: 279
 
 public Box concatenateLists(Box oldL,Box newL) {
     
@@ -4631,7 +4633,7 @@ public Box concatenateLists(Box oldL,Box newL) {
 }
 
 
-//Building function test20 from line: 281
+//Building function test20 from line: 284
 
 public void test20() {
   String val1 = "a";
@@ -4657,7 +4659,7 @@ if (globalTrace)
 }
 
 
-//Building function test21 from line: 301
+//Building function test21 from line: 304
 
 public void test21() {
   String val1 = "a";
@@ -4679,7 +4681,7 @@ if (globalTrace)
 }
 
 
-//Building function test22 from line: 317
+//Building function test22 from line: 320
 
 public void test22() {
   Box original = null;
@@ -4707,7 +4709,7 @@ if (globalTrace)
 }
 
 
-//Building function test23 from line: 340
+//Building function test23 from line: 343
 
 public void test23() {
   Box original = null;

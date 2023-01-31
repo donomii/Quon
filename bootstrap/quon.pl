@@ -11287,6 +11287,8 @@ if ($globalTrace) { printf("test8 at q/tests.qon:104\n") }
 sub test9 {
   
   my $answer = -999999;
+my $a = 2;
+my $b = 3;
 
 if ($globalTrace) { printf("test9 at q/tests.qon:112\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
@@ -11331,7 +11333,7 @@ if ($globalTrace) { printf("test9 at q/tests.qon:112\n") }
   };
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
-  $answer = mult(2, 3);
+  $answer = mult($a, $b);
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   if ( equal($answer, 6)) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
@@ -11521,7 +11523,7 @@ if ($globalTrace) { printf("test9 at q/tests.qon:112\n") }
   };
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
-  if ( equalString("llo", substr("hello", 2, 3))) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+  if ( equalString("llo", substr("hello", $a, $b))) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
 #standard expression
 
@@ -11532,7 +11534,7 @@ if ($globalTrace) { printf("test9 at q/tests.qon:112\n") }
 
 #standard expression
 
-    printf("9.14  fail sub-string: %s\n", substr("hello", 2, 3))
+    printf("9.14  fail sub-string: %s\n", substr("hello", $a, $b))
     ;
 
   };
@@ -11540,13 +11542,13 @@ if ($globalTrace) { printf("test9 at q/tests.qon:112\n") }
 }
 
 
-#Building function test10 from line: 167
+#Building function test10 from line: 170
 
 sub test10 {
   
   my $testString = "This is a test string";
 
-if ($globalTrace) { printf("test10 at q/tests.qon:167\n") }
+if ($globalTrace) { printf("test10 at q/tests.qon:170\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   if ( equalString($testString, unBoxString(car(cons(boxString($testString), $undef))))) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
@@ -11568,13 +11570,13 @@ if ($globalTrace) { printf("test10 at q/tests.qon:167\n") }
 }
 
 
-#Building function test12 from line: 177
+#Building function test12 from line: 180
 
 sub test12 {
   
   my $b = undef;
 
-if ($globalTrace) { printf("test12 at q/tests.qon:177\n") }
+if ($globalTrace) { printf("test12 at q/tests.qon:180\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   $b = {};
@@ -11591,14 +11593,14 @@ if ($globalTrace) { printf("test12 at q/tests.qon:177\n") }
 }
 
 
-#Building function test13 from line: 185
+#Building function test13 from line: 188
 
 sub test13 {
   
   my $testString = "Hello from the filesystem!";
 my $contents = "";
 
-if ($globalTrace) { printf("test13 at q/tests.qon:185\n") }
+if ($globalTrace) { printf("test13 at q/tests.qon:188\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
 #standard expression
@@ -11641,7 +11643,7 @@ if ($globalTrace) { printf("test13 at q/tests.qon:185\n") }
 }
 
 
-#Building function test15 from line: 201
+#Building function test15 from line: 204
 
 sub test15 {
   
@@ -11649,7 +11651,7 @@ sub test15 {
 my $b = " world";
 my $c = "";
 
-if ($globalTrace) { printf("test15 at q/tests.qon:201\n") }
+if ($globalTrace) { printf("test15 at q/tests.qon:204\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   $c = stringConcatenate($a, $b);
@@ -11674,7 +11676,7 @@ if ($globalTrace) { printf("test15 at q/tests.qon:201\n") }
 }
 
 
-#Building function test16 from line: 209
+#Building function test16 from line: 212
 
 sub test16 {
   
@@ -11683,7 +11685,7 @@ my $assList = undef;
 my $assocCell2 = undef;
 my $assocCell3 = undef;
 
-if ($globalTrace) { printf("test16 at q/tests.qon:209\n") }
+if ($globalTrace) { printf("test16 at q/tests.qon:212\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   $assocCell1 = cons(boxString("Hello"), boxString("world"));
@@ -11740,13 +11742,13 @@ if ($globalTrace) { printf("test16 at q/tests.qon:209\n") }
 }
 
 
-#Building function test17 from line: 233
+#Building function test17 from line: 236
 
 sub test17 {
   
   my $l = undef;
 
-if ($globalTrace) { printf("test17 at q/tests.qon:233\n") }
+if ($globalTrace) { printf("test17 at q/tests.qon:236\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   $l = cons(boxInt(1), cons(boxInt(2), cons(boxInt(3), $undef)));
@@ -11771,7 +11773,7 @@ if ($globalTrace) { printf("test17 at q/tests.qon:233\n") }
 }
 
 
-#Building function test18 from line: 244
+#Building function test18 from line: 247
 
 sub test18 {
   
@@ -11779,7 +11781,7 @@ sub test18 {
 my $val2 = "b";
 my $l = undef;
 
-if ($globalTrace) { printf("test18 at q/tests.qon:244\n") }
+if ($globalTrace) { printf("test18 at q/tests.qon:247\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   $l = cons(boxString($val1), cons(boxString($val2), cons(boxString("c"), $undef)));
@@ -11804,7 +11806,7 @@ if ($globalTrace) { printf("test18 at q/tests.qon:244\n") }
 }
 
 
-#Building function test19 from line: 258
+#Building function test19 from line: 261
 
 sub test19 {
   
@@ -11814,7 +11816,7 @@ my $l = undef;
 my $revlist = undef;
 my $answer = undef;
 
-if ($globalTrace) { printf("test19 at q/tests.qon:258\n") }
+if ($globalTrace) { printf("test19 at q/tests.qon:261\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   $l = cons(boxString($val1), cons(boxString($val2), cons(boxString("c"), $undef)));
@@ -11845,14 +11847,14 @@ if ($globalTrace) { printf("test19 at q/tests.qon:258\n") }
 }
 
 
-#Building function concatenateLists from line: 276
+#Building function concatenateLists from line: 279
 
 sub concatenateLists {
   my $oldL = shift;
 my $newL = shift;
 
   
-if ($globalTrace) { printf("concatenateLists at q/tests.qon:276\n") }
+if ($globalTrace) { printf("concatenateLists at q/tests.qon:279\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
 #standard return: concatenateLists
@@ -11864,7 +11866,7 @@ if ($globalTrace) { printf("concatenateLists at q/tests.qon:276\n") }
 }
 
 
-#Building function test20 from line: 281
+#Building function test20 from line: 284
 
 sub test20 {
   
@@ -11876,7 +11878,7 @@ my $l2 = undef;
 my $l3 = undef;
 my $combined = undef;
 
-if ($globalTrace) { printf("test20 at q/tests.qon:281\n") }
+if ($globalTrace) { printf("test20 at q/tests.qon:284\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   $l = cons(boxString($val1), cons(boxString($val2), cons(boxString("c"), $undef)));
@@ -11910,7 +11912,7 @@ if ($globalTrace) { printf("test20 at q/tests.qon:281\n") }
 }
 
 
-#Building function test21 from line: 301
+#Building function test21 from line: 304
 
 sub test21 {
   
@@ -11920,7 +11922,7 @@ my $val3 = "c";
 my $l = undef;
 my $l2 = undef;
 
-if ($globalTrace) { printf("test21 at q/tests.qon:301\n") }
+if ($globalTrace) { printf("test21 at q/tests.qon:304\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   $l = cons(boxString($val1), cons(boxString($val2), cons(boxString($val3), $undef)));
@@ -11948,7 +11950,7 @@ if ($globalTrace) { printf("test21 at q/tests.qon:301\n") }
 }
 
 
-#Building function test22 from line: 317
+#Building function test22 from line: 320
 
 sub test22 {
   
@@ -11957,7 +11959,7 @@ my $out = undef;
 my $replace = undef;
 my $correct = undef;
 
-if ($globalTrace) { printf("test22 at q/tests.qon:317\n") }
+if ($globalTrace) { printf("test22 at q/tests.qon:320\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   $original = cons(boxString(stringConcatenate("q", "log")), cons(boxString("%s"), cons(boxString("hello"), $undef)));
@@ -12021,7 +12023,7 @@ if ($globalTrace) { printf("test22 at q/tests.qon:317\n") }
 }
 
 
-#Building function test23 from line: 340
+#Building function test23 from line: 343
 
 sub test23 {
   
@@ -12030,7 +12032,7 @@ my $out = undef;
 my $replace = undef;
 my $correct = undef;
 
-if ($globalTrace) { printf("test23 at q/tests.qon:340\n") }
+if ($globalTrace) { printf("test23 at q/tests.qon:343\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   $original = cons(boxString(stringConcatenate("q", "log")), cons(boxString("%s"), cons(boxString("hello"), $undef)));
