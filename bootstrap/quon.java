@@ -6,15 +6,15 @@ import java.io.UnsupportedEncodingException;
 class MyProgram {
 
 public String caller ="";public void panic(String s) {System.exit(1);}
+public void exit(Integer s) {System.exit(s);}
 public int sub(int a, int b) { return a - b; }
-public double mult(int a, int b) { return a * b; }
+public Integer mult(int a, int b) { return a * b; }
 public boolean greaterthan(int a, int b) { return a > b; }
 public double subf(double a, double b) { return a - b; }
 public double multf(double a, double b) { return a * b; }
 public boolean greaterthanf(double a, double b) { return a > b; }
 public boolean equal(int a, int b) { return a == b; }
 public boolean equalString(String a, String b) { return a.equals(b); }
-public boolean andBool(boolean a, boolean b) { return a == b;}
 public int string_length(String s) { return s.length();}
 public String stringConcatenate(String s1, String s2) { return s1 + s2; }
 public int strcmp(String s1, String s2) { return s1.compareTo(s2);}
@@ -1311,7 +1311,7 @@ public void astCompile(String filename) {
 Box replace = null;
   
   tree = loadQuon(filename);  
-  qlog("Final program: \n");  
+  System.err.printf("Final program: \n");  
   tree = loadIncludes(tree);  
   tree = macrowalk(tree);  
   tree = macrosingle(tree, "write-file", "luaWriteFile");  
@@ -1322,7 +1322,7 @@ Box replace = null;
   replace = cons(boxSymbol("fprintf"), cons(boxSymbol("stderr"), null));  
   tree = macrolist(tree, stringConcatenate("q", "log"), replace);  
   displayList(tree, 0, true);  
-  qlog("Transformed tree");  
+  System.err.printf("Transformed tree");  
   System.out.printf("\n");
 if (globalTrace)
    System.out. printf("Leaving astCompile\n");
@@ -3636,14 +3636,14 @@ public void ansi2Compile(String filename) {
   Box tree = null;
 Box replace = null;
   
-  qlog("//Scanning file...%s\n", filename);  
+  System.err.printf("//Scanning file...%s\n", filename);  
   tree = loadQuon(filename);  
-  qlog("//Building sexpr\n");  
+  System.err.printf("//Building sexpr\n");  
   tree = loadIncludes(tree);  
   tree = macrowalk(tree);  
   replace = cons(boxSymbol("fprintf"), cons(boxSymbol("stderr"), null));  
   tree = macrolist(tree, stringConcatenate("q", "log"), replace);  
-  qlog("//Printing program\n");  
+  System.err.printf("//Printing program\n");  
   ansi2Includes(cdr(first(tree)));  
   ansi2Types(cdr(second(tree)));  
   ansi2displays("Box* globalStackTrace = NULL;\n");  
@@ -4137,18 +4137,18 @@ public void ansi3Compile(String filename) {
   Box tree = null;
 Box replace = null;
   
-  qlog("//Scanning file...%s\n", filename);  
+  System.err.printf("//Scanning file...%s\n", filename);  
   tree = loadQuon(filename);  
-  qlog("//Building sexpr\n");  
-  qlog("Loading shim ansi3\n");  
+  System.err.printf("//Building sexpr\n");  
+  System.err.printf("Loading shim ansi3\n");  
   tree = buildProg(cons(boxString("q/shims/ansi3.qon"), getIncludes(tree)), getTypes(tree), getFunctions(tree));  
-  qlog("Loading all includes\n");  
+  System.err.printf("Loading all includes\n");  
   tree = loadIncludes(tree);  
-  qlog("Applying macros\n");  
+  System.err.printf("Applying macros\n");  
   tree = macrowalk(tree);  
   replace = cons(boxSymbol("fprintf"), cons(boxSymbol("stderr"), null));  
   tree = macrolist(tree, stringConcatenate("q", "log"), replace);  
-  qlog("//Printing program\n");  
+  System.err.printf("//Printing program\n");  
   ansi3Includes(cdr(first(tree)));  
   ansi3Types(cdr(second(tree)));  
   ansi3displays("Box* globalStackTrace = NULL;\n");  
@@ -4157,7 +4157,7 @@ Box replace = null;
   ansi3displays("\n\n//End forward declarations\n\n");  
   ansi3Functions(cdr(third(tree)));  
   ansi3displays("\n");  
-  qlog("//Done printing program\n");
+  System.err.printf("//Done printing program\n");
 if (globalTrace)
    System.out. printf("Leaving ansi3Compile\n");
 
@@ -6890,18 +6890,18 @@ public void bashCompile(String filename) {
   Box tree = null;
 Box replace = null;
   
-  qlog("//Scanning file...%s\n", filename);  
+  System.err.printf("//Scanning file...%s\n", filename);  
   tree = loadQuon(filename);  
-  qlog("//Building sexpr\n");  
-  qlog("Loading shim bash\n");  
+  System.err.printf("//Building sexpr\n");  
+  System.err.printf("Loading shim bash\n");  
   tree = buildProg(cons(boxString("q/shims/bash.qon"), getIncludes(tree)), getTypes(tree), getFunctions(tree));  
-  qlog("Loading all includes\n");  
+  System.err.printf("Loading all includes\n");  
   tree = loadIncludes(tree);  
-  qlog("Applying macros\n");  
+  System.err.printf("Applying macros\n");  
   tree = macrowalk(tree);  
   replace = cons(boxSymbol("fprintf"), cons(boxSymbol("stderr"), null));  
   tree = macrolist(tree, stringConcatenate("q", "log"), replace);  
-  qlog("//Printing program\n");  
+  System.err.printf("//Printing program\n");  
   bashIncludes(cdr(first(tree)));  
   bashTypes(cdr(second(tree)));  
   bashdisplays("Box* globalStackTrace = NULL;\n");  
@@ -6910,7 +6910,7 @@ Box replace = null;
   bashdisplays("\n\n//End forward declarations\n\n");  
   bashFunctions(cdr(third(tree)));  
   bashdisplays("\n");  
-  qlog("//Done printing program\n");
+  System.err.printf("//Done printing program\n");
 if (globalTrace)
    System.out. printf("Leaving bashCompile\n");
 

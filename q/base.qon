@@ -1,4 +1,4 @@
-((includes q/tests.qon q/macros.qon q/lists.qon)
+((includes q/tests.qon q/macros.qon q/lists.qon q/boolean.qon)
  (types
   (Box
    (struct
