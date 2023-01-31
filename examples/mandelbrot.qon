@@ -1,5 +1,5 @@
 (
-          (includes q/base.qon q/lists.qon)
+          (includes q/base.qon q/lists.qon q/boolean.qon)
           (types)
           (functions
 
