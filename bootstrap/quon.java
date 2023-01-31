@@ -5665,7 +5665,7 @@ public Box javaFuncMap(Box aSym) {
   Box symMap = null;
   
   if ( equalString("symbol", boxType(aSym))) {    
-    symMap = alistCons(boxSymbol("printf"), boxSymbol("System.out.printf"), alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("sub_string"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("string_length"), alistCons(boxSymbol("nil"), boxSymbol("null"), null))))))));    
+    symMap = alistCons(boxSymbol("printf"), boxSymbol("System.out.printf"), alistCons(boxSymbol(stringConcatenate("q", "log")), boxSymbol("System.err.printf"), alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("sub_string"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("string_length"), alistCons(boxSymbol("nil"), boxSymbol("null"), null)))))))));    
     if ( truthy(assoc(stringify(aSym), symMap))) {      
       return(cdr(assoc(stringify(aSym), symMap)));
     } else {      
@@ -5677,7 +5677,7 @@ public Box javaFuncMap(Box aSym) {
 }
 
 
-//Building function javaType from line: 316
+//Building function javaType from line: 307
 
 public void javaType(Box node) {
     
@@ -5699,7 +5699,7 @@ if (globalTrace)
 }
 
 
-//Building function javaTypes from line: 333
+//Building function javaTypes from line: 324
 
 public void javaTypes(Box nodes) {
     
@@ -5715,7 +5715,7 @@ if (globalTrace)
 }
 
 
-//Building function javaCompile from line: 339
+//Building function javaCompile from line: 330
 
 public void javaCompile(String filename) {
   String programStr = "";

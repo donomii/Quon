@@ -2402,7 +2402,7 @@ local symMap =nil
 caller = "javaFuncMap:Unknown file:-1"
   if equalString("symbol", boxType(aSym)) then
 caller = ":Unknown file:-1"
-      symMap = alistCons(boxSymbol("printf"), boxSymbol("System.out.printf"), alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("luaSubstring"), boxSymbol("sub_string"), alistCons(boxSymbol("luaReadFile"), boxSymbol("read_file"), alistCons(boxSymbol("luaWriteFile"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string.len"), boxSymbol("string_length"), alistCons(boxSymbol("nil"), boxSymbol("null"), nil))))))))
+      symMap = alistCons(boxSymbol("printf"), boxSymbol("System.out.printf"), alistCons(boxSymbol(stringConcatenate("q", "log")), boxSymbol("System.err.printf"), alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("luaSubstring"), boxSymbol("sub_string"), alistCons(boxSymbol("luaReadFile"), boxSymbol("read_file"), alistCons(boxSymbol("luaWriteFile"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string.len"), boxSymbol("string_length"), alistCons(boxSymbol("nil"), boxSymbol("null"), nil)))))))))
 caller = ":Unknown file:-1"
       if truthy(assoc(stringify(aSym), symMap)) then
 caller = ":Unknown file:-1"

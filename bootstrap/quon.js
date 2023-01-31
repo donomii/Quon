@@ -10834,7 +10834,7 @@ if (globalTrace)
 
   if ( equalString("symbol", boxType(aSym))) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
-    symMap = alistCons(boxSymbol("printf"), boxSymbol("System.out.printf"), alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("sub_string"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("string_length"), alistCons(boxSymbol("nil"), boxSymbol("null"), NULL))))))));
+    symMap = alistCons(boxSymbol("printf"), boxSymbol("System.out.printf"), alistCons(boxSymbol(stringConcatenate("q", "log")), boxSymbol("System.err.printf"), alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("sub_string"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("string_length"), alistCons(boxSymbol("nil"), boxSymbol("null"), NULL)))))))));
     if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
     if ( truthy(assoc(stringify(aSym), symMap))) {      if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -10859,12 +10859,12 @@ if (globalTrace)
 }
 
 
-//Building function javaType from line: 316
+//Building function javaType from line: 307
 
 function javaType(node) {
   
 if (globalTrace)
-    {printf("javaType at q/java.qon:316\n");}
+    {printf("javaType at q/java.qon:307\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( equalBox(subnameof(node), boxString("struct"))) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -10900,12 +10900,12 @@ if (globalTrace)
 }
 
 
-//Building function javaTypes from line: 333
+//Building function javaTypes from line: 324
 
 function javaTypes(nodes) {
   
 if (globalTrace)
-    {printf("javaTypes at q/java.qon:333\n");}
+    {printf("javaTypes at q/java.qon:324\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isEmpty(nodes)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -10927,7 +10927,7 @@ if (globalTrace)
 }
 
 
-//Building function javaCompile from line: 339
+//Building function javaCompile from line: 330
 
 function javaCompile(filename) {
   var programStr = "";
@@ -10935,7 +10935,7 @@ var tree = NULL;
 var program = NULL;
 
 if (globalTrace)
-    {printf("javaCompile at q/java.qon:339\n");}
+    {printf("javaCompile at q/java.qon:330\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   printf("%s", "package quonverter;\n");

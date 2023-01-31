@@ -5211,22 +5211,22 @@ if (globalTrace)
     snprintf(caller, 1024, "from q/java.qon:290");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-    symMap = alistCons(boxSymbol("printf"), boxSymbol("System.out.printf"), alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("sub_string"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("string_length"), alistCons(boxSymbol("nil"), boxSymbol("null"), NULL))))))));
+    symMap = alistCons(boxSymbol("printf"), boxSymbol("System.out.printf"), alistCons(boxSymbol(stringConcatenate("q", "log")), boxSymbol("System.err.printf"), alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("sub_string"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("string_length"), alistCons(boxSymbol("nil"), boxSymbol("null"), NULL)))))))));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:311");
+    snprintf(caller, 1024, "from q/java.qon:302");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( truthy(assoc(stringify(aSym), symMap))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:312");
+    snprintf(caller, 1024, "from q/java.qon:303");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       return cdr(assoc(stringify(aSym), symMap));;
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:313");
+    snprintf(caller, 1024, "from q/java.qon:304");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       return aSym;;
@@ -5235,7 +5235,7 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:314");
+    snprintf(caller, 1024, "from q/java.qon:305");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return aSym;;
@@ -5248,57 +5248,57 @@ if (globalTrace)
 }
 
 
-//Building function javaType from line: 316
+//Building function javaType from line: 307
 
 void javaType(list node) {
   
 if (globalTrace)
-    printf("javaType at q/java.qon:316 (%s)\n", caller);
+    printf("javaType at q/java.qon:307 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:318");
+    snprintf(caller, 1024, "from q/java.qon:309");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( equalBox(subnameof(node), boxString("struct"))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:320");
+    snprintf(caller, 1024, "from q/java.qon:311");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("\npublic class %s {\n", stringify(first(codeof(node))));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:321");
+    snprintf(caller, 1024, "from q/java.qon:312");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("\npublic String caller =\"\";");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:323");
+    snprintf(caller, 1024, "from q/java.qon:314");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     javaStruct(cdr(codeof(node)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:324");
+    snprintf(caller, 1024, "from q/java.qon:315");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("\n};\n");
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:326");
+    snprintf(caller, 1024, "from q/java.qon:317");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( inList(boxString(stringify(first(codeof(node)))), javaTypesNoDeclare())) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:327");
+    snprintf(caller, 1024, "from q/java.qon:318");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       printf("");
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:329");
+    snprintf(caller, 1024, "from q/java.qon:320");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       printf("public class %s extends %s {};\n", stringify(first(codeof(node))), stringify(javaTypeMap(listLast(codeof(node)))));
@@ -5313,33 +5313,33 @@ if (globalTrace)
 }
 
 
-//Building function javaTypes from line: 333
+//Building function javaTypes from line: 324
 
 void javaTypes(list nodes) {
   
 if (globalTrace)
-    printf("javaTypes at q/java.qon:333 (%s)\n", caller);
+    printf("javaTypes at q/java.qon:324 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:335");
+    snprintf(caller, 1024, "from q/java.qon:326");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isEmpty(nodes)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:336");
+    snprintf(caller, 1024, "from q/java.qon:327");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return;;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:337");
+    snprintf(caller, 1024, "from q/java.qon:328");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     javaType(car(nodes));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:337");
+    snprintf(caller, 1024, "from q/java.qon:328");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     javaTypes(cdr(nodes));
@@ -5352,7 +5352,7 @@ if (globalTrace)
 }
 
 
-//Building function javaCompile from line: 339
+//Building function javaCompile from line: 330
 
 void javaCompile(char* filename) {
   char* programStr = "";
@@ -5360,154 +5360,154 @@ list tree = NULL;
 list program = NULL;
 
 if (globalTrace)
-    printf("javaCompile at q/java.qon:339 (%s)\n", caller);
+    printf("javaCompile at q/java.qon:330 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:341");
+    snprintf(caller, 1024, "from q/java.qon:332");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("%s", "package quonverter;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:342");
+    snprintf(caller, 1024, "from q/java.qon:333");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("%s", "import java.nio.file.Files;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:343");
+    snprintf(caller, 1024, "from q/java.qon:334");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("%s", "import java.nio.file.Paths;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:344");
+    snprintf(caller, 1024, "from q/java.qon:335");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("%s", "import java.io.IOException;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:345");
+    snprintf(caller, 1024, "from q/java.qon:336");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("%s", "import java.io.UnsupportedEncodingException;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:346");
+    snprintf(caller, 1024, "from q/java.qon:337");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("class MyProgram {\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:347");
+    snprintf(caller, 1024, "from q/java.qon:338");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("\npublic String caller =\"\";");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:348");
+    snprintf(caller, 1024, "from q/java.qon:339");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   programStr = read_file(filename);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:349");
+    snprintf(caller, 1024, "from q/java.qon:340");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   tree = readSexpr(programStr, filename);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:350");
+    snprintf(caller, 1024, "from q/java.qon:341");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   program = alistCons(boxString("includes"), astIncludes(first(tree)), alistCons(boxString("types"), astTypes(second(tree)), alistCons(boxString("functions"), astFunctions(third(tree)), NULL)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:360");
+    snprintf(caller, 1024, "from q/java.qon:351");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   program = mergeIncludes(program);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:361");
+    snprintf(caller, 1024, "from q/java.qon:352");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   javaIncludes(cdr(assoc("includes", program)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:362");
+    snprintf(caller, 1024, "from q/java.qon:353");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   javaTypes(childrenof(cdr(assoc("types", program))));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:363");
+    snprintf(caller, 1024, "from q/java.qon:354");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("public boolean globalStackTrace = false;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:364");
+    snprintf(caller, 1024, "from q/java.qon:355");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("public boolean globalStepTrace = false;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:365");
+    snprintf(caller, 1024, "from q/java.qon:356");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("public boolean globalTrace = false;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:366");
+    snprintf(caller, 1024, "from q/java.qon:357");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("public boolean releaseMode = false;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:367");
+    snprintf(caller, 1024, "from q/java.qon:358");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("public String FILE = null;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:368");
+    snprintf(caller, 1024, "from q/java.qon:359");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("public Integer LINE = 0;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:369");
+    snprintf(caller, 1024, "from q/java.qon:360");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("public static Integer globalArgsCount = 0;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:370");
+    snprintf(caller, 1024, "from q/java.qon:361");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("public static String globalArgs[];\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:371");
+    snprintf(caller, 1024, "from q/java.qon:362");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("\npublic boolean isNil(Box p) {\n    return p == null;\n}\n\n\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:373");
+    snprintf(caller, 1024, "from q/java.qon:364");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   javaFunctions(cdr(assoc("children", cdr(cdr(assoc("functions", program))))));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:375");
+    snprintf(caller, 1024, "from q/java.qon:366");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("%s", "public static void main(String args[]) {\nglobalArgs = args;\nglobalArgsCount = args.length;MyProgram mp = new MyProgram(); mp.start();\n}");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:376");
+    snprintf(caller, 1024, "from q/java.qon:367");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("}\n");

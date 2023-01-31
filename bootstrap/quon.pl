@@ -14563,7 +14563,7 @@ if ($globalTrace) { printf("javaFuncMap at q/java.qon:286\n") }
 
   if ( equalString("symbol", boxType($aSym))) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
-    $symMap = alistCons(boxSymbol("printf"), boxSymbol("System.out.printf"), alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("sub_string"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("string_length"), alistCons(boxSymbol("nil"), boxSymbol("null"), $undef))))))));
+    $symMap = alistCons(boxSymbol("printf"), boxSymbol("System.out.printf"), alistCons(boxSymbol(stringConcatenate("q", "log")), boxSymbol("System.err.printf"), alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("sub_string"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("string_length"), alistCons(boxSymbol("nil"), boxSymbol("null"), $undef)))))))));
     if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
     if ( truthy(assoc(stringify($aSym), $symMap))) {      if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
@@ -14597,13 +14597,13 @@ if ($globalTrace) { printf("javaFuncMap at q/java.qon:286\n") }
 }
 
 
-#Building function javaType from line: 316
+#Building function javaType from line: 307
 
 sub javaType {
   my $node = shift;
 
   
-if ($globalTrace) { printf("javaType at q/java.qon:316\n") }
+if ($globalTrace) { printf("javaType at q/java.qon:307\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   if ( equalBox(subnameof($node), boxString("struct"))) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
@@ -14654,13 +14654,13 @@ if ($globalTrace) { printf("javaType at q/java.qon:316\n") }
 }
 
 
-#Building function javaTypes from line: 333
+#Building function javaTypes from line: 324
 
 sub javaTypes {
   my $nodes = shift;
 
   
-if ($globalTrace) { printf("javaTypes at q/java.qon:333\n") }
+if ($globalTrace) { printf("javaTypes at q/java.qon:324\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   if ( isEmpty($nodes)) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
@@ -14688,7 +14688,7 @@ if ($globalTrace) { printf("javaTypes at q/java.qon:333\n") }
 }
 
 
-#Building function javaCompile from line: 339
+#Building function javaCompile from line: 330
 
 sub javaCompile {
   my $filename = shift;
@@ -14697,7 +14697,7 @@ sub javaCompile {
 my $tree = undef;
 my $program = undef;
 
-if ($globalTrace) { printf("javaCompile at q/java.qon:339\n") }
+if ($globalTrace) { printf("javaCompile at q/java.qon:330\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
 #standard expression
