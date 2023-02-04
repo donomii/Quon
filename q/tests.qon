@@ -341,7 +341,7 @@
                  )
                  )))
 
-             (void test23 () (declare 
+(void test23 () (declare 
        (list original nil)
        (list out nil)
        (list replace nil)
@@ -362,6 +362,22 @@
                         (displayList out 0 true)
                  )
                  ))
+)
+
+(void test24 () 
+  (declare 
+    (string expected  "a b c")
+    (string res "")
+  )
+  (body
+    (set res (StringListJoin  (stringList "a" "b" "c") " "))
+    (if (equalString expected res)
+      (then (printf "24. pass StringListJoin\n"))
+      (else (printf "24. fail StringListJoin.  expected '%s', got '%s'\n" expected res))
+    )
+  )
+)
+
 
 ;	(void test22 () (declare 
 ;       (list l nil)

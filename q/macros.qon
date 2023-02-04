@@ -28,6 +28,7 @@
             ;(display (doStringList (cdr l)))
           (return (car (doStringList (cdr l)))))
           (else))
+          
           ;Handle symList
           (if (equalString (stringConcatenate "symbol" "List") (stringify (car l)))
           (then

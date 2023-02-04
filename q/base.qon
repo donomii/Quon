@@ -329,6 +329,13 @@
       (then (printf "  ") (printIndent (sub1 ii)))
       (else (return)))))
 
+      (string stringIndent (int ii) (declare)
+      ; stringIndent - returns a string containing the given number of spaces
+       (body
+        (if (> ii 0)
+          (then (return (stringConcatenate "  " (stringIndent (sub1 ii)))))
+          (else (return "")))))
+
 
 
 

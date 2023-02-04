@@ -262,6 +262,74 @@
             (then (printf "\"%s\"" (unBoxString l)))
             (else (printf "%s" (stringify l))))))))))
 
+(string StringListJoinRec (list l string sep) (declare (box val nil))
+   (body
+    (if (isEmpty l)
+      (then (return ""))
+      (else
+       (if (isList l)
+         (then
+          (if (isEmpty l)
+            (then (return ""))
+            (else 
+              (if (equal (listLength l) 1)
+                (then (return (stringify (car l))))
+              
+                (else (return (stringConcatenate (stringify (car l))
+                  (stringConcatenate sep (StringListJoinRec (cdr l) sep)))))))))
+          (else (return ""))
+       )
+       )
+      )
+      
+    )
+   )
+
+   (string StringListJoin (list l string sep) (declare (box val nil))
+   (body
+    (if (greaterthan (listLength l) 1)
+     
+     (then 
+      (return (stringConcatenate (stringify (car l))
+              (stringConcatenate sep (StringListJoinRec (cdr l) sep)))))
+              (else (return (stringify (car l))))
+   )))
+
+
+(string ListToString (list l int indent bool first) (declare (box val nil))
+   (body
+    (if (isEmpty l)
+      (then (return ""))
+      (else
+       (if (isList l)
+         (then
+          (if (isEmpty l)
+            (then (return ""))
+            (else
+              (if first (then (return ""))
+                (else   (return " ")))
+                (set val (car l))
+                 (if (isList val)
+                    (then
+                      (StringListJoin
+                        (stringList
+                          "\n"
+                          (stringIndent indent)
+                          (openBrace)
+                          (ListToString (car l) (add1 indent) true)
+                          (closeBrace)
+                          (ListToString  (cdr l) indent false))
+                          "")
+                          )
+                    (else
+                     (stringConcatenate (stringify val)
+                      (ListToString (cdr l) indent false)))))))
+          (else (stringify l))
+        ))
+    )
+  ))
+
+
 
   (list listReverse (list l) (declare)
    (body
