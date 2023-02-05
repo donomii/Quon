@@ -107,7 +107,31 @@ public Box clone(Box b) {
 }
 
 
-//Building function newVoid from line: 38
+//Building function tern from line: 38
+
+public Box tern(boolean cond,Box tr,Box fal) {
+    
+  if ( cond) {    
+    return(tr);
+  } else {    
+    return(fal);
+  }
+}
+
+
+//Building function ternList from line: 42
+
+public Box ternList(boolean cond,Box tr,Box fal) {
+    
+  if ( cond) {    
+    return(tr);
+  } else {    
+    return(fal);
+  }
+}
+
+
+//Building function newVoid from line: 48
 
 public Box newVoid() {
   Box newb = null;
@@ -119,7 +143,7 @@ public Box newVoid() {
 }
 
 
-//Building function stackDump from line: 48
+//Building function stackDump from line: 58
 
 public void stackDump() {
     
@@ -130,7 +154,7 @@ if (globalTrace)
 }
 
 
-//Building function nop from line: 53
+//Building function nop from line: 63
 
 public void nop() {
     
@@ -141,7 +165,7 @@ if (globalTrace)
 }
 
 
-//Building function equalBox from line: 57
+//Building function equalBox from line: 67
 
 public boolean equalBox(Box a,Box b) {
     
@@ -173,7 +197,7 @@ public boolean equalBox(Box a,Box b) {
 }
 
 
-//Building function display from line: 78
+//Building function display from line: 88
 
 public void display(Box l) {
     
@@ -195,7 +219,7 @@ if (globalTrace)
 }
 
 
-//Building function openBrace from line: 87
+//Building function openBrace from line: 97
 
 public String openBrace() {
     
@@ -203,7 +227,7 @@ public String openBrace() {
 }
 
 
-//Building function closeBrace from line: 88
+//Building function closeBrace from line: 98
 
 public String closeBrace() {
     
@@ -211,7 +235,7 @@ public String closeBrace() {
 }
 
 
-//Building function boxType from line: 93
+//Building function boxType from line: 103
 
 public String boxType(Box b) {
     
@@ -219,7 +243,7 @@ public String boxType(Box b) {
 }
 
 
-//Building function makeBox from line: 96
+//Building function makeBox from line: 106
 
 public Box makeBox() {
   Box b = null;
@@ -238,7 +262,7 @@ public Box makeBox() {
 }
 
 
-//Building function makePair from line: 111
+//Building function makePair from line: 121
 
 public Box makePair() {
     
@@ -246,7 +270,7 @@ public Box makePair() {
 }
 
 
-//Building function boxString from line: 117
+//Building function boxString from line: 127
 
 public Box boxString(String s) {
   Box b = null;
@@ -259,7 +283,7 @@ public Box boxString(String s) {
 }
 
 
-//Building function boxSymbol from line: 127
+//Building function boxSymbol from line: 137
 
 public Box boxSymbol(String s) {
   Box b = null;
@@ -270,7 +294,7 @@ public Box boxSymbol(String s) {
 }
 
 
-//Building function boxBool from line: 136
+//Building function boxBool from line: 146
 
 public Box boxBool(boolean boo) {
   Box b = null;
@@ -282,7 +306,7 @@ public Box boxBool(boolean boo) {
 }
 
 
-//Building function boxInt from line: 145
+//Building function boxInt from line: 155
 
 public Box boxInt(Integer val) {
   Box b = null;
@@ -294,7 +318,7 @@ public Box boxInt(Integer val) {
 }
 
 
-//Building function assertType from line: 154
+//Building function assertType from line: 164
 
 public void assertType(String atype,Box abox,Integer line,String file) {
     
@@ -316,16 +340,16 @@ public void assertType(String atype,Box abox,Integer line,String file) {
 }
 
 
-//Building function unBoxString from line: 166
+//Building function unBoxString from line: 176
 
 public String unBoxString(Box b) {
     
-  assertType("string", b, 167, "q/base.qon");  
+  assertType("string", b, 177, "q/base.qon");  
   return(b.str);
 }
 
 
-//Building function unBoxSymbol from line: 169
+//Building function unBoxSymbol from line: 179
 
 public String unBoxSymbol(Box b) {
     
@@ -333,7 +357,7 @@ public String unBoxSymbol(Box b) {
 }
 
 
-//Building function unBoxBool from line: 170
+//Building function unBoxBool from line: 180
 
 public boolean unBoxBool(Box b) {
     
@@ -341,7 +365,7 @@ public boolean unBoxBool(Box b) {
 }
 
 
-//Building function unBoxInt from line: 171
+//Building function unBoxInt from line: 181
 
 public Integer unBoxInt(Box b) {
     
@@ -349,7 +373,7 @@ public Integer unBoxInt(Box b) {
 }
 
 
-//Building function stringify_rec from line: 173
+//Building function stringify_rec from line: 183
 
 public String stringify_rec(Box b) {
     
@@ -361,7 +385,7 @@ public String stringify_rec(Box b) {
 }
 
 
-//Building function stringify from line: 185
+//Building function stringify from line: 195
 
 public String stringify(Box b) {
     
@@ -397,7 +421,7 @@ public String stringify(Box b) {
 }
 
 
-//Building function hasTag from line: 220
+//Building function hasTag from line: 230
 
 public boolean hasTag(Box aBox,Box key) {
     
@@ -409,7 +433,7 @@ public boolean hasTag(Box aBox,Box key) {
 }
 
 
-//Building function getTag from line: 227
+//Building function getTag from line: 237
 
 public Box getTag(Box aBox,Box key) {
     
@@ -424,7 +448,7 @@ public Box getTag(Box aBox,Box key) {
 }
 
 
-//Building function getTagFail from line: 239
+//Building function getTagFail from line: 249
 
 public Box getTagFail(Box aBox,Box key,Box onFail) {
     
@@ -436,7 +460,7 @@ public Box getTagFail(Box aBox,Box key,Box onFail) {
 }
 
 
-//Building function assocExists from line: 250
+//Building function assocExists from line: 260
 
 public boolean assocExists(String key,Box aBox) {
     
@@ -448,7 +472,7 @@ public boolean assocExists(String key,Box aBox) {
 }
 
 
-//Building function assocFail from line: 259
+//Building function assocFail from line: 269
 
 public Box assocFail(String key,Box aBox,Box onFail) {
     
@@ -460,7 +484,7 @@ public Box assocFail(String key,Box aBox,Box onFail) {
 }
 
 
-//Building function assocPanic from line: 266
+//Building function assocPanic from line: 276
 
 public Box assocPanic(String key,Box aBox,String onFail) {
     
@@ -474,7 +498,7 @@ public Box assocPanic(String key,Box aBox,String onFail) {
 }
 
 
-//Building function setTag from line: 278
+//Building function setTag from line: 288
 
 public Box setTag(Box key,Box val,Box aStruct) {
     
@@ -483,7 +507,7 @@ public Box setTag(Box key,Box val,Box aStruct) {
 }
 
 
-//Building function locPanic from line: 287
+//Building function locPanic from line: 297
 
 public void locPanic(String file,String line,String message) {
     
@@ -495,7 +519,7 @@ if (globalTrace)
 }
 
 
-//Building function truthy from line: 293
+//Building function truthy from line: 303
 
 public boolean truthy(Box aVal) {
     
@@ -503,7 +527,7 @@ public boolean truthy(Box aVal) {
 }
 
 
-//Building function isNotFalse from line: 298
+//Building function isNotFalse from line: 308
 
 public boolean isNotFalse(Box aVal) {
     
@@ -519,7 +543,7 @@ public boolean isNotFalse(Box aVal) {
 }
 
 
-//Building function toStr from line: 307
+//Building function toStr from line: 317
 
 public Box toStr(Box thing) {
     
@@ -527,7 +551,7 @@ public Box toStr(Box thing) {
 }
 
 
-//Building function listLast from line: 311
+//Building function listLast from line: 321
 
 public Box listLast(Box alist) {
     
@@ -539,7 +563,7 @@ public Box listLast(Box alist) {
 }
 
 
-//Building function newLine from line: 320
+//Building function newLine from line: 330
 
 public void newLine(Integer indent) {
     
@@ -551,7 +575,7 @@ if (globalTrace)
 }
 
 
-//Building function printIndent from line: 324
+//Building function printIndent from line: 334
 
 public void printIndent(Integer ii) {
     
@@ -567,7 +591,7 @@ if (globalTrace)
 }
 
 
-//Building function stringIndent from line: 331
+//Building function stringIndent from line: 341
 
 public String stringIndent(Integer ii) {
     
@@ -579,7 +603,7 @@ public String stringIndent(Integer ii) {
 }
 
 
-//Building function argList from line: 346
+//Building function argList from line: 356
 
 public Box argList(Integer count,Integer pos,String[] args) {
     
@@ -591,7 +615,7 @@ public Box argList(Integer count,Integer pos,String[] args) {
 }
 
 
-//Building function tron from line: 356
+//Building function tron from line: 366
 
 public void tron() {
     
@@ -599,7 +623,7 @@ public void tron() {
 }
 
 
-//Building function troff from line: 357
+//Building function troff from line: 367
 
 public void troff() {
     
@@ -607,7 +631,7 @@ public void troff() {
 }
 
 
-//Building function stron from line: 358
+//Building function stron from line: 368
 
 public void stron() {
     
@@ -615,7 +639,7 @@ public void stron() {
 }
 
 
-//Building function stroff from line: 359
+//Building function stroff from line: 369
 
 public void stroff() {
     
@@ -1421,7 +1445,7 @@ public Box macrowalk(Box l) {
       } else {
       }      
       if ( equalString(stringConcatenate("makeL", "ist"), stringify(car(l)))) {        
-        return(car(doMultiList(cdr(l))));
+        return(doMakeList(cdr(l)));
       } else {
       }      
       return(cons(macrowalk(car(l)), macrowalk(cdr(l))));
@@ -1432,7 +1456,7 @@ public Box macrowalk(Box l) {
 }
 
 
-//Building function macrosingle from line: 55
+//Building function macrosingle from line: 54
 
 public Box macrosingle(Box l,String search,String replace) {
   Box val = null;
@@ -1455,7 +1479,7 @@ public Box macrosingle(Box l,String search,String replace) {
 }
 
 
-//Building function macrolist from line: 79
+//Building function macrolist from line: 78
 
 public Box macrolist(Box l,String search,Box replace) {
   Box val = null;
@@ -1771,7 +1795,29 @@ Box elem = null;
 }
 
 
-//Building function doStringList from line: 167
+//Building function doMakeList from line: 166
+
+public Box doMakeList(Box l) {
+  Box newlist = null;
+Box ret = null;
+Box elem = null;
+  
+  if ( isNil(l)) {    
+    return(cons(boxSymbol("nil"), null));
+  } else {    
+    if ( isEmpty(l)) {      
+      return(null);
+    } else {      
+      elem = first(l);      
+      newlist = cons(boxString(chooseBox(elem.typ)), cons(mlistLiteral(first(l)), newlist));      
+      ret = cons(newlist, doMakeList(cdr(l)));      
+      return(ret);
+    }
+  }
+}
+
+
+//Building function doStringList from line: 184
 
 public Box doStringList(Box l) {
   Box newlist = null;
@@ -1787,7 +1833,7 @@ Box ret = null;
 }
 
 
-//Building function doSymbolList from line: 184
+//Building function doSymbolList from line: 201
 
 public Box doSymbolList(Box l) {
   Box newlist = null;
@@ -1803,7 +1849,7 @@ Box ret = null;
 }
 
 
-//Building function doBoxList from line: 202
+//Building function doBoxList from line: 219
 
 public Box doBoxList(Box l) {
     
@@ -1815,7 +1861,7 @@ public Box doBoxList(Box l) {
 }
 
 
-//Building function concatLists from line: 221
+//Building function concatLists from line: 238
 
 public Box concatLists(Box seq1,Box seq2) {
     
@@ -1827,7 +1873,7 @@ public Box concatLists(Box seq1,Box seq2) {
 }
 
 
-//Building function alistKeys from line: 227
+//Building function alistKeys from line: 244
 
 public Box alistKeys(Box alist) {
     
@@ -1839,7 +1885,7 @@ public Box alistKeys(Box alist) {
 }
 
 
-//Building function displayList from line: 233
+//Building function displayList from line: 250
 
 public void displayList(Box l,Integer indent,boolean first) {
   Box val = null;
@@ -1885,7 +1931,7 @@ if (globalTrace)
 }
 
 
-//Building function StringListJoinRec from line: 264
+//Building function StringListJoinRec from line: 281
 
 public String StringListJoinRec(Box l,String sep) {
   Box val = null;
@@ -1910,7 +1956,7 @@ public String StringListJoinRec(Box l,String sep) {
 }
 
 
-//Building function StringListJoin from line: 287
+//Building function StringListJoin from line: 304
 
 public String StringListJoin(Box l,String sep) {
   Box val = null;
@@ -1923,17 +1969,17 @@ public String StringListJoin(Box l,String sep) {
 }
 
 
-//Building function ListToBoxString from line: 297
+//Building function ListToBoxString from line: 314
 
 public Box ListToBoxString(Box l) {
     
-  return(boxString(ListToString(l, 0, true)));
+  return(boxString(ListToString(l, 0, true, false)));
 }
 
 
-//Building function ListToString from line: 302
+//Building function ListToString from line: 319
 
-public String ListToString(Box l,Integer indent,boolean first) {
+public String ListToString(Box l,Integer indent,boolean first,boolean withNewLines) {
   Box val = null;
   
   if ( isEmpty(l)) {    
@@ -1945,9 +1991,9 @@ public String ListToString(Box l,Integer indent,boolean first) {
       } else {        
         val = car(l);        
         if ( isList(val)) {          
-          return(StringListJoin(cons(boxString("\n"), cons(boxString(stringIndent(indent)), cons(boxString(openBrace()), cons(boxString(ListToString(car(l), add1(indent), true)), cons(boxString(closeBrace()), cons(boxString(ListToString(cdr(l), indent, false)), null)))))), ""));
+          return(StringListJoin(cons(boxString(stringify(tern(withNewLines, boxString("\n"), boxString(stringIndent(indent))))), cons(boxString(openBrace()), cons(boxString(" "), cons(boxString(ListToString(car(l), add1(indent), true, withNewLines)), cons(boxString(closeBrace()), cons(boxString(" "), cons(boxString(ListToString(cdr(l), indent, false, withNewLines)), null))))))), ""));
         } else {          
-          return(stringConcatenate(stringify(val), ListToString(cdr(l), indent, false)));
+          return(stringConcatenate(stringify(val), ListToString(cdr(l), indent, false, withNewLines)));
         }
       }
     } else {      
@@ -1957,7 +2003,7 @@ public String ListToString(Box l,Integer indent,boolean first) {
 }
 
 
-//Building function listReverse from line: 337
+//Building function listReverse from line: 359
 
 public Box listReverse(Box l) {
     
@@ -1969,7 +2015,7 @@ public Box listReverse(Box l) {
 }
 
 
-//Building function inList from line: 343
+//Building function inList from line: 365
 
 public boolean inList(Box item,Box l) {
     
@@ -1985,7 +2031,7 @@ public boolean inList(Box item,Box l) {
 }
 
 
-//Building function equalList from line: 353
+//Building function equalList from line: 375
 
 public boolean equalList(Box a,Box b) {
     
@@ -2013,7 +2059,7 @@ public boolean equalList(Box a,Box b) {
 }
 
 
-//Building function reverseRec from line: 376
+//Building function reverseRec from line: 398
 
 public Box reverseRec(Box oldL,Box newL) {
     
@@ -2025,7 +2071,7 @@ public Box reverseRec(Box oldL,Box newL) {
 }
 
 
-//Building function reverseList from line: 383
+//Building function reverseList from line: 405
 
 public Box reverseList(Box l) {
     
@@ -4842,6 +4888,34 @@ if (globalTrace)
 }
 
 
+//Building function test25 from line: 380
+
+public void test25() {
+  String expected = "( a b ) c d e";
+String res = "";
+Box sub = [cons 
+(boxString "c ") 
+(cons 
+  (boxString "d ") 
+  (cons 
+    (boxString "e") nil))];
+Box input = null;
+  
+  input = cons(boxString("a "), cons(boxString("b "), null));  
+  input = cons(input, sub);  
+  display(input);  
+  res = ListToString(input, 0, true, false);  
+  if ( equalString(expected, res)) {    
+    System.out.printf("24. pass ListToString\n");
+  } else {    
+    System.out.printf("24. fail ListToString.  expected '%s', got '%s'\n", expected, res);
+  }
+if (globalTrace)
+   System.out. printf("Leaving test25\n");
+
+}
+
+
 //Building function nodeFunctionArgs from line: 4
 
 public void nodeFunctionArgs(Box tree) {
@@ -5350,6 +5424,21 @@ Box program = null;
 if (globalTrace)
    System.out. printf("Leaving nodeCompile\n");
 
+}
+
+
+//Building function node2Compile from line: 4
+
+public Box node2Compile(String filename) {
+  String programStr = "";
+Box tree = null;
+Box program = null;
+  
+  programStr = read_file(filename);  
+  tree = readSexpr(programStr, filename);  
+  program = alistCons(boxString("includes"), astIncludes(first(tree)), alistCons(boxString("types"), astTypes(second(tree)), alistCons(boxString("functions"), astFunctions(third(tree)), null)));  
+  program = mergeIncludes(program);  
+  return(nil());
 }
 
 
@@ -7106,6 +7195,7 @@ boolean runTree = false;
     test22();    
     test23();    
     test24();    
+    test25();    
     System.out.printf("\n\nAfter all that hard work, I need a beer...\n");    
     beers(9);
   } else {    

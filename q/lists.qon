@@ -163,6 +163,23 @@
             ) nil)
     )
  (return ret))) ))))
+
+ (list doMakeList (list l) (declare (list newlist nil) (list ret nil) (box elem nil))
+ (body
+ (if (isNil l)
+ (then (return (cons (boxSymbol "nil") nil)))
+ (else
+ (if (isEmpty l)
+      (then (return (emptyList)))
+      (else
+	  
+        (set elem (first l))
+        (set newlist (cons (boxString (chooseBox (get-struct elem typ))) (cons (mlistLiteral (first l)) newlist)))
+        (set ret (cons
+                   newlist 
+                    (doMakeList (cdr l)))  
+    )
+ (return ret))) ))))
  
  
  (list doStringList (list l) (declare (list newlist nil) (list ret nil))

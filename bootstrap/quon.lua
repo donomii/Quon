@@ -2549,6 +2549,24 @@ caller = "javaCompile:Unknown file:-1"
   printf("}\n");
 
 end
+-- Chose function name node2Compile
+function node2Compile(filename)
+print("caller: ", caller, "-> node2Compile")
+local programStr =""
+local tree =nil
+local program =nil
+caller = "node2Compile:Unknown file:-1"
+  programStr = luaReadFile(filename)
+caller = "node2Compile:Unknown file:-1"
+  tree = readSexpr(programStr, filename)
+caller = "node2Compile:Unknown file:-1"
+  program = alistCons(boxString("includes"), astIncludes(first(tree)), alistCons(boxString("types"), astTypes(second(tree)), alistCons(boxString("functions"), astFunctions(third(tree)), nil)))
+caller = "node2Compile:Unknown file:-1"
+  program = mergeIncludes(program)
+caller = "node2Compile:Unknown file:-1"
+  return nil()
+
+end
 -- Chose function name nodeFunctionArgs
 function nodeFunctionArgs(tree)
 print("caller: ", caller, "-> nodeFunctionArgs")
@@ -3984,6 +4002,34 @@ caller = ":Unknown file:-1"
   else
 caller = ":Unknown file:-1"
       printf("24. fail StringListJoin.  expected '%s', got '%s'\n", expected, res);
+
+  end
+
+end
+-- Chose function name test25
+function test25()
+print("caller: ", caller, "-> test25")
+local expected ="( a b ) c d e"
+local res =""
+local sub =cons(boxString("c "), cons(boxString("d "), cons(boxString("e"), nil)))
+local input =nil
+caller = "test25:Unknown file:-1"
+  input = cons(boxString("a "), cons(boxString("b "), nil))
+caller = "test25:Unknown file:-1"
+  input = cons(input, sub)
+caller = "test25:Unknown file:-1"
+  display(input);
+
+caller = "test25:Unknown file:-1"
+  res = ListToString(input, 0, true, false)
+caller = "test25:Unknown file:-1"
+  if equalString(expected, res) then
+caller = ":Unknown file:-1"
+      printf("24. pass ListToString\n");
+
+  else
+caller = ":Unknown file:-1"
+      printf("24. fail ListToString.  expected '%s', got '%s'\n", expected, res);
 
   end
 
@@ -7470,6 +7516,38 @@ caller = ":Unknown file:-1"
   end
 
 end
+-- Chose function name doMakeList
+function doMakeList(l)
+print("caller: ", caller, "-> doMakeList")
+local newlist =nil
+local ret =nil
+local elem =nil
+caller = "doMakeList:Unknown file:-1"
+  if isNil(l) then
+caller = ":Unknown file:-1"
+      return cons(boxSymbol("nil"), nil)
+
+  else
+caller = ":Unknown file:-1"
+      if isEmpty(l) then
+caller = ":Unknown file:-1"
+          return nil
+
+      else
+caller = ":Unknown file:-1"
+          elem = first(l)
+caller = ":Unknown file:-1"
+          newlist = cons(boxString(chooseBox(elem.typ)), cons(mlistLiteral(first(l)), newlist))
+caller = ":Unknown file:-1"
+          ret = cons(newlist, doMakeList(cdr(l)))
+caller = ":Unknown file:-1"
+          return ret
+
+      end
+
+  end
+
+end
 -- Chose function name doStringList
 function doStringList(l)
 print("caller: ", caller, "-> doStringList")
@@ -7698,11 +7776,11 @@ end
 function ListToBoxString(l)
 print("caller: ", caller, "-> ListToBoxString")
 caller = "ListToBoxString:Unknown file:-1"
-  return boxString(ListToString(l, 0, true))
+  return boxString(ListToString(l, 0, true, false))
 
 end
 -- Chose function name ListToString
-function ListToString(l,indent,first)
+function ListToString(l,indent,first,withNewLines)
 print("caller: ", caller, "-> ListToString")
 local val =nil
 caller = "ListToString:Unknown file:-1"
@@ -7724,11 +7802,11 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
               if isList(val) then
 caller = ":Unknown file:-1"
-                  return StringListJoin(cons(boxString("\n"), cons(boxString(stringIndent(indent)), cons(boxString(openBrace()), cons(boxString(ListToString(car(l), add1(indent), true)), cons(boxString(closeBrace()), cons(boxString(ListToString(cdr(l), indent, false)), nil)))))), "")
+                  return StringListJoin(cons(boxString(stringify(tern(withNewLines, boxString("\n"), boxString(stringIndent(indent))))), cons(boxString(openBrace()), cons(boxString(" "), cons(boxString(ListToString(car(l), add1(indent), true, withNewLines)), cons(boxString(closeBrace()), cons(boxString(" "), cons(boxString(ListToString(cdr(l), indent, false, withNewLines)), nil))))))), "")
 
               else
 caller = ":Unknown file:-1"
-                  return stringConcatenate(stringify(val), ListToString(cdr(l), indent, false))
+                  return stringConcatenate(stringify(val), ListToString(cdr(l), indent, false, withNewLines))
 
               end
 
@@ -7896,7 +7974,7 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
           if equalString(stringConcatenate("makeL", "ist"), stringify(car(l))) then
 caller = ":Unknown file:-1"
-              return car(doMultiList(cdr(l)))
+              return doMakeList(cdr(l))
 
           else
           end
@@ -9077,6 +9155,36 @@ caller = "clone:Unknown file:-1"
   return newb
 
 end
+-- Chose function name tern
+function tern(cond,tr,fal)
+print("caller: ", caller, "-> tern")
+caller = "tern:Unknown file:-1"
+  if cond then
+caller = ":Unknown file:-1"
+      return tr
+
+  else
+caller = ":Unknown file:-1"
+      return fal
+
+  end
+
+end
+-- Chose function name ternList
+function ternList(cond,tr,fal)
+print("caller: ", caller, "-> ternList")
+caller = "ternList:Unknown file:-1"
+  if cond then
+caller = ":Unknown file:-1"
+      return tr
+
+  else
+caller = ":Unknown file:-1"
+      return fal
+
+  end
+
+end
 -- Chose function name newVoid
 function newVoid()
 print("caller: ", caller, "-> newVoid")
@@ -9345,7 +9453,7 @@ end
 function unBoxString(b)
 print("caller: ", caller, "-> unBoxString")
 caller = "unBoxString:Unknown file:-1"
-  assertType("string", b, 167, "q/base.qon");
+  assertType("string", b, 177, "q/base.qon");
 
 caller = "unBoxString:Unknown file:-1"
   return b.str
@@ -9895,6 +10003,9 @@ caller = ":Unknown file:-1"
 
 caller = ":Unknown file:-1"
       test24();
+
+caller = ":Unknown file:-1"
+      test25();
 
 caller = ":Unknown file:-1"
       printf("\n\nAfter all that hard work, I need a beer...\n");

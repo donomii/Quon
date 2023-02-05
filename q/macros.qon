@@ -42,8 +42,7 @@
           (else))
           (if (equalString (stringConcatenate "makeL" "ist") (stringify (car l)))
           (then
-            ;(display (doStringList (cdr l)))
-          (return (car (doMultiList (cdr l)))))
+          (return  (doMakeList (cdr l))))
           (else))
 		  
             (return   (cons (macrowalk (car l) ) (macrowalk (cdr l) ))))
