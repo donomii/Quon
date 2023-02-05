@@ -1,4 +1,4 @@
-((includes q/base.qon q/compiler.qon q/macros.qon q/lists.qon q/newparser.qon q/perl.qon q/ansi.qon q/ansi2.qon q/ansi3.qon q/tests.qon q/node.qon  q/java.qon q/lua.qon q/boolean.qon q/imaginary.qon q/bash.qon)
+((includes q/base.qon q/compiler.qon q/macros.qon q/lists.qon q/newparser.qon q/perl.qon q/ansi.qon q/ansi2.qon q/ansi3.qon q/tests.qon q/node.qon q/node2.qon q/java.qon q/lua.qon q/boolean.qon q/imaginary.qon q/bash.qon)
  (types)
  (functions
 
@@ -11,6 +11,7 @@
   (bool runJava false)
   (bool runAst false)
   (bool runNode false)
+  (bool runNode2 false)
    (bool runLua false)
    (bool runIma false)
    (bool runAnsi2 false)
@@ -31,6 +32,7 @@
     (set runAst (inList (boxString "--ast") cmdLine))
     (set runTree (inList (boxString "--tree") cmdLine))
     (set runNode (inList (boxString "--node") cmdLine))
+     (set runNode2 (inList (boxString "--node2") cmdLine))
     (set runLua (inList (boxString "--lua") cmdLine))
     (set runIma (inList (boxString "--ima") cmdLine))
     (set runAnsi2 (inList (boxString "--ansi2") cmdLine))
@@ -50,6 +52,7 @@
         (printf "  --ast       Compile to the Abstract Syntax Tree\n")
         (printf "  --tree      Compile to an s-expression tree\n")
         (printf "  --node      Compile to Node.js\n")
+        (printf "  --node2      Compile to Node.js, new outputter\n")
         (printf "  --lua       Compile to Lua\n")
         (printf "  --ima       Compile to Imaginary, the human-friendly language\n")
         (printf "  --ansi2     Compile to ANSI C, (quon version 2)\n")
@@ -100,6 +103,9 @@
       (else (if runNode
       (then
       (nodeCompile (unBoxString filename)) (printf "\n"))
+      (else (if runNode2
+      (then
+      (node2Compile (unBoxString filename)) (printf "\n"))
       (else
       (if runPerl
       (then (perlCompile (unBoxString filename)) (printf "\n"))
@@ -122,7 +128,7 @@
       (if runBash
       (then (bashCompile (unBoxString filename)) (printf "\n"))
 	  (else
-      (ansi3Compile (unBoxString filename)) (printf "\n")))))))))))))))))
+      (ansi3Compile (unBoxString filename)) (printf "\n"))))))))))))))))))
       ))))))
     
     (return 0)
