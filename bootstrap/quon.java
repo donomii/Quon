@@ -397,7 +397,7 @@ public String stringify(Box b) {
 }
 
 
-//Building function hasTag from line: 216
+//Building function hasTag from line: 220
 
 public boolean hasTag(Box aBox,Box key) {
     
@@ -409,7 +409,7 @@ public boolean hasTag(Box aBox,Box key) {
 }
 
 
-//Building function getTag from line: 222
+//Building function getTag from line: 227
 
 public Box getTag(Box aBox,Box key) {
     
@@ -424,7 +424,7 @@ public Box getTag(Box aBox,Box key) {
 }
 
 
-//Building function getTagFail from line: 234
+//Building function getTagFail from line: 239
 
 public Box getTagFail(Box aBox,Box key,Box onFail) {
     
@@ -436,7 +436,7 @@ public Box getTagFail(Box aBox,Box key,Box onFail) {
 }
 
 
-//Building function assocExists from line: 240
+//Building function assocExists from line: 250
 
 public boolean assocExists(String key,Box aBox) {
     
@@ -448,7 +448,7 @@ public boolean assocExists(String key,Box aBox) {
 }
 
 
-//Building function assocFail from line: 248
+//Building function assocFail from line: 259
 
 public Box assocFail(String key,Box aBox,Box onFail) {
     
@@ -460,7 +460,7 @@ public Box assocFail(String key,Box aBox,Box onFail) {
 }
 
 
-//Building function assocPanic from line: 254
+//Building function assocPanic from line: 266
 
 public Box assocPanic(String key,Box aBox,String onFail) {
     
@@ -474,7 +474,7 @@ public Box assocPanic(String key,Box aBox,String onFail) {
 }
 
 
-//Building function setTag from line: 265
+//Building function setTag from line: 278
 
 public Box setTag(Box key,Box val,Box aStruct) {
     
@@ -483,7 +483,7 @@ public Box setTag(Box key,Box val,Box aStruct) {
 }
 
 
-//Building function locPanic from line: 282
+//Building function locPanic from line: 287
 
 public void locPanic(String file,String line,String message) {
     
@@ -495,7 +495,7 @@ if (globalTrace)
 }
 
 
-//Building function truthy from line: 308
+//Building function truthy from line: 293
 
 public boolean truthy(Box aVal) {
     
@@ -503,7 +503,7 @@ public boolean truthy(Box aVal) {
 }
 
 
-//Building function isNotFalse from line: 312
+//Building function isNotFalse from line: 298
 
 public boolean isNotFalse(Box aVal) {
     
@@ -519,7 +519,7 @@ public boolean isNotFalse(Box aVal) {
 }
 
 
-//Building function toStr from line: 320
+//Building function toStr from line: 307
 
 public Box toStr(Box thing) {
     
@@ -527,7 +527,7 @@ public Box toStr(Box thing) {
 }
 
 
-//Building function listLast from line: 323
+//Building function listLast from line: 311
 
 public Box listLast(Box alist) {
     
@@ -539,7 +539,7 @@ public Box listLast(Box alist) {
 }
 
 
-//Building function newLine from line: 331
+//Building function newLine from line: 320
 
 public void newLine(Integer indent) {
     
@@ -551,7 +551,7 @@ if (globalTrace)
 }
 
 
-//Building function printIndent from line: 337
+//Building function printIndent from line: 324
 
 public void printIndent(Integer ii) {
     
@@ -567,7 +567,19 @@ if (globalTrace)
 }
 
 
-//Building function argList from line: 353
+//Building function stringIndent from line: 331
+
+public String stringIndent(Integer ii) {
+    
+  if ( greaterthan(ii, 0)) {    
+    return(stringConcatenate("  ", stringIndent(sub1(ii))));
+  } else {    
+    return("");
+  }
+}
+
+
+//Building function argList from line: 346
 
 public Box argList(Integer count,Integer pos,String[] args) {
     
@@ -579,7 +591,7 @@ public Box argList(Integer count,Integer pos,String[] args) {
 }
 
 
-//Building function tron from line: 363
+//Building function tron from line: 356
 
 public void tron() {
     
@@ -587,7 +599,7 @@ public void tron() {
 }
 
 
-//Building function troff from line: 364
+//Building function troff from line: 357
 
 public void troff() {
     
@@ -595,7 +607,7 @@ public void troff() {
 }
 
 
-//Building function stron from line: 365
+//Building function stron from line: 358
 
 public void stron() {
     
@@ -603,7 +615,7 @@ public void stron() {
 }
 
 
-//Building function stroff from line: 366
+//Building function stroff from line: 359
 
 public void stroff() {
     
@@ -1408,6 +1420,10 @@ public Box macrowalk(Box l) {
         return(car(doMultiList(cdr(l))));
       } else {
       }      
+      if ( equalString(stringConcatenate("makeL", "ist"), stringify(car(l)))) {        
+        return(car(doMultiList(cdr(l))));
+      } else {
+      }      
       return(cons(macrowalk(car(l)), macrowalk(cdr(l))));
     } else {      
       return(l);
@@ -1416,7 +1432,7 @@ public Box macrowalk(Box l) {
 }
 
 
-//Building function macrosingle from line: 49
+//Building function macrosingle from line: 55
 
 public Box macrosingle(Box l,String search,String replace) {
   Box val = null;
@@ -1439,7 +1455,7 @@ public Box macrosingle(Box l,String search,String replace) {
 }
 
 
-//Building function macrolist from line: 73
+//Building function macrolist from line: 79
 
 public Box macrolist(Box l,String search,Box replace) {
   Box val = null;
@@ -1869,7 +1885,79 @@ if (globalTrace)
 }
 
 
-//Building function listReverse from line: 265
+//Building function StringListJoinRec from line: 264
+
+public String StringListJoinRec(Box l,String sep) {
+  Box val = null;
+  
+  if ( isEmpty(l)) {    
+    return("");
+  } else {    
+    if ( isList(l)) {      
+      if ( isEmpty(l)) {        
+        return("");
+      } else {        
+        if ( equal(listLength(l), 1)) {          
+          return(stringify(car(l)));
+        } else {          
+          return(stringConcatenate(stringify(car(l)), stringConcatenate(sep, StringListJoinRec(cdr(l), sep))));
+        }
+      }
+    } else {      
+      return("");
+    }
+  }
+}
+
+
+//Building function StringListJoin from line: 287
+
+public String StringListJoin(Box l,String sep) {
+  Box val = null;
+  
+  if ( greaterthan(listLength(l), 1)) {    
+    return(stringConcatenate(stringify(car(l)), stringConcatenate(sep, StringListJoinRec(cdr(l), sep))));
+  } else {    
+    return(stringify(car(l)));
+  }
+}
+
+
+//Building function ListToBoxString from line: 297
+
+public Box ListToBoxString(Box l) {
+    
+  return(boxString(ListToString(l, 0, true)));
+}
+
+
+//Building function ListToString from line: 302
+
+public String ListToString(Box l,Integer indent,boolean first) {
+  Box val = null;
+  
+  if ( isEmpty(l)) {    
+    return("");
+  } else {    
+    if ( isList(l)) {      
+      if ( isEmpty(l)) {        
+        return("");
+      } else {        
+        val = car(l);        
+        if ( isList(val)) {          
+          return(StringListJoin(cons(boxString("\n"), cons(boxString(stringIndent(indent)), cons(boxString(openBrace()), cons(boxString(ListToString(car(l), add1(indent), true)), cons(boxString(closeBrace()), cons(boxString(ListToString(cdr(l), indent, false)), null)))))), ""));
+        } else {          
+          return(stringConcatenate(stringify(val), ListToString(cdr(l), indent, false)));
+        }
+      }
+    } else {      
+      return(stringify(l));
+    }
+  }
+}
+
+
+//Building function listReverse from line: 337
 
 public Box listReverse(Box l) {
     
@@ -1881,7 +1969,7 @@ public Box listReverse(Box l) {
 }
 
 
-//Building function inList from line: 271
+//Building function inList from line: 343
 
 public boolean inList(Box item,Box l) {
     
@@ -1897,7 +1985,7 @@ public boolean inList(Box item,Box l) {
 }
 
 
-//Building function equalList from line: 281
+//Building function equalList from line: 353
 
 public boolean equalList(Box a,Box b) {
     
@@ -1925,7 +2013,7 @@ public boolean equalList(Box a,Box b) {
 }
 
 
-//Building function reverseRec from line: 304
+//Building function reverseRec from line: 376
 
 public Box reverseRec(Box oldL,Box newL) {
     
@@ -1937,7 +2025,7 @@ public Box reverseRec(Box oldL,Box newL) {
 }
 
 
-//Building function reverseList from line: 311
+//Building function reverseList from line: 383
 
 public Box reverseList(Box l) {
     
@@ -4736,6 +4824,24 @@ if (globalTrace)
 }
 
 
+//Building function test24 from line: 366
+
+public void test24() {
+  String expected = "a b c";
+String res = "";
+  
+  res = StringListJoin(cons(boxString("a"), cons(boxString("b"), cons(boxString("c"), null))), " ");  
+  if ( equalString(expected, res)) {    
+    System.out.printf("24. pass StringListJoin\n");
+  } else {    
+    System.out.printf("24. fail StringListJoin.  expected '%s', got '%s'\n", expected, res);
+  }
+if (globalTrace)
+   System.out. printf("Leaving test24\n");
+
+}
+
+
 //Building function nodeFunctionArgs from line: 4
 
 public void nodeFunctionArgs(Box tree) {
@@ -6999,6 +7105,7 @@ boolean runTree = false;
     test21();    
     test22();    
     test23();    
+    test24();    
     System.out.printf("\n\nAfter all that hard work, I need a beer...\n");    
     beers(9);
   } else {    

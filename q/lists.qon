@@ -297,10 +297,10 @@
 
 (box ListToBoxString (list l) (declare)
 (body
- (return (boxString (StringListJoin l " ")))
+ (return (boxString (ListToString l 0 true false)))
 ))
 
-(string ListToString (list l int indent bool first) (declare (box val nil))
+(string ListToString (list l int indent bool first bool withNewLines) (declare (box val nil))
    (body
     (if (isEmpty l)
       (then (return ""))
@@ -317,17 +317,22 @@
                     (then
                       (return (StringListJoin
                         (stringList
-                          "\n"
-                          (stringIndent indent)
+                          (stringify 
+                            (tern withNewLines
+                              (boxString "\n")
+                              (boxString (stringIndent indent)))
+                          )
                           (openBrace)
-                          (ListToString (car l) (add1 indent) true)
+                          " "
+                          (ListToString (car l) (add1 indent) true withNewLines)
                           (closeBrace)
-                          (ListToString  (cdr l) indent false))
+                          " "
+                          (ListToString  (cdr l) indent false withNewLines))
                           "")
                           ))
                     (else
                      (return (stringConcatenate (stringify val)
-                      (ListToString (cdr l) indent false))))))))
+                      (ListToString (cdr l) indent false withNewLines))))))))
           (else (return (stringify l)))
         ))
     )

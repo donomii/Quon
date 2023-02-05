@@ -3969,6 +3969,25 @@ caller = ":Unknown file:-1"
   end
 
 end
+-- Chose function name test24
+function test24()
+print("caller: ", caller, "-> test24")
+local expected ="a b c"
+local res =""
+caller = "test24:Unknown file:-1"
+  res = StringListJoin(cons(boxString("a"), cons(boxString("b"), cons(boxString("c"), nil))), " ")
+caller = "test24:Unknown file:-1"
+  if equalString(expected, res) then
+caller = ":Unknown file:-1"
+      printf("24. pass StringListJoin\n");
+
+  else
+caller = ":Unknown file:-1"
+      printf("24. fail StringListJoin.  expected '%s', got '%s'\n", expected, res);
+
+  end
+
+end
 -- Chose function name ansi3displays
 function ansi3displays(s)
 print("caller: ", caller, "-> ansi3displays")
@@ -7619,6 +7638,111 @@ caller = ":Unknown file:-1"
   end
 
 end
+-- Chose function name StringListJoinRec
+function StringListJoinRec(l,sep)
+print("caller: ", caller, "-> StringListJoinRec")
+local val =nil
+caller = "StringListJoinRec:Unknown file:-1"
+  if isEmpty(l) then
+caller = ":Unknown file:-1"
+      return ""
+
+  else
+caller = ":Unknown file:-1"
+      if isList(l) then
+caller = ":Unknown file:-1"
+          if isEmpty(l) then
+caller = ":Unknown file:-1"
+              return ""
+
+          else
+caller = ":Unknown file:-1"
+              if equal(listLength(l), 1) then
+caller = ":Unknown file:-1"
+                  return stringify(car(l))
+
+              else
+caller = ":Unknown file:-1"
+                  return stringConcatenate(stringify(car(l)), stringConcatenate(sep, StringListJoinRec(cdr(l), sep)))
+
+              end
+
+          end
+
+      else
+caller = ":Unknown file:-1"
+          return ""
+
+      end
+
+  end
+
+end
+-- Chose function name StringListJoin
+function StringListJoin(l,sep)
+print("caller: ", caller, "-> StringListJoin")
+local val =nil
+caller = "StringListJoin:Unknown file:-1"
+  if greaterthan(listLength(l), 1) then
+caller = ":Unknown file:-1"
+      return stringConcatenate(stringify(car(l)), stringConcatenate(sep, StringListJoinRec(cdr(l), sep)))
+
+  else
+caller = ":Unknown file:-1"
+      return stringify(car(l))
+
+  end
+
+end
+-- Chose function name ListToBoxString
+function ListToBoxString(l)
+print("caller: ", caller, "-> ListToBoxString")
+caller = "ListToBoxString:Unknown file:-1"
+  return boxString(ListToString(l, 0, true))
+
+end
+-- Chose function name ListToString
+function ListToString(l,indent,first)
+print("caller: ", caller, "-> ListToString")
+local val =nil
+caller = "ListToString:Unknown file:-1"
+  if isEmpty(l) then
+caller = ":Unknown file:-1"
+      return ""
+
+  else
+caller = ":Unknown file:-1"
+      if isList(l) then
+caller = ":Unknown file:-1"
+          if isEmpty(l) then
+caller = ":Unknown file:-1"
+              return ""
+
+          else
+caller = ":Unknown file:-1"
+              val = car(l)
+caller = ":Unknown file:-1"
+              if isList(val) then
+caller = ":Unknown file:-1"
+                  return StringListJoin(cons(boxString("\n"), cons(boxString(stringIndent(indent)), cons(boxString(openBrace()), cons(boxString(ListToString(car(l), add1(indent), true)), cons(boxString(closeBrace()), cons(boxString(ListToString(cdr(l), indent, false)), nil)))))), "")
+
+              else
+caller = ":Unknown file:-1"
+                  return stringConcatenate(stringify(val), ListToString(cdr(l), indent, false))
+
+              end
+
+          end
+
+      else
+caller = ":Unknown file:-1"
+          return stringify(l)
+
+      end
+
+  end
+
+end
 -- Chose function name listReverse
 function listReverse(l)
 print("caller: ", caller, "-> listReverse")
@@ -7763,6 +7887,14 @@ caller = ":Unknown file:-1"
 
 caller = ":Unknown file:-1"
           if equalString(stringConcatenate("multi", "List"), stringify(car(l))) then
+caller = ":Unknown file:-1"
+              return car(doMultiList(cdr(l)))
+
+          else
+          end
+
+caller = ":Unknown file:-1"
+          if equalString(stringConcatenate("makeL", "ist"), stringify(car(l))) then
 caller = ":Unknown file:-1"
               return car(doMultiList(cdr(l)))
 
@@ -9522,6 +9654,21 @@ caller = ":Unknown file:-1"
   end
 
 end
+-- Chose function name stringIndent
+function stringIndent(ii)
+print("caller: ", caller, "-> stringIndent")
+caller = "stringIndent:Unknown file:-1"
+  if greaterthan(ii, 0) then
+caller = ":Unknown file:-1"
+      return stringConcatenate("  ", stringIndent(sub1(ii)))
+
+  else
+caller = ":Unknown file:-1"
+      return ""
+
+  end
+
+end
 -- Chose function name argList
 function argList(count,pos,args)
 print("caller: ", caller, "-> argList")
@@ -9745,6 +9892,9 @@ caller = ":Unknown file:-1"
 
 caller = ":Unknown file:-1"
       test23();
+
+caller = ":Unknown file:-1"
+      test24();
 
 caller = ":Unknown file:-1"
       printf("\n\nAfter all that hard work, I need a beer...\n");

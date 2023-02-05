@@ -35,6 +35,16 @@
     (set-struct newb lengt (get-struct b lengt))
     (return newb)))
 
+
+ (box tern (bool cond list tr list fal) (declare)
+   (body
+    (if cond (then (return tr)) (else (return fal)))))
+
+     (list ternList (bool cond list tr list fal) (declare)
+   (body
+    (if cond (then (return tr)) (else (return fal)))))
+
+    
   (box
    newVoid
    ()
