@@ -1,0 +1,111 @@
+((includes)
+ (types)
+ (functions
+
+ (list node2Compile (string filename)
+   (declare (string programStr "") (list tree nil) (list program nil))
+   (body
+    (set programStr (read-file filename))
+    (set tree (readSexpr programStr filename))
+    (set  program (alistCons
+                    (boxString "includes")
+                    (astIncludes (first tree))
+                    (alistCons
+                    (boxString "types")
+                    (astTypes (second tree))
+                    (alistCons (boxString "functions") (astFunctions (third tree)) (emptyList)))))
+
+    (set program (mergeIncludes program))
+
+    (return 
+        (cons (node2Includes (cdr (assoc "includes" program)))
+        ;Javascript doesn't have custom types, so we just need to declare the functions
+        (cons (boxString "\nvar globalStackTrace = NULL;\n")
+        (cons (boxString "\nvar caller = \"\";\n")
+        (cons (boxString "\nfunction isNil(p) {\n    return p == NULL;\n}\n\n")
+        (cons (node2Functions (cdr (assoc "children" (cdr (cdr (assoc "functions" program))))))
+        (cons (boxString "\n")
+        (cons (boxString "const [asfdasdf, ...qwerqwer] = process.argv;")
+        (cons (boxString "globalArgs = qwerqwer;")
+        (cons (boxString "globalArgsCount = qwerqwer.length;")
+        (cons (boxString  "start();\n") (emptyList)))))))))))
+    )))
+
+  (list node2Includes (list nodes) (declare)
+   (body
+   (return (stringList  "function read_file(filename) {return fs.readFileSync(filename);}\n"
+    "function write_file(filename, data) {fs.writeFileSync(filename, data);}\n"
+    "var util = require('util');\n"
+    "function printf() {process.stdout.write(util.format.apply(this, arguments));}\n"
+    "function qlog()   {process.stderr.write(util.format.apply(this, arguments));}\n"
+    "var fs = require('fs');\n"
+    "function equalString(a,b) {if (a==null) {return false;}if (b==null) {return false;}return a.toString()===b.toString() }\n"
+    "function panic(s){console.trace(s);process.exit(1);}\n"
+    "function dump(s){console.log(s)}"
+    "function sub(a, b) { return a - b; }\n"
+    "function mult(a, b) { return a * b; }\n"
+    "function greaterthan(a, b) { return a > b; }\n"
+    "function subf(a, b) { return a - b; }\n"
+    "function multf(a, b) { return a * b; }\n"
+    "function greaterthanf(a, b) { return a > b; }\n"
+    "function equal(a, b) { return a == b; }\n"
+    "function andBool(a, b) { return a == b;}\n"
+    "function string_length(s) { return s.length;}\n"
+    "function sub_string(str, start, len) {str = ''+str;return str.substring(start, start+len)};\n"
+    "function stringConcatenate(a, b) { return a + b}\n"
+    "function intToString(a) {}\n\n\n"
+    "function gc_malloc( size ) {\nreturn {};\n}\n\n"
+    "function makeArray(length) {\n   return [];\n}\n\n"
+    "function at(arr, index) {\n  return arr[index];\n}\n\n"
+    "function setAt(array, index, value) {\n    array[index] = value;\n}\n\n"
+    "function getStringArray(index, strs) {\nreturn strs[index];\n}\n\n"
+    "var NULL = null;"
+    "var globalArgs;\nvar globalArgsCount;\nvar globalTrace = false;\nvar globalStepTrace = false;\nvar releaseMode = false;\n"
+    "function character(num) {}"))
+))
+
+
+  (list node2Functions (list tree)
+   (declare)
+   (body
+    (if (isEmpty tree)
+      (then (return (emptyList)))
+      (else (node2Function (car tree)) (node2Functions (cdr tree))))))
+
+
+  (list node2Function (list node) (declare (box name nil))
+   (body
+   (if (isNil node)
+      (then (return (emptyList)))
+      (else
+        (set name (subnameof node))
+        (return  (stringList
+            "\n\n//Building function "
+            (stringify name)
+            " from line: "
+            (stringify (getTag name (boxString "line"))))
+            "\n"
+            "\n"
+                "function "
+                (stringify (subnameof node))
+                "("
+                
+            ;(node2FunctionArgs (cdr (assoc "intype" (cdr node))))
+            ") {"
+            "\n"
+            (stringIndent 1)
+            ;(node2Declarations (declarationsof node) 1)
+            (ListToString (flatten (ternList releaseMode
+            (boxString "")
+            (stringList "\nif (globalTrace)\n    {printf(\"" (stringify name) " at " (stringify (getTag name (boxString "filename"))) ":" (stringify (getTag name (boxString "line"))) "\\n\");}\n"   ))))
+            (ListToString (flatten (node2Body (childrenof node) 1)))
+            (ternString releaseMode
+                ""
+                
+                    (ListToString "\nif (globalTrace)\n    {printf(\"Leaving " (stringify name) "\\n\");}\n" )
+                    )
+                "\n}\n")))
+                
+                (return (emptyList))))
+
+ )) 

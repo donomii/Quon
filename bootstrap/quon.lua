@@ -2549,6 +2549,70 @@ caller = "javaCompile:Unknown file:-1"
   printf("}\n");
 
 end
+-- Chose function name node2Compile
+function node2Compile(filename)
+print("caller: ", caller, "-> node2Compile")
+local programStr =""
+local tree =nil
+local program =nil
+caller = "node2Compile:Unknown file:-1"
+  programStr = luaReadFile(filename)
+caller = "node2Compile:Unknown file:-1"
+  tree = readSexpr(programStr, filename)
+caller = "node2Compile:Unknown file:-1"
+  program = alistCons(boxString("includes"), astIncludes(first(tree)), alistCons(boxString("types"), astTypes(second(tree)), alistCons(boxString("functions"), astFunctions(third(tree)), emptyList())))
+caller = "node2Compile:Unknown file:-1"
+  program = mergeIncludes(program)
+caller = "node2Compile:Unknown file:-1"
+  return cons(node2Includes(cdr(assoc("includes", program))), cons(boxString("\nvar globalStackTrace = NULL;\n"), cons(boxString("\nvar caller = \"\";\n"), cons(boxString("\nfunction isNil(p) {\n    return p == NULL;\n}\n\n"), cons(node2Functions(cdr(assoc("children", cdr(cdr(assoc("functions", program)))))), cons(boxString("\n"), cons(boxString("const [asfdasdf, ...qwerqwer] = process.argv;"), cons(boxString("globalArgs = qwerqwer;"), cons(boxString("globalArgsCount = qwerqwer.length;"), cons(boxString("start();\n"), emptyList()))))))))))
+
+end
+-- Chose function name node2Includes
+function node2Includes(nodes)
+print("caller: ", caller, "-> node2Includes")
+caller = "node2Includes:Unknown file:-1"
+  return cons(boxString("function read_file(filename) {return fs.readFileSync(filename);}\n"), cons(boxString("function write_file(filename, data) {fs.writeFileSync(filename, data);}\n"), cons(boxString("var util = require('util');\n"), cons(boxString("function printf() {process.stdout.write(util.format.apply(this, arguments));}\n"), cons(boxString("function qlog()   {process.stderr.write(util.format.apply(this, arguments));}\n"), cons(boxString("var fs = require('fs');\n"), cons(boxString("function equalString(a,b) {if (a==null) {return false;}if (b==null) {return false;}return a.toString()===b.toString() }\n"), cons(boxString("function panic(s){console.trace(s);process.exit(1);}\n"), cons(boxString("function dump(s){console.log(s)}"), cons(boxString("function sub(a, b) { return a - b; }\n"), cons(boxString("function mult(a, b) { return a * b; }\n"), cons(boxString("function greaterthan(a, b) { return a > b; }\n"), cons(boxString("function subf(a, b) { return a - b; }\n"), cons(boxString("function multf(a, b) { return a * b; }\n"), cons(boxString("function greaterthanf(a, b) { return a > b; }\n"), cons(boxString("function equal(a, b) { return a == b; }\n"), cons(boxString("function andBool(a, b) { return a == b;}\n"), cons(boxString("function string_length(s) { return s.length;}\n"), cons(boxString("function sub_string(str, start, len) {str = ''+str;return str.substring(start, start+len)};\n"), cons(boxString("function stringConcatenate(a, b) { return a + b}\n"), cons(boxString("function intToString(a) {}\n\n\n"), cons(boxString("function gc_malloc( size ) {\nreturn {};\n}\n\n"), cons(boxString("function makeArray(length) {\n   return [];\n}\n\n"), cons(boxString("function at(arr, index) {\n  return arr[index];\n}\n\n"), cons(boxString("function setAt(array, index, value) {\n    array[index] = value;\n}\n\n"), cons(boxString("function getStringArray(index, strs) {\nreturn strs[index];\n}\n\n"), cons(boxString("var NULL = null;"), cons(boxString("var globalArgs;\nvar globalArgsCount;\nvar globalTrace = false;\nvar globalStepTrace = false;\nvar releaseMode = false;\n"), cons(boxString("function character(num) {}"), nil)))))))))))))))))))))))))))))
+
+end
+-- Chose function name node2Functions
+function node2Functions(tree)
+print("caller: ", caller, "-> node2Functions")
+caller = "node2Functions:Unknown file:-1"
+  if isEmpty(tree) then
+caller = ":Unknown file:-1"
+      return emptyList()
+
+  else
+caller = ":Unknown file:-1"
+      node2Function(car(tree));
+
+caller = ":Unknown file:-1"
+      node2Functions(cdr(tree));
+
+  end
+
+end
+-- Chose function name node2Function
+function node2Function(node)
+print("caller: ", caller, "-> node2Function")
+local name =nil
+caller = "node2Function:Unknown file:-1"
+  if isNil(node) then
+caller = ":Unknown file:-1"
+      return emptyList()
+
+  else
+caller = ":Unknown file:-1"
+      name = subnameof(node)
+caller = ":Unknown file:-1"
+      return cons(boxString("\n\n//Building function "), cons(boxString(stringify(name)), cons(boxString(" from line: "), cons(boxString(stringify(getTag(name, boxString("line")))), nil))))
+
+  end
+
+caller = "node2Function:Unknown file:-1"
+  return emptyList()
+
+end
 -- Chose function name nodeFunctionArgs
 function nodeFunctionArgs(tree)
 print("caller: ", caller, "-> nodeFunctionArgs")
@@ -9828,6 +9892,7 @@ local runPerl =false
 local runJava =false
 local runAst =false
 local runNode =false
+local runNode2 =false
 local runLua =false
 local runIma =false
 local runAnsi2 =false
@@ -9859,6 +9924,8 @@ caller = "start:Unknown file:-1"
   runTree = inList(boxString("--tree"), cmdLine)
 caller = "start:Unknown file:-1"
   runNode = inList(boxString("--node"), cmdLine)
+caller = "start:Unknown file:-1"
+  runNode2 = inList(boxString("--node2"), cmdLine)
 caller = "start:Unknown file:-1"
   runLua = inList(boxString("--lua"), cmdLine)
 caller = "start:Unknown file:-1"
@@ -9904,6 +9971,9 @@ caller = ":Unknown file:-1"
 
 caller = ":Unknown file:-1"
       printf("  --node      Compile to Node.js\n");
+
+caller = ":Unknown file:-1"
+      printf("  --node2      Compile to Node.js, new outputter\n");
 
 caller = ":Unknown file:-1"
       printf("  --lua       Compile to Lua\n");
@@ -10038,73 +10108,84 @@ caller = ":Unknown file:-1"
 
               else
 caller = ":Unknown file:-1"
-                  if runPerl then
+                  if runNode2 then
 caller = ":Unknown file:-1"
-                      perlCompile(unBoxString(filename));
+                      node2Compile(unBoxString(filename));
 
 caller = ":Unknown file:-1"
                       printf("\n");
 
                   else
 caller = ":Unknown file:-1"
-                      if runJava then
+                      if runPerl then
 caller = ":Unknown file:-1"
-                          javaCompile(unBoxString(filename));
+                          perlCompile(unBoxString(filename));
 
 caller = ":Unknown file:-1"
                           printf("\n");
 
                       else
 caller = ":Unknown file:-1"
-                          if runLua then
+                          if runJava then
 caller = ":Unknown file:-1"
-                              luaCompile(unBoxString(filename));
+                              javaCompile(unBoxString(filename));
 
 caller = ":Unknown file:-1"
                               printf("\n");
 
                           else
 caller = ":Unknown file:-1"
-                              if runIma then
+                              if runLua then
 caller = ":Unknown file:-1"
-                                  imaCompile(unBoxString(filename));
+                                  luaCompile(unBoxString(filename));
 
 caller = ":Unknown file:-1"
                                   printf("\n");
 
                               else
 caller = ":Unknown file:-1"
-                                  if runAnsi2 then
+                                  if runIma then
 caller = ":Unknown file:-1"
-                                      ansi2Compile(unBoxString(filename));
+                                      imaCompile(unBoxString(filename));
 
 caller = ":Unknown file:-1"
                                       printf("\n");
 
                                   else
 caller = ":Unknown file:-1"
-                                      if runAnsi3 then
+                                      if runAnsi2 then
 caller = ":Unknown file:-1"
-                                          ansi3Compile(unBoxString(filename));
+                                          ansi2Compile(unBoxString(filename));
 
 caller = ":Unknown file:-1"
                                           printf("\n");
 
                                       else
 caller = ":Unknown file:-1"
-                                          if runBash then
+                                          if runAnsi3 then
 caller = ":Unknown file:-1"
-                                              bashCompile(unBoxString(filename));
+                                              ansi3Compile(unBoxString(filename));
 
 caller = ":Unknown file:-1"
                                               printf("\n");
 
                                           else
 caller = ":Unknown file:-1"
-                                              ansi3Compile(unBoxString(filename));
+                                              if runBash then
+caller = ":Unknown file:-1"
+                                                  bashCompile(unBoxString(filename));
 
 caller = ":Unknown file:-1"
-                                              printf("\n");
+                                                  printf("\n");
+
+                                              else
+caller = ":Unknown file:-1"
+                                                  ansi3Compile(unBoxString(filename));
+
+caller = ":Unknown file:-1"
+                                                  printf("\n");
+
+                                              end
 
                                           end
 
@@ -10127,9 +10208,6 @@ caller = ":Unknown file:-1"
       end
 
   end
-
-caller = "start:Unknown file:-1"
-  return 0
 
 end
 

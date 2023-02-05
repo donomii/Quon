@@ -253,6 +253,15 @@
       (then (return nil))
       (else (return (cons (car (car alist)) (alistKeys (cdr alist))))))))
 
+  (void display (list l) (declare)
+   (body
+    (if (isEmpty l)
+      (then (printf "nil ") (return))
+      (else
+       (if (isList l)
+         (then (printf "[") (displayList l 0 true) (printf "]"))
+         (else (displayList l 0 true)))))))
+
 (void displayList (list l int indent bool first) (declare (box val nil))
    (body
     (if (isEmpty l)
@@ -413,6 +422,16 @@
     (return (reverseRec l nil))
   ))
 
+(list flatten (list tree) (declare)
+    (body
+    (if (isEmpty tree)
+      (then (return (emptyList)))
+      (else 
+      (if (isList (car tree))
+        (then (return (concatenateLists (flatten (car tree)) (flatten (cdr tree)))))
+        (else (return (cons (car tree) (flatten (cdr tree)))))
+        )))
+))
 
 
 

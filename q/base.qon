@@ -90,14 +90,7 @@
                   (then (return (equal (unBoxInt a) (unBoxInt b))))
                   (else (return false)))))))))))))
 
-  (void display (list l) (declare)
-   (body
-    (if (isEmpty l)
-      (then (printf "nil ") (return))
-      (else
-       (if (isList l)
-         (then (printf "[") (displayList l 0 true) (printf "]"))
-         (else (displayList l 0 true)))))))
+
 
 (string openBrace () (declare) (body (return "(")))
 (string closeBrace () (declare) (body (return ")")))
@@ -176,6 +169,7 @@
          (else
           (printf "Assertion failure at line %d, in file %s: provided value is not a '%s'!  It was actually '%s'. Contents:"  line file atype (boxType abox))
           (display abox)
+          (display  (stringList "\nToken may have been read from " (stringify (getTagFail abox (boxString "filename") (boxString "source file not found"))) ":" (stringify (getTagFail abox (boxString "line")(boxString "source line not found")))     ))
           (panic "Invalid type!")))))))
 
   (string unBoxString (box b) (declare)

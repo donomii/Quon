@@ -5442,6 +5442,57 @@ if (globalTrace)
 }
 
 
+//Building function node2Compile from line: 4
+
+public Box node2Compile(String filename) {
+  String programStr = "";
+Box tree = null;
+Box program = null;
+  
+  programStr = read_file(filename);  
+  tree = readSexpr(programStr, filename);  
+  program = alistCons(boxString("includes"), astIncludes(first(tree)), alistCons(boxString("types"), astTypes(second(tree)), alistCons(boxString("functions"), astFunctions(third(tree)), emptyList())));  
+  program = mergeIncludes(program);  
+  return(cons(node2Includes(cdr(assoc("includes", program))), cons(boxString("\nvar globalStackTrace = NULL;\n"), cons(boxString("\nvar caller = \"\";\n"), cons(boxString("\nfunction isNil(p) {\n    return p == NULL;\n}\n\n"), cons(node2Functions(cdr(assoc("children", cdr(cdr(assoc("functions", program)))))), cons(boxString("\n"), cons(boxString("const [asfdasdf, ...qwerqwer] = process.argv;"), cons(boxString("globalArgs = qwerqwer;"), cons(boxString("globalArgsCount = qwerqwer.length;"), cons(boxString("start();\n"), emptyList())))))))))));
+}
+
+
+//Building function node2Includes from line: 33
+
+public Box node2Includes(Box nodes) {
+    
+  return(cons(boxString("function read_file(filename) {return fs.readFileSync(filename);}\n"), cons(boxString("function write_file(filename, data) {fs.writeFileSync(filename, data);}\n"), cons(boxString("var util = require('util');\n"), cons(boxString("function printf() {process.stdout.write(util.format.apply(this, arguments));}\n"), cons(boxString("function qlog()   {process.stderr.write(util.format.apply(this, arguments));}\n"), cons(boxString("var fs = require('fs');\n"), cons(boxString("function equalString(a,b) {if (a==null) {return false;}if (b==null) {return false;}return a.toString()===b.toString() }\n"), cons(boxString("function panic(s){console.trace(s);process.exit(1);}\n"), cons(boxString("function dump(s){console.log(s)}"), cons(boxString("function sub(a, b) { return a - b; }\n"), cons(boxString("function mult(a, b) { return a * b; }\n"), cons(boxString("function greaterthan(a, b) { return a > b; }\n"), cons(boxString("function subf(a, b) { return a - b; }\n"), cons(boxString("function multf(a, b) { return a * b; }\n"), cons(boxString("function greaterthanf(a, b) { return a > b; }\n"), cons(boxString("function equal(a, b) { return a == b; }\n"), cons(boxString("function andBool(a, b) { return a == b;}\n"), cons(boxString("function string_length(s) { return s.length;}\n"), cons(boxString("function sub_string(str, start, len) {str = ''+str;return str.substring(start, start+len)};\n"), cons(boxString("function stringConcatenate(a, b) { return a + b}\n"), cons(boxString("function intToString(a) {}\n\n\n"), cons(boxString("function gc_malloc( size ) {\nreturn {};\n}\n\n"), cons(boxString("function makeArray(length) {\n   return [];\n}\n\n"), cons(boxString("function at(arr, index) {\n  return arr[index];\n}\n\n"), cons(boxString("function setAt(array, index, value) {\n    array[index] = value;\n}\n\n"), cons(boxString("function getStringArray(index, strs) {\nreturn strs[index];\n}\n\n"), cons(boxString("var NULL = null;"), cons(boxString("var globalArgs;\nvar globalArgsCount;\nvar globalTrace = false;\nvar globalStepTrace = false;\nvar releaseMode = false;\n"), cons(boxString("function character(num) {}"), null))))))))))))))))))))))))))))));
+}
+
+
+//Building function node2Functions from line: 68
+
+public Box node2Functions(Box tree) {
+    
+  if ( isEmpty(tree)) {    
+    return(emptyList());
+  } else {    
+    node2Function(car(tree));    
+    node2Functions(cdr(tree));
+  }
+}
+
+
+//Building function node2Function from line: 76
+
+public Box node2Function(Box node) {
+  Box name = null;
+  
+  if ( isNil(node)) {    
+    return(emptyList());
+  } else {    
+    name = subnameof(node);    
+    return(cons(boxString("\n\n//Building function "), cons(boxString(stringify(name)), cons(boxString(" from line: "), cons(boxString(stringify(getTag(name, boxString("line")))), null)))), "\n", "\n", "function ", stringify(subnameof(node)), "(", ") {", "\n", stringIndent(1), ListToString(flatten(ternList(releaseMode, boxString(""), cons(boxString("\nif (globalTrace)\n    {printf(\""), cons(boxString(stringify(name)), cons(boxString(" at "), cons(boxString(stringify(getTag(name, boxString("filename")))), cons(boxString(":"), cons(boxString(stringify(getTag(name, boxString("line")))), cons(boxString("\\n\");}\n"), null)))))))))), ListToString(flatten(nodeBody(childrenof(node), 1))), ternString(releaseMode, "", ListToString("\nif (globalTrace)\n    {printf(\"Leaving ", stringify(name), "\\n\");}\n")), "\n}\n");
+  }  
+  return(emptyList());
+}
+
+
 //Building function javaFunctionArgs from line: 3
 
 public void javaFunctionArgs(Box tree) {
@@ -7122,6 +7173,7 @@ boolean runPerl = false;
 boolean runJava = false;
 boolean runAst = false;
 boolean runNode = false;
+boolean runNode2 = false;
 boolean runLua = false;
 boolean runIma = false;
 boolean runAnsi2 = false;
@@ -7142,6 +7194,7 @@ boolean runTree = false;
   runAst = inList(boxString("--ast"), cmdLine);  
   runTree = inList(boxString("--tree"), cmdLine);  
   runNode = inList(boxString("--node"), cmdLine);  
+  runNode2 = inList(boxString("--node2"), cmdLine);  
   runLua = inList(boxString("--lua"), cmdLine);  
   runIma = inList(boxString("--ima"), cmdLine);  
   runAnsi2 = inList(boxString("--ansi2"), cmdLine);  
@@ -7160,6 +7213,7 @@ boolean runTree = false;
     System.out.printf("  --ast       Compile to the Abstract Syntax Tree\n");    
     System.out.printf("  --tree      Compile to an s-expression tree\n");    
     System.out.printf("  --node      Compile to Node.js\n");    
+    System.out.printf("  --node2      Compile to Node.js, new outputter\n");    
     System.out.printf("  --lua       Compile to Lua\n");    
     System.out.printf("  --ima       Compile to Imaginary, the human-friendly language\n");    
     System.out.printf("  --ansi2     Compile to ANSI C, (quon version 2)\n");    
@@ -7209,36 +7263,41 @@ boolean runTree = false;
           nodeCompile(unBoxString(filename));          
           System.out.printf("\n");
         } else {          
-          if ( runPerl) {            
-            perlCompile(unBoxString(filename));            
+          if ( runNode2) {            
+            node2Compile(unBoxString(filename));            
             System.out.printf("\n");
           } else {            
-            if ( runJava) {              
-              javaCompile(unBoxString(filename));              
+            if ( runPerl) {              
+              perlCompile(unBoxString(filename));              
               System.out.printf("\n");
             } else {              
-              if ( runLua) {                
-                luaCompile(unBoxString(filename));                
+              if ( runJava) {                
+                javaCompile(unBoxString(filename));                
                 System.out.printf("\n");
               } else {                
-                if ( runIma) {                  
-                  imaCompile(unBoxString(filename));                  
+                if ( runLua) {                  
+                  luaCompile(unBoxString(filename));                  
                   System.out.printf("\n");
                 } else {                  
-                  if ( runAnsi2) {                    
-                    ansi2Compile(unBoxString(filename));                    
+                  if ( runIma) {                    
+                    imaCompile(unBoxString(filename));                    
                     System.out.printf("\n");
                   } else {                    
-                    if ( runAnsi3) {                      
-                      ansi3Compile(unBoxString(filename));                      
+                    if ( runAnsi2) {                      
+                      ansi2Compile(unBoxString(filename));                      
                       System.out.printf("\n");
                     } else {                      
-                      if ( runBash) {                        
-                        bashCompile(unBoxString(filename));                        
-                        System.out.printf("\n");
-                      } else {                        
+                      if ( runAnsi3) {                        
                         ansi3Compile(unBoxString(filename));                        
                         System.out.printf("\n");
+                      } else {                        
+                        if ( runBash) {                          
+                          bashCompile(unBoxString(filename));                          
+                          System.out.printf("\n");
+                        } else {                          
+                          ansi3Compile(unBoxString(filename));                          
+                          System.out.printf("\n");
+                        }
                       }
                     }
                   }
@@ -7249,8 +7308,7 @@ boolean runTree = false;
         }
       }
     }
-  }  
-  return(0);
+  }
 }
 public static void main(String args[]) {
 globalArgs = args;

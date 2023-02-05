@@ -359,6 +359,10 @@ sub nodeFuncMap;
 sub nodeType;
 sub nodeTypes;
 sub nodeCompile;
+sub node2Compile;
+sub node2Includes;
+sub node2Functions;
+sub node2Function;
 sub javaFunctionArgs;
 sub javaLeaf;
 sub javaStructGetterExpression;
@@ -13935,6 +13939,133 @@ if ($globalTrace) { printf("nodeCompile at q/node.qon:351\n") }
 }
 
 
+#Building function node2Compile from line: 4
+
+sub node2Compile {
+  my $filename = shift;
+
+  my $programStr = "";
+my $tree = undef;
+my $program = undef;
+
+if ($globalTrace) { printf("node2Compile at q/node2.qon:4\n") }
+  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+  $programStr = read_file($filename);
+  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+  $tree = readSexpr($programStr, $filename);
+  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+  $program = alistCons(boxString("includes"), astIncludes(first($tree)), alistCons(boxString("types"), astTypes(second($tree)), alistCons(boxString("functions"), astFunctions(third($tree)), emptyList())));
+  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+  $program = mergeIncludes($program);
+  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard return: node2Compile
+
+  if ($globalTrace) {printf("Leaving \n")}
+
+  return(cons(node2Includes(cdr(assoc("includes", $program))), cons(boxString("\nvar globalStackTrace = NULL;\n"), cons(boxString("\nvar caller = \"\";\n"), cons(boxString("\nfunction isNil(p) {\n    return p == NULL;\n}\n\n"), cons(node2Functions(cdr(assoc("children", cdr(cdr(assoc("functions", $program)))))), cons(boxString("\n"), cons(boxString("const [asfdasdf, ...qwerqwer] = process.argv;"), cons(boxString("globalArgs = qwerqwer;"), cons(boxString("globalArgsCount = qwerqwer.length;"), cons(boxString("start();\n"), emptyList())))))))))));
+
+}
+
+
+#Building function node2Includes from line: 33
+
+sub node2Includes {
+  my $nodes = shift;
+
+  
+if ($globalTrace) { printf("node2Includes at q/node2.qon:33\n") }
+  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard return: node2Includes
+
+  if ($globalTrace) {printf("Leaving \n")}
+
+  return(cons(boxString("function read_file(filename) {return fs.readFileSync(filename);}\n"), cons(boxString("function write_file(filename, data) {fs.writeFileSync(filename, data);}\n"), cons(boxString("var util = require('util');\n"), cons(boxString("function printf() {process.stdout.write(util.format.apply(this, arguments));}\n"), cons(boxString("function qlog()   {process.stderr.write(util.format.apply(this, arguments));}\n"), cons(boxString("var fs = require('fs');\n"), cons(boxString("function equalString(a,b) {if (a==null) {return false;}if (b==null) {return false;}return a.toString()===b.toString() }\n"), cons(boxString("function panic(s){console.trace(s);process.exit(1);}\n"), cons(boxString("function dump(s){console.log(s)}"), cons(boxString("function sub(a, b) { return a - b; }\n"), cons(boxString("function mult(a, b) { return a * b; }\n"), cons(boxString("function greaterthan(a, b) { return a > b; }\n"), cons(boxString("function subf(a, b) { return a - b; }\n"), cons(boxString("function multf(a, b) { return a * b; }\n"), cons(boxString("function greaterthanf(a, b) { return a > b; }\n"), cons(boxString("function equal(a, b) { return a == b; }\n"), cons(boxString("function andBool(a, b) { return a == b;}\n"), cons(boxString("function string_length(s) { return s.length;}\n"), cons(boxString("function sub_string(str, start, len) {str = ''+str;return str.substring(start, start+len)};\n"), cons(boxString("function stringConcatenate(a, b) { return a + b}\n"), cons(boxString("function intToString(a) {}\n\n\n"), cons(boxString("function gc_malloc( size ) {\nreturn {};\n}\n\n"), cons(boxString("function makeArray(length) {\n   return [];\n}\n\n"), cons(boxString("function at(arr, index) {\n  return arr[index];\n}\n\n"), cons(boxString("function setAt(array, index, value) {\n    array[index] = value;\n}\n\n"), cons(boxString("function getStringArray(index, strs) {\nreturn strs[index];\n}\n\n"), cons(boxString("var NULL = null;"), cons(boxString("var globalArgs;\nvar globalArgsCount;\nvar globalTrace = false;\nvar globalStepTrace = false;\nvar releaseMode = false;\n"), cons(boxString("function character(num) {}"), $undef))))))))))))))))))))))))))))));
+
+}
+
+
+#Building function node2Functions from line: 68
+
+sub node2Functions {
+  my $tree = shift;
+
+  
+if ($globalTrace) { printf("node2Functions at q/node2.qon:68\n") }
+  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+  if ( isEmpty($tree)) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard return: node2Functions
+
+    if ($globalTrace) {printf("Leaving \n")}
+
+    return(emptyList());
+
+  } else {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    node2Function(car($tree))
+    ;
+    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    node2Functions(cdr($tree))
+    ;
+
+  };
+
+}
+
+
+#Building function node2Function from line: 76
+
+sub node2Function {
+  my $node = shift;
+
+  my $name = undef;
+
+if ($globalTrace) { printf("node2Function at q/node2.qon:76\n") }
+  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+  if ( isNil($node)) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard return: node2Function
+
+    if ($globalTrace) {printf("Leaving \n")}
+
+    return(emptyList());
+
+  } else {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+    $name = subnameof($node);
+    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard return: node2Function
+
+    if ($globalTrace) {printf("Leaving \n")}
+
+    return(cons(boxString("\n\n//Building function "), cons(boxString(stringify($name)), cons(boxString(" from line: "), cons(boxString(stringify(getTag($name, boxString("line")))), $undef)))), "\n", "\n", "function ", stringify(subnameof($node)), "(", ") {", "\n", stringIndent(1), ListToString(flatten(ternList($releaseMode, boxString(""), cons(boxString("\nif (globalTrace)\n    {printf(\""), cons(boxString(stringify($name)), cons(boxString(" at "), cons(boxString(stringify(getTag($name, boxString("filename")))), cons(boxString(":"), cons(boxString(stringify(getTag($name, boxString("line")))), cons(boxString("\\n\");}\n"), $undef)))))))))), ListToString(flatten(nodeBody(childrenof($node), 1))), ternString($releaseMode, "", ListToString("\nif (globalTrace)\n    {printf(\"Leaving ", stringify($name), "\\n\");}\n")), "\n}\n");
+
+  };
+  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard return: node2Function
+
+  if ($globalTrace) {printf("Leaving \n")}
+
+  return(emptyList());
+
+}
+
+
 #Building function javaFunctionArgs from line: 3
 
 sub javaFunctionArgs {
@@ -18397,6 +18528,7 @@ my $runPerl = 0;
 my $runJava = 0;
 my $runAst = 0;
 my $runNode = 0;
+my $runNode2 = 0;
 my $runLua = 0;
 my $runIma = 0;
 my $runAnsi2 = 0;
@@ -18440,6 +18572,9 @@ if ($globalTrace) { printf("start at compiler.qon:4\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   $runNode = inList(boxString("--node"), $cmdLine);
+  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+  $runNode2 = inList(boxString("--node2"), $cmdLine);
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   $runLua = inList(boxString("--lua"), $cmdLine);
@@ -18522,6 +18657,12 @@ if ($globalTrace) { printf("start at compiler.qon:4\n") }
 #standard expression
 
     printf("  --node      Compile to Node.js\n")
+    ;
+    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+    printf("  --node2      Compile to Node.js, new outputter\n")
     ;
     if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
@@ -18774,11 +18915,11 @@ if ($globalTrace) { printf("start at compiler.qon:4\n") }
 
         } else {          if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
-          if ( $runPerl) {            if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+          if ( $runNode2) {            if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
 #standard expression
 
-            perlCompile(unBoxString($filename))
+            node2Compile(unBoxString($filename))
             ;
             if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
@@ -18789,11 +18930,11 @@ if ($globalTrace) { printf("start at compiler.qon:4\n") }
 
           } else {            if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
-            if ( $runJava) {              if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+            if ( $runPerl) {              if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
 #standard expression
 
-              javaCompile(unBoxString($filename))
+              perlCompile(unBoxString($filename))
               ;
               if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
@@ -18804,11 +18945,11 @@ if ($globalTrace) { printf("start at compiler.qon:4\n") }
 
             } else {              if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
-              if ( $runLua) {                if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+              if ( $runJava) {                if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
 #standard expression
 
-                luaCompile(unBoxString($filename))
+                javaCompile(unBoxString($filename))
                 ;
                 if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
@@ -18819,11 +18960,11 @@ if ($globalTrace) { printf("start at compiler.qon:4\n") }
 
               } else {                if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
-                if ( $runIma) {                  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+                if ( $runLua) {                  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
 #standard expression
 
-                  imaCompile(unBoxString($filename))
+                  luaCompile(unBoxString($filename))
                   ;
                   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
@@ -18834,11 +18975,11 @@ if ($globalTrace) { printf("start at compiler.qon:4\n") }
 
                 } else {                  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
-                  if ( $runAnsi2) {                    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+                  if ( $runIma) {                    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
 #standard expression
 
-                    ansi2Compile(unBoxString($filename))
+                    imaCompile(unBoxString($filename))
                     ;
                     if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
@@ -18849,11 +18990,11 @@ if ($globalTrace) { printf("start at compiler.qon:4\n") }
 
                   } else {                    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
-                    if ( $runAnsi3) {                      if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+                    if ( $runAnsi2) {                      if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
 #standard expression
 
-                      ansi3Compile(unBoxString($filename))
+                      ansi2Compile(unBoxString($filename))
                       ;
                       if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
@@ -18864,20 +19005,7 @@ if ($globalTrace) { printf("start at compiler.qon:4\n") }
 
                     } else {                      if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
-                      if ( $runBash) {                        if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-#standard expression
-
-                        bashCompile(unBoxString($filename))
-                        ;
-                        if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-#standard expression
-
-                        printf("\n")
-                        ;
-
-                      } else {                        if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+                      if ( $runAnsi3) {                        if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
 #standard expression
 
@@ -18889,6 +19017,36 @@ if ($globalTrace) { printf("start at compiler.qon:4\n") }
 
                         printf("\n")
                         ;
+
+                      } else {                        if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+                        if ( $runBash) {                          if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+                          bashCompile(unBoxString($filename))
+                          ;
+                          if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+                          printf("\n")
+                          ;
+
+                        } else {                          if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+                          ansi3Compile(unBoxString($filename))
+                          ;
+                          if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard expression
+
+                          printf("\n")
+                          ;
+
+                        };
 
                       };
 
@@ -18911,13 +19069,6 @@ if ($globalTrace) { printf("start at compiler.qon:4\n") }
     };
 
   };
-  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-#standard return: start
-
-  if ($globalTrace) {printf("Leaving \n")}
-
-  return(0);
 
 }
 ;
