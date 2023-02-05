@@ -40,8 +40,10 @@
             ;(display (doStringList (cdr l)))
           (return (car (doMultiList (cdr l)))))
           (else))
+
           (if (equalString (stringConcatenate "makeL" "ist") (stringify (car l)))
           (then
+        
           (return  (doMakeList (cdr l))))
           (else))
 		  

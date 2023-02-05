@@ -1456,7 +1456,7 @@ public Box macrowalk(Box l) {
 }
 
 
-//Building function macrosingle from line: 54
+//Building function macrosingle from line: 56
 
 public Box macrosingle(Box l,String search,String replace) {
   Box val = null;
@@ -1479,7 +1479,7 @@ public Box macrosingle(Box l,String search,String replace) {
 }
 
 
-//Building function macrolist from line: 78
+//Building function macrolist from line: 80
 
 public Box macrolist(Box l,String search,Box replace) {
   Box val = null;
@@ -1803,21 +1803,21 @@ Box ret = null;
 Box elem = null;
   
   if ( isNil(l)) {    
-    return(boxSymbol("nil"), null);
+    return(cons(boxSymbol("nil"), null));
   } else {    
     if ( isEmpty(l)) {      
-      return(emptyList());
+      return(null);
     } else {      
       elem = first(l);      
-      newlist = cons(boxString(chooseBox(elem.typ)), cons(mlistLiteral(first(l)), newlist));      
-      ret = cons(newlist, doMakeList(cdr(l)));      
+      newlist = cons(first(l), newlist);      
+      ret = cons(cons(boxSymbol("cons"), cons(newlist, doMakeList(cdr(l)))), null);      
       return(ret);
     }
   }
 }
 
 
-//Building function doStringList from line: 184
+//Building function doStringList from line: 189
 
 public Box doStringList(Box l) {
   Box newlist = null;
@@ -1833,7 +1833,7 @@ Box ret = null;
 }
 
 
-//Building function doSymbolList from line: 201
+//Building function doSymbolList from line: 206
 
 public Box doSymbolList(Box l) {
   Box newlist = null;
@@ -1849,7 +1849,7 @@ Box ret = null;
 }
 
 
-//Building function doBoxList from line: 219
+//Building function doBoxList from line: 224
 
 public Box doBoxList(Box l) {
     
@@ -1861,7 +1861,7 @@ public Box doBoxList(Box l) {
 }
 
 
-//Building function concatLists from line: 238
+//Building function concatLists from line: 243
 
 public Box concatLists(Box seq1,Box seq2) {
     
@@ -1873,7 +1873,7 @@ public Box concatLists(Box seq1,Box seq2) {
 }
 
 
-//Building function alistKeys from line: 244
+//Building function alistKeys from line: 249
 
 public Box alistKeys(Box alist) {
     
@@ -1885,7 +1885,7 @@ public Box alistKeys(Box alist) {
 }
 
 
-//Building function displayList from line: 250
+//Building function displayList from line: 255
 
 public void displayList(Box l,Integer indent,boolean first) {
   Box val = null;
@@ -1931,7 +1931,7 @@ if (globalTrace)
 }
 
 
-//Building function StringListJoinRec from line: 281
+//Building function StringListJoinRec from line: 286
 
 public String StringListJoinRec(Box l,String sep) {
   Box val = null;
@@ -1956,7 +1956,7 @@ public String StringListJoinRec(Box l,String sep) {
 }
 
 
-//Building function StringListJoin from line: 304
+//Building function StringListJoin from line: 309
 
 public String StringListJoin(Box l,String sep) {
   Box val = null;
@@ -1969,7 +1969,7 @@ public String StringListJoin(Box l,String sep) {
 }
 
 
-//Building function ListToBoxString from line: 314
+//Building function ListToBoxString from line: 319
 
 public Box ListToBoxString(Box l) {
     
@@ -1977,7 +1977,7 @@ public Box ListToBoxString(Box l) {
 }
 
 
-//Building function ListToString from line: 319
+//Building function ListToString from line: 324
 
 public String ListToString(Box l,Integer indent,boolean first,boolean withNewLines) {
   Box val = null;
@@ -2003,7 +2003,7 @@ public String ListToString(Box l,Integer indent,boolean first,boolean withNewLin
 }
 
 
-//Building function listReverse from line: 359
+//Building function listReverse from line: 364
 
 public Box listReverse(Box l) {
     
@@ -2015,7 +2015,7 @@ public Box listReverse(Box l) {
 }
 
 
-//Building function inList from line: 365
+//Building function inList from line: 370
 
 public boolean inList(Box item,Box l) {
     
@@ -2031,7 +2031,7 @@ public boolean inList(Box item,Box l) {
 }
 
 
-//Building function equalList from line: 375
+//Building function equalList from line: 380
 
 public boolean equalList(Box a,Box b) {
     
@@ -2059,7 +2059,7 @@ public boolean equalList(Box a,Box b) {
 }
 
 
-//Building function reverseRec from line: 398
+//Building function reverseRec from line: 403
 
 public Box reverseRec(Box oldL,Box newL) {
     
@@ -2071,7 +2071,7 @@ public Box reverseRec(Box oldL,Box newL) {
 }
 
 
-//Building function reverseList from line: 405
+//Building function reverseList from line: 410
 
 public Box reverseList(Box l) {
     
@@ -4905,9 +4905,9 @@ Box input = null;
   input = cons(input, sub);  
   res = ListToString(input, 0, true, false);  
   if ( equalString(expected, res)) {    
-    System.out.printf("24. pass ListToString\n");
+    System.out.printf("25. pass ListToString\n");
   } else {    
-    System.out.printf("24. fail ListToString.  expected '%s', got '%s'\n", expected, res);
+    System.out.printf("25. fail ListToString.  expected '%s', got '%s'\n", expected, res);
   }
 if (globalTrace)
    System.out. printf("Leaving test25\n");
@@ -5437,7 +5437,7 @@ Box program = null;
   tree = readSexpr(programStr, filename);  
   program = alistCons(boxString("includes"), astIncludes(first(tree)), alistCons(boxString("types"), astTypes(second(tree)), alistCons(boxString("functions"), astFunctions(third(tree)), null)));  
   program = mergeIncludes(program);  
-  return(null);
+  return(cons(boxString("\nvar globalStackTrace = NULL;\n"), cons(boxString("\nvar caller = \"\";\n"), cons(boxString("\nfunction isNil(p) {\n    return p == NULL;\n}\n\n"), cons(boxString("\n"), cons(boxString("const [asfdasdf, ...qwerqwer] = process.argv;"), cons(boxString("globalArgs = qwerqwer;"), cons(boxString("globalArgsCount = qwerqwer.length;"), cons(boxString("start();\n"), emptyList())))))))));
 }
 
 

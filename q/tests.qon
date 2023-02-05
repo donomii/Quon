@@ -390,11 +390,29 @@
     (set input (cons  input sub))
     (set res (ListToString input 0 true false))
     (if (equalString expected res)
-      (then (printf "24. pass ListToString\n"))
-      (else (printf "24. fail ListToString.  expected '%s', got '%s'\n" expected res))
+      (then (printf "25. pass ListToString\n"))
+      (else (printf "25. fail ListToString.  expected '%s', got '%s'\n" expected res))
     )
   )
 )
+
+;(void test26 () 
+;  (declare 
+;    (string expected  "a b c")
+;    (string res "")
+;    (list sub nil)
+;    (list input nil)
+;  )
+;  (body
+;    (set input (makeList (boxString "a") (boxString "b") (boxString "c")) );
+;
+;    (set res (ListToString input 0 true false))
+;    (if (equalString expected res)
+;      (then (printf "24. pass ListToString\n"))
+;      (else (printf "24. fail ListToString.  expected '%s', got '%s'\n" expected res))
+;    )
+;  )
+;)
 
 
 

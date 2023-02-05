@@ -2564,7 +2564,7 @@ caller = "node2Compile:Unknown file:-1"
 caller = "node2Compile:Unknown file:-1"
   program = mergeIncludes(program)
 caller = "node2Compile:Unknown file:-1"
-  return nil
+  return cons(boxString("\nvar globalStackTrace = NULL;\n"), cons(boxString("\nvar caller = \"\";\n"), cons(boxString("\nfunction isNil(p) {\n    return p == NULL;\n}\n\n"), cons(boxString("\n"), cons(boxString("const [asfdasdf, ...qwerqwer] = process.argv;"), cons(boxString("globalArgs = qwerqwer;"), cons(boxString("globalArgsCount = qwerqwer.length;"), cons(boxString("start();\n"), emptyList()))))))))
 
 end
 -- Chose function name nodeFunctionArgs
@@ -4022,11 +4022,11 @@ caller = "test25:Unknown file:-1"
 caller = "test25:Unknown file:-1"
   if equalString(expected, res) then
 caller = ":Unknown file:-1"
-      printf("24. pass ListToString\n");
+      printf("25. pass ListToString\n");
 
   else
 caller = ":Unknown file:-1"
-      printf("24. fail ListToString.  expected '%s', got '%s'\n", expected, res);
+      printf("25. fail ListToString.  expected '%s', got '%s'\n", expected, res);
 
   end
 
@@ -7522,21 +7522,21 @@ local elem =nil
 caller = "doMakeList:Unknown file:-1"
   if isNil(l) then
 caller = ":Unknown file:-1"
-      return boxSymbol("nil")
+      return cons(boxSymbol("nil"), nil)
 
   else
 caller = ":Unknown file:-1"
       if isEmpty(l) then
 caller = ":Unknown file:-1"
-          return emptyList()
+          return nil
 
       else
 caller = ":Unknown file:-1"
           elem = first(l)
 caller = ":Unknown file:-1"
-          newlist = cons(boxString(chooseBox(elem.typ)), cons(mlistLiteral(first(l)), newlist))
+          newlist = cons(first(l), newlist)
 caller = ":Unknown file:-1"
-          ret = cons(newlist, doMakeList(cdr(l)))
+          ret = cons(cons(boxSymbol("cons"), cons(newlist, doMakeList(cdr(l)))), nil)
 caller = ":Unknown file:-1"
           return ret
 
