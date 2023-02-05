@@ -182,12 +182,36 @@ if (globalTrace)
 }
 
 
-//Building function ternList from line: 42
+//Building function ternString from line: 42
+
+function ternString(cond,tr,fal) {
+  
+if (globalTrace)
+    {printf("ternString at q/base.qon:42\n");}
+  if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+  if ( cond) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    return(tr);
+
+  } else {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    return(fal);
+
+  };
+
+if (globalTrace)
+    {printf("Leaving ternString\n");}
+
+}
+
+
+//Building function ternList from line: 46
 
 function ternList(cond,tr,fal) {
   
 if (globalTrace)
-    {printf("ternList at q/base.qon:42\n");}
+    {printf("ternList at q/base.qon:46\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( cond) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -206,13 +230,13 @@ if (globalTrace)
 }
 
 
-//Building function newVoid from line: 48
+//Building function newVoid from line: 52
 
 function newVoid() {
   var newb = NULL;
 
 if (globalTrace)
-    {printf("newVoid at q/base.qon:48\n");}
+    {printf("newVoid at q/base.qon:52\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   newb = makeBox();
@@ -232,12 +256,12 @@ if (globalTrace)
 }
 
 
-//Building function stackDump from line: 58
+//Building function stackDump from line: 62
 
 function stackDump() {
   
 if (globalTrace)
-    {printf("stackDump at q/base.qon:58\n");}
+    {printf("stackDump at q/base.qon:62\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   printf("");
@@ -248,12 +272,12 @@ if (globalTrace)
 }
 
 
-//Building function nop from line: 63
+//Building function nop from line: 67
 
 function nop() {
   
 if (globalTrace)
-    {printf("nop at q/base.qon:63\n");}
+    {printf("nop at q/base.qon:67\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   printf("");
@@ -264,12 +288,12 @@ if (globalTrace)
 }
 
 
-//Building function equalBox from line: 67
+//Building function equalBox from line: 71
 
 function equalBox(a,b) {
   
 if (globalTrace)
-    {printf("equalBox at q/base.qon:67\n");}
+    {printf("equalBox at q/base.qon:71\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isList(b)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -328,12 +352,12 @@ if (globalTrace)
 }
 
 
-//Building function display from line: 88
+//Building function display from line: 92
 
 function display(l) {
   
 if (globalTrace)
-    {printf("display at q/base.qon:88\n");}
+    {printf("display at q/base.qon:92\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isEmpty(l)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -369,12 +393,12 @@ if (globalTrace)
 }
 
 
-//Building function openBrace from line: 97
+//Building function openBrace from line: 101
 
 function openBrace() {
   
 if (globalTrace)
-    {printf("openBrace at q/base.qon:97\n");}
+    {printf("openBrace at q/base.qon:101\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   return("(");
@@ -385,12 +409,12 @@ if (globalTrace)
 }
 
 
-//Building function closeBrace from line: 98
+//Building function closeBrace from line: 102
 
 function closeBrace() {
   
 if (globalTrace)
-    {printf("closeBrace at q/base.qon:98\n");}
+    {printf("closeBrace at q/base.qon:102\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   return(")");
@@ -401,12 +425,12 @@ if (globalTrace)
 }
 
 
-//Building function boxType from line: 103
+//Building function boxType from line: 107
 
 function boxType(b) {
   
 if (globalTrace)
-    {printf("boxType at q/base.qon:103\n");}
+    {printf("boxType at q/base.qon:107\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   return(b.typ);
@@ -417,13 +441,13 @@ if (globalTrace)
 }
 
 
-//Building function makeBox from line: 106
+//Building function makeBox from line: 110
 
 function makeBox() {
   var b = NULL;
 
 if (globalTrace)
-    {printf("makeBox at q/base.qon:106\n");}
+    {printf("makeBox at q/base.qon:110\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   b = {};
@@ -460,12 +484,12 @@ if (globalTrace)
 }
 
 
-//Building function makePair from line: 121
+//Building function makePair from line: 125
 
 function makePair() {
   
 if (globalTrace)
-    {printf("makePair at q/base.qon:121\n");}
+    {printf("makePair at q/base.qon:125\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   return(makeBox());
@@ -476,13 +500,13 @@ if (globalTrace)
 }
 
 
-//Building function boxString from line: 127
+//Building function boxString from line: 131
 
 function boxString(s) {
   var b = NULL;
 
 if (globalTrace)
-    {printf("boxString at q/base.qon:127\n");}
+    {printf("boxString at q/base.qon:131\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   b = makeBox();
@@ -505,13 +529,13 @@ if (globalTrace)
 }
 
 
-//Building function boxSymbol from line: 137
+//Building function boxSymbol from line: 141
 
 function boxSymbol(s) {
   var b = NULL;
 
 if (globalTrace)
-    {printf("boxSymbol at q/base.qon:137\n");}
+    {printf("boxSymbol at q/base.qon:141\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   b = boxString(s);
@@ -528,13 +552,13 @@ if (globalTrace)
 }
 
 
-//Building function boxBool from line: 146
+//Building function boxBool from line: 150
 
 function boxBool(boo) {
   var b = NULL;
 
 if (globalTrace)
-    {printf("boxBool at q/base.qon:146\n");}
+    {printf("boxBool at q/base.qon:150\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   b = makeBox();
@@ -554,13 +578,13 @@ if (globalTrace)
 }
 
 
-//Building function boxInt from line: 155
+//Building function boxInt from line: 159
 
 function boxInt(val) {
   var b = NULL;
 
 if (globalTrace)
-    {printf("boxInt at q/base.qon:155\n");}
+    {printf("boxInt at q/base.qon:159\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   b = makeBox();
@@ -580,12 +604,12 @@ if (globalTrace)
 }
 
 
-//Building function assertType from line: 164
+//Building function assertType from line: 168
 
 function assertType(atype,abox,line,file) {
   
 if (globalTrace)
-    {printf("assertType at q/base.qon:164\n");}
+    {printf("assertType at q/base.qon:168\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isNil(abox)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -626,15 +650,15 @@ if (globalTrace)
 }
 
 
-//Building function unBoxString from line: 176
+//Building function unBoxString from line: 180
 
 function unBoxString(b) {
   
 if (globalTrace)
-    {printf("unBoxString at q/base.qon:176\n");}
+    {printf("unBoxString at q/base.qon:180\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
-  assertType("string", b, 177, "q/base.qon");
+  assertType("string", b, 181, "q/base.qon");
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   return(b.str);
@@ -645,12 +669,12 @@ if (globalTrace)
 }
 
 
-//Building function unBoxSymbol from line: 179
+//Building function unBoxSymbol from line: 183
 
 function unBoxSymbol(b) {
   
 if (globalTrace)
-    {printf("unBoxSymbol at q/base.qon:179\n");}
+    {printf("unBoxSymbol at q/base.qon:183\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   return(b.str);
@@ -661,12 +685,12 @@ if (globalTrace)
 }
 
 
-//Building function unBoxBool from line: 180
+//Building function unBoxBool from line: 184
 
 function unBoxBool(b) {
   
 if (globalTrace)
-    {printf("unBoxBool at q/base.qon:180\n");}
+    {printf("unBoxBool at q/base.qon:184\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   return(b.boo);
@@ -677,12 +701,12 @@ if (globalTrace)
 }
 
 
-//Building function unBoxInt from line: 181
+//Building function unBoxInt from line: 185
 
 function unBoxInt(b) {
   
 if (globalTrace)
-    {printf("unBoxInt at q/base.qon:181\n");}
+    {printf("unBoxInt at q/base.qon:185\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   return(b.i);
@@ -693,12 +717,12 @@ if (globalTrace)
 }
 
 
-//Building function stringify_rec from line: 183
+//Building function stringify_rec from line: 187
 
 function stringify_rec(b) {
   
 if (globalTrace)
-    {printf("stringify_rec at q/base.qon:183\n");}
+    {printf("stringify_rec at q/base.qon:187\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isNil(b)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -717,12 +741,12 @@ if (globalTrace)
 }
 
 
-//Building function stringify from line: 195
+//Building function stringify from line: 199
 
 function stringify(b) {
   
 if (globalTrace)
-    {printf("stringify at q/base.qon:195\n");}
+    {printf("stringify at q/base.qon:199\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isNil(b)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -789,12 +813,12 @@ if (globalTrace)
 }
 
 
-//Building function hasTag from line: 230
+//Building function hasTag from line: 234
 
 function hasTag(aBox,key) {
   
 if (globalTrace)
-    {printf("hasTag at q/base.qon:230\n");}
+    {printf("hasTag at q/base.qon:234\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isNil(aBox)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -813,12 +837,12 @@ if (globalTrace)
 }
 
 
-//Building function getTag from line: 237
+//Building function getTag from line: 241
 
 function getTag(aBox,key) {
   
 if (globalTrace)
-    {printf("getTag at q/base.qon:237\n");}
+    {printf("getTag at q/base.qon:241\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( false) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -846,12 +870,12 @@ if (globalTrace)
 }
 
 
-//Building function getTagFail from line: 249
+//Building function getTagFail from line: 253
 
 function getTagFail(aBox,key,onFail) {
   
 if (globalTrace)
-    {printf("getTagFail at q/base.qon:249\n");}
+    {printf("getTagFail at q/base.qon:253\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( hasTag(aBox, key)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -870,12 +894,12 @@ if (globalTrace)
 }
 
 
-//Building function assocExists from line: 260
+//Building function assocExists from line: 264
 
 function assocExists(key,aBox) {
   
 if (globalTrace)
-    {printf("assocExists at q/base.qon:260\n");}
+    {printf("assocExists at q/base.qon:264\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isNil(aBox)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -894,12 +918,12 @@ if (globalTrace)
 }
 
 
-//Building function assocFail from line: 269
+//Building function assocFail from line: 273
 
 function assocFail(key,aBox,onFail) {
   
 if (globalTrace)
-    {printf("assocFail at q/base.qon:269\n");}
+    {printf("assocFail at q/base.qon:273\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( assocExists(key, aBox)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -918,12 +942,12 @@ if (globalTrace)
 }
 
 
-//Building function assocPanic from line: 276
+//Building function assocPanic from line: 280
 
 function assocPanic(key,aBox,onFail) {
   
 if (globalTrace)
-    {printf("assocPanic at q/base.qon:276\n");}
+    {printf("assocPanic at q/base.qon:280\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( assocExists(key, aBox)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -948,12 +972,12 @@ if (globalTrace)
 }
 
 
-//Building function setTag from line: 288
+//Building function setTag from line: 292
 
 function setTag(key,val,aStruct) {
   
 if (globalTrace)
-    {printf("setTag at q/base.qon:288\n");}
+    {printf("setTag at q/base.qon:292\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   aStruct.tag = alistCons(key, val, aStruct.tag);
@@ -967,12 +991,12 @@ if (globalTrace)
 }
 
 
-//Building function locPanic from line: 297
+//Building function locPanic from line: 301
 
 function locPanic(file,line,message) {
   
 if (globalTrace)
-    {printf("locPanic at q/base.qon:297\n");}
+    {printf("locPanic at q/base.qon:301\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   printf("%s %s:%s\n", file, line, message);
@@ -986,12 +1010,12 @@ if (globalTrace)
 }
 
 
-//Building function truthy from line: 303
+//Building function truthy from line: 307
 
 function truthy(aVal) {
   
 if (globalTrace)
-    {printf("truthy at q/base.qon:303\n");}
+    {printf("truthy at q/base.qon:307\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   return(isNotFalse(aVal));
@@ -1002,12 +1026,12 @@ if (globalTrace)
 }
 
 
-//Building function isNotFalse from line: 308
+//Building function isNotFalse from line: 312
 
 function isNotFalse(aVal) {
   
 if (globalTrace)
-    {printf("isNotFalse at q/base.qon:308\n");}
+    {printf("isNotFalse at q/base.qon:312\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( equalString(boxType(aVal), "bool")) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -1034,12 +1058,12 @@ if (globalTrace)
 }
 
 
-//Building function toStr from line: 317
+//Building function toStr from line: 321
 
 function toStr(thing) {
   
 if (globalTrace)
-    {printf("toStr at q/base.qon:317\n");}
+    {printf("toStr at q/base.qon:321\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   return(boxString(stringify(thing)));
@@ -1050,12 +1074,12 @@ if (globalTrace)
 }
 
 
-//Building function listLast from line: 321
+//Building function listLast from line: 325
 
 function listLast(alist) {
   
 if (globalTrace)
-    {printf("listLast at q/base.qon:321\n");}
+    {printf("listLast at q/base.qon:325\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isEmpty(cdr(alist))) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -1074,12 +1098,12 @@ if (globalTrace)
 }
 
 
-//Building function newLine from line: 330
+//Building function newLine from line: 334
 
 function newLine(indent) {
   
 if (globalTrace)
-    {printf("newLine at q/base.qon:330\n");}
+    {printf("newLine at q/base.qon:334\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   printf("\n");
@@ -1093,12 +1117,12 @@ if (globalTrace)
 }
 
 
-//Building function printIndent from line: 334
+//Building function printIndent from line: 338
 
 function printIndent(ii) {
   
 if (globalTrace)
-    {printf("printIndent at q/base.qon:334\n");}
+    {printf("printIndent at q/base.qon:338\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( greaterthan(ii, 0)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -1120,12 +1144,12 @@ if (globalTrace)
 }
 
 
-//Building function stringIndent from line: 341
+//Building function stringIndent from line: 345
 
 function stringIndent(ii) {
   
 if (globalTrace)
-    {printf("stringIndent at q/base.qon:341\n");}
+    {printf("stringIndent at q/base.qon:345\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( greaterthan(ii, 0)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -1144,12 +1168,12 @@ if (globalTrace)
 }
 
 
-//Building function argList from line: 356
+//Building function argList from line: 360
 
 function argList(count,pos,args) {
   
 if (globalTrace)
-    {printf("argList at q/base.qon:356\n");}
+    {printf("argList at q/base.qon:360\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( greaterthan(count, pos)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -1168,12 +1192,12 @@ if (globalTrace)
 }
 
 
-//Building function tron from line: 366
+//Building function tron from line: 370
 
 function tron() {
   
 if (globalTrace)
-    {printf("tron at q/base.qon:366\n");}
+    {printf("tron at q/base.qon:370\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   globalTrace = true;
@@ -1184,12 +1208,12 @@ if (globalTrace)
 }
 
 
-//Building function troff from line: 367
+//Building function troff from line: 371
 
 function troff() {
   
 if (globalTrace)
-    {printf("troff at q/base.qon:367\n");}
+    {printf("troff at q/base.qon:371\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   globalTrace = false;
@@ -1200,12 +1224,12 @@ if (globalTrace)
 }
 
 
-//Building function stron from line: 368
+//Building function stron from line: 372
 
 function stron() {
   
 if (globalTrace)
-    {printf("stron at q/base.qon:368\n");}
+    {printf("stron at q/base.qon:372\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   globalStepTrace = true;
@@ -1216,12 +1240,12 @@ if (globalTrace)
 }
 
 
-//Building function stroff from line: 369
+//Building function stroff from line: 373
 
 function stroff() {
   
 if (globalTrace)
-    {printf("stroff at q/base.qon:369\n");}
+    {printf("stroff at q/base.qon:373\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   globalStepTrace = false;
@@ -10377,37 +10401,6 @@ if (globalTrace)
 
 if (globalTrace)
     {printf("Leaving nodeCompile\n");}
-
-}
-
-
-//Building function node2Compile from line: 4
-
-function node2Compile(filename) {
-  var programStr = "";
-var tree = NULL;
-var program = NULL;
-
-if (globalTrace)
-    {printf("node2Compile at q/node2.qon:4\n");}
-  if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-  programStr = read_file(filename);
-  if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-  tree = readSexpr(programStr, filename);
-  if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-  program = alistCons(boxString("includes"), astIncludes(first(tree)), alistCons(boxString("types"), astTypes(second(tree)), alistCons(boxString("functions"), astFunctions(third(tree)), NULL)));
-  if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-  program = mergeIncludes(program);
-  if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-  return(cons(boxString("\nvar globalStackTrace = NULL;\n"), cons(boxString("\nvar caller = \"\";\n"), cons(boxString("\nfunction isNil(p) {\n    return p == NULL;\n}\n\n"), cons(boxString("\n"), cons(boxString("const [asfdasdf, ...qwerqwer] = process.argv;"), cons(boxString("globalArgs = qwerqwer;"), cons(boxString("globalArgsCount = qwerqwer.length;"), cons(boxString("start();\n"), emptyList())))))))));
-
-if (globalTrace)
-    {printf("Leaving node2Compile\n");}
 
 }
 

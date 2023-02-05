@@ -2549,24 +2549,6 @@ caller = "javaCompile:Unknown file:-1"
   printf("}\n");
 
 end
--- Chose function name node2Compile
-function node2Compile(filename)
-print("caller: ", caller, "-> node2Compile")
-local programStr =""
-local tree =nil
-local program =nil
-caller = "node2Compile:Unknown file:-1"
-  programStr = luaReadFile(filename)
-caller = "node2Compile:Unknown file:-1"
-  tree = readSexpr(programStr, filename)
-caller = "node2Compile:Unknown file:-1"
-  program = alistCons(boxString("includes"), astIncludes(first(tree)), alistCons(boxString("types"), astTypes(second(tree)), alistCons(boxString("functions"), astFunctions(third(tree)), nil)))
-caller = "node2Compile:Unknown file:-1"
-  program = mergeIncludes(program)
-caller = "node2Compile:Unknown file:-1"
-  return cons(boxString("\nvar globalStackTrace = NULL;\n"), cons(boxString("\nvar caller = \"\";\n"), cons(boxString("\nfunction isNil(p) {\n    return p == NULL;\n}\n\n"), cons(boxString("\n"), cons(boxString("const [asfdasdf, ...qwerqwer] = process.argv;"), cons(boxString("globalArgs = qwerqwer;"), cons(boxString("globalArgsCount = qwerqwer.length;"), cons(boxString("start();\n"), emptyList()))))))))
-
-end
 -- Chose function name nodeFunctionArgs
 function nodeFunctionArgs(tree)
 print("caller: ", caller, "-> nodeFunctionArgs")
@@ -9167,6 +9149,21 @@ caller = ":Unknown file:-1"
   end
 
 end
+-- Chose function name ternString
+function ternString(cond,tr,fal)
+print("caller: ", caller, "-> ternString")
+caller = "ternString:Unknown file:-1"
+  if cond then
+caller = ":Unknown file:-1"
+      return tr
+
+  else
+caller = ":Unknown file:-1"
+      return fal
+
+  end
+
+end
 -- Chose function name ternList
 function ternList(cond,tr,fal)
 print("caller: ", caller, "-> ternList")
@@ -9450,7 +9447,7 @@ end
 function unBoxString(b)
 print("caller: ", caller, "-> unBoxString")
 caller = "unBoxString:Unknown file:-1"
-  assertType("string", b, 177, "q/base.qon");
+  assertType("string", b, 181, "q/base.qon");
 
 caller = "unBoxString:Unknown file:-1"
   return b.str

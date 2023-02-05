@@ -119,7 +119,19 @@ public Box tern(boolean cond,Box tr,Box fal) {
 }
 
 
-//Building function ternList from line: 42
+//Building function ternString from line: 42
+
+public String ternString(boolean cond,String tr,String fal) {
+    
+  if ( cond) {    
+    return(tr);
+  } else {    
+    return(fal);
+  }
+}
+
+
+//Building function ternList from line: 46
 
 public Box ternList(boolean cond,Box tr,Box fal) {
     
@@ -131,7 +143,7 @@ public Box ternList(boolean cond,Box tr,Box fal) {
 }
 
 
-//Building function newVoid from line: 48
+//Building function newVoid from line: 52
 
 public Box newVoid() {
   Box newb = null;
@@ -143,7 +155,7 @@ public Box newVoid() {
 }
 
 
-//Building function stackDump from line: 58
+//Building function stackDump from line: 62
 
 public void stackDump() {
     
@@ -154,7 +166,7 @@ if (globalTrace)
 }
 
 
-//Building function nop from line: 63
+//Building function nop from line: 67
 
 public void nop() {
     
@@ -165,7 +177,7 @@ if (globalTrace)
 }
 
 
-//Building function equalBox from line: 67
+//Building function equalBox from line: 71
 
 public boolean equalBox(Box a,Box b) {
     
@@ -197,7 +209,7 @@ public boolean equalBox(Box a,Box b) {
 }
 
 
-//Building function display from line: 88
+//Building function display from line: 92
 
 public void display(Box l) {
     
@@ -219,7 +231,7 @@ if (globalTrace)
 }
 
 
-//Building function openBrace from line: 97
+//Building function openBrace from line: 101
 
 public String openBrace() {
     
@@ -227,7 +239,7 @@ public String openBrace() {
 }
 
 
-//Building function closeBrace from line: 98
+//Building function closeBrace from line: 102
 
 public String closeBrace() {
     
@@ -235,7 +247,7 @@ public String closeBrace() {
 }
 
 
-//Building function boxType from line: 103
+//Building function boxType from line: 107
 
 public String boxType(Box b) {
     
@@ -243,7 +255,7 @@ public String boxType(Box b) {
 }
 
 
-//Building function makeBox from line: 106
+//Building function makeBox from line: 110
 
 public Box makeBox() {
   Box b = null;
@@ -262,7 +274,7 @@ public Box makeBox() {
 }
 
 
-//Building function makePair from line: 121
+//Building function makePair from line: 125
 
 public Box makePair() {
     
@@ -270,7 +282,7 @@ public Box makePair() {
 }
 
 
-//Building function boxString from line: 127
+//Building function boxString from line: 131
 
 public Box boxString(String s) {
   Box b = null;
@@ -283,7 +295,7 @@ public Box boxString(String s) {
 }
 
 
-//Building function boxSymbol from line: 137
+//Building function boxSymbol from line: 141
 
 public Box boxSymbol(String s) {
   Box b = null;
@@ -294,7 +306,7 @@ public Box boxSymbol(String s) {
 }
 
 
-//Building function boxBool from line: 146
+//Building function boxBool from line: 150
 
 public Box boxBool(boolean boo) {
   Box b = null;
@@ -306,7 +318,7 @@ public Box boxBool(boolean boo) {
 }
 
 
-//Building function boxInt from line: 155
+//Building function boxInt from line: 159
 
 public Box boxInt(Integer val) {
   Box b = null;
@@ -318,7 +330,7 @@ public Box boxInt(Integer val) {
 }
 
 
-//Building function assertType from line: 164
+//Building function assertType from line: 168
 
 public void assertType(String atype,Box abox,Integer line,String file) {
     
@@ -340,16 +352,16 @@ public void assertType(String atype,Box abox,Integer line,String file) {
 }
 
 
-//Building function unBoxString from line: 176
+//Building function unBoxString from line: 180
 
 public String unBoxString(Box b) {
     
-  assertType("string", b, 177, "q/base.qon");  
+  assertType("string", b, 181, "q/base.qon");  
   return(b.str);
 }
 
 
-//Building function unBoxSymbol from line: 179
+//Building function unBoxSymbol from line: 183
 
 public String unBoxSymbol(Box b) {
     
@@ -357,7 +369,7 @@ public String unBoxSymbol(Box b) {
 }
 
 
-//Building function unBoxBool from line: 180
+//Building function unBoxBool from line: 184
 
 public boolean unBoxBool(Box b) {
     
@@ -365,7 +377,7 @@ public boolean unBoxBool(Box b) {
 }
 
 
-//Building function unBoxInt from line: 181
+//Building function unBoxInt from line: 185
 
 public Integer unBoxInt(Box b) {
     
@@ -373,7 +385,7 @@ public Integer unBoxInt(Box b) {
 }
 
 
-//Building function stringify_rec from line: 183
+//Building function stringify_rec from line: 187
 
 public String stringify_rec(Box b) {
     
@@ -385,7 +397,7 @@ public String stringify_rec(Box b) {
 }
 
 
-//Building function stringify from line: 195
+//Building function stringify from line: 199
 
 public String stringify(Box b) {
     
@@ -421,7 +433,7 @@ public String stringify(Box b) {
 }
 
 
-//Building function hasTag from line: 230
+//Building function hasTag from line: 234
 
 public boolean hasTag(Box aBox,Box key) {
     
@@ -433,7 +445,7 @@ public boolean hasTag(Box aBox,Box key) {
 }
 
 
-//Building function getTag from line: 237
+//Building function getTag from line: 241
 
 public Box getTag(Box aBox,Box key) {
     
@@ -448,7 +460,7 @@ public Box getTag(Box aBox,Box key) {
 }
 
 
-//Building function getTagFail from line: 249
+//Building function getTagFail from line: 253
 
 public Box getTagFail(Box aBox,Box key,Box onFail) {
     
@@ -460,7 +472,7 @@ public Box getTagFail(Box aBox,Box key,Box onFail) {
 }
 
 
-//Building function assocExists from line: 260
+//Building function assocExists from line: 264
 
 public boolean assocExists(String key,Box aBox) {
     
@@ -472,7 +484,7 @@ public boolean assocExists(String key,Box aBox) {
 }
 
 
-//Building function assocFail from line: 269
+//Building function assocFail from line: 273
 
 public Box assocFail(String key,Box aBox,Box onFail) {
     
@@ -484,7 +496,7 @@ public Box assocFail(String key,Box aBox,Box onFail) {
 }
 
 
-//Building function assocPanic from line: 276
+//Building function assocPanic from line: 280
 
 public Box assocPanic(String key,Box aBox,String onFail) {
     
@@ -498,7 +510,7 @@ public Box assocPanic(String key,Box aBox,String onFail) {
 }
 
 
-//Building function setTag from line: 288
+//Building function setTag from line: 292
 
 public Box setTag(Box key,Box val,Box aStruct) {
     
@@ -507,7 +519,7 @@ public Box setTag(Box key,Box val,Box aStruct) {
 }
 
 
-//Building function locPanic from line: 297
+//Building function locPanic from line: 301
 
 public void locPanic(String file,String line,String message) {
     
@@ -519,7 +531,7 @@ if (globalTrace)
 }
 
 
-//Building function truthy from line: 303
+//Building function truthy from line: 307
 
 public boolean truthy(Box aVal) {
     
@@ -527,7 +539,7 @@ public boolean truthy(Box aVal) {
 }
 
 
-//Building function isNotFalse from line: 308
+//Building function isNotFalse from line: 312
 
 public boolean isNotFalse(Box aVal) {
     
@@ -543,7 +555,7 @@ public boolean isNotFalse(Box aVal) {
 }
 
 
-//Building function toStr from line: 317
+//Building function toStr from line: 321
 
 public Box toStr(Box thing) {
     
@@ -551,7 +563,7 @@ public Box toStr(Box thing) {
 }
 
 
-//Building function listLast from line: 321
+//Building function listLast from line: 325
 
 public Box listLast(Box alist) {
     
@@ -563,7 +575,7 @@ public Box listLast(Box alist) {
 }
 
 
-//Building function newLine from line: 330
+//Building function newLine from line: 334
 
 public void newLine(Integer indent) {
     
@@ -575,7 +587,7 @@ if (globalTrace)
 }
 
 
-//Building function printIndent from line: 334
+//Building function printIndent from line: 338
 
 public void printIndent(Integer ii) {
     
@@ -591,7 +603,7 @@ if (globalTrace)
 }
 
 
-//Building function stringIndent from line: 341
+//Building function stringIndent from line: 345
 
 public String stringIndent(Integer ii) {
     
@@ -603,7 +615,7 @@ public String stringIndent(Integer ii) {
 }
 
 
-//Building function argList from line: 356
+//Building function argList from line: 360
 
 public Box argList(Integer count,Integer pos,String[] args) {
     
@@ -615,7 +627,7 @@ public Box argList(Integer count,Integer pos,String[] args) {
 }
 
 
-//Building function tron from line: 366
+//Building function tron from line: 370
 
 public void tron() {
     
@@ -623,7 +635,7 @@ public void tron() {
 }
 
 
-//Building function troff from line: 367
+//Building function troff from line: 371
 
 public void troff() {
     
@@ -631,7 +643,7 @@ public void troff() {
 }
 
 
-//Building function stron from line: 368
+//Building function stron from line: 372
 
 public void stron() {
     
@@ -639,7 +651,7 @@ public void stron() {
 }
 
 
-//Building function stroff from line: 369
+//Building function stroff from line: 373
 
 public void stroff() {
     
@@ -5423,21 +5435,6 @@ Box program = null;
 if (globalTrace)
    System.out. printf("Leaving nodeCompile\n");
 
-}
-
-
-//Building function node2Compile from line: 4
-
-public Box node2Compile(String filename) {
-  String programStr = "";
-Box tree = null;
-Box program = null;
-  
-  programStr = read_file(filename);  
-  tree = readSexpr(programStr, filename);  
-  program = alistCons(boxString("includes"), astIncludes(first(tree)), alistCons(boxString("types"), astTypes(second(tree)), alistCons(boxString("functions"), astFunctions(third(tree)), null)));  
-  program = mergeIncludes(program);  
-  return(cons(boxString("\nvar globalStackTrace = NULL;\n"), cons(boxString("\nvar caller = \"\";\n"), cons(boxString("\nfunction isNil(p) {\n    return p == NULL;\n}\n\n"), cons(boxString("\n"), cons(boxString("const [asfdasdf, ...qwerqwer] = process.argv;"), cons(boxString("globalArgs = qwerqwer;"), cons(boxString("globalArgsCount = qwerqwer.length;"), cons(boxString("start();\n"), emptyList())))))))));
 }
 
 
