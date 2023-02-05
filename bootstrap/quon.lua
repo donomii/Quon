@@ -2564,7 +2564,7 @@ caller = "node2Compile:Unknown file:-1"
 caller = "node2Compile:Unknown file:-1"
   program = mergeIncludes(program)
 caller = "node2Compile:Unknown file:-1"
-  return nil()
+  return nil
 
 end
 -- Chose function name nodeFunctionArgs
@@ -4017,9 +4017,6 @@ caller = "test25:Unknown file:-1"
   input = cons(boxString("a "), cons(boxString("b "), nil))
 caller = "test25:Unknown file:-1"
   input = cons(input, sub)
-caller = "test25:Unknown file:-1"
-  display(input);
-
 caller = "test25:Unknown file:-1"
   res = ListToString(input, 0, true, false)
 caller = "test25:Unknown file:-1"
@@ -7525,13 +7522,13 @@ local elem =nil
 caller = "doMakeList:Unknown file:-1"
   if isNil(l) then
 caller = ":Unknown file:-1"
-      return cons(boxSymbol("nil"), nil)
+      return boxSymbol("nil")
 
   else
 caller = ":Unknown file:-1"
       if isEmpty(l) then
 caller = ":Unknown file:-1"
-          return nil
+          return emptyList()
 
       else
 caller = ":Unknown file:-1"

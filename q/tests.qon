@@ -388,7 +388,6 @@
   (body
     (set input (stringList "a " "b ") )
     (set input (cons  input sub))
-    (display input)
     (set res (ListToString input 0 true false))
     (if (equalString expected res)
       (then (printf "24. pass ListToString\n"))

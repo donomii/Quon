@@ -4731,7 +4731,7 @@ if ($globalTrace) { printf("doMakeList at q/lists.qon:166\n") }
 
     if ($globalTrace) {printf("Leaving \n")}
 
-    return(cons(boxSymbol("nil"), $undef));
+    return(boxSymbol("nil"), $undef);
 
   } else {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
@@ -4741,7 +4741,7 @@ if ($globalTrace) { printf("doMakeList at q/lists.qon:166\n") }
 
       if ($globalTrace) {printf("Leaving \n")}
 
-      return($undef);
+      return(emptyList());
 
     } else {      if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
@@ -12507,12 +12507,6 @@ if ($globalTrace) { printf("test25 at q/tests.qon:380\n") }
   $input = cons($input, $subtract);
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
-#standard expression
-
-  display($input)
-  ;
-  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
   $res = ListToString($input, 0, $true, $false);
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
@@ -13925,7 +13919,7 @@ if ($globalTrace) { printf("node2Compile at q/node2.qon:4\n") }
 
   if ($globalTrace) {printf("Leaving \n")}
 
-  return(nil());
+  return($undef);
 
 }
 

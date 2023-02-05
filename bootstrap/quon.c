@@ -137,6 +137,7 @@ box javaFuncMap(box aSym);
 void javaType(list node);
 void javaTypes(list nodes);
 void javaCompile(char* filename);
+list node2Compile(char* filename);
 void nodeFunctionArgs(list tree);
 void nodeLeaf(list thisNode, int indent);
 void nodeStructGetterExpression(list thisNode, int indent);
@@ -5528,6 +5529,52 @@ if (globalTrace)
 }
 
 
+//Building function node2Compile from line: 4
+
+list node2Compile(char* filename) {
+  char* programStr = "";
+list tree = NULL;
+list program = NULL;
+
+if (globalTrace)
+    printf("node2Compile at q/node2.qon:4 (%s)\n", caller);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/node2.qon:7");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  programStr = read_file(filename);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/node2.qon:8");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  tree = readSexpr(programStr, filename);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/node2.qon:9");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  program = alistCons(boxString("includes"), astIncludes(first(tree)), alistCons(boxString("types"), astTypes(second(tree)), alistCons(boxString("functions"), astFunctions(third(tree)), NULL)));
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/node2.qon:18");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  program = mergeIncludes(program);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/node2.qon:20");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  return NULL;;
+
+if (globalTrace)
+    printf("Leaving node2Compile\n");
+
+}
+
+
 //Building function nodeFunctionArgs from line: 4
 
 void nodeFunctionArgs(list tree) {
@@ -8629,28 +8676,22 @@ if (globalTrace)
     snprintf(caller, 1024, "from q/tests.qon:390");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  display(input);
+  res = ListToString(input, 0, true, false);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/tests.qon:391");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  res = ListToString(input, 0, true, false);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/tests.qon:392");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
   if ( equalString(expected, res)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/tests.qon:393");
+    snprintf(caller, 1024, "from q/tests.qon:392");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("24. pass ListToString\n");
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/tests.qon:394");
+    snprintf(caller, 1024, "from q/tests.qon:393");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("24. fail ListToString.  expected '%s', got '%s'\n", expected, res);
@@ -16100,7 +16141,7 @@ if (globalTrace)
     snprintf(caller, 1024, "from q/lists.qon:169");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-    return cons(boxSymbol("nil"), NULL);;
+    return boxSymbol("nil");;
 
   } else {
 if (globalTrace)

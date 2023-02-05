@@ -1803,10 +1803,10 @@ Box ret = null;
 Box elem = null;
   
   if ( isNil(l)) {    
-    return(cons(boxSymbol("nil"), null));
+    return(boxSymbol("nil"), null);
   } else {    
     if ( isEmpty(l)) {      
-      return(null);
+      return(emptyList());
     } else {      
       elem = first(l);      
       newlist = cons(boxString(chooseBox(elem.typ)), cons(mlistLiteral(first(l)), newlist));      
@@ -4903,7 +4903,6 @@ Box input = null;
   
   input = cons(boxString("a "), cons(boxString("b "), null));  
   input = cons(input, sub);  
-  display(input);  
   res = ListToString(input, 0, true, false);  
   if ( equalString(expected, res)) {    
     System.out.printf("24. pass ListToString\n");
@@ -5438,7 +5437,7 @@ Box program = null;
   tree = readSexpr(programStr, filename);  
   program = alistCons(boxString("includes"), astIncludes(first(tree)), alistCons(boxString("types"), astTypes(second(tree)), alistCons(boxString("functions"), astFunctions(third(tree)), null)));  
   program = mergeIncludes(program);  
-  return(nil());
+  return(null);
 }
 
 

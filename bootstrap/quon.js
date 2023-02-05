@@ -3576,13 +3576,13 @@ if (globalTrace)
 
   if ( isNil(l)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
-    return(cons(boxSymbol("nil"), NULL));
+    return(boxSymbol("nil"), NULL);
 
   } else {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
     if ( isEmpty(l)) {      if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
-      return(NULL);
+      return(emptyList());
 
     } else {      if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
@@ -9397,9 +9397,6 @@ if (globalTrace)
   input = cons(input, sub);
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
-  display(input);
-  if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
   res = ListToString(input, 0, true, false);
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
@@ -10407,7 +10404,7 @@ if (globalTrace)
   program = mergeIncludes(program);
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
-  return(nil());
+  return(NULL);
 
 if (globalTrace)
     {printf("Leaving node2Compile\n");}
