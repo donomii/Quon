@@ -12486,47 +12486,6 @@ if ($globalTrace) { printf("test24 at q/tests.qon:366\n") }
 
 #Building function test25 from line: 380
 
-sub test25 {
-  
-  my $expected = "( a b ) c d e";
-my $res = "";
-my $sub = [cons 
-(boxString "c ") 
-(cons 
-  (boxString "d ") 
-  (cons 
-    (boxString "e") nil))];
-my $input = undef;
-
-if ($globalTrace) { printf("test25 at q/tests.qon:380\n") }
-  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-  $input = cons(boxString("a "), cons(boxString("b "), $undef));
-  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-  $input = cons($input, $subtract);
-  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-  $res = ListToString($input, 0, $true, $false);
-  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-  if ( equalString($expected, $res)) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-#standard expression
-
-    printf("25. pass ListToString\n")
-    ;
-
-  } else {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
-
-#standard expression
-
-    printf("25. fail ListToString.  expected '%s', got '%s'\n", $expected, $res)
-    ;
-
-  };
-
-}
 
 
 #Building function nodeFunctionArgs from line: 4
@@ -18713,9 +18672,6 @@ if ($globalTrace) { printf("start at compiler.qon:4\n") }
 
 #standard expression
 
-    test25()
-    ;
-    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
 #standard expression
 

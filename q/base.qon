@@ -40,11 +40,15 @@
    (body
     (if cond (then (return tr)) (else (return fal)))))
 
+  (string ternString (bool cond string tr string fal) (declare)
+   (body
+    (if cond (then (return tr)) (else (return fal)))))
+
      (list ternList (bool cond list tr list fal) (declare)
    (body
     (if cond (then (return tr)) (else (return fal)))))
 
-    
+
   (box
    newVoid
    ()
