@@ -295,6 +295,10 @@
               (else (return (stringify (car l))))
    )))
 
+(box ListToBoxString (list l) (declare)
+(body
+ (return (boxString (StringListJoin l " ")))
+))
 
 (string ListToString (list l int indent bool first) (declare (box val nil))
    (body
@@ -306,12 +310,12 @@
           (if (isEmpty l)
             (then (return ""))
             (else
-              (if first (then (return ""))
-                (else   (return " ")))
+              ;(if first (then (return ""))
+              ;  (else   (return " ")))
                 (set val (car l))
                  (if (isList val)
                     (then
-                      (StringListJoin
+                      (return (StringListJoin
                         (stringList
                           "\n"
                           (stringIndent indent)
@@ -320,11 +324,11 @@
                           (closeBrace)
                           (ListToString  (cdr l) indent false))
                           "")
-                          )
+                          ))
                     (else
-                     (stringConcatenate (stringify val)
-                      (ListToString (cdr l) indent false)))))))
-          (else (stringify l))
+                     (return (stringConcatenate (stringify val)
+                      (ListToString (cdr l) indent false))))))))
+          (else (return (stringify l)))
         ))
     )
   ))

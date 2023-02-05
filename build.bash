@@ -29,3 +29,5 @@ build/quon_new --test
 
 #./build/quon_new compiler.qon --lua > test.lua
 #lua build/test.lua  compiler.qon --ast
+
+echo Compiled working/quon.c into build/quon_new
