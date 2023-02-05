@@ -745,16 +745,20 @@ public String readString(String prog,Integer start,Integer len) {
 public String readComment(String prog,Integer start,Integer len) {
   String token = "";
   
-  token = sub_string(prog, sub1(add(start, len)), 1);  
-  if ( isLineBreak(token)) {    
-    return(sub_string(prog, start, sub1(len)));
+  if ( greaterthan(add(start, len), string_length(prog))) {    
+    return("");
   } else {    
-    return(readComment(prog, start, add1(len)));
+    token = sub_string(prog, sub1(add(start, len)), 1);    
+    if ( isLineBreak(token)) {      
+      return(sub_string(prog, start, sub1(len)));
+    } else {      
+      return(readComment(prog, start, add1(len)));
+    }
   }
 }
 
 
-//Building function isWhiteSpace from line: 88
+//Building function isWhiteSpace from line: 91
 
 public boolean isWhiteSpace(String s) {
     
@@ -778,7 +782,7 @@ public boolean isWhiteSpace(String s) {
 }
 
 
-//Building function isLineBreak from line: 105
+//Building function isLineBreak from line: 108
 
 public boolean isLineBreak(String s) {
     
@@ -794,7 +798,7 @@ public boolean isLineBreak(String s) {
 }
 
 
-//Building function incForNewLine from line: 112
+//Building function incForNewLine from line: 115
 
 public Integer incForNewLine(Box token,Integer val) {
     
@@ -806,7 +810,7 @@ public Integer incForNewLine(Box token,Integer val) {
 }
 
 
-//Building function annotateReadPosition from line: 120
+//Building function annotateReadPosition from line: 123
 
 public Box annotateReadPosition(String filename,Integer linecount,Integer column,Integer start,Box newBox) {
     
@@ -814,7 +818,7 @@ public Box annotateReadPosition(String filename,Integer linecount,Integer column
 }
 
 
-//Building function scan from line: 132
+//Building function scan from line: 135
 
 public Box scan(String prog,Integer start,Integer len,Integer linecount,Integer column,String filename) {
   Box token = null;
@@ -853,7 +857,7 @@ Box newBox = null;
 }
 
 
-//Building function isOpenBrace from line: 172
+//Building function isOpenBrace from line: 175
 
 public boolean isOpenBrace(Box b) {
     
@@ -869,7 +873,7 @@ public boolean isOpenBrace(Box b) {
 }
 
 
-//Building function isCloseBrace from line: 181
+//Building function isCloseBrace from line: 184
 
 public boolean isCloseBrace(Box b) {
     
@@ -885,7 +889,7 @@ public boolean isCloseBrace(Box b) {
 }
 
 
-//Building function skipList from line: 194
+//Building function skipList from line: 197
 
 public Box skipList(Box l) {
   Box b = null;
@@ -907,7 +911,7 @@ public Box skipList(Box l) {
 }
 
 
-//Building function makeNode from line: 216
+//Building function makeNode from line: 219
 
 public Box makeNode(String name,String subname,Box code,Box children) {
     
@@ -915,7 +919,7 @@ public Box makeNode(String name,String subname,Box code,Box children) {
 }
 
 
-//Building function addToNode from line: 232
+//Building function addToNode from line: 235
 
 public Box addToNode(Box key,Box val,Box node) {
     
@@ -923,7 +927,7 @@ public Box addToNode(Box key,Box val,Box node) {
 }
 
 
-//Building function makeStatementNode from line: 237
+//Building function makeStatementNode from line: 240
 
 public Box makeStatementNode(String name,String subname,Box code,Box children,Box functionName) {
     
@@ -931,7 +935,7 @@ public Box makeStatementNode(String name,String subname,Box code,Box children,Bo
 }
 
 
-//Building function astExpression from line: 242
+//Building function astExpression from line: 245
 
 public Box astExpression(Box tree) {
     
@@ -943,7 +947,7 @@ public Box astExpression(Box tree) {
 }
 
 
-//Building function astSubExpression from line: 250
+//Building function astSubExpression from line: 253
 
 public Box astSubExpression(Box tree) {
     
@@ -959,7 +963,7 @@ public Box astSubExpression(Box tree) {
 }
 
 
-//Building function astIf from line: 261
+//Building function astIf from line: 264
 
 public Box astIf(Box tree,Box fname) {
     
@@ -979,7 +983,7 @@ public Box astIf(Box tree,Box fname) {
 }
 
 
-//Building function astSetStruct from line: 282
+//Building function astSetStruct from line: 285
 
 public Box astSetStruct(Box tree) {
     
@@ -987,7 +991,7 @@ public Box astSetStruct(Box tree) {
 }
 
 
-//Building function astSet from line: 287
+//Building function astSet from line: 290
 
 public Box astSet(Box tree) {
     
@@ -995,7 +999,7 @@ public Box astSet(Box tree) {
 }
 
 
-//Building function astGetStruct from line: 292
+//Building function astGetStruct from line: 295
 
 public Box astGetStruct(Box tree) {
     
@@ -1003,7 +1007,7 @@ public Box astGetStruct(Box tree) {
 }
 
 
-//Building function astReturnVoid from line: 295
+//Building function astReturnVoid from line: 298
 
 public Box astReturnVoid(Box fname) {
     
@@ -1011,7 +1015,7 @@ public Box astReturnVoid(Box fname) {
 }
 
 
-//Building function astStatement from line: 299
+//Building function astStatement from line: 302
 
 public Box astStatement(Box tree,Box fname) {
     
@@ -1050,7 +1054,7 @@ public Box astStatement(Box tree,Box fname) {
 }
 
 
-//Building function astBody from line: 337
+//Building function astBody from line: 340
 
 public Box astBody(Box tree,Box fname) {
     
@@ -1062,7 +1066,7 @@ public Box astBody(Box tree,Box fname) {
 }
 
 
-//Building function astFunction from line: 345
+//Building function astFunction from line: 348
 
 public Box astFunction(Box tree) {
   String file = "";
@@ -1096,7 +1100,7 @@ Box fname = null;
 }
 
 
-//Building function astFunctionList from line: 378
+//Building function astFunctionList from line: 381
 
 public Box astFunctionList(Box tree) {
     
@@ -1108,7 +1112,7 @@ public Box astFunctionList(Box tree) {
 }
 
 
-//Building function astFunctions from line: 386
+//Building function astFunctions from line: 389
 
 public Box astFunctions(Box tree) {
     
@@ -1121,7 +1125,7 @@ public Box astFunctions(Box tree) {
 }
 
 
-//Building function loadLib from line: 394
+//Building function loadLib from line: 397
 
 public Box loadLib(String path) {
   String programStr = "";
@@ -1136,7 +1140,7 @@ Box library = null;
 }
 
 
-//Building function astInclude from line: 410
+//Building function astInclude from line: 413
 
 public Box astInclude(Box tree) {
     
@@ -1144,7 +1148,7 @@ public Box astInclude(Box tree) {
 }
 
 
-//Building function astIncludeList from line: 413
+//Building function astIncludeList from line: 416
 
 public Box astIncludeList(Box tree) {
     
@@ -1156,7 +1160,7 @@ public Box astIncludeList(Box tree) {
 }
 
 
-//Building function astIncludes from line: 420
+//Building function astIncludes from line: 423
 
 public Box astIncludes(Box tree) {
     
@@ -1169,7 +1173,7 @@ public Box astIncludes(Box tree) {
 }
 
 
-//Building function astStruct from line: 428
+//Building function astStruct from line: 431
 
 public Box astStruct(Box tree) {
     
@@ -1177,7 +1181,7 @@ public Box astStruct(Box tree) {
 }
 
 
-//Building function astType from line: 431
+//Building function astType from line: 434
 
 public Box astType(Box tree) {
     
@@ -1189,7 +1193,7 @@ public Box astType(Box tree) {
 }
 
 
-//Building function astTypeList from line: 437
+//Building function astTypeList from line: 440
 
 public Box astTypeList(Box tree) {
     
@@ -1201,7 +1205,7 @@ public Box astTypeList(Box tree) {
 }
 
 
-//Building function astTypes from line: 443
+//Building function astTypes from line: 446
 
 public Box astTypes(Box tree) {
     
@@ -1220,7 +1224,7 @@ public Box astTypes(Box tree) {
 }
 
 
-//Building function declarationsof from line: 461
+//Building function declarationsof from line: 464
 
 public Box declarationsof(Box ass) {
     
@@ -1228,7 +1232,7 @@ public Box declarationsof(Box ass) {
 }
 
 
-//Building function codeof from line: 464
+//Building function codeof from line: 467
 
 public Box codeof(Box ass) {
     
@@ -1236,7 +1240,7 @@ public Box codeof(Box ass) {
 }
 
 
-//Building function functionNameof from line: 467
+//Building function functionNameof from line: 470
 
 public Box functionNameof(Box ass) {
     
@@ -1244,7 +1248,7 @@ public Box functionNameof(Box ass) {
 }
 
 
-//Building function nodeof from line: 470
+//Building function nodeof from line: 473
 
 public Box nodeof(Box ass) {
     
@@ -1257,7 +1261,7 @@ public Box nodeof(Box ass) {
 }
 
 
-//Building function lineof from line: 478
+//Building function lineof from line: 481
 
 public Box lineof(Box ass) {
     
@@ -1265,7 +1269,7 @@ public Box lineof(Box ass) {
 }
 
 
-//Building function subnameof from line: 483
+//Building function subnameof from line: 486
 
 public Box subnameof(Box ass) {
     
@@ -1273,7 +1277,7 @@ public Box subnameof(Box ass) {
 }
 
 
-//Building function nameof from line: 486
+//Building function nameof from line: 489
 
 public Box nameof(Box ass) {
     
@@ -1281,7 +1285,7 @@ public Box nameof(Box ass) {
 }
 
 
-//Building function childrenof from line: 489
+//Building function childrenof from line: 492
 
 public Box childrenof(Box ass) {
     
@@ -1289,7 +1293,7 @@ public Box childrenof(Box ass) {
 }
 
 
-//Building function isNode from line: 493
+//Building function isNode from line: 496
 
 public boolean isNode(Box val) {
     
@@ -1309,7 +1313,7 @@ public boolean isNode(Box val) {
 }
 
 
-//Building function isLeaf from line: 509
+//Building function isLeaf from line: 512
 
 public boolean isLeaf(Box n) {
     
@@ -1317,7 +1321,7 @@ public boolean isLeaf(Box n) {
 }
 
 
-//Building function noStackTrace from line: 512
+//Building function noStackTrace from line: 515
 
 public Box noStackTrace() {
     
@@ -1325,7 +1329,7 @@ public Box noStackTrace() {
 }
 
 
-//Building function treeCompile from line: 544
+//Building function treeCompile from line: 547
 
 public Box treeCompile(String filename) {
   String programStr = "";
@@ -1337,7 +1341,7 @@ Box tree = null;
 }
 
 
-//Building function astBuild from line: 550
+//Building function astBuild from line: 553
 
 public Box astBuild(String filename) {
   String programStr = "";
@@ -1352,7 +1356,7 @@ Box program = null;
 }
 
 
-//Building function astCompile from line: 567
+//Building function astCompile from line: 570
 
 public void astCompile(String filename) {
   Box tree = null;
@@ -1378,7 +1382,7 @@ if (globalTrace)
 }
 
 
-//Building function mergeIncludes from line: 591
+//Building function mergeIncludes from line: 594
 
 public Box mergeIncludes(Box program) {
     
@@ -1386,7 +1390,7 @@ public Box mergeIncludes(Box program) {
 }
 
 
-//Building function merge_recur from line: 598
+//Building function merge_recur from line: 601
 
 public Box merge_recur(Box incs,Box program) {
     
@@ -1398,7 +1402,7 @@ public Box merge_recur(Box incs,Box program) {
 }
 
 
-//Building function mergeInclude from line: 606
+//Building function mergeInclude from line: 609
 
 public Box mergeInclude(Box inc,Box program) {
   Box newProgram = null;
@@ -4905,7 +4909,7 @@ if (globalTrace)
 public void test25() {
   String expected = "( a b ) c d e";
 String res = "";
-Box sub = [cons 
+Box testsubstr = [cons 
 (boxString "c ") 
 (cons 
   (boxString "d ") 
@@ -4914,7 +4918,7 @@ Box sub = [cons
 Box input = null;
   
   input = cons(boxString("a "), cons(boxString("b "), null));  
-  input = cons(input, sub);  
+  input = cons(input, testsubstr);  
   res = ListToString(input, 0, true, false);  
   if ( equalString(expected, res)) {    
     System.out.printf("25. pass ListToString\n");

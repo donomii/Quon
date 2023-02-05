@@ -3993,12 +3993,12 @@ function test25()
 print("caller: ", caller, "-> test25")
 local expected ="( a b ) c d e"
 local res =""
-local sub =cons(boxString("c "), cons(boxString("d "), cons(boxString("e"), nil)))
+local testsubstr =cons(boxString("c "), cons(boxString("d "), cons(boxString("e"), nil)))
 local input =nil
 caller = "test25:Unknown file:-1"
   input = cons(boxString("a "), cons(boxString("b "), nil))
 caller = "test25:Unknown file:-1"
-  input = cons(input, sub)
+  input = cons(input, testsubstr)
 caller = "test25:Unknown file:-1"
   res = ListToString(input, 0, true, false)
 caller = "test25:Unknown file:-1"
@@ -8165,15 +8165,23 @@ function readComment(prog,start,len)
 print("caller: ", caller, "-> readComment")
 local token =""
 caller = "readComment:Unknown file:-1"
-  token = luaSubstring(prog, sub1(add(start, len)), 1)
-caller = "readComment:Unknown file:-1"
-  if isLineBreak(token) then
+  if greaterthan(add(start, len), string.len(prog)) then
 caller = ":Unknown file:-1"
-      return luaSubstring(prog, start, sub1(len))
+      return ""
 
   else
 caller = ":Unknown file:-1"
-      return readComment(prog, start, add1(len))
+      token = luaSubstring(prog, sub1(add(start, len)), 1)
+caller = ":Unknown file:-1"
+      if isLineBreak(token) then
+caller = ":Unknown file:-1"
+          return luaSubstring(prog, start, sub1(len))
+
+      else
+caller = ":Unknown file:-1"
+          return readComment(prog, start, add1(len))
+
+      end
 
   end
 

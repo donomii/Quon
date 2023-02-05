@@ -80,10 +80,13 @@
 
   (string readComment (string prog int start int len) (declare (string token ""))
    (body
+   (if (greaterthan  (add start  len)(string-length prog))
+   (then (return ""))
+   (else
     (set token (sub-string prog (sub1 (add start len)) 1))
     (if (isLineBreak token)
       (then (return (sub-string prog start (sub1 len))))
-      (else (return (readComment prog start (add1 len)))))))
+      (else (return (readComment prog start (add1 len)))))))))
 
   (bool
    isWhiteSpace

@@ -382,12 +382,12 @@
   (declare 
     (string expected  "( a b ) c d e")
     (string res "")
-    (list sub (stringList "c " "d " "e"))
+    (list testsubstr (stringList "c " "d " "e"))
     (list input nil)
   )
   (body
     (set input (stringList "a " "b ") )
-    (set input (cons  input sub))
+    (set input (cons  input testsubstr))
     (set res (ListToString input 0 true false))
     (if (equalString expected res)
       (then (printf "25. pass ListToString\n"))
