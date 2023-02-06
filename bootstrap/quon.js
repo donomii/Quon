@@ -10501,12 +10501,12 @@ if (globalTrace)
 }
 
 
-//Building function node2Functions from line: 69
+//Building function node2Functions from line: 70
 
 function node2Functions(tree) {
   
 if (globalTrace)
-    {printf("node2Functions at q/node2.qon:69\n");}
+    {printf("node2Functions at q/node2.qon:70\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isEmpty(tree)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -10515,10 +10515,7 @@ if (globalTrace)
 
   } else {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
-    node2Function(car(tree));
-    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-    node2Functions(cdr(tree));
+    return(cons(node2Function(car(tree)), node2Functions(cdr(tree))));
 
   };
 
@@ -10528,13 +10525,13 @@ if (globalTrace)
 }
 
 
-//Building function node2Function from line: 77
+//Building function node2Function from line: 78
 
 function node2Function(node) {
   var name = NULL;
 
 if (globalTrace)
-    {printf("node2Function at q/node2.qon:77\n");}
+    {printf("node2Function at q/node2.qon:78\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isNil(node)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -10546,7 +10543,7 @@ if (globalTrace)
     name = subnameof(node);
     if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
-    return(cons(boxString("\n\n//Building function "), cons(boxString(stringify(name)), cons(boxString(" from line: "), cons(boxString(stringify(getTag(name, boxString("line")))), NULL)))), "\n", "\n", "function ", stringify(subnameof(node)), "(", ") {", "\n", stringIndent(1), node2Declarations(declarationsof(node), 1), ListToString(flatten(ternList(releaseMode, boxString(""), cons(boxString("\nif (globalTrace)\n    {printf(\""), cons(boxString(stringify(name)), cons(boxString(" at "), cons(boxString(stringify(getTag(name, boxString("filename")))), cons(boxString(":"), cons(boxString(stringify(getTag(name, boxString("line")))), cons(boxString("\\n\");}\n"), NULL)))))))))), ListToString(flatten(node2Body(childrenof(node), 1))), ternString(releaseMode, "", ListToString("\nif (globalTrace)\n    {printf(\"Leaving ", stringify(name), "\\n\");}\n")), "\n}\n");
+    return(cons(boxString("\n\n//Building function "), cons(boxString(stringify(name)), cons(boxString(" from line: "), cons(boxString(stringify(getTag(name, boxString("line")))), NULL)))), "\n", "\n", "function ", stringify(subnameof(node)), "(", node2FunctionArgs(cdr(assoc("intype", cdr(node)))), ") {", "\n", stringIndent(1), node2Declarations(declarationsof(node), 1), ListToString(flatten(ternList(releaseMode, boxString(""), cons(boxString("\nif (globalTrace)\n    {printf(\""), cons(boxString(stringify(name)), cons(boxString(" at "), cons(boxString(stringify(getTag(name, boxString("filename")))), cons(boxString(":"), cons(boxString(stringify(getTag(name, boxString("line")))), cons(boxString("\\n\");}\n"), NULL)))))))))), ListToString(flatten(node2Body(childrenof(node), 1))), ternString(releaseMode, "", ListToString("\nif (globalTrace)\n    {printf(\"Leaving ", stringify(name), "\\n\");}\n")), "\n}\n");
 
   };
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -10559,13 +10556,37 @@ if (globalTrace)
 }
 
 
-//Building function node2Declarations from line: 112
+//Building function node2FunctionArgs from line: 111
+
+function node2FunctionArgs(tree) {
+  
+if (globalTrace)
+    {printf("node2FunctionArgs at q/node2.qon:111\n");}
+  if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+  if ( isEmpty(tree)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    return(emptyList());
+
+  } else {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+    return(cons(second(tree), cons(tern(isNil(cddr(tree)), boxString(""), boxString(",")), cons(node2FunctionArgs(cddr(tree)), emptyList()))));
+
+  };
+
+if (globalTrace)
+    {printf("Leaving node2FunctionArgs\n");}
+
+}
+
+
+//Building function node2Declarations from line: 122
 
 function node2Declarations(decls,indent) {
   var decl = NULL;
 
 if (globalTrace)
-    {printf("node2Declarations at q/node2.qon:112\n");}
+    {printf("node2Declarations at q/node2.qon:122\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isEmpty(decls)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -14118,6 +14139,9 @@ if (globalTrace)
     };
 
   };
+  if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+  return(0);
 
 if (globalTrace)
     {printf("Leaving start\n");}

@@ -5484,20 +5484,19 @@ public Box node2Includes(Box nodes) {
 }
 
 
-//Building function node2Functions from line: 69
+//Building function node2Functions from line: 70
 
 public Box node2Functions(Box tree) {
     
   if ( isEmpty(tree)) {    
     return(emptyList());
   } else {    
-    node2Function(car(tree));    
-    node2Functions(cdr(tree));
+    return(cons(node2Function(car(tree)), node2Functions(cdr(tree))));
   }
 }
 
 
-//Building function node2Function from line: 77
+//Building function node2Function from line: 78
 
 public Box node2Function(Box node) {
   Box name = null;
@@ -5506,13 +5505,25 @@ public Box node2Function(Box node) {
     return(emptyList());
   } else {    
     name = subnameof(node);    
-    return(cons(boxString("\n\n//Building function "), cons(boxString(stringify(name)), cons(boxString(" from line: "), cons(boxString(stringify(getTag(name, boxString("line")))), null)))), "\n", "\n", "function ", stringify(subnameof(node)), "(", ") {", "\n", stringIndent(1), node2Declarations(declarationsof(node), 1), ListToString(flatten(ternList(releaseMode, boxString(""), cons(boxString("\nif (globalTrace)\n    {printf(\""), cons(boxString(stringify(name)), cons(boxString(" at "), cons(boxString(stringify(getTag(name, boxString("filename")))), cons(boxString(":"), cons(boxString(stringify(getTag(name, boxString("line")))), cons(boxString("\\n\");}\n"), null)))))))))), ListToString(flatten(node2Body(childrenof(node), 1))), ternString(releaseMode, "", ListToString("\nif (globalTrace)\n    {printf(\"Leaving ", stringify(name), "\\n\");}\n")), "\n}\n");
+    return(cons(boxString("\n\n//Building function "), cons(boxString(stringify(name)), cons(boxString(" from line: "), cons(boxString(stringify(getTag(name, boxString("line")))), null)))), "\n", "\n", "function ", stringify(subnameof(node)), "(", node2FunctionArgs(cdr(assoc("intype", cdr(node)))), ") {", "\n", stringIndent(1), node2Declarations(declarationsof(node), 1), ListToString(flatten(ternList(releaseMode, boxString(""), cons(boxString("\nif (globalTrace)\n    {printf(\""), cons(boxString(stringify(name)), cons(boxString(" at "), cons(boxString(stringify(getTag(name, boxString("filename")))), cons(boxString(":"), cons(boxString(stringify(getTag(name, boxString("line")))), cons(boxString("\\n\");}\n"), null)))))))))), ListToString(flatten(node2Body(childrenof(node), 1))), ternString(releaseMode, "", ListToString("\nif (globalTrace)\n    {printf(\"Leaving ", stringify(name), "\\n\");}\n")), "\n}\n");
   }  
   return(emptyList());
 }
 
 
-//Building function node2Declarations from line: 112
+//Building function node2FunctionArgs from line: 111
+
+public Box node2FunctionArgs(Box tree) {
+    
+  if ( isEmpty(tree)) {    
+    return(emptyList());
+  } else {    
+    return(cons(second(tree), cons(tern(isNil(cddr(tree)), boxString(""), boxString(",")), cons(node2FunctionArgs(cddr(tree)), emptyList()))));
+  }
+}
+
+
+//Building function node2Declarations from line: 122
 
 public Box node2Declarations(Box decls,Integer indent) {
   Box decl = null;
@@ -7340,7 +7351,8 @@ boolean runTree = false;
         }
       }
     }
-  }
+  }  
+  return(0);
 }
 public static void main(String args[]) {
 globalArgs = args;

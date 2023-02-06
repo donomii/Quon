@@ -2589,10 +2589,7 @@ caller = ":Unknown file:-1"
 
   else
 caller = ":Unknown file:-1"
-      node2Function(car(tree));
-
-caller = ":Unknown file:-1"
-      node2Functions(cdr(tree));
+      return cons(node2Function(car(tree)), node2Functions(cdr(tree)))
 
   end
 
@@ -2616,6 +2613,21 @@ caller = ":Unknown file:-1"
 
 caller = "node2Function:Unknown file:-1"
   return emptyList()
+
+end
+-- Chose function name node2FunctionArgs
+function node2FunctionArgs(tree)
+print("caller: ", caller, "-> node2FunctionArgs")
+caller = "node2FunctionArgs:Unknown file:-1"
+  if isEmpty(tree) then
+caller = ":Unknown file:-1"
+      return emptyList()
+
+  else
+caller = ":Unknown file:-1"
+      return cons(second(tree), cons(tern(isNil(cddr(tree)), boxString(""), boxString(",")), cons(node2FunctionArgs(cddr(tree)), emptyList())))
+
+  end
 
 end
 -- Chose function name node2Declarations
@@ -10254,6 +10266,9 @@ caller = ":Unknown file:-1"
       end
 
   end
+
+caller = "start:Unknown file:-1"
+  return 0
 
 end
 

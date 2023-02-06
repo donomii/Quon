@@ -1,6 +1,6 @@
 # Quon
 
-Quon is a self-compiling compiler, or a kind of portable macro language.  It can compile itself into many other programming languages, and then compile itself again from there.
+Quon is a self hosting programming language.  A self-compiling compiler, or a kind of portable macro language.  It is a system that can compile itself into many other programming languages, and then compile itself again from there.  It can run on any system that it has a compiler target for, and adding new targets is relatively easy.
 
 ## Write your program in every language
 

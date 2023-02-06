@@ -10,23 +10,15 @@ No FFI or definitions required, 100% seamless interoperation with the target lan
 
 And you can directly call any quon function from the target language.
 
+Quon regenerates a complete version of itself in the target language, using function definitions in that language.  The result is a system that runs completely in the target language, and so is completely accessible from it.  Native types are used where possible, and boxing is used to deal with inflexible type systems and provide useful items like lists with heterogenous types.
+
 ## Neat output
 
-Target languages fall into two rough categories:
+Quon attempts to output code that is very similar to the input code.  Where possible, the input functions are recreated directly in the target language, so the output should be easy enough to read and debug.  However, this is not always possible, depending on which features the target language has.
 
-### "Normal" languages.  
+For targets like Assembler, BASH/CSH etc.  the output will be unreadable compiler barf.  I still try to make it comprehensible, but it will not look much like the input.
 
-All the usual language features from other programming languages, like functions and types.  The compiler output will be as neat and readable as possible.  So e.g. the C output should be similar to what a person would write.
-
-### Underpowered langauges.  
-
-Targets like Assembler, BASH/CSH etc.  The output will be unreadable compiler barf.  I still try to make it comprehensible, but it will look machine generated.
-
-## Stability
-
-In general, don't waste the previous work people have done on the compiler or programming language.  Don't break backwards compatibility, or provide an upgrade path if I do.
-
-## Excellent user feedback
+## Excellent feedback and error messages
 
 The compiler will try to be as informative and helpful as possible.  There will be lots of error and consistency checks, and the messages will all
 
@@ -46,6 +38,6 @@ Use preprocessors, external tools and etc to keep the compiler small.  A small c
 
 ## Personal experimentation should be encouraged
 
-This project has a very personal feel for me, and I would like other people to have the same experience.  This isn't a project owned by some other group of people, it is your project.
+This project has a very personal feel for me, and I would like other people to have the same experience.  This isn't a project owned by some other group of people, it belongs to anyone who opens it in a text editor.
 
 It should be easy for anyone to open it in an editor, make some experimental changes, and immediately see their new feature working in front of them.

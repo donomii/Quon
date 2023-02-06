@@ -141,6 +141,7 @@ list node2Compile(char* filename);
 list node2Includes(list nodes);
 list node2Functions(list tree);
 list node2Function(list node);
+list node2FunctionArgs(list tree);
 list node2Declarations(list decls, int indent);
 void nodeFunctionArgs(list tree);
 void nodeLeaf(list thisNode, int indent);
@@ -498,7 +499,7 @@ int start();
 
 
 
-//Building function bashdisplays from line: 5
+//Building function bashdisplays from file q/bash.qon, line: 5
 
 void bashdisplays(char* s) {
   
@@ -517,7 +518,7 @@ if (globalTrace)
 }
 
 
-//Building function bashFunctionArgs from line: 11
+//Building function bashFunctionArgs from file q/bash.qon, line: 11
 
 void bashFunctionArgs(list decls, int argNum, int indent) {
   
@@ -562,7 +563,7 @@ if (globalTrace)
 }
 
 
-//Building function bashExpression from line: 26
+//Building function bashExpression from file q/bash.qon, line: 26
 
 void bashExpression(list tree, int indent, bool statement) {
   list thing = NULL;
@@ -742,7 +743,7 @@ if (globalTrace)
 }
 
 
-//Building function bashVarOrLit from line: 102
+//Building function bashVarOrLit from file q/bash.qon, line: 102
 
 box bashVarOrLit(box a) {
   
@@ -775,7 +776,7 @@ if (globalTrace)
 }
 
 
-//Building function bashRecurList from line: 111
+//Building function bashRecurList from file q/bash.qon, line: 111
 
 void bashRecurList(list expr, int indent) {
   
@@ -834,7 +835,7 @@ if (globalTrace)
 }
 
 
-//Building function bashIf from line: 128
+//Building function bashIf from file q/bash.qon, line: 128
 
 void bashIf(list node, int indent) {
   
@@ -907,7 +908,7 @@ if (globalTrace)
 }
 
 
-//Building function bashSetStruct from line: 141
+//Building function bashSetStruct from file q/bash.qon, line: 141
 
 void bashSetStruct(list node, int indent) {
   
@@ -938,7 +939,7 @@ if (globalTrace)
 }
 
 
-//Building function bashGetStruct from line: 152
+//Building function bashGetStruct from file q/bash.qon, line: 152
 
 void bashGetStruct(list node, int indent) {
   
@@ -963,7 +964,7 @@ if (globalTrace)
 }
 
 
-//Building function bashSet from line: 162
+//Building function bashSet from file q/bash.qon, line: 162
 
 void bashSet(list node, int indent) {
   
@@ -1000,7 +1001,7 @@ if (globalTrace)
 }
 
 
-//Building function bashReturn from line: 169
+//Building function bashReturn from file q/bash.qon, line: 169
 
 void bashReturn(list node, int indent) {
   
@@ -1051,7 +1052,7 @@ if (globalTrace)
 }
 
 
-//Building function bashStatement from line: 180
+//Building function bashStatement from file q/bash.qon, line: 180
 
 void bashStatement(list node, int indent) {
   
@@ -1138,7 +1139,7 @@ if (globalTrace)
 }
 
 
-//Building function bashBody from line: 198
+//Building function bashBody from file q/bash.qon, line: 198
 
 void bashBody(list tree, int indent) {
   list code = NULL;
@@ -1220,7 +1221,7 @@ if (globalTrace)
 }
 
 
-//Building function bashDeclarations from line: 221
+//Building function bashDeclarations from file q/bash.qon, line: 221
 
 void bashDeclarations(list decls, int indent) {
   box decl = NULL;
@@ -1278,7 +1279,7 @@ if (globalTrace)
 }
 
 
-//Building function bashFunction from line: 234
+//Building function bashFunction from file q/bash.qon, line: 234
 
 void bashFunction(list node) {
   box name = NULL;
@@ -1426,7 +1427,7 @@ if (globalTrace)
 }
 
 
-//Building function bashForwardDeclaration from line: 267
+//Building function bashForwardDeclaration from file q/bash.qon, line: 267
 
 void bashForwardDeclaration(list node) {
   
@@ -1439,7 +1440,7 @@ if (globalTrace)
 }
 
 
-//Building function bashForwardDeclarations from line: 270
+//Building function bashForwardDeclarations from file q/bash.qon, line: 270
 
 void bashForwardDeclarations(list tree) {
   
@@ -1478,7 +1479,7 @@ if (globalTrace)
 }
 
 
-//Building function bashFunctions from line: 276
+//Building function bashFunctions from file q/bash.qon, line: 276
 
 void bashFunctions(list tree) {
   
@@ -1517,7 +1518,7 @@ if (globalTrace)
 }
 
 
-//Building function bashIncludes from line: 282
+//Building function bashIncludes from file q/bash.qon, line: 282
 
 void bashIncludes(list nodes) {
   
@@ -1542,7 +1543,7 @@ if (globalTrace)
 }
 
 
-//Building function bashTypeDecl from line: 290
+//Building function bashTypeDecl from file q/bash.qon, line: 290
 
 void bashTypeDecl(list l) {
   
@@ -1555,7 +1556,7 @@ if (globalTrace)
 }
 
 
-//Building function bashStructComponents from line: 294
+//Building function bashStructComponents from file q/bash.qon, line: 294
 
 void bashStructComponents(list node) {
   
@@ -1594,7 +1595,7 @@ if (globalTrace)
 }
 
 
-//Building function bashStruct from line: 300
+//Building function bashStruct from file q/bash.qon, line: 300
 
 void bashStruct(list node) {
   
@@ -1613,7 +1614,7 @@ if (globalTrace)
 }
 
 
-//Building function bashTypeMap from line: 303
+//Building function bashTypeMap from file q/bash.qon, line: 303
 
 box bashTypeMap(box aSym) {
   list symMap = NULL;
@@ -1653,7 +1654,7 @@ if (globalTrace)
 }
 
 
-//Building function bashFuncMap from line: 313
+//Building function bashFuncMap from file q/bash.qon, line: 313
 
 box bashFuncMap(box aSym) {
   list symMap = NULL;
@@ -1707,7 +1708,7 @@ if (globalTrace)
 }
 
 
-//Building function bashType from line: 344
+//Building function bashType from file q/bash.qon, line: 344
 
 void bashType(list node) {
   
@@ -1720,7 +1721,7 @@ if (globalTrace)
 }
 
 
-//Building function bashTypes from line: 349
+//Building function bashTypes from file q/bash.qon, line: 349
 
 void bashTypes(list nodes) {
   
@@ -1759,7 +1760,7 @@ if (globalTrace)
 }
 
 
-//Building function bashCompile from line: 359
+//Building function bashCompile from file q/bash.qon, line: 359
 
 void bashCompile(char* filename) {
   list tree = NULL;
@@ -1900,7 +1901,7 @@ if (globalTrace)
 }
 
 
-//Building function imaFunctionArgs from line: 4
+//Building function imaFunctionArgs from file q/imaginary.qon, line: 4
 
 void imaFunctionArgs(int indent, list tree) {
   
@@ -1971,7 +1972,7 @@ if (globalTrace)
 }
 
 
-//Building function imaFunction from line: 16
+//Building function imaFunction from file q/imaginary.qon, line: 16
 
 void imaFunction(int indent, list functionDefinition) {
   char* fname = "";
@@ -2065,7 +2066,7 @@ if (globalTrace)
 }
 
 
-//Building function imaDeclarations from line: 37
+//Building function imaDeclarations from file q/imaginary.qon, line: 37
 
 void imaDeclarations(int indent, list declarations) {
   list decl = NULL;
@@ -2129,7 +2130,7 @@ if (globalTrace)
 }
 
 
-//Building function imaExpressionStart from line: 56
+//Building function imaExpressionStart from file q/imaginary.qon, line: 56
 
 void imaExpressionStart(int indent, list program) {
   
@@ -2254,7 +2255,7 @@ if (globalTrace)
 }
 
 
-//Building function imaExpression from line: 98
+//Building function imaExpression from file q/imaginary.qon, line: 98
 
 void imaExpression(int indent, list program) {
   
@@ -2335,7 +2336,7 @@ if (globalTrace)
 }
 
 
-//Building function imaStatement from line: 126
+//Building function imaStatement from file q/imaginary.qon, line: 126
 
 void imaStatement(int indent, list statement) {
   
@@ -2544,7 +2545,7 @@ if (globalTrace)
 }
 
 
-//Building function imaBody from line: 181
+//Building function imaBody from file q/imaginary.qon, line: 181
 
 void imaBody(char* local_caller, int indent, list program) {
   list statement = NULL;
@@ -2590,7 +2591,7 @@ if (globalTrace)
 }
 
 
-//Building function imaFunctions from line: 192
+//Building function imaFunctions from file q/imaginary.qon, line: 192
 
 void imaFunctions(int indent, list program) {
   
@@ -2629,7 +2630,7 @@ if (globalTrace)
 }
 
 
-//Building function imaTypeDecl from line: 202
+//Building function imaTypeDecl from file q/imaginary.qon, line: 202
 
 void imaTypeDecl(list l) {
   char* name = "";
@@ -2700,7 +2701,7 @@ if (globalTrace)
 }
 
 
-//Building function imaStructComponents from line: 227
+//Building function imaStructComponents from file q/imaginary.qon, line: 227
 
 void imaStructComponents(list node) {
   
@@ -2739,7 +2740,7 @@ if (globalTrace)
 }
 
 
-//Building function imaStruct from line: 233
+//Building function imaStruct from file q/imaginary.qon, line: 233
 
 void imaStruct(list node) {
   
@@ -2758,7 +2759,7 @@ if (globalTrace)
 }
 
 
-//Building function imaTypeMap from line: 236
+//Building function imaTypeMap from file q/imaginary.qon, line: 236
 
 box imaTypeMap(box aSym) {
   list symMap = NULL;
@@ -2798,7 +2799,7 @@ if (globalTrace)
 }
 
 
-//Building function imaType from line: 248
+//Building function imaType from file q/imaginary.qon, line: 248
 
 void imaType(list node) {
   char* name = "";
@@ -2863,7 +2864,7 @@ if (globalTrace)
 }
 
 
-//Building function imaTypes from line: 263
+//Building function imaTypes from file q/imaginary.qon, line: 263
 
 void imaTypes(int indent, list nodes) {
   
@@ -2902,7 +2903,7 @@ if (globalTrace)
 }
 
 
-//Building function imaProgram from line: 272
+//Building function imaProgram from file q/imaginary.qon, line: 272
 
 void imaProgram(list program) {
   
@@ -2945,7 +2946,7 @@ if (globalTrace)
 }
 
 
-//Building function imaIncludes from line: 282
+//Building function imaIncludes from file q/imaginary.qon, line: 282
 
 void imaIncludes(int indent, list nodes) {
   
@@ -2970,7 +2971,7 @@ if (globalTrace)
 }
 
 
-//Building function imaCompile from line: 289
+//Building function imaCompile from file q/imaginary.qon, line: 289
 
 void imaCompile(char* filename) {
   list tree = NULL;
@@ -3056,7 +3057,7 @@ if (globalTrace)
 }
 
 
-//Building function not from line: 3
+//Building function not from file q/boolean.qon, line: 3
 
 bool not(bool a) {
   
@@ -3089,7 +3090,7 @@ if (globalTrace)
 }
 
 
-//Building function andBool from line: 10
+//Building function andBool from file q/boolean.qon, line: 10
 
 bool andBool(bool a, bool b) {
   
@@ -3136,7 +3137,7 @@ if (globalTrace)
 }
 
 
-//Building function nand from line: 20
+//Building function nand from file q/boolean.qon, line: 20
 
 bool nand(bool a, bool b) {
   
@@ -3155,7 +3156,7 @@ if (globalTrace)
 }
 
 
-//Building function xor from line: 25
+//Building function xor from file q/boolean.qon, line: 25
 
 bool xor(bool a, bool b) {
   
@@ -3174,7 +3175,7 @@ if (globalTrace)
 }
 
 
-//Building function luaFunctionArgs from line: 4
+//Building function luaFunctionArgs from file q/lua.qon, line: 4
 
 void luaFunctionArgs(int indent, list tree) {
   
@@ -3233,7 +3234,7 @@ if (globalTrace)
 }
 
 
-//Building function luaFunction from line: 14
+//Building function luaFunction from file q/lua.qon, line: 14
 
 void luaFunction(int indent, list functionDefinition) {
   char* fname = "";
@@ -3301,7 +3302,7 @@ if (globalTrace)
 }
 
 
-//Building function luaDeclarations from line: 26
+//Building function luaDeclarations from file q/lua.qon, line: 26
 
 void luaDeclarations(int indent, list declarations) {
   list decl = NULL;
@@ -3359,7 +3360,7 @@ if (globalTrace)
 }
 
 
-//Building function luaExpressionStart from line: 42
+//Building function luaExpressionStart from file q/lua.qon, line: 42
 
 void luaExpressionStart(int indent, list program) {
   
@@ -3484,7 +3485,7 @@ if (globalTrace)
 }
 
 
-//Building function luaExpression from line: 84
+//Building function luaExpression from file q/lua.qon, line: 84
 
 void luaExpression(int indent, list program) {
   
@@ -3565,7 +3566,7 @@ if (globalTrace)
 }
 
 
-//Building function luaStatement from line: 112
+//Building function luaStatement from file q/lua.qon, line: 112
 
 void luaStatement(int indent, list statement) {
   
@@ -3756,7 +3757,7 @@ if (globalTrace)
 }
 
 
-//Building function luaBody from line: 164
+//Building function luaBody from file q/lua.qon, line: 164
 
 void luaBody(char* local_caller, int indent, list program) {
   list statement = NULL;
@@ -3814,7 +3815,7 @@ if (globalTrace)
 }
 
 
-//Building function luaFunctions from line: 176
+//Building function luaFunctions from file q/lua.qon, line: 176
 
 void luaFunctions(int indent, list program) {
   
@@ -3853,7 +3854,7 @@ if (globalTrace)
 }
 
 
-//Building function luaProgram from line: 188
+//Building function luaProgram from file q/lua.qon, line: 188
 
 void luaProgram(list program) {
   
@@ -3878,7 +3879,7 @@ if (globalTrace)
 }
 
 
-//Building function luaIncludes from line: 195
+//Building function luaIncludes from file q/lua.qon, line: 195
 
 void luaIncludes(list nodes) {
   
@@ -3897,7 +3898,7 @@ if (globalTrace)
 }
 
 
-//Building function luaCompile from line: 203
+//Building function luaCompile from file q/lua.qon, line: 203
 
 void luaCompile(char* filename) {
   list tree = NULL;
@@ -3983,7 +3984,7 @@ if (globalTrace)
 }
 
 
-//Building function javaFunctionArgs from line: 3
+//Building function javaFunctionArgs from file q/java.qon, line: 3
 
 void javaFunctionArgs(list tree) {
   
@@ -4054,7 +4055,7 @@ if (globalTrace)
 }
 
 
-//Building function javaLeaf from line: 14
+//Building function javaLeaf from file q/java.qon, line: 14
 
 void javaLeaf(list thisNode, int indent) {
   
@@ -4073,7 +4074,7 @@ if (globalTrace)
 }
 
 
-//Building function javaStructGetterExpression from line: 17
+//Building function javaStructGetterExpression from file q/java.qon, line: 17
 
 void javaStructGetterExpression(list thisNode, int indent) {
   
@@ -4106,7 +4107,7 @@ if (globalTrace)
 }
 
 
-//Building function javaExpression from line: 23
+//Building function javaExpression from file q/java.qon, line: 23
 
 void javaExpression(list node, int indent) {
   
@@ -4139,7 +4140,7 @@ if (globalTrace)
 }
 
 
-//Building function javaRecurList from line: 29
+//Building function javaRecurList from file q/java.qon, line: 29
 
 void javaRecurList(list expr, int indent) {
   
@@ -4198,7 +4199,7 @@ if (globalTrace)
 }
 
 
-//Building function javaSubExpression from line: 41
+//Building function javaSubExpression from file q/java.qon, line: 41
 
 void javaSubExpression(list tree, int indent) {
   box thing = NULL;
@@ -4340,7 +4341,7 @@ if (globalTrace)
 }
 
 
-//Building function javaIf from line: 81
+//Building function javaIf from file q/java.qon, line: 81
 
 void javaIf(list node, int indent) {
   
@@ -4413,7 +4414,7 @@ if (globalTrace)
 }
 
 
-//Building function javaSetStruct from line: 94
+//Building function javaSetStruct from file q/java.qon, line: 94
 
 void javaSetStruct(list node, int indent) {
   
@@ -4450,7 +4451,7 @@ if (globalTrace)
 }
 
 
-//Building function javaGetStruct from line: 105
+//Building function javaGetStruct from file q/java.qon, line: 105
 
 void javaGetStruct(list node, int indent) {
   
@@ -4475,7 +4476,7 @@ if (globalTrace)
 }
 
 
-//Building function javaSet from line: 113
+//Building function javaSet from file q/java.qon, line: 113
 
 void javaSet(list node, int indent) {
   
@@ -4512,7 +4513,7 @@ if (globalTrace)
 }
 
 
-//Building function javaStatement from line: 121
+//Building function javaStatement from file q/java.qon, line: 121
 
 void javaStatement(list node, int indent) {
   
@@ -4605,7 +4606,7 @@ if (globalTrace)
 }
 
 
-//Building function javaBody from line: 141
+//Building function javaBody from file q/java.qon, line: 141
 
 void javaBody(list tree, int indent) {
   
@@ -4656,7 +4657,7 @@ if (globalTrace)
 }
 
 
-//Building function javaDeclarations from line: 151
+//Building function javaDeclarations from file q/java.qon, line: 151
 
 void javaDeclarations(list decls, int indent) {
   box decl = NULL;
@@ -4714,7 +4715,7 @@ if (globalTrace)
 }
 
 
-//Building function javaFunction from line: 165
+//Building function javaFunction from file q/java.qon, line: 165
 
 void javaFunction(list node) {
   box name = NULL;
@@ -4876,7 +4877,7 @@ if (globalTrace)
 }
 
 
-//Building function javaFunctions from line: 204
+//Building function javaFunctions from file q/java.qon, line: 204
 
 void javaFunctions(list tree) {
   
@@ -4915,7 +4916,7 @@ if (globalTrace)
 }
 
 
-//Building function javaIncludes from line: 210
+//Building function javaIncludes from file q/java.qon, line: 210
 
 void javaIncludes(list nodes) {
   
@@ -5042,7 +5043,7 @@ if (globalTrace)
 }
 
 
-//Building function javaTypeDecl from line: 233
+//Building function javaTypeDecl from file q/java.qon, line: 233
 
 void javaTypeDecl(list l) {
   
@@ -5087,7 +5088,7 @@ if (globalTrace)
 }
 
 
-//Building function javaStructComponents from line: 250
+//Building function javaStructComponents from file q/java.qon, line: 250
 
 void javaStructComponents(list node) {
   
@@ -5126,7 +5127,7 @@ if (globalTrace)
 }
 
 
-//Building function javaStruct from line: 256
+//Building function javaStruct from file q/java.qon, line: 256
 
 void javaStruct(list node) {
   
@@ -5145,7 +5146,7 @@ if (globalTrace)
 }
 
 
-//Building function javaTypeMap from line: 259
+//Building function javaTypeMap from file q/java.qon, line: 259
 
 box javaTypeMap(box aSym) {
   list symMap = NULL;
@@ -5185,7 +5186,7 @@ if (globalTrace)
 }
 
 
-//Building function javaTypesNoDeclare from line: 277
+//Building function javaTypesNoDeclare from file q/java.qon, line: 277
 
 box javaTypesNoDeclare() {
   list syms = NULL;
@@ -5211,7 +5212,7 @@ if (globalTrace)
 }
 
 
-//Building function javaFuncMap from line: 286
+//Building function javaFuncMap from file q/java.qon, line: 286
 
 box javaFuncMap(box aSym) {
   list symMap = NULL;
@@ -5265,7 +5266,7 @@ if (globalTrace)
 }
 
 
-//Building function javaType from line: 307
+//Building function javaType from file q/java.qon, line: 307
 
 void javaType(list node) {
   
@@ -5330,7 +5331,7 @@ if (globalTrace)
 }
 
 
-//Building function javaTypes from line: 324
+//Building function javaTypes from file q/java.qon, line: 324
 
 void javaTypes(list nodes) {
   
@@ -5369,7 +5370,7 @@ if (globalTrace)
 }
 
 
-//Building function javaCompile from line: 330
+//Building function javaCompile from file q/java.qon, line: 330
 
 void javaCompile(char* filename) {
   char* programStr = "";
@@ -5535,7 +5536,7 @@ if (globalTrace)
 }
 
 
-//Building function node2Compile from line: 4
+//Building function node2Compile from file q/node2.qon, line: 4
 
 list node2Compile(char* filename) {
   char* programStr = "";
@@ -5593,7 +5594,7 @@ if (globalTrace)
 }
 
 
-//Building function node2Includes from line: 35
+//Building function node2Includes from file q/node2.qon, line: 35
 
 list node2Includes(list nodes) {
   
@@ -5612,36 +5613,30 @@ if (globalTrace)
 }
 
 
-//Building function node2Functions from line: 69
+//Building function node2Functions from file q/node2.qon, line: 70
 
 list node2Functions(list tree) {
   
 if (globalTrace)
-    printf("node2Functions at q/node2.qon:69 (%s)\n", caller);
+    printf("node2Functions at q/node2.qon:70 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/node2.qon:72");
+    snprintf(caller, 1024, "from q/node2.qon:73");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isEmpty(tree)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/node2.qon:73");
+    snprintf(caller, 1024, "from q/node2.qon:74");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return emptyList();;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/node2.qon:74");
+    snprintf(caller, 1024, "from q/node2.qon:75");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-    node2Function(car(tree));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/node2.qon:74");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    node2Functions(cdr(tree));
+    return cons(node2Function(car(tree)), node2Functions(cdr(tree)));;
 
   };
 
@@ -5651,34 +5646,34 @@ if (globalTrace)
 }
 
 
-//Building function node2Function from line: 77
+//Building function node2Function from file q/node2.qon, line: 78
 
 list node2Function(list node) {
   box name = NULL;
 
 if (globalTrace)
-    printf("node2Function at q/node2.qon:77 (%s)\n", caller);
+    printf("node2Function at q/node2.qon:78 (%s)\n", caller);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/node2.qon:79");
+    snprintf(caller, 1024, "from q/node2.qon:80");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isNil(node)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/node2.qon:80");
+    snprintf(caller, 1024, "from q/node2.qon:81");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return emptyList();;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/node2.qon:82");
+    snprintf(caller, 1024, "from q/node2.qon:83");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     name = subnameof(node);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/node2.qon:83");
+    snprintf(caller, 1024, "from q/node2.qon:84");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return cons(boxString("\n\n//Building function "), cons(boxString(stringify(name)), cons(boxString(" from line: "), cons(boxString(stringify(getTag(name, boxString("line")))), NULL))));;
@@ -5686,7 +5681,7 @@ if (globalTrace)
   };
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/node2.qon:110");
+    snprintf(caller, 1024, "from q/node2.qon:109");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   return emptyList();;
@@ -5697,34 +5692,67 @@ if (globalTrace)
 }
 
 
-//Building function node2Declarations from line: 112
+//Building function node2FunctionArgs from file q/node2.qon, line: 111
 
-list node2Declarations(list decls, int indent) {
-  box decl = NULL;
+list node2FunctionArgs(list tree) {
+  
+if (globalTrace)
+    printf("node2FunctionArgs at q/node2.qon:111 (%s)\n", caller);
 
 if (globalTrace)
-    printf("node2Declarations at q/node2.qon:112 (%s)\n", caller);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/node2.qon:114");
+    snprintf(caller, 1024, "from q/node2.qon:113");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  if ( isEmpty(decls)) {
+  if ( isEmpty(tree)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/node2.qon:115");
+    snprintf(caller, 1024, "from q/node2.qon:114");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return emptyList();;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/node2.qon:117");
+    snprintf(caller, 1024, "from q/node2.qon:116");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    return cons(second(tree), cons(tern(isNil(cddr(tree)), boxString(""), boxString(",")), cons(node2FunctionArgs(cddr(tree)), emptyList())));;
+
+  };
+
+if (globalTrace)
+    printf("Leaving node2FunctionArgs\n");
+
+}
+
+
+//Building function node2Declarations from file q/node2.qon, line: 122
+
+list node2Declarations(list decls, int indent) {
+  box decl = NULL;
+
+if (globalTrace)
+    printf("node2Declarations at q/node2.qon:122 (%s)\n", caller);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/node2.qon:124");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isEmpty(decls)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/node2.qon:125");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    return emptyList();;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/node2.qon:127");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     decl = car(decls);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/node2.qon:118");
+    snprintf(caller, 1024, "from q/node2.qon:128");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     return cons(boxString("var %s = "), cons(second(decl), cons(nodeFuncMap(third(decl)), cons(boxString(";\n"), node2Declarations(cdr(decls), indent)))));;
@@ -5737,7 +5765,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeFunctionArgs from line: 4
+//Building function nodeFunctionArgs from file q/node.qon, line: 4
 
 void nodeFunctionArgs(list tree) {
   
@@ -5796,7 +5824,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeLeaf from line: 13
+//Building function nodeLeaf from file q/node.qon, line: 13
 
 void nodeLeaf(list thisNode, int indent) {
   
@@ -5815,7 +5843,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeStructGetterExpression from line: 16
+//Building function nodeStructGetterExpression from file q/node.qon, line: 16
 
 void nodeStructGetterExpression(list thisNode, int indent) {
   
@@ -5848,7 +5876,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeExpression from line: 22
+//Building function nodeExpression from file q/node.qon, line: 22
 
 void nodeExpression(list node, int indent) {
   
@@ -5881,7 +5909,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeRecurList from line: 28
+//Building function nodeRecurList from file q/node.qon, line: 28
 
 void nodeRecurList(list expr, int indent) {
   
@@ -5940,7 +5968,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeSubExpression from line: 41
+//Building function nodeSubExpression from file q/node.qon, line: 41
 
 void nodeSubExpression(list tree, int indent) {
   box thing = NULL;
@@ -6082,7 +6110,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeIf from line: 82
+//Building function nodeIf from file q/node.qon, line: 82
 
 void nodeIf(list node, int indent) {
   
@@ -6155,7 +6183,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeGetStruct from line: 96
+//Building function nodeGetStruct from file q/node.qon, line: 96
 
 void nodeGetStruct(list node, int indent) {
   
@@ -6180,7 +6208,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeSet from line: 104
+//Building function nodeSet from file q/node.qon, line: 104
 
 void nodeSet(list node, int indent) {
   
@@ -6211,7 +6239,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeSetStruct from line: 110
+//Building function nodeSetStruct from file q/node.qon, line: 110
 
 void nodeSetStruct(list node, int indent) {
   
@@ -6242,7 +6270,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeStatement from line: 118
+//Building function nodeStatement from file q/node.qon, line: 118
 
 void nodeStatement(list node, int indent) {
   
@@ -6335,7 +6363,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeBody from line: 137
+//Building function nodeBody from file q/node.qon, line: 137
 
 void nodeBody(list tree, int indent) {
   
@@ -6386,7 +6414,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeDeclarations from line: 151
+//Building function nodeDeclarations from file q/node.qon, line: 151
 
 void nodeDeclarations(list decls, int indent) {
   box decl = NULL;
@@ -6444,7 +6472,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeFunction from line: 166
+//Building function nodeFunction from file q/node.qon, line: 166
 
 void nodeFunction(list node) {
   box name = NULL;
@@ -6592,7 +6620,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeForwardDeclaration from line: 199
+//Building function nodeForwardDeclaration from file q/node.qon, line: 199
 
 void nodeForwardDeclaration(list node) {
   
@@ -6637,7 +6665,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeForwardDeclarations from line: 211
+//Building function nodeForwardDeclarations from file q/node.qon, line: 211
 
 void nodeForwardDeclarations(list tree) {
   
@@ -6676,7 +6704,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeFunctions from line: 221
+//Building function nodeFunctions from file q/node.qon, line: 221
 
 void nodeFunctions(list tree) {
   
@@ -6715,7 +6743,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeIncludes from line: 229
+//Building function nodeIncludes from file q/node.qon, line: 229
 
 void nodeIncludes(list nodes) {
   
@@ -6902,7 +6930,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeTypeDecl from line: 263
+//Building function nodeTypeDecl from file q/node.qon, line: 263
 
 void nodeTypeDecl(list l) {
   
@@ -6947,7 +6975,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeStructComponents from line: 280
+//Building function nodeStructComponents from file q/node.qon, line: 280
 
 void nodeStructComponents(list node) {
   
@@ -6986,7 +7014,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeStruct from line: 288
+//Building function nodeStruct from file q/node.qon, line: 288
 
 void nodeStruct(list node) {
   
@@ -7005,7 +7033,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeTypeMap from line: 293
+//Building function nodeTypeMap from file q/node.qon, line: 293
 
 box nodeTypeMap(box aSym) {
   list symMap = NULL;
@@ -7045,7 +7073,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeFuncMap from line: 308
+//Building function nodeFuncMap from file q/node.qon, line: 308
 
 box nodeFuncMap(box aSym) {
   list symMap = NULL;
@@ -7099,7 +7127,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeType from line: 339
+//Building function nodeType from file q/node.qon, line: 339
 
 void nodeType(list node) {
   
@@ -7112,7 +7140,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeTypes from line: 343
+//Building function nodeTypes from file q/node.qon, line: 343
 
 void nodeTypes(list nodes) {
   
@@ -7151,7 +7179,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeCompile from line: 351
+//Building function nodeCompile from file q/node.qon, line: 351
 
 void nodeCompile(char* filename) {
   char* programStr = "";
@@ -7257,7 +7285,7 @@ if (globalTrace)
 }
 
 
-//Building function test0 from line: 7
+//Building function test0 from file q/tests.qon, line: 7
 
 void test0() {
   
@@ -7310,7 +7338,7 @@ if (globalTrace)
 }
 
 
-//Building function test1 from line: 20
+//Building function test1 from file q/tests.qon, line: 20
 
 void test1() {
   
@@ -7329,7 +7357,7 @@ if (globalTrace)
 }
 
 
-//Building function test2_do from line: 24
+//Building function test2_do from file q/tests.qon, line: 24
 
 void test2_do(char* message) {
   
@@ -7348,7 +7376,7 @@ if (globalTrace)
 }
 
 
-//Building function test2 from line: 28
+//Building function test2 from file q/tests.qon, line: 28
 
 void test2() {
   
@@ -7367,7 +7395,7 @@ if (globalTrace)
 }
 
 
-//Building function test3_do from line: 30
+//Building function test3_do from file q/tests.qon, line: 30
 
 void test3_do(int b, char* c) {
   
@@ -7392,7 +7420,7 @@ if (globalTrace)
 }
 
 
-//Building function test3 from line: 36
+//Building function test3 from file q/tests.qon, line: 36
 
 void test3() {
   
@@ -7411,7 +7439,7 @@ if (globalTrace)
 }
 
 
-//Building function test4_do from line: 37
+//Building function test4_do from file q/tests.qon, line: 37
 
 char* test4_do() {
   
@@ -7430,7 +7458,7 @@ if (globalTrace)
 }
 
 
-//Building function returnThis from line: 39
+//Building function returnThis from file q/tests.qon, line: 39
 
 char* returnThis(char* returnMessage) {
   
@@ -7449,7 +7477,7 @@ if (globalTrace)
 }
 
 
-//Building function test4 from line: 42
+//Building function test4 from file q/tests.qon, line: 42
 
 void test4() {
   char* message = "fail";
@@ -7475,7 +7503,7 @@ if (globalTrace)
 }
 
 
-//Building function test5 from line: 45
+//Building function test5 from file q/tests.qon, line: 45
 
 void test5() {
   char* message = "fail";
@@ -7501,7 +7529,7 @@ if (globalTrace)
 }
 
 
-//Building function test6 from line: 50
+//Building function test6 from file q/tests.qon, line: 50
 
 void test6() {
   
@@ -7534,7 +7562,7 @@ if (globalTrace)
 }
 
 
-//Building function test7_do from line: 58
+//Building function test7_do from file q/tests.qon, line: 58
 
 int test7_do(int count) {
   
@@ -7579,7 +7607,7 @@ if (globalTrace)
 }
 
 
-//Building function test7 from line: 66
+//Building function test7 from file q/tests.qon, line: 66
 
 void test7() {
   
@@ -7612,7 +7640,7 @@ if (globalTrace)
 }
 
 
-//Building function beer from line: 74
+//Building function beer from file q/tests.qon, line: 74
 
 void beer() {
   
@@ -7631,7 +7659,7 @@ if (globalTrace)
 }
 
 
-//Building function plural from line: 83
+//Building function plural from file q/tests.qon, line: 83
 
 char* plural(int num) {
   
@@ -7664,7 +7692,7 @@ if (globalTrace)
 }
 
 
-//Building function beers from line: 88
+//Building function beers from file q/tests.qon, line: 88
 
 int beers(int count) {
   int newcount = 0;
@@ -7716,7 +7744,7 @@ if (globalTrace)
 }
 
 
-//Building function test8 from line: 104
+//Building function test8 from file q/tests.qon, line: 104
 
 void test8() {
   
@@ -7749,7 +7777,7 @@ if (globalTrace)
 }
 
 
-//Building function test9 from line: 112
+//Building function test9 from file q/tests.qon, line: 112
 
 void test9() {
   int answer = -999999;
@@ -8063,7 +8091,7 @@ if (globalTrace)
 }
 
 
-//Building function test10 from line: 170
+//Building function test10 from file q/tests.qon, line: 170
 
 void test10() {
   char* testString = "This is a test string";
@@ -8097,7 +8125,7 @@ if (globalTrace)
 }
 
 
-//Building function test12 from line: 180
+//Building function test12 from file q/tests.qon, line: 180
 
 void test12() {
   box b = NULL;
@@ -8129,7 +8157,7 @@ if (globalTrace)
 }
 
 
-//Building function test13 from line: 188
+//Building function test13 from file q/tests.qon, line: 188
 
 void test13() {
   char* testString = "Hello from the filesystem!";
@@ -8188,7 +8216,7 @@ if (globalTrace)
 }
 
 
-//Building function test15 from line: 204
+//Building function test15 from file q/tests.qon, line: 204
 
 void test15() {
   char* a = "hello";
@@ -8230,7 +8258,7 @@ if (globalTrace)
 }
 
 
-//Building function test16 from line: 212
+//Building function test16 from file q/tests.qon, line: 212
 
 void test16() {
   list assocCell1 = NULL;
@@ -8323,7 +8351,7 @@ if (globalTrace)
 }
 
 
-//Building function test17 from line: 236
+//Building function test17 from file q/tests.qon, line: 236
 
 void test17() {
   list l = NULL;
@@ -8363,7 +8391,7 @@ if (globalTrace)
 }
 
 
-//Building function test18 from line: 247
+//Building function test18 from file q/tests.qon, line: 247
 
 void test18() {
   char* val1 = "a";
@@ -8405,7 +8433,7 @@ if (globalTrace)
 }
 
 
-//Building function test19 from line: 261
+//Building function test19 from file q/tests.qon, line: 261
 
 void test19() {
   char* val1 = "a";
@@ -8461,7 +8489,7 @@ if (globalTrace)
 }
 
 
-//Building function concatenateLists from line: 279
+//Building function concatenateLists from file q/tests.qon, line: 279
 
 list concatenateLists(list oldL, list newL) {
   
@@ -8480,7 +8508,7 @@ if (globalTrace)
 }
 
 
-//Building function test20 from line: 284
+//Building function test20 from file q/tests.qon, line: 284
 
 void test20() {
   char* val1 = "a";
@@ -8544,7 +8572,7 @@ if (globalTrace)
 }
 
 
-//Building function test21 from line: 304
+//Building function test21 from file q/tests.qon, line: 304
 
 void test21() {
   char* val1 = "a";
@@ -8594,7 +8622,7 @@ if (globalTrace)
 }
 
 
-//Building function test22 from line: 320
+//Building function test22 from file q/tests.qon, line: 320
 
 void test22() {
   list original = NULL;
@@ -8685,7 +8713,7 @@ if (globalTrace)
 }
 
 
-//Building function test23 from line: 343
+//Building function test23 from file q/tests.qon, line: 343
 
 void test23() {
   list original = NULL;
@@ -8770,7 +8798,7 @@ if (globalTrace)
 }
 
 
-//Building function test24 from line: 366
+//Building function test24 from file q/tests.qon, line: 366
 
 void test24() {
   char* expected = "a b c";
@@ -8811,7 +8839,7 @@ if (globalTrace)
 }
 
 
-//Building function test25 from line: 380
+//Building function test25 from file q/tests.qon, line: 380
 
 void test25() {
   char* expected = "( a b ) c d e";
@@ -8866,7 +8894,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3displays from line: 5
+//Building function ansi3displays from file q/ansi3.qon, line: 5
 
 void ansi3displays(char* s) {
   
@@ -8885,7 +8913,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3FunctionArgs from line: 11
+//Building function ansi3FunctionArgs from file q/ansi3.qon, line: 11
 
 void ansi3FunctionArgs(list tree) {
   
@@ -8964,7 +8992,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Expression from line: 28
+//Building function ansi3Expression from file q/ansi3.qon, line: 28
 
 void ansi3Expression(list tree, int indent) {
   list thing = NULL;
@@ -9124,7 +9152,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3RecurList from line: 98
+//Building function ansi3RecurList from file q/ansi3.qon, line: 98
 
 void ansi3RecurList(list expr, int indent) {
   
@@ -9183,7 +9211,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3If from line: 115
+//Building function ansi3If from file q/ansi3.qon, line: 115
 
 void ansi3If(list node, int indent) {
   
@@ -9256,7 +9284,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3SetStruct from line: 128
+//Building function ansi3SetStruct from file q/ansi3.qon, line: 128
 
 void ansi3SetStruct(list node, int indent) {
   
@@ -9287,7 +9315,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3GetStruct from line: 137
+//Building function ansi3GetStruct from file q/ansi3.qon, line: 137
 
 void ansi3GetStruct(list node, int indent) {
   
@@ -9312,7 +9340,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Set from line: 145
+//Building function ansi3Set from file q/ansi3.qon, line: 145
 
 void ansi3Set(list node, int indent) {
   
@@ -9349,7 +9377,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Return from line: 152
+//Building function ansi3Return from file q/ansi3.qon, line: 152
 
 void ansi3Return(list node, int indent) {
   
@@ -9400,7 +9428,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Statement from line: 163
+//Building function ansi3Statement from file q/ansi3.qon, line: 163
 
 void ansi3Statement(list node, int indent) {
   
@@ -9487,7 +9515,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Body from line: 181
+//Building function ansi3Body from file q/ansi3.qon, line: 181
 
 void ansi3Body(list tree, int indent) {
   list code = NULL;
@@ -9581,7 +9609,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Declarations from line: 206
+//Building function ansi3Declarations from file q/ansi3.qon, line: 206
 
 void ansi3Declarations(list decls, int indent) {
   box decl = NULL;
@@ -9639,7 +9667,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Function from line: 220
+//Building function ansi3Function from file q/ansi3.qon, line: 220
 
 void ansi3Function(list node) {
   box name = NULL;
@@ -9787,7 +9815,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3ForwardDeclaration from line: 255
+//Building function ansi3ForwardDeclaration from file q/ansi3.qon, line: 255
 
 void ansi3ForwardDeclaration(list node) {
   
@@ -9832,7 +9860,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3ForwardDeclarations from line: 265
+//Building function ansi3ForwardDeclarations from file q/ansi3.qon, line: 265
 
 void ansi3ForwardDeclarations(list tree) {
   
@@ -9871,7 +9899,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Functions from line: 271
+//Building function ansi3Functions from file q/ansi3.qon, line: 271
 
 void ansi3Functions(list tree) {
   
@@ -9910,7 +9938,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Includes from line: 277
+//Building function ansi3Includes from file q/ansi3.qon, line: 277
 
 void ansi3Includes(list nodes) {
   
@@ -9935,7 +9963,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3TypeDecl from line: 285
+//Building function ansi3TypeDecl from file q/ansi3.qon, line: 285
 
 void ansi3TypeDecl(list l) {
   
@@ -9980,7 +10008,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3StructComponents from line: 302
+//Building function ansi3StructComponents from file q/ansi3.qon, line: 302
 
 void ansi3StructComponents(list node) {
   
@@ -10019,7 +10047,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Struct from line: 308
+//Building function ansi3Struct from file q/ansi3.qon, line: 308
 
 void ansi3Struct(list node) {
   
@@ -10038,7 +10066,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3TypeMap from line: 311
+//Building function ansi3TypeMap from file q/ansi3.qon, line: 311
 
 box ansi3TypeMap(box aSym) {
   list symMap = NULL;
@@ -10078,7 +10106,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3FuncMap from line: 321
+//Building function ansi3FuncMap from file q/ansi3.qon, line: 321
 
 box ansi3FuncMap(box aSym) {
   list symMap = NULL;
@@ -10132,7 +10160,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Type from line: 352
+//Building function ansi3Type from file q/ansi3.qon, line: 352
 
 void ansi3Type(list node) {
   
@@ -10183,7 +10211,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Types from line: 362
+//Building function ansi3Types from file q/ansi3.qon, line: 362
 
 void ansi3Types(list nodes) {
   
@@ -10222,7 +10250,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Compile from line: 372
+//Building function ansi3Compile from file q/ansi3.qon, line: 372
 
 void ansi3Compile(char* filename) {
   list tree = NULL;
@@ -10363,7 +10391,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2displays from line: 5
+//Building function ansi2displays from file q/ansi2.qon, line: 5
 
 void ansi2displays(char* s) {
   
@@ -10382,7 +10410,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2FunctionArgs from line: 11
+//Building function ansi2FunctionArgs from file q/ansi2.qon, line: 11
 
 void ansi2FunctionArgs(list tree) {
   
@@ -10461,7 +10489,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2Expression from line: 28
+//Building function ansi2Expression from file q/ansi2.qon, line: 28
 
 void ansi2Expression(list tree, int indent) {
   list thing = NULL;
@@ -10621,7 +10649,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2RecurList from line: 98
+//Building function ansi2RecurList from file q/ansi2.qon, line: 98
 
 void ansi2RecurList(list expr, int indent) {
   
@@ -10680,7 +10708,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2If from line: 115
+//Building function ansi2If from file q/ansi2.qon, line: 115
 
 void ansi2If(list node, int indent) {
   
@@ -10753,7 +10781,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2SetStruct from line: 128
+//Building function ansi2SetStruct from file q/ansi2.qon, line: 128
 
 void ansi2SetStruct(list node, int indent) {
   
@@ -10784,7 +10812,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2GetStruct from line: 137
+//Building function ansi2GetStruct from file q/ansi2.qon, line: 137
 
 void ansi2GetStruct(list node, int indent) {
   
@@ -10809,7 +10837,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2Set from line: 145
+//Building function ansi2Set from file q/ansi2.qon, line: 145
 
 void ansi2Set(list node, int indent) {
   
@@ -10846,7 +10874,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2Return from line: 152
+//Building function ansi2Return from file q/ansi2.qon, line: 152
 
 void ansi2Return(list node, int indent) {
   
@@ -10897,7 +10925,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2Statement from line: 163
+//Building function ansi2Statement from file q/ansi2.qon, line: 163
 
 void ansi2Statement(list node, int indent) {
   
@@ -10984,7 +11012,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2Body from line: 181
+//Building function ansi2Body from file q/ansi2.qon, line: 181
 
 void ansi2Body(list tree, int indent) {
   list code = NULL;
@@ -11062,7 +11090,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2Declarations from line: 199
+//Building function ansi2Declarations from file q/ansi2.qon, line: 199
 
 void ansi2Declarations(list decls, int indent) {
   box decl = NULL;
@@ -11120,7 +11148,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2Function from line: 213
+//Building function ansi2Function from file q/ansi2.qon, line: 213
 
 void ansi2Function(list node) {
   box name = NULL;
@@ -11268,7 +11296,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2ForwardDeclaration from line: 248
+//Building function ansi2ForwardDeclaration from file q/ansi2.qon, line: 248
 
 void ansi2ForwardDeclaration(list node) {
   
@@ -11313,7 +11341,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2ForwardDeclarations from line: 258
+//Building function ansi2ForwardDeclarations from file q/ansi2.qon, line: 258
 
 void ansi2ForwardDeclarations(list tree) {
   
@@ -11352,7 +11380,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2Functions from line: 264
+//Building function ansi2Functions from file q/ansi2.qon, line: 264
 
 void ansi2Functions(list tree) {
   
@@ -11391,7 +11419,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2Includes from line: 270
+//Building function ansi2Includes from file q/ansi2.qon, line: 270
 
 void ansi2Includes(list nodes) {
   
@@ -11428,7 +11456,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2TypeDecl from line: 279
+//Building function ansi2TypeDecl from file q/ansi2.qon, line: 279
 
 void ansi2TypeDecl(list l) {
   
@@ -11473,7 +11501,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2StructComponents from line: 296
+//Building function ansi2StructComponents from file q/ansi2.qon, line: 296
 
 void ansi2StructComponents(list node) {
   
@@ -11512,7 +11540,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2Struct from line: 302
+//Building function ansi2Struct from file q/ansi2.qon, line: 302
 
 void ansi2Struct(list node) {
   
@@ -11531,7 +11559,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2TypeMap from line: 305
+//Building function ansi2TypeMap from file q/ansi2.qon, line: 305
 
 box ansi2TypeMap(box aSym) {
   list symMap = NULL;
@@ -11571,7 +11599,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2FuncMap from line: 317
+//Building function ansi2FuncMap from file q/ansi2.qon, line: 317
 
 box ansi2FuncMap(box aSym) {
   list symMap = NULL;
@@ -11625,7 +11653,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2Type from line: 348
+//Building function ansi2Type from file q/ansi2.qon, line: 348
 
 void ansi2Type(list node) {
   
@@ -11676,7 +11704,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2Types from line: 358
+//Building function ansi2Types from file q/ansi2.qon, line: 358
 
 void ansi2Types(list nodes) {
   
@@ -11715,7 +11743,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi2Compile from line: 368
+//Building function ansi2Compile from file q/ansi2.qon, line: 368
 
 void ansi2Compile(char* filename) {
   list tree = NULL;
@@ -11826,7 +11854,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiFunctionArgs from line: 3
+//Building function ansiFunctionArgs from file q/ansi.qon, line: 3
 
 void ansiFunctionArgs(list tree) {
   
@@ -11897,7 +11925,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiLeaf from line: 14
+//Building function ansiLeaf from file q/ansi.qon, line: 14
 
 void ansiLeaf(list thisNode, int indent) {
   
@@ -11916,7 +11944,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiStructGetterExpression from line: 17
+//Building function ansiStructGetterExpression from file q/ansi.qon, line: 17
 
 void ansiStructGetterExpression(list thisNode, int indent) {
   
@@ -11949,7 +11977,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiExpression from line: 23
+//Building function ansiExpression from file q/ansi.qon, line: 23
 
 void ansiExpression(list node, int indent) {
   
@@ -11982,7 +12010,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiRecurList from line: 29
+//Building function ansiRecurList from file q/ansi.qon, line: 29
 
 void ansiRecurList(list expr, int indent) {
   
@@ -12041,7 +12069,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiSubExpression from line: 41
+//Building function ansiSubExpression from file q/ansi.qon, line: 41
 
 void ansiSubExpression(list tree, int indent) {
   box thing = NULL;
@@ -12183,7 +12211,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiIf from line: 81
+//Building function ansiIf from file q/ansi.qon, line: 81
 
 void ansiIf(list node, int indent) {
   
@@ -12256,7 +12284,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiSetStruct from line: 94
+//Building function ansiSetStruct from file q/ansi.qon, line: 94
 
 void ansiSetStruct(list node, int indent) {
   
@@ -12287,7 +12315,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiGetStruct from line: 103
+//Building function ansiGetStruct from file q/ansi.qon, line: 103
 
 void ansiGetStruct(list node, int indent) {
   
@@ -12312,7 +12340,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiSet from line: 111
+//Building function ansiSet from file q/ansi.qon, line: 111
 
 void ansiSet(list node, int indent) {
   
@@ -12343,7 +12371,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiStatement from line: 117
+//Building function ansiStatement from file q/ansi.qon, line: 117
 
 void ansiStatement(list node, int indent) {
   
@@ -12436,7 +12464,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiBody from line: 135
+//Building function ansiBody from file q/ansi.qon, line: 135
 
 void ansiBody(list tree, int indent) {
   list code = NULL;
@@ -12526,7 +12554,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiDeclarations from line: 156
+//Building function ansiDeclarations from file q/ansi.qon, line: 156
 
 void ansiDeclarations(list decls, int indent) {
   box decl = NULL;
@@ -12584,7 +12612,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiFunction from line: 170
+//Building function ansiFunction from file q/ansi.qon, line: 170
 
 void ansiFunction(list node) {
   box name = NULL;
@@ -12732,7 +12760,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiForwardDeclaration from line: 204
+//Building function ansiForwardDeclaration from file q/ansi.qon, line: 204
 
 void ansiForwardDeclaration(list node) {
   
@@ -12777,7 +12805,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiForwardDeclarations from line: 216
+//Building function ansiForwardDeclarations from file q/ansi.qon, line: 216
 
 void ansiForwardDeclarations(list tree) {
   
@@ -12816,7 +12844,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiFunctions from line: 224
+//Building function ansiFunctions from file q/ansi.qon, line: 224
 
 void ansiFunctions(list tree) {
   
@@ -12855,7 +12883,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiIncludes from line: 229
+//Building function ansiIncludes from file q/ansi.qon, line: 229
 
 void ansiIncludes(list nodes) {
   
@@ -12892,7 +12920,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiTypeDecl from line: 239
+//Building function ansiTypeDecl from file q/ansi.qon, line: 239
 
 void ansiTypeDecl(list l) {
   
@@ -12937,7 +12965,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiStructComponents from line: 256
+//Building function ansiStructComponents from file q/ansi.qon, line: 256
 
 void ansiStructComponents(list node) {
   
@@ -12976,7 +13004,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiStruct from line: 262
+//Building function ansiStruct from file q/ansi.qon, line: 262
 
 void ansiStruct(list node) {
   
@@ -12995,7 +13023,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiTypeMap from line: 265
+//Building function ansiTypeMap from file q/ansi.qon, line: 265
 
 box ansiTypeMap(box aSym) {
   list symMap = NULL;
@@ -13035,7 +13063,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiFuncMap from line: 277
+//Building function ansiFuncMap from file q/ansi.qon, line: 277
 
 box ansiFuncMap(box aSym) {
   list symMap = NULL;
@@ -13089,7 +13117,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiType from line: 308
+//Building function ansiType from file q/ansi.qon, line: 308
 
 void ansiType(list node) {
   
@@ -13140,7 +13168,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiTypes from line: 318
+//Building function ansiTypes from file q/ansi.qon, line: 318
 
 void ansiTypes(list nodes) {
   
@@ -13179,7 +13207,7 @@ if (globalTrace)
 }
 
 
-//Building function ansiCompile from line: 328
+//Building function ansiCompile from file q/ansi.qon, line: 328
 
 void ansiCompile(char* filename) {
   char* programStr = "";
@@ -13309,7 +13337,7 @@ if (globalTrace)
 }
 
 
-//Building function numbers from line: 4
+//Building function numbers from file q/perl.qon, line: 4
 
 list numbers(int num) {
   
@@ -13342,7 +13370,7 @@ if (globalTrace)
 }
 
 
-//Building function lexType from line: 11
+//Building function lexType from file q/perl.qon, line: 11
 
 char* lexType(box abox) {
   
@@ -13389,7 +13417,7 @@ if (globalTrace)
 }
 
 
-//Building function perlLeaf from line: 23
+//Building function perlLeaf from file q/perl.qon, line: 23
 
 void perlLeaf(list thisNode, int indent) {
   
@@ -13428,7 +13456,7 @@ if (globalTrace)
 }
 
 
-//Building function perlStructGetterExpression from line: 32
+//Building function perlStructGetterExpression from file q/perl.qon, line: 32
 
 void perlStructGetterExpression(list thisNode, int indent) {
   
@@ -13461,7 +13489,7 @@ if (globalTrace)
 }
 
 
-//Building function perlExpression from line: 38
+//Building function perlExpression from file q/perl.qon, line: 38
 
 void perlExpression(list node, int indent) {
   
@@ -13494,7 +13522,7 @@ if (globalTrace)
 }
 
 
-//Building function perlRecurList from line: 44
+//Building function perlRecurList from file q/perl.qon, line: 44
 
 void perlRecurList(list expr, int indent) {
   
@@ -13553,7 +13581,7 @@ if (globalTrace)
 }
 
 
-//Building function perlSubExpression from line: 55
+//Building function perlSubExpression from file q/perl.qon, line: 55
 
 void perlSubExpression(list tree, int indent) {
   box thing = NULL;
@@ -13701,7 +13729,7 @@ if (globalTrace)
 }
 
 
-//Building function perlIf from line: 93
+//Building function perlIf from file q/perl.qon, line: 93
 
 void perlIf(list node, int indent) {
   
@@ -13774,7 +13802,7 @@ if (globalTrace)
 }
 
 
-//Building function perlSetStruct from line: 106
+//Building function perlSetStruct from file q/perl.qon, line: 106
 
 void perlSetStruct(list node, int indent) {
   
@@ -13805,7 +13833,7 @@ if (globalTrace)
 }
 
 
-//Building function perlGetStruct from line: 113
+//Building function perlGetStruct from file q/perl.qon, line: 113
 
 void perlGetStruct(list node, int indent) {
   
@@ -13830,7 +13858,7 @@ if (globalTrace)
 }
 
 
-//Building function perlSet from line: 118
+//Building function perlSet from file q/perl.qon, line: 118
 
 void perlSet(list node, int indent) {
   
@@ -13861,7 +13889,7 @@ if (globalTrace)
 }
 
 
-//Building function assertNode from line: 124
+//Building function assertNode from file q/perl.qon, line: 124
 
 void assertNode(list node) {
   
@@ -13894,7 +13922,7 @@ if (globalTrace)
 }
 
 
-//Building function perlStatement from line: 131
+//Building function perlStatement from file q/perl.qon, line: 131
 
 void perlStatement(list node, int indent) {
   box functionName = NULL;
@@ -14096,7 +14124,7 @@ if (globalTrace)
 }
 
 
-//Building function perlBody from line: 180
+//Building function perlBody from file q/perl.qon, line: 180
 
 void perlBody(list tree, int indent) {
   
@@ -14147,7 +14175,7 @@ if (globalTrace)
 }
 
 
-//Building function perlDeclarations from line: 190
+//Building function perlDeclarations from file q/perl.qon, line: 190
 
 void perlDeclarations(list decls, int indent) {
   box decl = NULL;
@@ -14205,7 +14233,7 @@ if (globalTrace)
 }
 
 
-//Building function perlFunction from line: 201
+//Building function perlFunction from file q/perl.qon, line: 201
 
 void perlFunction(list node) {
   box name = NULL;
@@ -14351,7 +14379,7 @@ if (globalTrace)
 }
 
 
-//Building function perlForwardDeclaration from line: 233
+//Building function perlForwardDeclaration from file q/perl.qon, line: 233
 
 void perlForwardDeclaration(list node) {
   
@@ -14390,7 +14418,7 @@ if (globalTrace)
 }
 
 
-//Building function perlForwardDeclarations from line: 243
+//Building function perlForwardDeclarations from file q/perl.qon, line: 243
 
 void perlForwardDeclarations(list tree) {
   
@@ -14429,7 +14457,7 @@ if (globalTrace)
 }
 
 
-//Building function perlFunctions from line: 251
+//Building function perlFunctions from file q/perl.qon, line: 251
 
 void perlFunctions(list tree) {
   
@@ -14468,7 +14496,7 @@ if (globalTrace)
 }
 
 
-//Building function dollar from line: 258
+//Building function dollar from file q/perl.qon, line: 258
 
 char* dollar() {
   
@@ -14487,7 +14515,7 @@ if (globalTrace)
 }
 
 
-//Building function atSym from line: 261
+//Building function atSym from file q/perl.qon, line: 261
 
 char* atSym() {
   
@@ -14506,7 +14534,7 @@ if (globalTrace)
 }
 
 
-//Building function perlIncludes from line: 265
+//Building function perlIncludes from file q/perl.qon, line: 265
 
 void perlIncludes(list nodes) {
   
@@ -14657,7 +14685,7 @@ if (globalTrace)
 }
 
 
-//Building function perlTypeDecl from line: 301
+//Building function perlTypeDecl from file q/perl.qon, line: 301
 
 void perlTypeDecl(list l) {
   
@@ -14670,7 +14698,7 @@ if (globalTrace)
 }
 
 
-//Building function perlStructComponents from line: 306
+//Building function perlStructComponents from file q/perl.qon, line: 306
 
 void perlStructComponents(list node) {
   
@@ -14709,7 +14737,7 @@ if (globalTrace)
 }
 
 
-//Building function perlStruct from line: 312
+//Building function perlStruct from file q/perl.qon, line: 312
 
 void perlStruct(list node) {
   
@@ -14728,7 +14756,7 @@ if (globalTrace)
 }
 
 
-//Building function perlTypeMap from line: 315
+//Building function perlTypeMap from file q/perl.qon, line: 315
 
 box perlTypeMap(box aSym) {
   list symMap = NULL;
@@ -14768,7 +14796,7 @@ if (globalTrace)
 }
 
 
-//Building function perlConstMap from line: 327
+//Building function perlConstMap from file q/perl.qon, line: 327
 
 box perlConstMap(box aSym) {
   list symMap = NULL;
@@ -14808,7 +14836,7 @@ if (globalTrace)
 }
 
 
-//Building function perlFuncMap from line: 337
+//Building function perlFuncMap from file q/perl.qon, line: 337
 
 box perlFuncMap(box aSym) {
   list symMap = NULL;
@@ -14848,7 +14876,7 @@ if (globalTrace)
 }
 
 
-//Building function perlType from line: 354
+//Building function perlType from file q/perl.qon, line: 354
 
 void perlType(list node) {
   
@@ -14861,7 +14889,7 @@ if (globalTrace)
 }
 
 
-//Building function perlTypes from line: 359
+//Building function perlTypes from file q/perl.qon, line: 359
 
 void perlTypes(list nodes) {
   
@@ -14900,7 +14928,7 @@ if (globalTrace)
 }
 
 
-//Building function perlFunctionArgs from line: 365
+//Building function perlFunctionArgs from file q/perl.qon, line: 365
 
 void perlFunctionArgs(list tree) {
   
@@ -14951,7 +14979,7 @@ if (globalTrace)
 }
 
 
-//Building function perlCompile from line: 375
+//Building function perlCompile from file q/perl.qon, line: 375
 
 void perlCompile(char* filename) {
   char* programStr = "";
@@ -15117,7 +15145,7 @@ if (globalTrace)
 }
 
 
-//Building function readSexpr from line: 4
+//Building function readSexpr from file q/newparser.qon, line: 4
 
 list readSexpr(char* aStr, char* filename) {
   list tokens = NULL;
@@ -15156,7 +15184,7 @@ if (globalTrace)
 }
 
 
-//Building function sexprTree from line: 11
+//Building function sexprTree from file q/newparser.qon, line: 11
 
 list sexprTree(list l) {
   box b = NULL;
@@ -15224,7 +15252,7 @@ if (globalTrace)
 }
 
 
-//Building function loadQuon from line: 29
+//Building function loadQuon from file q/newparser.qon, line: 29
 
 list loadQuon(char* filename) {
   char* programStr = "";
@@ -15257,7 +15285,7 @@ if (globalTrace)
 }
 
 
-//Building function getIncludes from line: 38
+//Building function getIncludes from file q/newparser.qon, line: 38
 
 list getIncludes(list program) {
   
@@ -15276,7 +15304,7 @@ if (globalTrace)
 }
 
 
-//Building function getTypes from line: 42
+//Building function getTypes from file q/newparser.qon, line: 42
 
 list getTypes(list program) {
   
@@ -15295,7 +15323,7 @@ if (globalTrace)
 }
 
 
-//Building function getFunctions from line: 46
+//Building function getFunctions from file q/newparser.qon, line: 46
 
 list getFunctions(list program) {
   
@@ -15314,7 +15342,7 @@ if (globalTrace)
 }
 
 
-//Building function loadIncludes from line: 51
+//Building function loadIncludes from file q/newparser.qon, line: 51
 
 list loadIncludes(list tree) {
   list newProg = NULL;
@@ -15382,7 +15410,7 @@ if (globalTrace)
 }
 
 
-//Building function buildProg from line: 74
+//Building function buildProg from file q/newparser.qon, line: 74
 
 list buildProg(list includes, list types, list functions) {
   list program = NULL;
@@ -15426,7 +15454,7 @@ if (globalTrace)
 }
 
 
-//Building function car from line: 9
+//Building function car from file q/lists.qon, line: 9
 
 box car(list l) {
   
@@ -15491,7 +15519,7 @@ if (globalTrace)
 }
 
 
-//Building function cdr from line: 23
+//Building function cdr from file q/lists.qon, line: 23
 
 list cdr(list l) {
   
@@ -15542,7 +15570,7 @@ if (globalTrace)
 }
 
 
-//Building function cons from line: 33
+//Building function cons from file q/lists.qon, line: 33
 
 list cons(box data, list l) {
   pair p = NULL;
@@ -15586,7 +15614,7 @@ if (globalTrace)
 }
 
 
-//Building function caar from line: 45
+//Building function caar from file q/lists.qon, line: 45
 
 box caar(list l) {
   
@@ -15605,7 +15633,7 @@ if (globalTrace)
 }
 
 
-//Building function cadr from line: 46
+//Building function cadr from file q/lists.qon, line: 46
 
 box cadr(list l) {
   
@@ -15624,7 +15652,7 @@ if (globalTrace)
 }
 
 
-//Building function caddr from line: 47
+//Building function caddr from file q/lists.qon, line: 47
 
 box caddr(list l) {
   
@@ -15643,7 +15671,7 @@ if (globalTrace)
 }
 
 
-//Building function cadddr from line: 48
+//Building function cadddr from file q/lists.qon, line: 48
 
 box cadddr(list l) {
   
@@ -15662,7 +15690,7 @@ if (globalTrace)
 }
 
 
-//Building function caddddr from line: 49
+//Building function caddddr from file q/lists.qon, line: 49
 
 box caddddr(list l) {
   
@@ -15681,7 +15709,7 @@ if (globalTrace)
 }
 
 
-//Building function cddr from line: 50
+//Building function cddr from file q/lists.qon, line: 50
 
 box cddr(list l) {
   
@@ -15700,7 +15728,7 @@ if (globalTrace)
 }
 
 
-//Building function first from line: 51
+//Building function first from file q/lists.qon, line: 51
 
 box first(list l) {
   
@@ -15719,7 +15747,7 @@ if (globalTrace)
 }
 
 
-//Building function second from line: 52
+//Building function second from file q/lists.qon, line: 52
 
 box second(list l) {
   
@@ -15738,7 +15766,7 @@ if (globalTrace)
 }
 
 
-//Building function third from line: 53
+//Building function third from file q/lists.qon, line: 53
 
 box third(list l) {
   
@@ -15757,7 +15785,7 @@ if (globalTrace)
 }
 
 
-//Building function fourth from line: 54
+//Building function fourth from file q/lists.qon, line: 54
 
 box fourth(list l) {
   
@@ -15776,7 +15804,7 @@ if (globalTrace)
 }
 
 
-//Building function fifth from line: 55
+//Building function fifth from file q/lists.qon, line: 55
 
 box fifth(list l) {
   
@@ -15795,7 +15823,7 @@ if (globalTrace)
 }
 
 
-//Building function isList from line: 58
+//Building function isList from file q/lists.qon, line: 58
 
 bool isList(box b) {
   
@@ -15828,7 +15856,7 @@ if (globalTrace)
 }
 
 
-//Building function emptyList from line: 65
+//Building function emptyList from file q/lists.qon, line: 65
 
 list emptyList() {
   
@@ -15847,7 +15875,7 @@ if (globalTrace)
 }
 
 
-//Building function isEmpty from line: 67
+//Building function isEmpty from file q/lists.qon, line: 67
 
 bool isEmpty(box b) {
   
@@ -15880,7 +15908,7 @@ if (globalTrace)
 }
 
 
-//Building function listLength from line: 74
+//Building function listLength from file q/lists.qon, line: 74
 
 int listLength(list l) {
   
@@ -15913,7 +15941,7 @@ if (globalTrace)
 }
 
 
-//Building function alistCons from line: 83
+//Building function alistCons from file q/lists.qon, line: 83
 
 list alistCons(box key, box value, list alist) {
   
@@ -15932,7 +15960,7 @@ if (globalTrace)
 }
 
 
-//Building function assoc from line: 86
+//Building function assoc from file q/lists.qon, line: 86
 
 list assoc(char* searchTerm, list l) {
   list elem = NULL;
@@ -16032,7 +16060,7 @@ if (globalTrace)
 }
 
 
-//Building function chooseBox from line: 106
+//Building function chooseBox from file q/lists.qon, line: 106
 
 char* chooseBox(char* aType) {
   
@@ -16127,7 +16155,7 @@ if (globalTrace)
 }
 
 
-//Building function mlistLiteral from line: 122
+//Building function mlistLiteral from file q/lists.qon, line: 122
 
 box mlistLiteral(box b) {
   
@@ -16216,7 +16244,7 @@ if (globalTrace)
 }
 
 
-//Building function doMultiList from line: 144
+//Building function doMultiList from file q/lists.qon, line: 144
 
 list doMultiList(list l) {
   list newlist = NULL;
@@ -16284,7 +16312,7 @@ if (globalTrace)
 }
 
 
-//Building function doMakeList from line: 166
+//Building function doMakeList from file q/lists.qon, line: 166
 
 list doMakeList(list l) {
   list newlist = NULL;
@@ -16352,7 +16380,7 @@ if (globalTrace)
 }
 
 
-//Building function doStringList from line: 189
+//Building function doStringList from file q/lists.qon, line: 189
 
 list doStringList(list l) {
   list newlist = NULL;
@@ -16399,7 +16427,7 @@ if (globalTrace)
 }
 
 
-//Building function doSymbolList from line: 206
+//Building function doSymbolList from file q/lists.qon, line: 206
 
 list doSymbolList(list l) {
   list newlist = NULL;
@@ -16446,7 +16474,7 @@ if (globalTrace)
 }
 
 
-//Building function doBoxList from line: 224
+//Building function doBoxList from file q/lists.qon, line: 224
 
 list doBoxList(list l) {
   
@@ -16479,7 +16507,7 @@ if (globalTrace)
 }
 
 
-//Building function concatLists from line: 243
+//Building function concatLists from file q/lists.qon, line: 243
 
 list concatLists(list seq1, list seq2) {
   
@@ -16512,7 +16540,7 @@ if (globalTrace)
 }
 
 
-//Building function alistKeys from line: 249
+//Building function alistKeys from file q/lists.qon, line: 249
 
 list alistKeys(list alist) {
   
@@ -16545,7 +16573,7 @@ if (globalTrace)
 }
 
 
-//Building function display from line: 255
+//Building function display from file q/lists.qon, line: 255
 
 void display(list l) {
   
@@ -16610,7 +16638,7 @@ if (globalTrace)
 }
 
 
-//Building function displayList from line: 264
+//Building function displayList from file q/lists.qon, line: 264
 
 void displayList(list l, int indent, bool first) {
   box val = NULL;
@@ -16764,7 +16792,7 @@ if (globalTrace)
 }
 
 
-//Building function StringListJoinRec from line: 295
+//Building function StringListJoinRec from file q/lists.qon, line: 295
 
 char* StringListJoinRec(list l, char* sep) {
   box val = NULL;
@@ -16840,7 +16868,7 @@ if (globalTrace)
 }
 
 
-//Building function StringListJoin from line: 318
+//Building function StringListJoin from file q/lists.qon, line: 318
 
 char* StringListJoin(list l, char* sep) {
   box val = NULL;
@@ -16874,7 +16902,7 @@ if (globalTrace)
 }
 
 
-//Building function ListToBoxString from line: 328
+//Building function ListToBoxString from file q/lists.qon, line: 328
 
 box ListToBoxString(list l) {
   
@@ -16893,7 +16921,7 @@ if (globalTrace)
 }
 
 
-//Building function ListToString from line: 333
+//Building function ListToString from file q/lists.qon, line: 333
 
 char* ListToString(list l, int indent, bool first, bool withNewLines) {
   box val = NULL;
@@ -16975,7 +17003,7 @@ if (globalTrace)
 }
 
 
-//Building function listReverse from line: 373
+//Building function listReverse from file q/lists.qon, line: 373
 
 list listReverse(list l) {
   
@@ -17008,7 +17036,7 @@ if (globalTrace)
 }
 
 
-//Building function inList from line: 379
+//Building function inList from file q/lists.qon, line: 379
 
 bool inList(box item, list l) {
   
@@ -17055,7 +17083,7 @@ if (globalTrace)
 }
 
 
-//Building function equalList from line: 389
+//Building function equalList from file q/lists.qon, line: 389
 
 bool equalList(list a, list b) {
   
@@ -17144,7 +17172,7 @@ if (globalTrace)
 }
 
 
-//Building function reverseRec from line: 412
+//Building function reverseRec from file q/lists.qon, line: 412
 
 list reverseRec(list oldL, list newL) {
   
@@ -17177,7 +17205,7 @@ if (globalTrace)
 }
 
 
-//Building function reverseList from line: 419
+//Building function reverseList from file q/lists.qon, line: 419
 
 list reverseList(list l) {
   
@@ -17196,7 +17224,7 @@ if (globalTrace)
 }
 
 
-//Building function flatten from line: 424
+//Building function flatten from file q/lists.qon, line: 424
 
 list flatten(list tree) {
   
@@ -17243,7 +17271,7 @@ if (globalTrace)
 }
 
 
-//Building function macrowalk from line: 5
+//Building function macrowalk from file q/macros.qon, line: 5
 
 list macrowalk(list l) {
   
@@ -17360,7 +17388,7 @@ if (globalTrace)
 }
 
 
-//Building function macrosingle from line: 56
+//Building function macrosingle from file q/macros.qon, line: 56
 
 list macrosingle(list l, char* search, char* replace) {
   box val = NULL;
@@ -17434,7 +17462,7 @@ if (globalTrace)
 }
 
 
-//Building function macrolist from line: 80
+//Building function macrolist from file q/macros.qon, line: 80
 
 list macrolist(list l, char* search, list replace) {
   box val = NULL;
@@ -17496,7 +17524,7 @@ if (globalTrace)
 }
 
 
-//Building function filterVoid from line: 8
+//Building function filterVoid from file q/compiler.qon, line: 8
 
 list filterVoid(list l) {
   box token = NULL;
@@ -17550,7 +17578,7 @@ if (globalTrace)
 }
 
 
-//Building function filterTokens from line: 20
+//Building function filterTokens from file q/compiler.qon, line: 20
 
 list filterTokens(list l) {
   box token = NULL;
@@ -17646,7 +17674,7 @@ if (globalTrace)
 }
 
 
-//Building function finish_token from line: 54
+//Building function finish_token from file q/compiler.qon, line: 54
 
 box finish_token(char* prog, int start, int len, int line, int column, char* filename) {
   box token = NULL;
@@ -17692,7 +17720,7 @@ if (globalTrace)
 }
 
 
-//Building function readString from line: 69
+//Building function readString from file q/compiler.qon, line: 69
 
 char* readString(char* prog, int start, int len) {
   char* token = "";
@@ -17746,7 +17774,7 @@ if (globalTrace)
 }
 
 
-//Building function readComment from line: 80
+//Building function readComment from file q/compiler.qon, line: 80
 
 char* readComment(char* prog, int start, int len) {
   char* token = "";
@@ -17800,7 +17828,7 @@ if (globalTrace)
 }
 
 
-//Building function isWhiteSpace from line: 91
+//Building function isWhiteSpace from file q/compiler.qon, line: 91
 
 bool isWhiteSpace(char* s) {
   
@@ -17875,7 +17903,7 @@ if (globalTrace)
 }
 
 
-//Building function isLineBreak from line: 108
+//Building function isLineBreak from file q/compiler.qon, line: 108
 
 bool isLineBreak(char* s) {
   
@@ -17922,7 +17950,7 @@ if (globalTrace)
 }
 
 
-//Building function incForNewLine from line: 115
+//Building function incForNewLine from file q/compiler.qon, line: 115
 
 int incForNewLine(box token, int val) {
   
@@ -17955,7 +17983,7 @@ if (globalTrace)
 }
 
 
-//Building function annotateReadPosition from line: 123
+//Building function annotateReadPosition from file q/compiler.qon, line: 123
 
 box annotateReadPosition(char* filename, int linecount, int column, int start, box newBox) {
   
@@ -17974,7 +18002,7 @@ if (globalTrace)
 }
 
 
-//Building function scan from line: 135
+//Building function scan from file q/compiler.qon, line: 135
 
 list scan(char* prog, int start, int len, int linecount, int column, char* filename) {
   box token = NULL;
@@ -18104,7 +18132,7 @@ if (globalTrace)
 }
 
 
-//Building function isOpenBrace from line: 175
+//Building function isOpenBrace from file q/compiler.qon, line: 175
 
 bool isOpenBrace(box b) {
   
@@ -18151,7 +18179,7 @@ if (globalTrace)
 }
 
 
-//Building function isCloseBrace from line: 184
+//Building function isCloseBrace from file q/compiler.qon, line: 184
 
 bool isCloseBrace(box b) {
   
@@ -18198,7 +18226,7 @@ if (globalTrace)
 }
 
 
-//Building function skipList from line: 197
+//Building function skipList from file q/compiler.qon, line: 197
 
 list skipList(list l) {
   box b = NULL;
@@ -18266,7 +18294,7 @@ if (globalTrace)
 }
 
 
-//Building function makeNode from line: 219
+//Building function makeNode from file q/compiler.qon, line: 219
 
 list makeNode(char* name, char* subname, list code, list children) {
   
@@ -18285,7 +18313,7 @@ if (globalTrace)
 }
 
 
-//Building function addToNode from line: 235
+//Building function addToNode from file q/compiler.qon, line: 235
 
 list addToNode(box key, box val, list node) {
   
@@ -18304,7 +18332,7 @@ if (globalTrace)
 }
 
 
-//Building function makeStatementNode from line: 240
+//Building function makeStatementNode from file q/compiler.qon, line: 240
 
 list makeStatementNode(char* name, char* subname, list code, list children, box functionName) {
   
@@ -18323,7 +18351,7 @@ if (globalTrace)
 }
 
 
-//Building function astExpression from line: 245
+//Building function astExpression from file q/compiler.qon, line: 245
 
 list astExpression(list tree) {
   
@@ -18356,7 +18384,7 @@ if (globalTrace)
 }
 
 
-//Building function astSubExpression from line: 253
+//Building function astSubExpression from file q/compiler.qon, line: 253
 
 list astSubExpression(list tree) {
   
@@ -18403,7 +18431,7 @@ if (globalTrace)
 }
 
 
-//Building function astIf from line: 264
+//Building function astIf from file q/compiler.qon, line: 264
 
 list astIf(list tree, box fname) {
   
@@ -18474,7 +18502,7 @@ if (globalTrace)
 }
 
 
-//Building function astSetStruct from line: 285
+//Building function astSetStruct from file q/compiler.qon, line: 285
 
 list astSetStruct(list tree) {
   
@@ -18493,7 +18521,7 @@ if (globalTrace)
 }
 
 
-//Building function astSet from line: 290
+//Building function astSet from file q/compiler.qon, line: 290
 
 list astSet(list tree) {
   
@@ -18512,7 +18540,7 @@ if (globalTrace)
 }
 
 
-//Building function astGetStruct from line: 295
+//Building function astGetStruct from file q/compiler.qon, line: 295
 
 list astGetStruct(list tree) {
   
@@ -18531,7 +18559,7 @@ if (globalTrace)
 }
 
 
-//Building function astReturnVoid from line: 298
+//Building function astReturnVoid from file q/compiler.qon, line: 298
 
 list astReturnVoid(box fname) {
   
@@ -18550,7 +18578,7 @@ if (globalTrace)
 }
 
 
-//Building function astStatement from line: 302
+//Building function astStatement from file q/compiler.qon, line: 302
 
 list astStatement(list tree, box fname) {
   
@@ -18685,7 +18713,7 @@ if (globalTrace)
 }
 
 
-//Building function astBody from line: 340
+//Building function astBody from file q/compiler.qon, line: 340
 
 list astBody(list tree, box fname) {
   
@@ -18718,7 +18746,7 @@ if (globalTrace)
 }
 
 
-//Building function astFunction from line: 348
+//Building function astFunction from file q/compiler.qon, line: 348
 
 list astFunction(list tree) {
   char* file = "";
@@ -18828,7 +18856,7 @@ if (globalTrace)
 }
 
 
-//Building function astFunctionList from line: 381
+//Building function astFunctionList from file q/compiler.qon, line: 381
 
 list astFunctionList(list tree) {
   
@@ -18861,7 +18889,7 @@ if (globalTrace)
 }
 
 
-//Building function astFunctions from line: 389
+//Building function astFunctions from file q/compiler.qon, line: 389
 
 list astFunctions(list tree) {
   
@@ -18900,7 +18928,7 @@ if (globalTrace)
 }
 
 
-//Building function loadLib from line: 397
+//Building function loadLib from file q/compiler.qon, line: 397
 
 list loadLib(char* path) {
   char* programStr = "";
@@ -18946,7 +18974,7 @@ if (globalTrace)
 }
 
 
-//Building function astInclude from line: 413
+//Building function astInclude from file q/compiler.qon, line: 413
 
 list astInclude(list tree) {
   
@@ -18965,7 +18993,7 @@ if (globalTrace)
 }
 
 
-//Building function astIncludeList from line: 416
+//Building function astIncludeList from file q/compiler.qon, line: 416
 
 list astIncludeList(list tree) {
   
@@ -18998,7 +19026,7 @@ if (globalTrace)
 }
 
 
-//Building function astIncludes from line: 423
+//Building function astIncludes from file q/compiler.qon, line: 423
 
 list astIncludes(list tree) {
   
@@ -19037,7 +19065,7 @@ if (globalTrace)
 }
 
 
-//Building function astStruct from line: 431
+//Building function astStruct from file q/compiler.qon, line: 431
 
 list astStruct(list tree) {
   
@@ -19056,7 +19084,7 @@ if (globalTrace)
 }
 
 
-//Building function astType from line: 434
+//Building function astType from file q/compiler.qon, line: 434
 
 list astType(list tree) {
   
@@ -19089,7 +19117,7 @@ if (globalTrace)
 }
 
 
-//Building function astTypeList from line: 440
+//Building function astTypeList from file q/compiler.qon, line: 440
 
 list astTypeList(list tree) {
   
@@ -19122,7 +19150,7 @@ if (globalTrace)
 }
 
 
-//Building function astTypes from line: 446
+//Building function astTypes from file q/compiler.qon, line: 446
 
 list astTypes(list tree) {
   
@@ -19187,7 +19215,7 @@ if (globalTrace)
 }
 
 
-//Building function declarationsof from line: 464
+//Building function declarationsof from file q/compiler.qon, line: 464
 
 list declarationsof(list ass) {
   
@@ -19206,7 +19234,7 @@ if (globalTrace)
 }
 
 
-//Building function codeof from line: 467
+//Building function codeof from file q/compiler.qon, line: 467
 
 list codeof(list ass) {
   
@@ -19225,7 +19253,7 @@ if (globalTrace)
 }
 
 
-//Building function functionNameof from line: 470
+//Building function functionNameof from file q/compiler.qon, line: 470
 
 list functionNameof(list ass) {
   
@@ -19244,7 +19272,7 @@ if (globalTrace)
 }
 
 
-//Building function nodeof from line: 473
+//Building function nodeof from file q/compiler.qon, line: 473
 
 list nodeof(list ass) {
   
@@ -19283,7 +19311,7 @@ if (globalTrace)
 }
 
 
-//Building function lineof from line: 481
+//Building function lineof from file q/compiler.qon, line: 481
 
 list lineof(list ass) {
   
@@ -19302,7 +19330,7 @@ if (globalTrace)
 }
 
 
-//Building function subnameof from line: 486
+//Building function subnameof from file q/compiler.qon, line: 486
 
 list subnameof(list ass) {
   
@@ -19321,7 +19349,7 @@ if (globalTrace)
 }
 
 
-//Building function nameof from line: 489
+//Building function nameof from file q/compiler.qon, line: 489
 
 list nameof(list ass) {
   
@@ -19340,7 +19368,7 @@ if (globalTrace)
 }
 
 
-//Building function childrenof from line: 492
+//Building function childrenof from file q/compiler.qon, line: 492
 
 list childrenof(list ass) {
   
@@ -19359,7 +19387,7 @@ if (globalTrace)
 }
 
 
-//Building function isNode from line: 496
+//Building function isNode from file q/compiler.qon, line: 496
 
 bool isNode(list val) {
   
@@ -19420,7 +19448,7 @@ if (globalTrace)
 }
 
 
-//Building function isLeaf from line: 512
+//Building function isLeaf from file q/compiler.qon, line: 512
 
 bool isLeaf(list n) {
   
@@ -19439,7 +19467,7 @@ if (globalTrace)
 }
 
 
-//Building function noStackTrace from line: 515
+//Building function noStackTrace from file q/compiler.qon, line: 515
 
 list noStackTrace() {
   
@@ -19458,7 +19486,7 @@ if (globalTrace)
 }
 
 
-//Building function treeCompile from line: 547
+//Building function treeCompile from file q/compiler.qon, line: 547
 
 list treeCompile(char* filename) {
   char* programStr = "";
@@ -19491,7 +19519,7 @@ if (globalTrace)
 }
 
 
-//Building function astBuild from line: 553
+//Building function astBuild from file q/compiler.qon, line: 553
 
 list astBuild(char* filename) {
   char* programStr = "";
@@ -19537,7 +19565,7 @@ if (globalTrace)
 }
 
 
-//Building function astCompile from line: 570
+//Building function astCompile from file q/compiler.qon, line: 570
 
 void astCompile(char* filename) {
   list tree = NULL;
@@ -19636,7 +19664,7 @@ if (globalTrace)
 }
 
 
-//Building function mergeIncludes from line: 594
+//Building function mergeIncludes from file q/compiler.qon, line: 594
 
 list mergeIncludes(list program) {
   
@@ -19655,7 +19683,7 @@ if (globalTrace)
 }
 
 
-//Building function merge_recur from line: 601
+//Building function merge_recur from file q/compiler.qon, line: 601
 
 list merge_recur(list incs, list program) {
   
@@ -19688,7 +19716,7 @@ if (globalTrace)
 }
 
 
-//Building function mergeInclude from line: 609
+//Building function mergeInclude from file q/compiler.qon, line: 609
 
 list mergeInclude(list inc, list program) {
   list newProgram = NULL;
@@ -19798,7 +19826,7 @@ if (globalTrace)
 }
 
 
-//Building function add from line: 19
+//Building function add from file q/base.qon, line: 19
 
 int add(int a, int b) {
   
@@ -19817,7 +19845,7 @@ if (globalTrace)
 }
 
 
-//Building function addf from line: 20
+//Building function addf from file q/base.qon, line: 20
 
 float addf(float a, float b) {
   
@@ -19836,7 +19864,7 @@ if (globalTrace)
 }
 
 
-//Building function sub1 from line: 21
+//Building function sub1 from file q/base.qon, line: 21
 
 int sub1(int a) {
   
@@ -19855,7 +19883,7 @@ if (globalTrace)
 }
 
 
-//Building function add1 from line: 22
+//Building function add1 from file q/base.qon, line: 22
 
 int add1(int a) {
   
@@ -19874,7 +19902,7 @@ if (globalTrace)
 }
 
 
-//Building function clone from line: 24
+//Building function clone from file q/base.qon, line: 24
 
 box clone(box b) {
   box newb = NULL;
@@ -19936,7 +19964,7 @@ if (globalTrace)
 }
 
 
-//Building function tern from line: 38
+//Building function tern from file q/base.qon, line: 38
 
 box tern(bool cond, list tr, list fal) {
   
@@ -19969,7 +19997,7 @@ if (globalTrace)
 }
 
 
-//Building function ternString from line: 42
+//Building function ternString from file q/base.qon, line: 42
 
 char* ternString(bool cond, char* tr, char* fal) {
   
@@ -20002,7 +20030,7 @@ if (globalTrace)
 }
 
 
-//Building function ternList from line: 46
+//Building function ternList from file q/base.qon, line: 46
 
 list ternList(bool cond, list tr, list fal) {
   
@@ -20035,7 +20063,7 @@ if (globalTrace)
 }
 
 
-//Building function newVoid from line: 52
+//Building function newVoid from file q/base.qon, line: 52
 
 box newVoid() {
   box newb = NULL;
@@ -20073,7 +20101,7 @@ if (globalTrace)
 }
 
 
-//Building function stackDump from line: 62
+//Building function stackDump from file q/base.qon, line: 62
 
 void stackDump() {
   
@@ -20092,7 +20120,7 @@ if (globalTrace)
 }
 
 
-//Building function nop from line: 67
+//Building function nop from file q/base.qon, line: 67
 
 void nop() {
   
@@ -20111,7 +20139,7 @@ if (globalTrace)
 }
 
 
-//Building function equalBox from line: 71
+//Building function equalBox from file q/base.qon, line: 71
 
 bool equalBox(box a, box b) {
   
@@ -20214,7 +20242,7 @@ if (globalTrace)
 }
 
 
-//Building function openBrace from line: 94
+//Building function openBrace from file q/base.qon, line: 94
 
 char* openBrace() {
   
@@ -20233,7 +20261,7 @@ if (globalTrace)
 }
 
 
-//Building function closeBrace from line: 95
+//Building function closeBrace from file q/base.qon, line: 95
 
 char* closeBrace() {
   
@@ -20252,7 +20280,7 @@ if (globalTrace)
 }
 
 
-//Building function boxType from line: 100
+//Building function boxType from file q/base.qon, line: 100
 
 char* boxType(box b) {
   
@@ -20271,7 +20299,7 @@ if (globalTrace)
 }
 
 
-//Building function makeBox from line: 103
+//Building function makeBox from file q/base.qon, line: 103
 
 box makeBox() {
   box b = NULL;
@@ -20341,7 +20369,7 @@ if (globalTrace)
 }
 
 
-//Building function makePair from line: 118
+//Building function makePair from file q/base.qon, line: 118
 
 pair makePair() {
   
@@ -20360,7 +20388,7 @@ if (globalTrace)
 }
 
 
-//Building function boxString from line: 124
+//Building function boxString from file q/base.qon, line: 124
 
 box boxString(char* s) {
   box b = NULL;
@@ -20404,7 +20432,7 @@ if (globalTrace)
 }
 
 
-//Building function boxSymbol from line: 134
+//Building function boxSymbol from file q/base.qon, line: 134
 
 box boxSymbol(char* s) {
   box b = NULL;
@@ -20436,7 +20464,7 @@ if (globalTrace)
 }
 
 
-//Building function boxBool from line: 143
+//Building function boxBool from file q/base.qon, line: 143
 
 box boxBool(bool boo) {
   box b = NULL;
@@ -20474,7 +20502,7 @@ if (globalTrace)
 }
 
 
-//Building function boxInt from line: 152
+//Building function boxInt from file q/base.qon, line: 152
 
 box boxInt(int val) {
   box b = NULL;
@@ -20512,7 +20540,7 @@ if (globalTrace)
 }
 
 
-//Building function assertType from line: 161
+//Building function assertType from file q/base.qon, line: 161
 
 void assertType(char* atype, box abox, int line, char* file) {
   
@@ -20591,7 +20619,7 @@ if (globalTrace)
 }
 
 
-//Building function unBoxString from line: 174
+//Building function unBoxString from file q/base.qon, line: 174
 
 char* unBoxString(box b) {
   
@@ -20616,7 +20644,7 @@ if (globalTrace)
 }
 
 
-//Building function unBoxSymbol from line: 177
+//Building function unBoxSymbol from file q/base.qon, line: 177
 
 char* unBoxSymbol(box b) {
   
@@ -20635,7 +20663,7 @@ if (globalTrace)
 }
 
 
-//Building function unBoxBool from line: 178
+//Building function unBoxBool from file q/base.qon, line: 178
 
 bool unBoxBool(box b) {
   
@@ -20654,7 +20682,7 @@ if (globalTrace)
 }
 
 
-//Building function unBoxInt from line: 179
+//Building function unBoxInt from file q/base.qon, line: 179
 
 int unBoxInt(box b) {
   
@@ -20673,7 +20701,7 @@ if (globalTrace)
 }
 
 
-//Building function stringify_rec from line: 181
+//Building function stringify_rec from file q/base.qon, line: 181
 
 char* stringify_rec(box b) {
   
@@ -20706,7 +20734,7 @@ if (globalTrace)
 }
 
 
-//Building function stringify from line: 193
+//Building function stringify from file q/base.qon, line: 193
 
 char* stringify(box b) {
   
@@ -20823,7 +20851,7 @@ if (globalTrace)
 }
 
 
-//Building function hasTag from line: 228
+//Building function hasTag from file q/base.qon, line: 228
 
 bool hasTag(box aBox, box key) {
   
@@ -20856,7 +20884,7 @@ if (globalTrace)
 }
 
 
-//Building function getTag from line: 235
+//Building function getTag from file q/base.qon, line: 235
 
 box getTag(box aBox, box key) {
   
@@ -20907,7 +20935,7 @@ if (globalTrace)
 }
 
 
-//Building function getTagFail from line: 247
+//Building function getTagFail from file q/base.qon, line: 247
 
 box getTagFail(box aBox, box key, box onFail) {
   
@@ -20940,7 +20968,7 @@ if (globalTrace)
 }
 
 
-//Building function assocExists from line: 258
+//Building function assocExists from file q/base.qon, line: 258
 
 bool assocExists(char* key, box aBox) {
   
@@ -20973,7 +21001,7 @@ if (globalTrace)
 }
 
 
-//Building function assocFail from line: 267
+//Building function assocFail from file q/base.qon, line: 267
 
 box assocFail(char* key, box aBox, box onFail) {
   
@@ -21006,7 +21034,7 @@ if (globalTrace)
 }
 
 
-//Building function assocPanic from line: 274
+//Building function assocPanic from file q/base.qon, line: 274
 
 box assocPanic(char* key, box aBox, char* onFail) {
   
@@ -21051,7 +21079,7 @@ if (globalTrace)
 }
 
 
-//Building function setTag from line: 286
+//Building function setTag from file q/base.qon, line: 286
 
 box setTag(box key, list val, box aStruct) {
   
@@ -21076,7 +21104,7 @@ if (globalTrace)
 }
 
 
-//Building function locPanic from line: 295
+//Building function locPanic from file q/base.qon, line: 295
 
 void locPanic(char* file, char* line, char* message) {
   
@@ -21101,7 +21129,7 @@ if (globalTrace)
 }
 
 
-//Building function truthy from line: 301
+//Building function truthy from file q/base.qon, line: 301
 
 bool truthy(box aVal) {
   
@@ -21120,7 +21148,7 @@ if (globalTrace)
 }
 
 
-//Building function isNotFalse from line: 306
+//Building function isNotFalse from file q/base.qon, line: 306
 
 bool isNotFalse(box aVal) {
   
@@ -21167,7 +21195,7 @@ if (globalTrace)
 }
 
 
-//Building function toStr from line: 315
+//Building function toStr from file q/base.qon, line: 315
 
 box toStr(box thing) {
   
@@ -21186,7 +21214,7 @@ if (globalTrace)
 }
 
 
-//Building function listLast from line: 319
+//Building function listLast from file q/base.qon, line: 319
 
 box listLast(list alist) {
   
@@ -21219,7 +21247,7 @@ if (globalTrace)
 }
 
 
-//Building function newLine from line: 328
+//Building function newLine from file q/base.qon, line: 328
 
 void newLine(int indent) {
   
@@ -21244,7 +21272,7 @@ if (globalTrace)
 }
 
 
-//Building function printIndent from line: 332
+//Building function printIndent from file q/base.qon, line: 332
 
 void printIndent(int ii) {
   
@@ -21283,7 +21311,7 @@ if (globalTrace)
 }
 
 
-//Building function stringIndent from line: 339
+//Building function stringIndent from file q/base.qon, line: 339
 
 char* stringIndent(int ii) {
   
@@ -21316,7 +21344,7 @@ if (globalTrace)
 }
 
 
-//Building function argList from line: 354
+//Building function argList from file q/base.qon, line: 354
 
 list argList(int count, int pos, char** args) {
   
@@ -21349,7 +21377,7 @@ if (globalTrace)
 }
 
 
-//Building function tron from line: 364
+//Building function tron from file q/base.qon, line: 364
 
 void tron() {
   
@@ -21368,7 +21396,7 @@ if (globalTrace)
 }
 
 
-//Building function troff from line: 365
+//Building function troff from file q/base.qon, line: 365
 
 void troff() {
   
@@ -21387,7 +21415,7 @@ if (globalTrace)
 }
 
 
-//Building function stron from line: 366
+//Building function stron from file q/base.qon, line: 366
 
 void stron() {
   
@@ -21406,7 +21434,7 @@ if (globalTrace)
 }
 
 
-//Building function stroff from line: 367
+//Building function stroff from file q/base.qon, line: 367
 
 void stroff() {
   
@@ -21425,7 +21453,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3IsNil from line: 13
+//Building function ansi3IsNil from file q/shims/ansi3.qon, line: 13
 
 bool ansi3IsNil(void* a) {
   
@@ -21458,7 +21486,7 @@ if (globalTrace)
 }
 
 
-//Building function pointerAdd from line: 19
+//Building function pointerAdd from file q/shims/ansi3.qon, line: 19
 
 void* pointerAdd(void* a, int b) {
   
@@ -21477,7 +21505,7 @@ if (globalTrace)
 }
 
 
-//Building function getEnv from line: 23
+//Building function getEnv from file q/shims/ansi3.qon, line: 23
 
 char* getEnv(char* key) {
   
@@ -21496,7 +21524,7 @@ if (globalTrace)
 }
 
 
-//Building function panic from line: 27
+//Building function panic from file q/shims/ansi3.qon, line: 27
 
 void panic(char* s) {
   
@@ -21521,7 +21549,7 @@ if (globalTrace)
 }
 
 
-//Building function sub from line: 32
+//Building function sub from file q/shims/ansi3.qon, line: 32
 
 int sub(int a, int b) {
   
@@ -21540,7 +21568,7 @@ if (globalTrace)
 }
 
 
-//Building function mult from line: 36
+//Building function mult from file q/shims/ansi3.qon, line: 36
 
 float mult(int a, int b) {
   
@@ -21559,7 +21587,7 @@ if (globalTrace)
 }
 
 
-//Building function greaterthan from line: 40
+//Building function greaterthan from file q/shims/ansi3.qon, line: 40
 
 int greaterthan(int a, int b) {
   
@@ -21578,7 +21606,7 @@ if (globalTrace)
 }
 
 
-//Building function subf from line: 44
+//Building function subf from file q/shims/ansi3.qon, line: 44
 
 float subf(float a, float b) {
   
@@ -21597,7 +21625,7 @@ if (globalTrace)
 }
 
 
-//Building function multf from line: 48
+//Building function multf from file q/shims/ansi3.qon, line: 48
 
 float multf(float a, float b) {
   
@@ -21616,7 +21644,7 @@ if (globalTrace)
 }
 
 
-//Building function greaterthanf from line: 52
+//Building function greaterthanf from file q/shims/ansi3.qon, line: 52
 
 int greaterthanf(float a, float b) {
   
@@ -21635,7 +21663,7 @@ if (globalTrace)
 }
 
 
-//Building function equal from line: 56
+//Building function equal from file q/shims/ansi3.qon, line: 56
 
 int equal(int a, int b) {
   
@@ -21654,7 +21682,7 @@ if (globalTrace)
 }
 
 
-//Building function equalString from line: 60
+//Building function equalString from file q/shims/ansi3.qon, line: 60
 
 int equalString(char* a, char* b) {
   
@@ -21673,7 +21701,7 @@ if (globalTrace)
 }
 
 
-//Building function string_length from line: 64
+//Building function string_length from file q/shims/ansi3.qon, line: 64
 
 int string_length(char* s) {
   
@@ -21692,7 +21720,7 @@ if (globalTrace)
 }
 
 
-//Building function setSubString from line: 68
+//Building function setSubString from file q/shims/ansi3.qon, line: 68
 
 char* setSubString(char* target, int start, char* source) {
   
@@ -21717,7 +21745,7 @@ if (globalTrace)
 }
 
 
-//Building function sub_string from line: 74
+//Building function sub_string from file q/shims/ansi3.qon, line: 74
 
 char* sub_string(char* s, int start, int length) {
   char* substr = "";
@@ -21749,7 +21777,7 @@ if (globalTrace)
 }
 
 
-//Building function stringConcatenate from line: 81
+//Building function stringConcatenate from file q/shims/ansi3.qon, line: 81
 
 char* stringConcatenate(char* a, char* b) {
   int len = 0;
@@ -21794,7 +21822,7 @@ if (globalTrace)
 }
 
 
-//Building function intToString from line: 90
+//Building function intToString from file q/shims/ansi3.qon, line: 90
 
 char* intToString(int a) {
   int len = 0;
@@ -21833,7 +21861,7 @@ if (globalTrace)
 }
 
 
-//Building function gc_malloc from line: 98
+//Building function gc_malloc from file q/shims/ansi3.qon, line: 98
 
 void* gc_malloc(uint size) {
   
@@ -21852,7 +21880,7 @@ if (globalTrace)
 }
 
 
-//Building function makeArray from line: 103
+//Building function makeArray from file q/shims/ansi3.qon, line: 103
 
 int* makeArray(int length) {
   int* array = NULL;
@@ -21878,7 +21906,7 @@ if (globalTrace)
 }
 
 
-//Building function at from line: 109
+//Building function at from file q/shims/ansi3.qon, line: 109
 
 int at(int* arr, int index) {
   
@@ -21897,7 +21925,7 @@ if (globalTrace)
 }
 
 
-//Building function setAt from line: 114
+//Building function setAt from file q/shims/ansi3.qon, line: 114
 
 void setAt(int* array, int index, int value) {
   
@@ -21916,7 +21944,7 @@ if (globalTrace)
 }
 
 
-//Building function setCharAt from line: 119
+//Building function setCharAt from file q/shims/ansi3.qon, line: 119
 
 void setCharAt(char* array, int index, int value) {
   
@@ -21935,7 +21963,7 @@ if (globalTrace)
 }
 
 
-//Building function read_file from line: 124
+//Building function read_file from file q/shims/ansi3.qon, line: 124
 
 char* read_file(char* filename) {
   char* buffer = NULL;
@@ -22027,7 +22055,7 @@ if (globalTrace)
 }
 
 
-//Building function write_file from line: 144
+//Building function write_file from file q/shims/ansi3.qon, line: 144
 
 void write_file(char* filename, char* data) {
   char* buffer = NULL;
@@ -22075,7 +22103,7 @@ if (globalTrace)
 }
 
 
-//Building function getStringArray from line: 155
+//Building function getStringArray from file q/shims/ansi3.qon, line: 155
 
 char* getStringArray(int index, char** strs) {
   
@@ -22094,7 +22122,7 @@ if (globalTrace)
 }
 
 
-//Building function programArgs from line: 159
+//Building function programArgs from file q/shims/ansi3.qon, line: 159
 
 char** programArgs() {
   
@@ -22113,7 +22141,7 @@ if (globalTrace)
 }
 
 
-//Building function programArgsCount from line: 164
+//Building function programArgsCount from file q/shims/ansi3.qon, line: 164
 
 int programArgsCount() {
   
@@ -22132,7 +22160,7 @@ if (globalTrace)
 }
 
 
-//Building function main from line: 170
+//Building function main from file q/shims/ansi3.qon, line: 170
 
 int main(int argc, char** argv) {
   
@@ -22169,7 +22197,7 @@ if (globalTrace)
 }
 
 
-//Building function character from line: 178
+//Building function character from file q/shims/ansi3.qon, line: 178
 
 char* character(int num) {
   char* buffer = NULL;
@@ -22222,7 +22250,7 @@ if (globalTrace)
 }
 
 
-//Building function displays from line: 193
+//Building function displays from file q/shims/ansi3.qon, line: 193
 
 void displays(char* s) {
   
@@ -22241,7 +22269,7 @@ if (globalTrace)
 }
 
 
-//Building function start from line: 4
+//Building function start from file compiler.qon, line: 4
 
 int start() {
   bool runTests = false;
@@ -22883,6 +22911,12 @@ if (globalTrace)
     };
 
   };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from compiler.qon:136");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  return 0;;
 
 if (globalTrace)
     printf("Leaving start\n");

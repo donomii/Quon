@@ -364,6 +364,7 @@ sub node2Compile;
 sub node2Includes;
 sub node2Functions;
 sub node2Function;
+sub node2FunctionArgs;
 sub node2Declarations;
 sub javaFunctionArgs;
 sub javaLeaf;
@@ -14049,13 +14050,13 @@ if ($globalTrace) { printf("node2Includes at q/node2.qon:35\n") }
 }
 
 
-#Building function node2Functions from line: 69
+#Building function node2Functions from line: 70
 
 sub node2Functions {
   my $tree = shift;
 
   
-if ($globalTrace) { printf("node2Functions at q/node2.qon:69\n") }
+if ($globalTrace) { printf("node2Functions at q/node2.qon:70\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   if ( isEmpty($tree)) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
@@ -14068,30 +14069,25 @@ if ($globalTrace) { printf("node2Functions at q/node2.qon:69\n") }
 
   } else {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
-#standard expression
+#standard return: node2Functions
 
-    node2Function(car($tree))
-    ;
-    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+    if ($globalTrace) {printf("Leaving \n")}
 
-#standard expression
-
-    node2Functions(cdr($tree))
-    ;
+    return(cons(node2Function(car($tree)), node2Functions(cdr($tree))));
 
   };
 
 }
 
 
-#Building function node2Function from line: 77
+#Building function node2Function from line: 78
 
 sub node2Function {
   my $node = shift;
 
   my $name = undef;
 
-if ($globalTrace) { printf("node2Function at q/node2.qon:77\n") }
+if ($globalTrace) { printf("node2Function at q/node2.qon:78\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   if ( isNil($node)) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
@@ -14111,7 +14107,7 @@ if ($globalTrace) { printf("node2Function at q/node2.qon:77\n") }
 
     if ($globalTrace) {printf("Leaving \n")}
 
-    return(cons(boxString("\n\n//Building function "), cons(boxString(stringify($name)), cons(boxString(" from line: "), cons(boxString(stringify(getTag($name, boxString("line")))), $undef)))), "\n", "\n", "function ", stringify(subnameof($node)), "(", ") {", "\n", stringIndent(1), node2Declarations(declarationsof($node), 1), ListToString(flatten(ternList($releaseMode, boxString(""), cons(boxString("\nif (globalTrace)\n    {printf(\""), cons(boxString(stringify($name)), cons(boxString(" at "), cons(boxString(stringify(getTag($name, boxString("filename")))), cons(boxString(":"), cons(boxString(stringify(getTag($name, boxString("line")))), cons(boxString("\\n\");}\n"), $undef)))))))))), ListToString(flatten(node2Body(childrenof($node), 1))), ternString($releaseMode, "", ListToString("\nif (globalTrace)\n    {printf(\"Leaving ", stringify($name), "\\n\");}\n")), "\n}\n");
+    return(cons(boxString("\n\n//Building function "), cons(boxString(stringify($name)), cons(boxString(" from line: "), cons(boxString(stringify(getTag($name, boxString("line")))), $undef)))), "\n", "\n", "function ", stringify(subnameof($node)), "(", node2FunctionArgs(cdr(assoc("intype", cdr($node)))), ") {", "\n", stringIndent(1), node2Declarations(declarationsof($node), 1), ListToString(flatten(ternList($releaseMode, boxString(""), cons(boxString("\nif (globalTrace)\n    {printf(\""), cons(boxString(stringify($name)), cons(boxString(" at "), cons(boxString(stringify(getTag($name, boxString("filename")))), cons(boxString(":"), cons(boxString(stringify(getTag($name, boxString("line")))), cons(boxString("\\n\");}\n"), $undef)))))))))), ListToString(flatten(node2Body(childrenof($node), 1))), ternString($releaseMode, "", ListToString("\nif (globalTrace)\n    {printf(\"Leaving ", stringify($name), "\\n\");}\n")), "\n}\n");
 
   };
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
@@ -14125,7 +14121,37 @@ if ($globalTrace) { printf("node2Function at q/node2.qon:77\n") }
 }
 
 
-#Building function node2Declarations from line: 112
+#Building function node2FunctionArgs from line: 111
+
+sub node2FunctionArgs {
+  my $tree = shift;
+
+  
+if ($globalTrace) { printf("node2FunctionArgs at q/node2.qon:111\n") }
+  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+  if ( isEmpty($tree)) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard return: node2FunctionArgs
+
+    if ($globalTrace) {printf("Leaving \n")}
+
+    return(emptyList());
+
+  } else {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard return: node2FunctionArgs
+
+    if ($globalTrace) {printf("Leaving \n")}
+
+    return(cons(second($tree), cons(tern(isNil(cddr($tree)), boxString(""), boxString(",")), cons(node2FunctionArgs(cddr($tree)), emptyList()))));
+
+  };
+
+}
+
+
+#Building function node2Declarations from line: 122
 
 sub node2Declarations {
   my $decls = shift;
@@ -14133,7 +14159,7 @@ my $indent = shift;
 
   my $decl = undef;
 
-if ($globalTrace) { printf("node2Declarations at q/node2.qon:112\n") }
+if ($globalTrace) { printf("node2Declarations at q/node2.qon:122\n") }
   if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
 
   if ( isEmpty($decls)) {    if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
@@ -19157,6 +19183,13 @@ if ($globalTrace) { printf("start at compiler.qon:4\n") }
     };
 
   };
+  if ($globalStepTrace) {printf("StepTrace %s:%d\n", __FILE__, __LINE__)}
+
+#standard return: start
+
+  if ($globalTrace) {printf("Leaving \n")}
+
+  return(0);
 
 }
 ;

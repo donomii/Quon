@@ -2,7 +2,7 @@
 
 Quon features 100% interoperability with the target language.  You can call any function in the target language without needing complex declarations or a FFI, and any function in the target language can call any quon function, without any special calling conventions (but see the types section).
 
-Quon is a simple intermediate language, similar to C and Pascal, but simpler.  It is expected that it will be targetted by other compilers, so it has a rigid, verbose syntax that is easy to parse, and easy to auto-generate.  Despite that, it is perfectly possible to write programs in quon, and all development of quon happens in quon.  Quon is a self hosting compiler.
+Quon is a simple intermediate language, similar to C and Pascal, but simpler.  It has a rigid, verbose syntax that is easy to parse, and easy to auto-generate.  Despite that, it is perfectly possible to write programs in quon, and all development of quon happens in quon.  Quon is a self hosting compiler.
 
 Quon looks like LISP, but is very definitely not LISP.  There are no closures, no co-routines, and no other conveniences provided by modern languages.  Quon is very much a throwback to the 80's and earlier, where languages were simple and we still managed to write some interesting stuff.
 
@@ -37,13 +37,18 @@ Quon is the lowest common denominator across many programming languages, which i
 
 This shows off almost all the features of quon.  Every program must have an includes, types, and functions section, even if that section is empty.  If it is a program and not a library, it must have a "start" function, which is the equivalent of a "main" function.  The start function does not take any arguments, but you can access the command line arguments by calling "argList".
 
-Functions must have the following format, which is basically ansi C:
+Functions are defined like C88 functions, but with s-expressions instead of the full C syntax.
 
-    [returnType functionName [arguments]
-    [declare variables]
-    [body
-        statements
-    ]]
+(return-type function-name (type argname type argname ...)
+	(declare
+		(type variable-name initial-value)
+		...
+	)
+	(....)
+	(....)
+	(return ....)
+)
+
 
 All components are required.  Empty functions, and empty statements, are not permitted (fix this?).
 
@@ -102,3 +107,8 @@ which will be compiled to
 or similar, based on the target language.
 
 Note that just like functions, quon types are the lowest common denominator shared across all target languages.  So quon does not support union types, HM types, or any other 'advanced' type features.
+
+Type modifiers like "const" are almost always unportable, so they usually only appear in the platform-specific shims.
+
+Quon does not parse or understand things like the * in ```Box*```, it treats it like another type.  Quon does not directly support pointers, but probably will later.
+
