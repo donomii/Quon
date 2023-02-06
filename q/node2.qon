@@ -16,6 +16,8 @@
                     (alistCons (boxString "functions") (astFunctions (third tree)) (emptyList)))))
 
     (set program (mergeIncludes program))
+(qlog "Loading shim node2\n")
+  (set program (buildProg (cons (boxString "q/shims/node2.qon") (getIncludes program)) (getTypes program) (getFunctions program))) ;FIXME check includes are recursive
 
     (return 
         (cons (node2Includes (cdr (assoc "includes" program)))
@@ -62,6 +64,7 @@
     "var NULL = null;"
     "var globalArgs;\nvar globalArgsCount;\nvar globalTrace = false;\nvar globalStepTrace = false;\nvar releaseMode = false;\n"
     "function character(num) {}"))
+
 ))
 
 
@@ -70,42 +73,52 @@
    (body
     (if (isEmpty tree)
       (then (return (emptyList)))
-      (else (node2Function (car tree)) (node2Functions (cdr tree))))))
+      (else (return (cons (node2Function (car tree)) (node2Functions (cdr tree))))))))
 
 
   (list node2Function (list node) (declare (box name nil))
    (body
-   (if (isNil node)
+    (if (isNil node)
+        (then (return (emptyList)))
+        (else
+          (set name (subnameof node))
+          (return  (stringList
+              "\n\n//Building function "
+              (stringify name)
+              " from line: "
+              (stringify (getTag name (boxString "line"))))
+              "\n"
+              "\n"
+              "function "
+              (stringify (subnameof node))
+              "("
+                  
+              ;(node2FunctionArgs (cdr (assoc "intype" (cdr node))))
+              ") {"
+              "\n"
+              (stringIndent 1)
+              (node2Declarations (declarationsof node) 1)
+              (ListToString (flatten (ternList releaseMode
+              (boxString "")
+              (stringList "\nif (globalTrace)\n    {printf(\"" (stringify name) " at " (stringify (getTag name (boxString "filename"))) ":" (stringify (getTag name (boxString "line"))) "\\n\");}\n"   ))))
+              (ListToString (flatten (node2Body (childrenof node) 1)))
+              (ternString releaseMode
+                  ""
+                  (ListToString "\nif (globalTrace)\n    {printf(\"Leaving " (stringify name) "\\n\");}\n" ))
+                  "\n}\n")))
+                  
+                  (return (emptyList))))
+
+(list node2Declarations (list decls int indent) (declare (box decl nil))
+   (body
+    (if (isEmpty decls)
       (then (return (emptyList)))
       (else
-        (set name (subnameof node))
-        (return  (stringList
-            "\n\n//Building function "
-            (stringify name)
-            " from line: "
-            (stringify (getTag name (boxString "line"))))
-            "\n"
-            "\n"
-                "function "
-                (stringify (subnameof node))
-                "("
-                
-            ;(node2FunctionArgs (cdr (assoc "intype" (cdr node))))
-            ") {"
-            "\n"
-            (stringIndent 1)
-            ;(node2Declarations (declarationsof node) 1)
-            (ListToString (flatten (ternList releaseMode
-            (boxString "")
-            (stringList "\nif (globalTrace)\n    {printf(\"" (stringify name) " at " (stringify (getTag name (boxString "filename"))) ":" (stringify (getTag name (boxString "line"))) "\\n\");}\n"   ))))
-            (ListToString (flatten (node2Body (childrenof node) 1)))
-            (ternString releaseMode
-                ""
-                
-                    (ListToString "\nif (globalTrace)\n    {printf(\"Leaving " (stringify name) "\\n\");}\n" )
-                    )
-                "\n}\n")))
-                
-                (return (emptyList))))
+       (set decl (car decls))
+       (return (cons (boxString "var %s = ")
+        (cons  (second decl)
+       (cons (nodeFuncMap (third decl))
+       (cons (boxString ";\n")
+       (node2Declarations (cdr decls) indent))))))))))
 
  )) 
