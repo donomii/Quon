@@ -2564,6 +2564,11 @@ caller = "node2Compile:Unknown file:-1"
 caller = "node2Compile:Unknown file:-1"
   program = mergeIncludes(program)
 caller = "node2Compile:Unknown file:-1"
+  qlog("Loading shim node2\n");
+
+caller = "node2Compile:Unknown file:-1"
+  program = buildProg(cons(boxString("q/shims/node2.qon"), getIncludes(program)), getTypes(program), getFunctions(program))
+caller = "node2Compile:Unknown file:-1"
   return cons(node2Includes(cdr(assoc("includes", program))), cons(boxString("\nvar globalStackTrace = NULL;\n"), cons(boxString("\nvar caller = \"\";\n"), cons(boxString("\nfunction isNil(p) {\n    return p == NULL;\n}\n\n"), cons(node2Functions(cdr(assoc("children", cdr(cdr(assoc("functions", program)))))), cons(boxString("\n"), cons(boxString("const [asfdasdf, ...qwerqwer] = process.argv;"), cons(boxString("globalArgs = qwerqwer;"), cons(boxString("globalArgsCount = qwerqwer.length;"), cons(boxString("start();\n"), emptyList()))))))))))
 
 end
@@ -2611,6 +2616,24 @@ caller = ":Unknown file:-1"
 
 caller = "node2Function:Unknown file:-1"
   return emptyList()
+
+end
+-- Chose function name node2Declarations
+function node2Declarations(decls,indent)
+print("caller: ", caller, "-> node2Declarations")
+local decl =nil
+caller = "node2Declarations:Unknown file:-1"
+  if isEmpty(decls) then
+caller = ":Unknown file:-1"
+      return emptyList()
+
+  else
+caller = ":Unknown file:-1"
+      decl = car(decls)
+caller = ":Unknown file:-1"
+      return cons(boxString("var %s = "), cons(second(decl), cons(nodeFuncMap(third(decl)), cons(boxString(";\n"), node2Declarations(cdr(decls), indent)))))
+
+  end
 
 end
 -- Chose function name nodeFunctionArgs
@@ -4460,7 +4483,7 @@ local name =nil
 caller = "ansi3Function:Unknown file:-1"
   name = second(node)
 caller = "ansi3Function:Unknown file:-1"
-  printf("\n\n//Building function %s from line: %s", stringify(name), stringify(getTag(name, boxString("line"))));
+  printf("\n\n//Building function %s from file %s, line: %s", stringify(name), stringify(getTag(name, boxString("filename"))), stringify(getTag(name, boxString("line"))));
 
 caller = "ansi3Function:Unknown file:-1"
   newLine(0);
@@ -7678,6 +7701,38 @@ caller = ":Unknown file:-1"
   end
 
 end
+-- Chose function name display
+function display(l)
+print("caller: ", caller, "-> display")
+caller = "display:Unknown file:-1"
+  if isEmpty(l) then
+caller = ":Unknown file:-1"
+      printf("nil ");
+
+caller = ":Unknown file:-1"
+      return 
+
+  else
+caller = ":Unknown file:-1"
+      if isList(l) then
+caller = ":Unknown file:-1"
+          printf("[");
+
+caller = ":Unknown file:-1"
+          displayList(l, 0, true);
+
+caller = ":Unknown file:-1"
+          printf("]");
+
+      else
+caller = ":Unknown file:-1"
+          displayList(l, 0, true);
+
+      end
+
+  end
+
+end
 -- Chose function name displayList
 function displayList(l,indent,first)
 print("caller: ", caller, "-> displayList")
@@ -7969,6 +8024,29 @@ function reverseList(l)
 print("caller: ", caller, "-> reverseList")
 caller = "reverseList:Unknown file:-1"
   return reverseRec(l, nil)
+
+end
+-- Chose function name flatten
+function flatten(tree)
+print("caller: ", caller, "-> flatten")
+caller = "flatten:Unknown file:-1"
+  if isEmpty(tree) then
+caller = ":Unknown file:-1"
+      return emptyList()
+
+  else
+caller = ":Unknown file:-1"
+      if isList(car(tree)) then
+caller = ":Unknown file:-1"
+          return concatenateLists(flatten(car(tree)), flatten(cdr(tree)))
+
+      else
+caller = ":Unknown file:-1"
+          return cons(car(tree), flatten(cdr(tree)))
+
+      end
+
+  end
 
 end
 -- Chose function name macrowalk
@@ -9334,38 +9412,6 @@ caller = ":Unknown file:-1"
   end
 
 end
--- Chose function name display
-function display(l)
-print("caller: ", caller, "-> display")
-caller = "display:Unknown file:-1"
-  if isEmpty(l) then
-caller = ":Unknown file:-1"
-      printf("nil ");
-
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      if isList(l) then
-caller = ":Unknown file:-1"
-          printf("[");
-
-caller = ":Unknown file:-1"
-          displayList(l, 0, true);
-
-caller = ":Unknown file:-1"
-          printf("]");
-
-      else
-caller = ":Unknown file:-1"
-          displayList(l, 0, true);
-
-      end
-
-  end
-
-end
 -- Chose function name openBrace
 function openBrace()
 print("caller: ", caller, "-> openBrace")
@@ -9508,6 +9554,9 @@ caller = ":Unknown file:-1"
           display(abox);
 
 caller = ":Unknown file:-1"
+          display(cons(boxString("\nToken may have been read from "), cons(boxString(stringify(getTagFail(abox, boxString("filename"), boxString("source file not found")))), cons(boxString(":"), cons(boxString(stringify(getTagFail(abox, boxString("line"), boxString("source line not found")))), nil)))));
+
+caller = ":Unknown file:-1"
           panic("Invalid type!");
 
       end
@@ -9519,7 +9568,7 @@ end
 function unBoxString(b)
 print("caller: ", caller, "-> unBoxString")
 caller = "unBoxString:Unknown file:-1"
-  assertType("string", b, 181, "q/base.qon");
+  assertType("string", b, 175, "q/base.qon");
 
 caller = "unBoxString:Unknown file:-1"
   return b.str
@@ -10110,10 +10159,7 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
                   if runNode2 then
 caller = ":Unknown file:-1"
-                      node2Compile(unBoxString(filename));
-
-caller = ":Unknown file:-1"
-                      printf("\n");
+                      printf(StringListJoin(flatten(node2Compile(unBoxString(filename))), " "));
 
                   else
 caller = ":Unknown file:-1"

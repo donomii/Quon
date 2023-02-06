@@ -209,29 +209,7 @@ public boolean equalBox(Box a,Box b) {
 }
 
 
-//Building function display from line: 92
-
-public void display(Box l) {
-    
-  if ( isEmpty(l)) {    
-    System.out.printf("nil ");    
-    return;
-  } else {    
-    if ( isList(l)) {      
-      System.out.printf("[");      
-      displayList(l, 0, true);      
-      System.out.printf("]");
-    } else {      
-      displayList(l, 0, true);
-    }
-  }
-if (globalTrace)
-   System.out. printf("Leaving display\n");
-
-}
-
-
-//Building function openBrace from line: 101
+//Building function openBrace from line: 94
 
 public String openBrace() {
     
@@ -239,7 +217,7 @@ public String openBrace() {
 }
 
 
-//Building function closeBrace from line: 102
+//Building function closeBrace from line: 95
 
 public String closeBrace() {
     
@@ -247,7 +225,7 @@ public String closeBrace() {
 }
 
 
-//Building function boxType from line: 107
+//Building function boxType from line: 100
 
 public String boxType(Box b) {
     
@@ -255,7 +233,7 @@ public String boxType(Box b) {
 }
 
 
-//Building function makeBox from line: 110
+//Building function makeBox from line: 103
 
 public Box makeBox() {
   Box b = null;
@@ -274,7 +252,7 @@ public Box makeBox() {
 }
 
 
-//Building function makePair from line: 125
+//Building function makePair from line: 118
 
 public Box makePair() {
     
@@ -282,7 +260,7 @@ public Box makePair() {
 }
 
 
-//Building function boxString from line: 131
+//Building function boxString from line: 124
 
 public Box boxString(String s) {
   Box b = null;
@@ -295,7 +273,7 @@ public Box boxString(String s) {
 }
 
 
-//Building function boxSymbol from line: 141
+//Building function boxSymbol from line: 134
 
 public Box boxSymbol(String s) {
   Box b = null;
@@ -306,7 +284,7 @@ public Box boxSymbol(String s) {
 }
 
 
-//Building function boxBool from line: 150
+//Building function boxBool from line: 143
 
 public Box boxBool(boolean boo) {
   Box b = null;
@@ -318,7 +296,7 @@ public Box boxBool(boolean boo) {
 }
 
 
-//Building function boxInt from line: 159
+//Building function boxInt from line: 152
 
 public Box boxInt(Integer val) {
   Box b = null;
@@ -330,7 +308,7 @@ public Box boxInt(Integer val) {
 }
 
 
-//Building function assertType from line: 168
+//Building function assertType from line: 161
 
 public void assertType(String atype,Box abox,Integer line,String file) {
     
@@ -346,22 +324,23 @@ public void assertType(String atype,Box abox,Integer line,String file) {
     } else {      
       System.out.printf("Assertion failure at line %d, in file %s: provided value is not a '%s'!  It was actually '%s'. Contents:", line, file, atype, boxType(abox));      
       display(abox);      
+      display(cons(boxString("\nToken may have been read from "), cons(boxString(stringify(getTagFail(abox, boxString("filename"), boxString("source file not found")))), cons(boxString(":"), cons(boxString(stringify(getTagFail(abox, boxString("line"), boxString("source line not found")))), null)))));      
       panic("Invalid type!");
     }
   }
 }
 
 
-//Building function unBoxString from line: 180
+//Building function unBoxString from line: 174
 
 public String unBoxString(Box b) {
     
-  assertType("string", b, 181, "q/base.qon");  
+  assertType("string", b, 175, "q/base.qon");  
   return(b.str);
 }
 
 
-//Building function unBoxSymbol from line: 183
+//Building function unBoxSymbol from line: 177
 
 public String unBoxSymbol(Box b) {
     
@@ -369,7 +348,7 @@ public String unBoxSymbol(Box b) {
 }
 
 
-//Building function unBoxBool from line: 184
+//Building function unBoxBool from line: 178
 
 public boolean unBoxBool(Box b) {
     
@@ -377,7 +356,7 @@ public boolean unBoxBool(Box b) {
 }
 
 
-//Building function unBoxInt from line: 185
+//Building function unBoxInt from line: 179
 
 public Integer unBoxInt(Box b) {
     
@@ -385,7 +364,7 @@ public Integer unBoxInt(Box b) {
 }
 
 
-//Building function stringify_rec from line: 187
+//Building function stringify_rec from line: 181
 
 public String stringify_rec(Box b) {
     
@@ -397,7 +376,7 @@ public String stringify_rec(Box b) {
 }
 
 
-//Building function stringify from line: 199
+//Building function stringify from line: 193
 
 public String stringify(Box b) {
     
@@ -433,7 +412,7 @@ public String stringify(Box b) {
 }
 
 
-//Building function hasTag from line: 234
+//Building function hasTag from line: 228
 
 public boolean hasTag(Box aBox,Box key) {
     
@@ -445,7 +424,7 @@ public boolean hasTag(Box aBox,Box key) {
 }
 
 
-//Building function getTag from line: 241
+//Building function getTag from line: 235
 
 public Box getTag(Box aBox,Box key) {
     
@@ -460,7 +439,7 @@ public Box getTag(Box aBox,Box key) {
 }
 
 
-//Building function getTagFail from line: 253
+//Building function getTagFail from line: 247
 
 public Box getTagFail(Box aBox,Box key,Box onFail) {
     
@@ -472,7 +451,7 @@ public Box getTagFail(Box aBox,Box key,Box onFail) {
 }
 
 
-//Building function assocExists from line: 264
+//Building function assocExists from line: 258
 
 public boolean assocExists(String key,Box aBox) {
     
@@ -484,7 +463,7 @@ public boolean assocExists(String key,Box aBox) {
 }
 
 
-//Building function assocFail from line: 273
+//Building function assocFail from line: 267
 
 public Box assocFail(String key,Box aBox,Box onFail) {
     
@@ -496,7 +475,7 @@ public Box assocFail(String key,Box aBox,Box onFail) {
 }
 
 
-//Building function assocPanic from line: 280
+//Building function assocPanic from line: 274
 
 public Box assocPanic(String key,Box aBox,String onFail) {
     
@@ -510,7 +489,7 @@ public Box assocPanic(String key,Box aBox,String onFail) {
 }
 
 
-//Building function setTag from line: 292
+//Building function setTag from line: 286
 
 public Box setTag(Box key,Box val,Box aStruct) {
     
@@ -519,7 +498,7 @@ public Box setTag(Box key,Box val,Box aStruct) {
 }
 
 
-//Building function locPanic from line: 301
+//Building function locPanic from line: 295
 
 public void locPanic(String file,String line,String message) {
     
@@ -531,7 +510,7 @@ if (globalTrace)
 }
 
 
-//Building function truthy from line: 307
+//Building function truthy from line: 301
 
 public boolean truthy(Box aVal) {
     
@@ -539,7 +518,7 @@ public boolean truthy(Box aVal) {
 }
 
 
-//Building function isNotFalse from line: 312
+//Building function isNotFalse from line: 306
 
 public boolean isNotFalse(Box aVal) {
     
@@ -555,7 +534,7 @@ public boolean isNotFalse(Box aVal) {
 }
 
 
-//Building function toStr from line: 321
+//Building function toStr from line: 315
 
 public Box toStr(Box thing) {
     
@@ -563,7 +542,7 @@ public Box toStr(Box thing) {
 }
 
 
-//Building function listLast from line: 325
+//Building function listLast from line: 319
 
 public Box listLast(Box alist) {
     
@@ -575,7 +554,7 @@ public Box listLast(Box alist) {
 }
 
 
-//Building function newLine from line: 334
+//Building function newLine from line: 328
 
 public void newLine(Integer indent) {
     
@@ -587,7 +566,7 @@ if (globalTrace)
 }
 
 
-//Building function printIndent from line: 338
+//Building function printIndent from line: 332
 
 public void printIndent(Integer ii) {
     
@@ -603,7 +582,7 @@ if (globalTrace)
 }
 
 
-//Building function stringIndent from line: 345
+//Building function stringIndent from line: 339
 
 public String stringIndent(Integer ii) {
     
@@ -615,7 +594,7 @@ public String stringIndent(Integer ii) {
 }
 
 
-//Building function argList from line: 360
+//Building function argList from line: 354
 
 public Box argList(Integer count,Integer pos,String[] args) {
     
@@ -627,7 +606,7 @@ public Box argList(Integer count,Integer pos,String[] args) {
 }
 
 
-//Building function tron from line: 370
+//Building function tron from line: 364
 
 public void tron() {
     
@@ -635,7 +614,7 @@ public void tron() {
 }
 
 
-//Building function troff from line: 371
+//Building function troff from line: 365
 
 public void troff() {
     
@@ -643,7 +622,7 @@ public void troff() {
 }
 
 
-//Building function stron from line: 372
+//Building function stron from line: 366
 
 public void stron() {
     
@@ -651,7 +630,7 @@ public void stron() {
 }
 
 
-//Building function stroff from line: 373
+//Building function stroff from line: 367
 
 public void stroff() {
     
@@ -1901,7 +1880,29 @@ public Box alistKeys(Box alist) {
 }
 
 
-//Building function displayList from line: 255
+//Building function display from line: 255
+
+public void display(Box l) {
+    
+  if ( isEmpty(l)) {    
+    System.out.printf("nil ");    
+    return;
+  } else {    
+    if ( isList(l)) {      
+      System.out.printf("[");      
+      displayList(l, 0, true);      
+      System.out.printf("]");
+    } else {      
+      displayList(l, 0, true);
+    }
+  }
+if (globalTrace)
+   System.out. printf("Leaving display\n");
+
+}
+
+
+//Building function displayList from line: 264
 
 public void displayList(Box l,Integer indent,boolean first) {
   Box val = null;
@@ -1947,7 +1948,7 @@ if (globalTrace)
 }
 
 
-//Building function StringListJoinRec from line: 286
+//Building function StringListJoinRec from line: 295
 
 public String StringListJoinRec(Box l,String sep) {
   Box val = null;
@@ -1972,7 +1973,7 @@ public String StringListJoinRec(Box l,String sep) {
 }
 
 
-//Building function StringListJoin from line: 309
+//Building function StringListJoin from line: 318
 
 public String StringListJoin(Box l,String sep) {
   Box val = null;
@@ -1985,7 +1986,7 @@ public String StringListJoin(Box l,String sep) {
 }
 
 
-//Building function ListToBoxString from line: 319
+//Building function ListToBoxString from line: 328
 
 public Box ListToBoxString(Box l) {
     
@@ -1993,7 +1994,7 @@ public Box ListToBoxString(Box l) {
 }
 
 
-//Building function ListToString from line: 324
+//Building function ListToString from line: 333
 
 public String ListToString(Box l,Integer indent,boolean first,boolean withNewLines) {
   Box val = null;
@@ -2019,7 +2020,7 @@ public String ListToString(Box l,Integer indent,boolean first,boolean withNewLin
 }
 
 
-//Building function listReverse from line: 364
+//Building function listReverse from line: 373
 
 public Box listReverse(Box l) {
     
@@ -2031,7 +2032,7 @@ public Box listReverse(Box l) {
 }
 
 
-//Building function inList from line: 370
+//Building function inList from line: 379
 
 public boolean inList(Box item,Box l) {
     
@@ -2047,7 +2048,7 @@ public boolean inList(Box item,Box l) {
 }
 
 
-//Building function equalList from line: 380
+//Building function equalList from line: 389
 
 public boolean equalList(Box a,Box b) {
     
@@ -2075,7 +2076,7 @@ public boolean equalList(Box a,Box b) {
 }
 
 
-//Building function reverseRec from line: 403
+//Building function reverseRec from line: 412
 
 public Box reverseRec(Box oldL,Box newL) {
     
@@ -2087,11 +2088,27 @@ public Box reverseRec(Box oldL,Box newL) {
 }
 
 
-//Building function reverseList from line: 410
+//Building function reverseList from line: 419
 
 public Box reverseList(Box l) {
     
   return(reverseRec(l, null));
+}
+
+
+//Building function flatten from line: 424
+
+public Box flatten(Box tree) {
+    
+  if ( isEmpty(tree)) {    
+    return(emptyList());
+  } else {    
+    if ( isList(car(tree))) {      
+      return(concatenateLists(flatten(car(tree)), flatten(cdr(tree))));
+    } else {      
+      return(cons(car(tree), flatten(cdr(tree))));
+    }
+  }
 }
 
 
@@ -4076,7 +4093,7 @@ public void ansi3Function(Box node) {
   Box name = null;
   
   name = second(node);  
-  System.out.printf("\n\n//Building function %s from line: %s", stringify(name), stringify(getTag(name, boxString("line"))));  
+  System.out.printf("\n\n//Building function %s from file %s, line: %s", stringify(name), stringify(getTag(name, boxString("filename"))), stringify(getTag(name, boxString("line"))));  
   newLine(0);  
   if ( isNil(node)) {    
     return;
@@ -5453,11 +5470,13 @@ Box program = null;
   tree = readSexpr(programStr, filename);  
   program = alistCons(boxString("includes"), astIncludes(first(tree)), alistCons(boxString("types"), astTypes(second(tree)), alistCons(boxString("functions"), astFunctions(third(tree)), emptyList())));  
   program = mergeIncludes(program);  
+  System.err.printf("Loading shim node2\n");  
+  program = buildProg(cons(boxString("q/shims/node2.qon"), getIncludes(program)), getTypes(program), getFunctions(program));  
   return(cons(node2Includes(cdr(assoc("includes", program))), cons(boxString("\nvar globalStackTrace = NULL;\n"), cons(boxString("\nvar caller = \"\";\n"), cons(boxString("\nfunction isNil(p) {\n    return p == NULL;\n}\n\n"), cons(node2Functions(cdr(assoc("children", cdr(cdr(assoc("functions", program)))))), cons(boxString("\n"), cons(boxString("const [asfdasdf, ...qwerqwer] = process.argv;"), cons(boxString("globalArgs = qwerqwer;"), cons(boxString("globalArgsCount = qwerqwer.length;"), cons(boxString("start();\n"), emptyList())))))))))));
 }
 
 
-//Building function node2Includes from line: 33
+//Building function node2Includes from line: 35
 
 public Box node2Includes(Box nodes) {
     
@@ -5465,7 +5484,7 @@ public Box node2Includes(Box nodes) {
 }
 
 
-//Building function node2Functions from line: 68
+//Building function node2Functions from line: 69
 
 public Box node2Functions(Box tree) {
     
@@ -5478,7 +5497,7 @@ public Box node2Functions(Box tree) {
 }
 
 
-//Building function node2Function from line: 76
+//Building function node2Function from line: 77
 
 public Box node2Function(Box node) {
   Box name = null;
@@ -5487,9 +5506,23 @@ public Box node2Function(Box node) {
     return(emptyList());
   } else {    
     name = subnameof(node);    
-    return(cons(boxString("\n\n//Building function "), cons(boxString(stringify(name)), cons(boxString(" from line: "), cons(boxString(stringify(getTag(name, boxString("line")))), null)))), "\n", "\n", "function ", stringify(subnameof(node)), "(", ") {", "\n", stringIndent(1), ListToString(flatten(ternList(releaseMode, boxString(""), cons(boxString("\nif (globalTrace)\n    {printf(\""), cons(boxString(stringify(name)), cons(boxString(" at "), cons(boxString(stringify(getTag(name, boxString("filename")))), cons(boxString(":"), cons(boxString(stringify(getTag(name, boxString("line")))), cons(boxString("\\n\");}\n"), null)))))))))), ListToString(flatten(nodeBody(childrenof(node), 1))), ternString(releaseMode, "", ListToString("\nif (globalTrace)\n    {printf(\"Leaving ", stringify(name), "\\n\");}\n")), "\n}\n");
+    return(cons(boxString("\n\n//Building function "), cons(boxString(stringify(name)), cons(boxString(" from line: "), cons(boxString(stringify(getTag(name, boxString("line")))), null)))), "\n", "\n", "function ", stringify(subnameof(node)), "(", ") {", "\n", stringIndent(1), node2Declarations(declarationsof(node), 1), ListToString(flatten(ternList(releaseMode, boxString(""), cons(boxString("\nif (globalTrace)\n    {printf(\""), cons(boxString(stringify(name)), cons(boxString(" at "), cons(boxString(stringify(getTag(name, boxString("filename")))), cons(boxString(":"), cons(boxString(stringify(getTag(name, boxString("line")))), cons(boxString("\\n\");}\n"), null)))))))))), ListToString(flatten(node2Body(childrenof(node), 1))), ternString(releaseMode, "", ListToString("\nif (globalTrace)\n    {printf(\"Leaving ", stringify(name), "\\n\");}\n")), "\n}\n");
   }  
   return(emptyList());
+}
+
+
+//Building function node2Declarations from line: 112
+
+public Box node2Declarations(Box decls,Integer indent) {
+  Box decl = null;
+  
+  if ( isEmpty(decls)) {    
+    return(emptyList());
+  } else {    
+    decl = car(decls);    
+    return(cons(boxString("var %s = "), cons(second(decl), cons(nodeFuncMap(third(decl)), cons(boxString(";\n"), node2Declarations(cdr(decls), indent))))));
+  }
 }
 
 
@@ -7264,8 +7297,7 @@ boolean runTree = false;
           System.out.printf("\n");
         } else {          
           if ( runNode2) {            
-            node2Compile(unBoxString(filename));            
-            System.out.printf("\n");
+            System.out.printf(StringListJoin(flatten(node2Compile(unBoxString(filename))), " "));
           } else {            
             if ( runPerl) {              
               perlCompile(unBoxString(filename));              
