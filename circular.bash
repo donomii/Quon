@@ -8,7 +8,7 @@ echo Preparing quon1.c
 rm working/quon2
 rm working/quon2.exe
 echo Compiling quon1.c into quon2
-gcc -O3 -Wl,-stack_size,4000000 working/quon1.c -o working/quon2 -Wno-unknown-escape-sequence -Wno-parentheses-equality
+gcc -O3 -Wl,-stack_size,4000000 -Wno-format-security working/quon1.c -o working/quon2 -Wno-unknown-escape-sequence -Wno-parentheses-equality
 echo Testing quon2
 ./working/quon2 --test
 #./working/quon_new compiler.qon
@@ -20,5 +20,5 @@ echo Removing quon1
 rm working/quon1
 rm working/quon1.exe
 echo Compiling quon1.c into quon1
-gcc -O3 -Wl,-stack_size,4000000 working/quon2.c -o working/quon1 -Wno-unknown-escape-sequence -Wno-parentheses-equality
+gcc -O3 -Wl,-stack_size,4000000 -Wno-format-security working/quon2.c -o working/quon1 -Wno-unknown-escape-sequence -Wno-parentheses-equality
 #bash circular.bash
