@@ -221,7 +221,7 @@
   (void ansi3Function (list node) (declare (box name nil))
    (body
     (set name  (second node))
-    (printf "\n\n//Building function %s from line: %s" (stringify name) (stringify (getTag name (boxString "line"))))
+    (printf "\n\n//Building function %s from file %s, line: %s" (stringify name) (stringify (getTag name (boxString "filename"))) (stringify (getTag name (boxString "line"))))
     (newLine 0)
     (if (isNil node)
       (then (return))
