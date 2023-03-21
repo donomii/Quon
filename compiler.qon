@@ -1,3 +1,4 @@
+;  compiler.qon - the compiler for quon
 ((includes q/base.qon q/compiler.qon q/macros.qon q/lists.qon q/newparser.qon q/perl.qon q/ansi.qon q/ansi2.qon q/ansi3.qon q/tests.qon q/node.qon q/node2.qon q/java.qon q/lua.qon q/boolean.qon q/imaginary.qon q/bash.qon)
  (types)
  (functions
@@ -6,7 +7,8 @@
  (declare
   (bool runTests false)
   (list cmdLine nil)
-  (box filename nil)
+  (box filenameBox nil)
+  (string filename "")
   (bool runPerl false)
   (bool runJava false)
   (bool runAst false)
@@ -22,8 +24,9 @@
     (set cmdLine (listReverse (argList globalArgsCount 0 globalArgs)))
     ;(printf "//") (display cmdLine)
     (if (> (listLength cmdLine) 1)
-      (then (set filename (second cmdLine)))
-      (else (set filename (boxString "compiler.qon"))))
+      (then (set filenameBox (second cmdLine)))
+      (else (set filenameBox (boxString "compiler.qon"))))
+    (set filename (unBoxString filenameBox))
     ;(printf "#Parsing file: ")(display filename)(newLine 0)
     (set releaseMode (inList (boxString "--release") cmdLine))
     (set runTests (inList (boxString "--test") cmdLine))
@@ -96,39 +99,39 @@
        (beers 9))
       (else
       (if runTree
-      (then (display (macrowalk (treeCompile (unBoxString filename)))))
+      (then (display (macrowalk (treeCompile  filename))))
       (else
       (if runAst
-      (then (astCompile (unBoxString filename)))
+      (then (astCompile  filename))
       (else (if runNode
       (then
-      (nodeCompile (unBoxString filename)) (printf "\n"))
+      (nodeCompile filename) (printf "\n"))
       (else (if runNode2
       (then
-      (printf (StringListJoin (flatten (node2Compile (unBoxString filename))) " ")))
+      (printf (StringListJoin (flatten (node2Compile  filename)) " ")))
       (else
       (if runPerl
-      (then (perlCompile (unBoxString filename)) (printf "\n"))
+      (then (perlCompile  filename) (printf "\n"))
       (else
       (if runJava
-      (then (javaCompile (unBoxString filename)) (printf "\n"))
+      (then (javaCompile  filename) (printf "\n"))
       (else
       (if runLua
-      (then (luaCompile (unBoxString filename)) (printf "\n"))
+      (then (luaCompile  filename) (printf "\n"))
       (else
       (if runIma
-      (then (imaCompile (unBoxString filename)) (printf "\n"))
+      (then (imaCompile  filename) (printf "\n"))
       (else
       (if runAnsi2
-      (then (ansi2Compile (unBoxString filename)) (printf "\n"))
+      (then (ansi2Compile  filename) (printf "\n"))
       (else
       (if runAnsi3
-      (then (ansi3Compile (unBoxString filename)) (printf "\n"))
+      (then (ansi3Compile  filename) (printf "\n"))
 	  (else
       (if runBash
-      (then (bashCompile (unBoxString filename)) (printf "\n"))
+      (then (bashCompile  filename) (printf "\n"))
 	  (else
-      (ansi3Compile (unBoxString filename)) (printf "\n"))))))))))))))))))
+      (ansi3Compile  filename) (printf "\n"))))))))))))))))))
       ))))))
     
     (return 0)
