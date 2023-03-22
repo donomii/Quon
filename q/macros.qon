@@ -44,7 +44,7 @@
           (if (equalString (stringConcatenate "makeL" "ist") (stringify (car l)))
           (then
         
-          (return  (doMakeList (cdr l))))
+          (return  (car (doInterpolatedList (cdr l)))))
           (else))
 		  
             (return   (cons (macrowalk (car l) ) (macrowalk (cdr l) ))))
