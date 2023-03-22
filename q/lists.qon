@@ -141,7 +141,9 @@
                     
                       
                   (return (boxString (stringConcatenate "Unsupported type: " (boxType b))))))))))))))))
-	
+
+
+; Is roughly (quote ...) in lisp.  Boxes every element of the list and conses them together
  (list doMultiList (list l) (declare (list newlist nil) (list ret nil) (box elem nil))
  (body
  (if (isNil l)
@@ -164,7 +166,63 @@
     )
  (return ret))) ))))
 
- (list doMakeList (list l) (declare (list newlist nil) (list ret nil) (box elem nil))
+ (bool isInt (string val) (declare 
+ (string firstLetter (sub-string val 0 1)))
+  (body
+  ;(printf "isInt: %s\n" firstLetter)
+  (if (equalString "-" firstLetter)
+  (then (return true))
+  (else (if (equalString "0" firstLetter)
+  (then (return true))
+  (else (if (equalString "1" firstLetter)
+  (then (return true))
+  (else (if (equalString "2" firstLetter)
+  (then (return true))
+  (else (if (equalString "3" firstLetter)
+  (then (return true))
+  (else (if (equalString "4" firstLetter)
+  (then (return true))
+  (else (if (equalString "5" firstLetter)
+  (then (return true))
+  (else (if (equalString "6" firstLetter)
+  (then (return true))
+  (else (if (equalString "7" firstLetter)
+  (then (return true))
+  (else (if (equalString "8" firstLetter)
+  (then (return true))
+  (else (if (equalString "9" firstLetter)
+  (then (return true))
+  (else (return false)))))))))))))))))))))))))
+
+(box id (box b) (declare) (body (return b)))
+
+ ;bool string symbol int float
+ (string chooseBoxInterp (box b) (declare
+ (string val (stringify b))
+ (string firstLetter (sub-string val 0 1)))
+ (body
+  (if (equalString "string" (boxType b))
+  (then (return "boxString"))
+
+	(else (if (equalString "\"" firstLetter)
+	(then (return "boxString"))
+	(else (if (equalString "true" val)
+	(then (return "boxBool"))
+  (else (if (equalString "false" val)
+	(then (return "boxBool"))
+	(else (if (isInt val)
+	(then (return "boxInt"))
+	(else (if (isInt val)  ;FIXME
+	(then (return "boxFloat"))
+	(else (return "id")))))))))))))))
+	
+	
+  
+
+
+
+;  Allows variables in lists.  The variables must contain boxed values
+ (list doInterpolatedList (list l) (declare (list newlist nil) (list ret nil) (box elem nil))
  (body
  (if (isNil l)
  (then (return (cons (boxSymbol "nil") nil)))
@@ -174,14 +232,15 @@
       (else
 	  
  (set elem (first l))
- (set newlist  (cons  (first l) newlist))
+
+ (set newlist (cons (boxString (chooseBoxInterp  elem)) (cons  (first l) newlist)))
  (set ret
     (cons
             (cons
                 (boxSymbol "cons")
                 (cons
                    newlist 
-                    (doMakeList (cdr l)))
+                    (doInterpolatedList (cdr l)))
             ) nil)
     )
  (return ret))) ))))
@@ -428,7 +487,7 @@
       (then (return (emptyList)))
       (else 
       (if (isList (car tree))
-        (then (return (concatenateLists (flatten (car tree)) (flatten (cdr tree)))))
+        (then (return (concatLists (flatten (car tree)) (flatten (cdr tree)))))
         (else (return (cons (car tree) (flatten (cdr tree)))))
         )))
 ))

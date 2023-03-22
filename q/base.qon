@@ -28,26 +28,24 @@
    (body
     (set newb (makeBox))
     (set-struct newb typ (get-struct b typ))
-	(set-struct newb tag (get-struct b tag))
+    (set-struct newb tag (get-struct b tag))
     (set-struct newb lis (get-struct b lis))
     (set-struct newb str (get-struct b str))
     (set-struct newb i (get-struct b i))
     (set-struct newb lengt (get-struct b lengt))
     (return newb)))
 
-
- (box tern (bool cond list tr list fal) (declare)
-   (body
-    (if cond (then (return tr)) (else (return fal)))))
+  (box tern (bool cond list tr list fal) (declare)
+       (body
+        (if cond (then (return tr)) (else (return fal)))))
 
   (string ternString (bool cond string tr string fal) (declare)
-   (body
-    (if cond (then (return tr)) (else (return fal)))))
+          (body
+           (if cond (then (return tr)) (else (return fal)))))
 
-     (list ternList (bool cond list tr list fal) (declare)
-   (body
-    (if cond (then (return tr)) (else (return fal)))))
-
+  (list ternList (bool cond list tr list fal) (declare)
+        (body
+         (if cond (then (return tr)) (else (return fal)))))
 
   (box
    newVoid
@@ -59,67 +57,62 @@
     (set-struct newb typ "void")
     (return newb)))
 
-
   (void stackDump () (declare) (body
- (printf "")
+                                (printf "")
   ;(display globalStackTrace)
-  ))
+                                ))
 
-(void nop () (declare)
-	(body (printf "")))
-
+  (void nop () (declare)
+        (body (printf "")))
 
   (bool equalBox (box a box b) (declare)
-   (body
-    (if (isList b)
-      (then (return false))
-      (else
-       (if (equalString "string" (boxType a))
-         (then (return (equalString (unBoxString a) (stringify b))))
-         (else
-          (if (equalString "bool" (boxType a))
-            (then (return (andBool (unBoxBool a) (unBoxBool b))))
-            (else
-             (if (equalString "symbol" (boxType a))
-               (then
-                (if (equalString "symbol" (boxType b))
-                  (then (return (equalString (unBoxSymbol a) (unBoxSymbol b))))
-                  (else (return false))))
-               (else
-                (if (equalString "int" (boxType a))
-                  (then (return (equal (unBoxInt a) (unBoxInt b))))
-                  (else (return false)))))))))))))
+        (body
+         (if (isList b)
+           (then (return false))
+           (else
+            (if (equalString "string" (boxType a))
+              (then (return (equalString (unBoxString a) (stringify b))))
+              (else
+               (if (equalString "bool" (boxType a))
+                 (then (return (andBool (unBoxBool a) (unBoxBool b))))
+                 (else
+                  (if (equalString "symbol" (boxType a))
+                    (then
+                     (if (equalString "symbol" (boxType b))
+                       (then (return (equalString (unBoxSymbol a) (unBoxSymbol b))))
+                       (else (return false))))
+                    (else
+                     (if (equalString "int" (boxType a))
+                       (then (return (equal (unBoxInt a) (unBoxInt b))))
+                       (else (return false)))))))))))))
 
-
-
-(string openBrace () (declare) (body (return "(")))
-(string closeBrace () (declare) (body (return ")")))
+  (string openBrace () (declare) (body (return "(")))
+  (string closeBrace () (declare) (body (return ")")))
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Types and type converters ;;
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  (string boxType (box b) (declare) 
-  (body 
-	  (return (get-struct b typ))))
-  (box makeBox () 
-  	(declare (box b nil))
-	  (body
-		  (set b (new box Box))
-		    (if (isNil b) 
-		    	(then (panic "failed to create box!"))
-			(else ))
-		  (set-struct b tag nil)
-		  (set-struct b car nil)
-		  (set-struct b cdr nil)
-		  (set-struct b lis nil)
-		  (set-struct b typ "None - error!")
-		  (return b)
-  ))
+  (string boxType (box b) (declare)
+          (body
+           (return (get-struct b typ))))
+
+  (box makeBox ()
+       (declare (box b nil))
+       (body
+        (set b (new box Box))
+        (if (isNil b)
+          (then (panic "failed to create box!"))
+          (else))
+        (set-struct b tag nil)
+        (set-struct b car nil)
+        (set-struct b cdr nil)
+        (set-struct b lis nil)
+        (set-struct b typ "None - error!")
+        (return b)))
 
   (pair makePair () (declare)
-  (body
-  (return (makeBox))))
-
+        (body
+         (return (makeBox))))
 
   (box
    boxString
@@ -136,9 +129,9 @@
    (string s)
    (declare (box b nil))
    (body
-   (set b (boxString s))
-   (set-struct b typ "symbol")
-   (return b)))
+    (set b (boxString s))
+    (set-struct b typ "symbol")
+    (return b)))
 
   (box
    boxBool
@@ -160,64 +153,61 @@
     (return b)))
 
   (void assertType (string atype box abox int line string file) (declare)
-   (body
-    (if (isNil abox)
-      (then (if (equalString atype "nil") (then (return)) (else (return))))
-      (else
-       (if (equalString atype (boxType abox))
-         (then (return))
-         (else
-          (printf "Assertion failure at line %d, in file %s: provided value is not a '%s'!  It was actually '%s'. Contents:"  line file atype (boxType abox))
-          (display abox)
-          (display  (stringList "\nToken may have been read from " (stringify (getTagFail abox (boxString "filename") (boxString "source file not found"))) ":" (stringify (getTagFail abox (boxString "line")(boxString "source line not found")))     ))
-          (panic "Invalid type!")))))))
+        (body
+         (if (isNil abox)
+           (then (if (equalString atype "nil") (then (return)) (else (return))))
+           (else
+            (if (equalString atype (boxType abox))
+              (then (return))
+              (else
+               (printf "Assertion failure at line %d, in file %s: provided value is not a '%s'!  It was actually '%s'. Contents:"  line file atype (boxType abox))
+               (display abox)
+               (display  (stringList "\nToken may have been read from " (stringify (getTagFail abox (boxString "filename") (boxString "source file not found"))) ":" (stringify (getTagFail abox (boxString "line") (boxString "source line not found")))))
+               (panic "Invalid type!")))))))
 
   (string unBoxString (box b) (declare)
-   (body (assertType "string" b __LINE__ __FILE__) (return (get-struct b str))))
+          (body (assertType "string" b __LINE__ __FILE__) (return (get-struct b str))))
 
   (string unBoxSymbol (box b) (declare) (body (return (get-struct b str))))
   (bool unBoxBool (box b) (declare) (body (return (get-struct b boo))))
   (int unBoxInt (box b) (declare) (body (return (get-struct b i))))
 
-(string stringify_rec (box b) (declare)
-(body
-    (if (isNil b)
-    (then (return ""))
-    (else
-      (return
-       (stringConcatenate (stringify (car b))
-      (stringConcatenate " " (stringify_rec (cdr b)))))
-    ))
-
-))
+  (string stringify_rec (box b) (declare)
+          (body
+           (if (isNil b)
+             (then (return ""))
+             (else
+              (return
+               (stringConcatenate (stringify (car b))
+                                  (stringConcatenate " " (stringify_rec (cdr b)))))))))
 
   (string stringify (box b) (declare)
-   (body
-    (if (isNil b)
-      (then (return "()"))
-      (else
-       (if (equalString "string" (boxType b))
-         (then (return (unBoxString b)))
-         (else
-          (if (equalString "bool" (boxType b))
-            (then
-             (if (unBoxBool b) (then (return "true")) (else (return "false"))))
-            (else
-             (if (equalString "int" (boxType b))
-               (then (return (intToString (unBoxInt b))))
-               (else
-                (if (equalString "symbol" (boxType b))
-                  (then (return (unBoxSymbol b)))
-                  (else
-                    (if (equalString "list" (boxType b))
-                      (then
-                          (return
-                          (stringConcatenate "("
-                            (stringConcatenate (stringify (car b))
-                                (stringConcatenate " "
-                                    (stringConcatenate (stringify_rec (cdr b)) ")"))))))
-                  (else
-                  (return (stringConcatenate "Unsupported type: " (boxType b)))))))))))))))))
+          (body
+           (if (isNil b)
+             (then (return "()"))
+             (else
+              (if (equalString "string" (boxType b))
+                (then (return (unBoxString b)))
+                (else
+                 (if (equalString "bool" (boxType b))
+                   (then
+                    (if (unBoxBool b) (then (return "true")) (else (return "false"))))
+                   (else
+                    (if (equalString "int" (boxType b))
+                      (then (return (intToString (unBoxInt b))))
+                      (else
+                       (if (equalString "symbol" (boxType b))
+                         (then (return (unBoxSymbol b)))
+                         (else
+                          (if (equalString "list" (boxType b))
+                            (then
+                             (return
+                              (stringConcatenate "("
+                                                 (stringConcatenate (stringify (car b))
+                                                                    (stringConcatenate " "
+                                                                                       (stringConcatenate (stringify_rec (cdr b)) ")"))))))
+                            (else
+                             (return (stringConcatenate "Unsupported type: " (boxType b)))))))))))))))))
   ;;;;;;;;;;;;;;;;;;
   ;; Tag functions
   ;;;;;;;;;;;;;;;;;;
@@ -227,143 +217,125 @@
 
   ; hasTag - returns true if the box has a tag with the given key
   (bool hasTag (box aBox box key) (declare)
-   (body
-    (if (isNil aBox)
-      (then (return false))
-      (else (return (isNotFalse (assoc (stringify key) (get-struct aBox tag))))))))
+        (body
+         (if (isNil aBox)
+           (then (return false))
+           (else (return (isNotFalse (assoc (stringify key) (get-struct aBox tag))))))))
 
   ; getTag - returns the value of the tag with the given key, or nil if the tag does not exist
   (box getTag (box aBox box key) (declare)
-   (body
-   (if false
-   (then
-       (printf "Getting %s from: " (stringify key))
-       (display (alistKeys (get-struct aBox tag)))
-       (printf "\n"))
-   (else
-       (printf "")))
-   (return (cdr (assoc (stringify key) (get-struct aBox tag))))))
+       (body
+        (if false
+          (then
+           (printf "Getting %s from: " (stringify key))
+           (display (alistKeys (get-struct aBox tag)))
+           (printf "\n"))
+          (else
+           (printf "")))
+        (return (cdr (assoc (stringify key) (get-struct aBox tag))))))
 
   ; getTagFail - returns the value of the tag with the given key, or onFail if the tag does not exist
   (box getTagFail (box aBox box key box onFail) (declare)
-   (body
-    (if (hasTag aBox key)
-      (then (return (getTag aBox key)))
-      (else (return onFail)))))
+       (body
+        (if (hasTag aBox key)
+          (then (return (getTag aBox key)))
+          (else (return onFail)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Association list functions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-  
-  (bool assocExists ( string key box aBox ) (declare)
+  (bool assocExists (string key box aBox) (declare)
   ; assocExists - returns true if the box has an association with the given key
-   (body
+        (body
    ;(printf "//Checking exists: %s\n" key)
-    (if (isNil aBox)
-      (then (return false))
-      (else (return (isNotFalse (assoc key aBox)))))))
-
+         (if (isNil aBox)
+           (then (return false))
+           (else (return (isNotFalse (assoc key aBox)))))))
 
   (box assocFail (string key box aBox box onFail) (declare)
   ; assocFail - returns the value of the association with the given key, or onFail if the association does not exist
-   (body
-    (if (assocExists key aBox)
-      (then (return (assoc key aBox)))
-      (else (return (cons (boxString key) onFail))))))
+       (body
+        (if (assocExists key aBox)
+          (then (return (assoc key aBox)))
+          (else (return (cons (boxString key) onFail))))))
 
   (box assocPanic (string key box aBox string onFail) (declare)
   ; assocPanic - returns the value of the association with the given key, or panics if the association does not exist
-   (body
-    (if (assocExists key aBox)
-      (then (return (assoc key aBox)))
-      (else (panic onFail)))
-    (panic "Inconceivable")
+       (body
+        (if (assocExists key aBox)
+          (then (return (assoc key aBox)))
+          (else (panic onFail)))
+        (panic "Inconceivable")
     ;fake return because some compilers can't spot the exit above
-    (return nil)
-    ))
+        (return nil)))
 
 ;arg order is different to aconslist!
-  (box setTag (box key list val box aStruct ) (declare)
+  (box setTag (box key list val box aStruct) (declare)
   ; setTag - sets the value of the tag with the given key to val
-   (body
-    (set-struct aStruct tag (alistCons key val (get-struct aStruct tag)))
-    (return aStruct)))
-
-
-
-
-      (void locPanic (string file string line string message) (declare)
-      ; locPanic - panics with the given message, and the file and line number
        (body
-        (printf "%s %s:%s\n" file line message)
-        (panic message)))
+        (set-struct aStruct tag (alistCons key val (get-struct aStruct tag)))
+        (return aStruct)))
+
+  (void locPanic (string file string line string message) (declare)
+      ; locPanic - panics with the given message, and the file and line number
+        (body
+         (printf "%s %s:%s\n" file line message)
+         (panic message)))
 
   (bool truthy (box aVal) (declare)
   ; truthy - returns true if the value in the box is true, according to some loose interpretation of truth
-   (body
-    (return (isNotFalse aVal))))
+        (body
+         (return (isNotFalse aVal))))
 
-   (bool isNotFalse (box aVal) (declare)
+  (bool isNotFalse (box aVal) (declare)
    ; isNotFalse - returns true if the value in the box is not false
-    (body
-     (if (equalString (boxType aVal) "bool")
-       (then (if (unBoxBool aVal) (then (return true))(else (return false))))
-       (else (return true)))))
+        (body
+         (if (equalString (boxType aVal) "bool")
+           (then (if (unBoxBool aVal) (then (return true)) (else (return false))))
+           (else (return true)))))
 
-
-
-(box toStr (box thing) (declare)
+  (box toStr (box thing) (declare)
 ; toStr - returns a string representation of the box
-    (body (return (boxString (stringify thing)))))
+       (body (return (boxString (stringify thing)))))
 
-(box listLast (list alist) (declare)
+  (box listLast (list alist) (declare)
 ; listLast - returns the last element of the list
-   (body
-    (if (isEmpty (cdr alist))
-      (then (return (car alist)))
-      (else (return (listLast (cdr alist)))))))
-
-
+       (body
+        (if (isEmpty (cdr alist))
+          (then (return (car alist)))
+          (else (return (listLast (cdr alist)))))))
 
   (void newLine (int indent) (declare)
   ; newLine - prints a newline, and indents the given number of spaces
-          (body (printf "\n") (printIndent indent)))
+        (body (printf "\n") (printIndent indent)))
 
   (void printIndent (int ii) (declare)
     ; printIndent - prints the given number of spaces
-   (body
-    (if (> ii 0)
-      (then (printf "  ") (printIndent (sub1 ii)))
-      (else (return)))))
+        (body
+         (if (> ii 0)
+           (then (printf "  ") (printIndent (sub1 ii)))
+           (else (return)))))
 
-      (string stringIndent (int ii) (declare)
+  (string stringIndent (int ii) (declare)
       ; stringIndent - returns a string containing the given number of spaces
-       (body
-        (if (> ii 0)
-          (then (return (stringConcatenate "  " (stringIndent (sub1 ii)))))
-          (else (return "")))))
+          (body
+           (if (> ii 0)
+             (then (return (stringConcatenate "  " (stringIndent (sub1 ii)))))
+             (else (return "")))))
 
-
-
-
-
-
-
-
-  ; Return command line args.  FIXME rename
-    (list argList
-   (int count int pos stringArray args) (declare)
-   (body
-    (if (> count pos)
-      (then
-       (return (cons
-         		(boxString (getStringArray pos args))
-         		(argList count (add1 pos) args))))
-      (else (return nil)))))
+; Return command line args.  FIXME rename
+  (list argList
+        (int count int pos stringArray args) (declare)
+        (body
+         (if (> count pos)
+           (then
+            (return (cons
+                     (boxString (getStringArray pos args))
+                     (argList count (add1 pos) args))))
+           (else (return nil)))))
 
   (void tron  () (declare) (body (set globalTrace true)))
   (void troff () (declare) (body (set globalTrace false)))
   (void stron  () (declare) (body (set globalStepTrace true)))
-  (void stroff () (declare) (body (set globalStepTrace false)))
-  ))
+  (void stroff () (declare) (body (set globalStepTrace false)))))

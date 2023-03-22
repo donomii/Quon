@@ -136,7 +136,7 @@ The next enhancements after errors seem to be:
 
 Quon now has multiple C backends, each one with a new feature.  There are so many features, with the big new one being that there are now "base functions" written in Quon.
 
-The base functions are things like add, multiply, substring, malloc and all the other functions that are unique or different on each backend.  These need to be defined for each backend.  Previously, this happened by simply including a giant string that Quon would print out at the top of the output.  e.g.
+The base functions are things like add, multiply, sub_string, malloc and all the other functions that are unique or different on each backend.  These need to be defined for each backend.  Previously, this happened by simply including a giant string that Quon would print out at the top of the output.  e.g.
 
 ```
 (printf
