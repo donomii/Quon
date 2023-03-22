@@ -7594,13 +7594,173 @@ caller = ":Unknown file:-1"
   end
 
 end
--- Chose function name doMakeList
-function doMakeList(l)
-print("caller: ", caller, "-> doMakeList")
+-- Chose function name isInt
+function isInt(val)
+print("caller: ", caller, "-> isInt")
+local firstLetter =luaSubstring(val, 0, 1)
+caller = "isInt:Unknown file:-1"
+  if equalString("-", firstLetter) then
+caller = ":Unknown file:-1"
+      return true
+
+  else
+caller = ":Unknown file:-1"
+      if equalString("0", firstLetter) then
+caller = ":Unknown file:-1"
+          return true
+
+      else
+caller = ":Unknown file:-1"
+          if equalString("1", firstLetter) then
+caller = ":Unknown file:-1"
+              return true
+
+          else
+caller = ":Unknown file:-1"
+              if equalString("2", firstLetter) then
+caller = ":Unknown file:-1"
+                  return true
+
+              else
+caller = ":Unknown file:-1"
+                  if equalString("3", firstLetter) then
+caller = ":Unknown file:-1"
+                      return true
+
+                  else
+caller = ":Unknown file:-1"
+                      if equalString("4", firstLetter) then
+caller = ":Unknown file:-1"
+                          return true
+
+                      else
+caller = ":Unknown file:-1"
+                          if equalString("5", firstLetter) then
+caller = ":Unknown file:-1"
+                              return true
+
+                          else
+caller = ":Unknown file:-1"
+                              if equalString("6", firstLetter) then
+caller = ":Unknown file:-1"
+                                  return true
+
+                              else
+caller = ":Unknown file:-1"
+                                  if equalString("7", firstLetter) then
+caller = ":Unknown file:-1"
+                                      return true
+
+                                  else
+caller = ":Unknown file:-1"
+                                      if equalString("8", firstLetter) then
+caller = ":Unknown file:-1"
+                                          return true
+
+                                      else
+caller = ":Unknown file:-1"
+                                          if equalString("9", firstLetter) then
+caller = ":Unknown file:-1"
+                                              return true
+
+                                          else
+caller = ":Unknown file:-1"
+                                              return false
+
+                                          end
+
+                                      end
+
+                                  end
+
+                              end
+
+                          end
+
+                      end
+
+                  end
+
+              end
+
+          end
+
+      end
+
+  end
+
+end
+-- Chose function name id
+function id(b)
+print("caller: ", caller, "-> id")
+caller = "id:Unknown file:-1"
+  return b
+
+end
+-- Chose function name chooseBoxInterp
+function chooseBoxInterp(b)
+print("caller: ", caller, "-> chooseBoxInterp")
+local val =stringify(b)
+local firstLetter =luaSubstring(val, 0, 1)
+caller = "chooseBoxInterp:Unknown file:-1"
+  if equalString("string", boxType(b)) then
+caller = ":Unknown file:-1"
+      return "boxString"
+
+  else
+caller = ":Unknown file:-1"
+      if equalString("\"", firstLetter) then
+caller = ":Unknown file:-1"
+          return "boxString"
+
+      else
+caller = ":Unknown file:-1"
+          if equalString("true", val) then
+caller = ":Unknown file:-1"
+              return "boxBool"
+
+          else
+caller = ":Unknown file:-1"
+              if equalString("false", val) then
+caller = ":Unknown file:-1"
+                  return "boxBool"
+
+              else
+caller = ":Unknown file:-1"
+                  if isInt(val) then
+caller = ":Unknown file:-1"
+                      return "boxInt"
+
+                  else
+caller = ":Unknown file:-1"
+                      if isInt(val) then
+caller = ":Unknown file:-1"
+                          return "boxFloat"
+
+                      else
+caller = ":Unknown file:-1"
+                          return "id"
+
+                      end
+
+                  end
+
+              end
+
+          end
+
+      end
+
+  end
+
+end
+-- Chose function name doInterpolatedList
+function doInterpolatedList(l)
+print("caller: ", caller, "-> doInterpolatedList")
 local newlist =nil
 local ret =nil
 local elem =nil
-caller = "doMakeList:Unknown file:-1"
+caller = "doInterpolatedList:Unknown file:-1"
   if isNil(l) then
 caller = ":Unknown file:-1"
       return cons(boxSymbol("nil"), nil)
@@ -7615,9 +7775,9 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
           elem = first(l)
 caller = ":Unknown file:-1"
-          newlist = cons(first(l), newlist)
+          newlist = cons(boxString(chooseBoxInterp(elem)), cons(first(l), newlist))
 caller = ":Unknown file:-1"
-          ret = cons(cons(boxSymbol("cons"), cons(newlist, doMakeList(cdr(l)))), nil)
+          ret = cons(cons(boxSymbol("cons"), cons(newlist, doInterpolatedList(cdr(l)))), nil)
 caller = ":Unknown file:-1"
           return ret
 
@@ -8050,7 +8210,7 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
       if isList(car(tree)) then
 caller = ":Unknown file:-1"
-          return concatenateLists(flatten(car(tree)), flatten(cdr(tree)))
+          return concatLists(flatten(car(tree)), flatten(cdr(tree)))
 
       else
 caller = ":Unknown file:-1"
@@ -8107,7 +8267,7 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
           if equalString(stringConcatenate("makeL", "ist"), stringify(car(l))) then
 caller = ":Unknown file:-1"
-              return doMakeList(cdr(l))
+              return car(doInterpolatedList(cdr(l)))
 
           else
           end
@@ -9580,7 +9740,7 @@ end
 function unBoxString(b)
 print("caller: ", caller, "-> unBoxString")
 caller = "unBoxString:Unknown file:-1"
-  assertType("string", b, 175, "q/base.qon");
+  assertType("string", b, 168, "q/base.qon");
 
 caller = "unBoxString:Unknown file:-1"
   return b.str
@@ -9948,7 +10108,8 @@ function start()
 print("caller: ", caller, "-> start")
 local runTests =false
 local cmdLine =nil
-local filename =nil
+local filenameBox =nil
+local filename =""
 local runPerl =false
 local runJava =false
 local runAst =false
@@ -9965,12 +10126,14 @@ caller = "start:Unknown file:-1"
 caller = "start:Unknown file:-1"
   if greaterthan(listLength(cmdLine), 1) then
 caller = ":Unknown file:-1"
-      filename = second(cmdLine)
+      filenameBox = second(cmdLine)
   else
 caller = ":Unknown file:-1"
-      filename = boxString("compiler.qon")
+      filenameBox = boxString("compiler.qon")
   end
 
+caller = "start:Unknown file:-1"
+  filename = unBoxString(filenameBox)
 caller = "start:Unknown file:-1"
   releaseMode = inList(boxString("--release"), cmdLine)
 caller = "start:Unknown file:-1"
@@ -10150,19 +10313,19 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
       if runTree then
 caller = ":Unknown file:-1"
-          display(macrowalk(treeCompile(unBoxString(filename))));
+          display(macrowalk(treeCompile(filename)));
 
       else
 caller = ":Unknown file:-1"
           if runAst then
 caller = ":Unknown file:-1"
-              astCompile(unBoxString(filename));
+              astCompile(filename);
 
           else
 caller = ":Unknown file:-1"
               if runNode then
 caller = ":Unknown file:-1"
-                  nodeCompile(unBoxString(filename));
+                  nodeCompile(filename);
 
 caller = ":Unknown file:-1"
                   printf("\n");
@@ -10171,13 +10334,13 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
                   if runNode2 then
 caller = ":Unknown file:-1"
-                      printf(StringListJoin(flatten(node2Compile(unBoxString(filename))), " "));
+                      printf(StringListJoin(flatten(node2Compile(filename)), " "));
 
                   else
 caller = ":Unknown file:-1"
                       if runPerl then
 caller = ":Unknown file:-1"
-                          perlCompile(unBoxString(filename));
+                          perlCompile(filename);
 
 caller = ":Unknown file:-1"
                           printf("\n");
@@ -10186,7 +10349,7 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
                           if runJava then
 caller = ":Unknown file:-1"
-                              javaCompile(unBoxString(filename));
+                              javaCompile(filename);
 
 caller = ":Unknown file:-1"
                               printf("\n");
@@ -10195,7 +10358,7 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
                               if runLua then
 caller = ":Unknown file:-1"
-                                  luaCompile(unBoxString(filename));
+                                  luaCompile(filename);
 
 caller = ":Unknown file:-1"
                                   printf("\n");
@@ -10204,7 +10367,7 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
                                   if runIma then
 caller = ":Unknown file:-1"
-                                      imaCompile(unBoxString(filename));
+                                      imaCompile(filename);
 
 caller = ":Unknown file:-1"
                                       printf("\n");
@@ -10213,7 +10376,7 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
                                       if runAnsi2 then
 caller = ":Unknown file:-1"
-                                          ansi2Compile(unBoxString(filename));
+                                          ansi2Compile(filename);
 
 caller = ":Unknown file:-1"
                                           printf("\n");
@@ -10222,7 +10385,7 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
                                           if runAnsi3 then
 caller = ":Unknown file:-1"
-                                              ansi3Compile(unBoxString(filename));
+                                              ansi3Compile(filename);
 
 caller = ":Unknown file:-1"
                                               printf("\n");
@@ -10231,14 +10394,14 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
                                               if runBash then
 caller = ":Unknown file:-1"
-                                                  bashCompile(unBoxString(filename));
+                                                  bashCompile(filename);
 
 caller = ":Unknown file:-1"
                                                   printf("\n");
 
                                               else
 caller = ":Unknown file:-1"
-                                                  ansi3Compile(unBoxString(filename));
+                                                  ansi3Compile(filename);
 
 caller = ":Unknown file:-1"
                                                   printf("\n");
