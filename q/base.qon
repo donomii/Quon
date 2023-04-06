@@ -162,7 +162,8 @@
               (else
                (printf "Assertion failure at line %d, in file %s: provided value is not a '%s'!  It was actually '%s'. Contents:"  line file atype (boxType abox))
                (display abox)
-               (display  (stringList "\nToken may have been read from " (stringify (getTagFail abox (boxString "filename") (boxString "source file not found"))) ":" (stringify (getTagFail abox (boxString "line") (boxString "source line not found")))))
+               (printf "\n")
+               (display  (stringList "Token may have been read from " (stringify (getTagFail abox (boxString "filename") (boxString "source file not found"))) ":" (stringify (getTagFail abox (boxString "line") (boxString "source line not found")))))
                (panic "Invalid type!")))))))
 
   (string unBoxString (box b) (declare)
