@@ -9726,7 +9726,13 @@ caller = ":Unknown file:-1"
           display(abox);
 
 caller = ":Unknown file:-1"
-          display(cons(boxString("\nToken may have been read from "), cons(boxString(stringify(getTagFail(abox, boxString("filename"), boxString("source file not found")))), cons(boxString(":"), cons(boxString(stringify(getTagFail(abox, boxString("line"), boxString("source line not found")))), nil)))));
+          printf("\n");
+
+caller = ":Unknown file:-1"
+          display(cons(boxString("Token may have been read from "), cons(boxString(stringify(getTagFail(abox, boxString("filename"), boxString("source file not found")))), cons(boxString(":"), cons(boxString(stringify(getTagFail(abox, boxString("line"), boxString("source line not found")))), nil)))));
+
+caller = ":Unknown file:-1"
+          StackTracePrint();
 
 caller = ":Unknown file:-1"
           panic("Invalid type!");
@@ -9740,7 +9746,7 @@ end
 function unBoxString(b)
 print("caller: ", caller, "-> unBoxString")
 caller = "unBoxString:Unknown file:-1"
-  assertType("string", b, 168, "q/base.qon");
+  assertType("string", b, 170, "q/base.qon");
 
 caller = "unBoxString:Unknown file:-1"
   return b.str
@@ -10102,6 +10108,60 @@ function stroff()
 print("caller: ", caller, "-> stroff")
 caller = "stroff:Unknown file:-1"
   globalStepTrace = false
+end
+-- Chose function name StackTracePush
+function StackTracePush(filename,fname,line)
+print("caller: ", caller, "-> StackTracePush")
+caller = "StackTracePush:Unknown file:-1"
+  globalStackTrace = cons(cons(boxString(filename), cons(boxString(fname), boxString(line))), globalStackTrace)
+end
+-- Chose function name StackTracePop
+function StackTracePop()
+print("caller: ", caller, "-> StackTracePop")
+caller = "StackTracePop:Unknown file:-1"
+  globalStackTrace = cdr(globalStackTrace)
+end
+-- Chose function name StackTracePrint
+function StackTracePrint()
+print("caller: ", caller, "-> StackTracePrint")
+caller = "StackTracePrint:Unknown file:-1"
+  printf("Stack trace:\n");
+
+caller = "StackTracePrint:Unknown file:-1"
+  if isNil(globalStackTrace) then
+caller = ":Unknown file:-1"
+      printf("  <empty>\n");
+
+  else
+caller = ":Unknown file:-1"
+      StackTracePrintHelper(globalStackTrace);
+
+  end
+
+end
+-- Chose function name StackTracePrintHelper
+function StackTracePrintHelper(stack)
+print("caller: ", caller, "-> StackTracePrintHelper")
+caller = "StackTracePrintHelper:Unknown file:-1"
+  if isNil(stack) then
+caller = ":Unknown file:-1"
+      return 
+
+  else
+caller = ":Unknown file:-1"
+      display(car(car(stack)));
+
+caller = ":Unknown file:-1"
+      display(cdr(car(stack)));
+
+caller = ":Unknown file:-1"
+      display(cdr(stack));
+
+caller = ":Unknown file:-1"
+      StackTracePrintHelper(cdr(stack));
+
+  end
+
 end
 -- Chose function name start
 function start()

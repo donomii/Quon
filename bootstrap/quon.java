@@ -324,23 +324,25 @@ public void assertType(String atype,Box abox,Integer line,String file) {
     } else {      
       System.out.printf("Assertion failure at line %d, in file %s: provided value is not a '%s'!  It was actually '%s'. Contents:", line, file, atype, boxType(abox));      
       display(abox);      
-      display(cons(boxString("\nToken may have been read from "), cons(boxString(stringify(getTagFail(abox, boxString("filename"), boxString("source file not found")))), cons(boxString(":"), cons(boxString(stringify(getTagFail(abox, boxString("line"), boxString("source line not found")))), null)))));      
+      System.out.printf("\n");      
+      display(cons(boxString("Token may have been read from "), cons(boxString(stringify(getTagFail(abox, boxString("filename"), boxString("source file not found")))), cons(boxString(":"), cons(boxString(stringify(getTagFail(abox, boxString("line"), boxString("source line not found")))), null)))));      
+      StackTracePrint();      
       panic("Invalid type!");
     }
   }
 }
 
 
-//Building function unBoxString from line: 167
+//Building function unBoxString from line: 169
 
 public String unBoxString(Box b) {
     
-  assertType("string", b, 168, "q/base.qon");  
+  assertType("string", b, 170, "q/base.qon");  
   return(b.str);
 }
 
 
-//Building function unBoxSymbol from line: 170
+//Building function unBoxSymbol from line: 172
 
 public String unBoxSymbol(Box b) {
     
@@ -348,7 +350,7 @@ public String unBoxSymbol(Box b) {
 }
 
 
-//Building function unBoxBool from line: 171
+//Building function unBoxBool from line: 173
 
 public boolean unBoxBool(Box b) {
     
@@ -356,7 +358,7 @@ public boolean unBoxBool(Box b) {
 }
 
 
-//Building function unBoxInt from line: 172
+//Building function unBoxInt from line: 174
 
 public Integer unBoxInt(Box b) {
     
@@ -364,7 +366,7 @@ public Integer unBoxInt(Box b) {
 }
 
 
-//Building function stringify_rec from line: 174
+//Building function stringify_rec from line: 176
 
 public String stringify_rec(Box b) {
     
@@ -376,7 +378,7 @@ public String stringify_rec(Box b) {
 }
 
 
-//Building function stringify from line: 183
+//Building function stringify from line: 185
 
 public String stringify(Box b) {
     
@@ -412,7 +414,7 @@ public String stringify(Box b) {
 }
 
 
-//Building function hasTag from line: 218
+//Building function hasTag from line: 220
 
 public boolean hasTag(Box aBox,Box key) {
     
@@ -424,7 +426,7 @@ public boolean hasTag(Box aBox,Box key) {
 }
 
 
-//Building function getTag from line: 225
+//Building function getTag from line: 227
 
 public Box getTag(Box aBox,Box key) {
     
@@ -439,7 +441,7 @@ public Box getTag(Box aBox,Box key) {
 }
 
 
-//Building function getTagFail from line: 237
+//Building function getTagFail from line: 239
 
 public Box getTagFail(Box aBox,Box key,Box onFail) {
     
@@ -451,7 +453,7 @@ public Box getTagFail(Box aBox,Box key,Box onFail) {
 }
 
 
-//Building function assocExists from line: 247
+//Building function assocExists from line: 249
 
 public boolean assocExists(String key,Box aBox) {
     
@@ -463,7 +465,7 @@ public boolean assocExists(String key,Box aBox) {
 }
 
 
-//Building function assocFail from line: 255
+//Building function assocFail from line: 257
 
 public Box assocFail(String key,Box aBox,Box onFail) {
     
@@ -475,7 +477,7 @@ public Box assocFail(String key,Box aBox,Box onFail) {
 }
 
 
-//Building function assocPanic from line: 262
+//Building function assocPanic from line: 264
 
 public Box assocPanic(String key,Box aBox,String onFail) {
     
@@ -489,7 +491,7 @@ public Box assocPanic(String key,Box aBox,String onFail) {
 }
 
 
-//Building function setTag from line: 273
+//Building function setTag from line: 275
 
 public Box setTag(Box key,Box val,Box aStruct) {
     
@@ -498,7 +500,7 @@ public Box setTag(Box key,Box val,Box aStruct) {
 }
 
 
-//Building function locPanic from line: 279
+//Building function locPanic from line: 281
 
 public void locPanic(String file,String line,String message) {
     
@@ -510,7 +512,7 @@ if (globalTrace)
 }
 
 
-//Building function truthy from line: 285
+//Building function truthy from line: 287
 
 public boolean truthy(Box aVal) {
     
@@ -518,7 +520,7 @@ public boolean truthy(Box aVal) {
 }
 
 
-//Building function isNotFalse from line: 290
+//Building function isNotFalse from line: 292
 
 public boolean isNotFalse(Box aVal) {
     
@@ -534,7 +536,7 @@ public boolean isNotFalse(Box aVal) {
 }
 
 
-//Building function toStr from line: 297
+//Building function toStr from line: 299
 
 public Box toStr(Box thing) {
     
@@ -542,7 +544,7 @@ public Box toStr(Box thing) {
 }
 
 
-//Building function listLast from line: 301
+//Building function listLast from line: 303
 
 public Box listLast(Box alist) {
     
@@ -554,7 +556,7 @@ public Box listLast(Box alist) {
 }
 
 
-//Building function newLine from line: 308
+//Building function newLine from line: 310
 
 public void newLine(Integer indent) {
     
@@ -566,7 +568,7 @@ if (globalTrace)
 }
 
 
-//Building function printIndent from line: 312
+//Building function printIndent from line: 314
 
 public void printIndent(Integer ii) {
     
@@ -582,7 +584,7 @@ if (globalTrace)
 }
 
 
-//Building function stringIndent from line: 319
+//Building function stringIndent from line: 321
 
 public String stringIndent(Integer ii) {
     
@@ -594,7 +596,7 @@ public String stringIndent(Integer ii) {
 }
 
 
-//Building function argList from line: 327
+//Building function argList from line: 329
 
 public Box argList(Integer count,Integer pos,String[] args) {
     
@@ -606,7 +608,7 @@ public Box argList(Integer count,Integer pos,String[] args) {
 }
 
 
-//Building function tron from line: 337
+//Building function tron from line: 339
 
 public void tron() {
     
@@ -614,7 +616,7 @@ public void tron() {
 }
 
 
-//Building function troff from line: 338
+//Building function troff from line: 340
 
 public void troff() {
     
@@ -622,7 +624,7 @@ public void troff() {
 }
 
 
-//Building function stron from line: 339
+//Building function stron from line: 341
 
 public void stron() {
     
@@ -630,11 +632,67 @@ public void stron() {
 }
 
 
-//Building function stroff from line: 340
+//Building function stroff from line: 342
 
 public void stroff() {
     
   globalStepTrace = false;
+}
+
+
+//Building function StackTracePush from line: 344
+
+public void StackTracePush(String filename,String fname,String line) {
+    
+  globalStackTrace = cons(cons(boxString(filename), cons(boxString(fname), boxString(line))), globalStackTrace);
+if (globalTrace)
+   System.out. printf("Leaving StackTracePush\n");
+
+}
+
+
+//Building function StackTracePop from line: 349
+
+public void StackTracePop() {
+    
+  globalStackTrace = cdr(globalStackTrace);
+if (globalTrace)
+   System.out. printf("Leaving StackTracePop\n");
+
+}
+
+
+//Building function StackTracePrint from line: 354
+
+public void StackTracePrint() {
+    
+  System.out.printf("Stack trace:\n");  
+  if ( isNil(globalStackTrace)) {    
+    System.out.printf("  <empty>\n");
+  } else {    
+    StackTracePrintHelper(globalStackTrace);
+  }
+if (globalTrace)
+   System.out. printf("Leaving StackTracePrint\n");
+
+}
+
+
+//Building function StackTracePrintHelper from line: 362
+
+public void StackTracePrintHelper(Box stack) {
+    
+  if ( isNil(stack)) {    
+    return;
+  } else {    
+    display(car(car(stack)));    
+    display(cdr(car(stack)));    
+    display(cdr(stack));    
+    StackTracePrintHelper(cdr(stack));
+  }
+if (globalTrace)
+   System.out. printf("Leaving StackTracePrintHelper\n");
+
 }
 
 
