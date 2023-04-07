@@ -4442,11 +4442,14 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
           if not(releaseMode) then
 caller = ":Unknown file:-1"
-              if not(inList(boxString(functionName), NoTrace_list())) then
+              printf("//Comparing %s to no trace list\n", functionName);
+
+caller = ":Unknown file:-1"
+              if inList(boxString(functionName), NoTrace_list()) then
+              else
 caller = ":Unknown file:-1"
                   printf("\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n", stringify(getTagFail(car(code), boxString("filename"), boxString("Unknown file (not provided by parser)"))), stringify(getTagFail(car(code), boxString("line"), boxString("Line missing"))));
 
-              else
               end
 
           else
@@ -4508,9 +4511,6 @@ local name =nil
 caller = "ansi3Function:Unknown file:-1"
   name = second(node)
 caller = "ansi3Function:Unknown file:-1"
-  printf("\n\n//Building function %s from file %s, line: %s", stringify(name), stringify(getTag(name, boxString("filename"))), stringify(getTag(name, boxString("line"))));
-
-caller = "ansi3Function:Unknown file:-1"
   newLine(0);
 
 caller = "ansi3Function:Unknown file:-1"
@@ -4544,7 +4544,12 @@ caller = ":Unknown file:-1"
 
       else
 caller = ":Unknown file:-1"
-          printf("\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n", stringify(name), stringify(getTag(name, boxString("filename"))), stringify(getTag(name, boxString("line"))));
+          if inList(name, NoTrace_list()) then
+          else
+caller = ":Unknown file:-1"
+              printf("\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n", stringify(name), stringify(getTag(name, boxString("filename"))), stringify(getTag(name, boxString("line"))));
+
+          end
 
       end
 

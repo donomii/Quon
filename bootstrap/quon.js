@@ -8190,11 +8190,14 @@ if (globalTrace)
 
       if ( not(releaseMode)) {        if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
-        if ( not(inList(boxString(functionName), NoTrace_list()))) {          if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+        printf("//Comparing %s to no trace list\n", functionName);
+        if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+        if ( inList(boxString(functionName), NoTrace_list())) {
+        } else {          if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
           printf("\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n", stringify(getTagFail(car(code), boxString("filename"), boxString("Unknown file (not provided by parser)"))), stringify(getTagFail(car(code), boxString("line"), boxString("Line missing"))));
 
-        } else {
         };
 
       } else {
@@ -8227,13 +8230,13 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Declarations from line: 216
+//Building function ansi3Declarations from line: 218
 
 function ansi3Declarations(decls,indent) {
   var decl = NULL;
 
 if (globalTrace)
-    {printf("ansi3Declarations at q/ansi3.qon:216\n");}
+    {printf("ansi3Declarations at q/ansi3.qon:218\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isEmpty(decls)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -8264,19 +8267,16 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Function from line: 230
+//Building function ansi3Function from line: 232
 
 function ansi3Function(node) {
   var name = NULL;
 
 if (globalTrace)
-    {printf("ansi3Function at q/ansi3.qon:230\n");}
+    {printf("ansi3Function at q/ansi3.qon:232\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   name = second(node);
-  if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
-
-  printf("\n\n//Building function %s from file %s, line: %s", stringify(name), stringify(getTag(name, boxString("filename"))), stringify(getTag(name, boxString("line"))));
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   newLine(0);
@@ -8312,7 +8312,12 @@ if (globalTrace)
 
     } else {      if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
-      printf("\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n", stringify(name), stringify(getTag(name, boxString("filename"))), stringify(getTag(name, boxString("line"))));
+      if ( inList(name, NoTrace_list())) {
+      } else {        if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
+
+        printf("\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n", stringify(name), stringify(getTag(name, boxString("filename"))), stringify(getTag(name, boxString("line"))));
+
+      };
 
     };
     if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -8346,12 +8351,12 @@ if (globalTrace)
 }
 
 
-//Building function ansi3ForwardDeclaration from line: 264
+//Building function ansi3ForwardDeclaration from line: 270
 
 function ansi3ForwardDeclaration(node) {
   
 if (globalTrace)
-    {printf("ansi3ForwardDeclaration at q/ansi3.qon:264\n");}
+    {printf("ansi3ForwardDeclaration at q/ansi3.qon:270\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isNil(node)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -8376,12 +8381,12 @@ if (globalTrace)
 }
 
 
-//Building function ansi3ForwardDeclarations from line: 274
+//Building function ansi3ForwardDeclarations from line: 280
 
 function ansi3ForwardDeclarations(tree) {
   
 if (globalTrace)
-    {printf("ansi3ForwardDeclarations at q/ansi3.qon:274\n");}
+    {printf("ansi3ForwardDeclarations at q/ansi3.qon:280\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isEmpty(tree)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -8403,12 +8408,12 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Functions from line: 280
+//Building function ansi3Functions from line: 286
 
 function ansi3Functions(tree) {
   
 if (globalTrace)
-    {printf("ansi3Functions at q/ansi3.qon:280\n");}
+    {printf("ansi3Functions at q/ansi3.qon:286\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isEmpty(tree)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -8430,12 +8435,12 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Includes from line: 286
+//Building function ansi3Includes from line: 292
 
 function ansi3Includes(nodes) {
   
 if (globalTrace)
-    {printf("ansi3Includes at q/ansi3.qon:286\n");}
+    {printf("ansi3Includes at q/ansi3.qon:292\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#include <unistd.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n");
@@ -8449,12 +8454,12 @@ if (globalTrace)
 }
 
 
-//Building function ansi3TypeDecl from line: 294
+//Building function ansi3TypeDecl from line: 300
 
 function ansi3TypeDecl(l) {
   
 if (globalTrace)
-    {printf("ansi3TypeDecl at q/ansi3.qon:294\n");}
+    {printf("ansi3TypeDecl at q/ansi3.qon:300\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( greaterthan(listLength(l), 2)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -8479,12 +8484,12 @@ if (globalTrace)
 }
 
 
-//Building function ansi3StructComponents from line: 311
+//Building function ansi3StructComponents from line: 317
 
 function ansi3StructComponents(node) {
   
 if (globalTrace)
-    {printf("ansi3StructComponents at q/ansi3.qon:311\n");}
+    {printf("ansi3StructComponents at q/ansi3.qon:317\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isEmpty(node)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -8506,12 +8511,12 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Struct from line: 317
+//Building function ansi3Struct from line: 323
 
 function ansi3Struct(node) {
   
 if (globalTrace)
-    {printf("ansi3Struct at q/ansi3.qon:317\n");}
+    {printf("ansi3Struct at q/ansi3.qon:323\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   ansi3StructComponents(cdr(node));
@@ -8522,13 +8527,13 @@ if (globalTrace)
 }
 
 
-//Building function ansi3TypeMap from line: 320
+//Building function ansi3TypeMap from line: 326
 
 function ansi3TypeMap(aSym) {
   var symMap = NULL;
 
 if (globalTrace)
-    {printf("ansi3TypeMap at q/ansi3.qon:320\n");}
+    {printf("ansi3TypeMap at q/ansi3.qon:326\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   symMap = alistCons(boxSymbol("stringArray"), boxSymbol("char**"), alistCons(boxSymbol("string"), boxSymbol("char*"), NULL));
@@ -8550,13 +8555,13 @@ if (globalTrace)
 }
 
 
-//Building function ansi3FuncMap from line: 330
+//Building function ansi3FuncMap from line: 336
 
 function ansi3FuncMap(aSym) {
   var symMap = NULL;
 
 if (globalTrace)
-    {printf("ansi3FuncMap at q/ansi3.qon:330\n");}
+    {printf("ansi3FuncMap at q/ansi3.qon:336\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( equalString("symbol", boxType(aSym))) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -8586,12 +8591,12 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Type from line: 361
+//Building function ansi3Type from line: 367
 
 function ansi3Type(node) {
   
 if (globalTrace)
-    {printf("ansi3Type at q/ansi3.qon:361\n");}
+    {printf("ansi3Type at q/ansi3.qon:367\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isList(second(node))) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -8619,12 +8624,12 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Types from line: 371
+//Building function ansi3Types from line: 377
 
 function ansi3Types(nodes) {
   
 if (globalTrace)
-    {printf("ansi3Types at q/ansi3.qon:371\n");}
+    {printf("ansi3Types at q/ansi3.qon:377\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   if ( isEmpty(nodes)) {    if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
@@ -8646,14 +8651,14 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Compile from line: 381
+//Building function ansi3Compile from line: 387
 
 function ansi3Compile(filename) {
   var tree = NULL;
 var replace = NULL;
 
 if (globalTrace)
-    {printf("ansi3Compile at q/ansi3.qon:381\n");}
+    {printf("ansi3Compile at q/ansi3.qon:387\n");}
   if (globalStepTrace) {console.log(new Error("StepTrace \n"));}
 
   qlog("//Scanning file...%s\n", filename);
