@@ -361,7 +361,7 @@
            (else (StackTracePrintHelper globalStackTrace)))))
 
   (void StackTracePrintHelper (list stack) (declare 
-  (string file "" )
+  (string file (stringify (first (car stack))) )
   (string line "")
   (string func "")
   )
@@ -381,9 +381,11 @@
             (printf "  %s:%s %s\n"   file line func)
             (StackTracePrintHelper (cdr stack))))))
 
+
+; These are all functions involved in calculating the stack trace, so they cannot be included in the stack trace
 (list NoStackTrace_list () (declare)
 (body
-  (return (stringList "StackTraceMove" "StackTracePrint" "StackTracePrintHelper" "NoStackTrace_list" "car" "cdr" "cons" "set" "boxString" "makePair" "set-struct" "display" "list" "assertType" "isEmpty" "isNil" "get-struct" "equalString" "binop" "strcmp" "main" "makeBox" "string_length" "boxType" "displayList" "newLine"))))
+  (return (stringList "StackTraceMove" "StackTracePrint" "StackTracePrintHelper" "NoStackTrace_list" "car" "cdr" "cons" "set" "boxString" "makePair" "set-struct" "display" "list" "assertType" "isEmpty" "isNil" "get-struct" "equalString" "binop" "strcmp" "main" "makeBox" "string_length" "boxType" "displayList" "newLine" "panic"))))
  
  ))
 
