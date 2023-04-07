@@ -348,7 +348,7 @@
 (body
 (if (equalString direction "in")
 (then 
-  (set globalStackTrace (cons (cons (boxString filename) (cons (boxString fname) (boxString line))) globalStackTrace)))
+  (set globalStackTrace (cons (cons  (boxString filename) (cons (boxString line) (cons (boxString fname) nil)))  globalStackTrace)))
   (else (set globalStackTrace (cdr globalStackTrace))))
 ))
 
@@ -360,19 +360,28 @@
            (then (printf "  <empty>\n"))
            (else (StackTracePrintHelper globalStackTrace)))))
 
-  (void StackTracePrintHelper (list stack) (declare)
+  (void StackTracePrintHelper (list stack) (declare 
+  (string file "" )
+  (string line "")
+  (string func "")
+  )
   ; StackTracePrintHelper - prints the stack trace
         (body
+       
+         
          (if (isNil stack)
            (then (return))
            (else
-           (display (car (car stack)))
-           (display (cdr (car stack)))
-            (display (cdr stack))
-            ;(printf "  %s:%s %s\n" (unBoxString(car (car stack)))  (unBoxString (cdr (car stack)))  (unBoxString(cdr stack)))
+           ;(display (car (car stack)))
+           ;(display (cdr (car stack)))
+            ;(display (cdr stack))
+             (set file (stringify (first (car stack))))
+        (set line (stringify (second (car stack))))
+        (set func (stringify (third (first stack))))
+            (printf "  %s:%s %s\n"   file line func)
             (StackTracePrintHelper (cdr stack))))))
 
-            (list NoStackTrace_list () (declare)
+(list NoStackTrace_list () (declare)
 (body
   (return (stringList "StackTraceMove" "StackTracePrint" "StackTracePrintHelper" "NoStackTrace_list" "car" "cdr" "cons" "set" "boxString" "makePair" "set-struct" "display" "list" "assertType" "isEmpty" "isNil" "get-struct" "equalString" "binop" "strcmp" "main" "makeBox" "string_length" "boxType" "displayList" "newLine"))))
  
