@@ -1,0 +1,12 @@
+((includes "q/base.qon" "q/lists.qon" "q/macros.qon" "q/boolean.qon" )
+(types)
+ (functions
+
+  (int start ()
+       (declare
+        (box testlist nil)
+        (box greet (boxString "Hello, world!")))
+       (body
+        (set testlist (makeList 1 2 3 4 5 greet "blah" (boxInt (add 45 46)) 6.5 7 8 9 10))
+        (display testlist)
+        (return 0)))))
