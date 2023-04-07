@@ -35,6 +35,7 @@
 	  (if (equal 1 (listLength  tree))
 				;A function call with no args
                (then
+               
                 (display (car  tree))
 				;C does not allow "return();"
                 (if (equalBox
@@ -113,16 +114,16 @@
 
 
 
-  (void ansi3If (list node int indent) (declare)
+  (void ansi3If (list node int indent string functionName) (declare)
    (body
     (newLine indent)
     (ansi3displays "if ( ")
     (ansi3Expression (second node) 0)
     (ansi3displays ") {")
-    (ansi3Body (cdr (third node)) (add1 indent))
+    (ansi3Body (cdr (third node)) (add1 indent) functionName)
     (newLine indent)
     (ansi3displays "} else {")
-    (ansi3Body (cdr (fourth node)) (add1 indent))
+    (ansi3Body (cdr (fourth node)) (add1 indent) functionName)
     (newLine indent)
     (ansi3displays "}")))
 
@@ -152,6 +153,9 @@
 
   (void ansi3Return (list node int indent) (declare)
    (body
+   ;Stackpop here
+
+
     (newLine indent)
 	(if (equal (listLength node) 1)
 	(then (ansi3displays "return;"))
@@ -161,7 +165,7 @@
 	(ansi3displays ";")
 	))))
 
-  (void ansi3Statement (list node int indent) (declare)
+  (void ansi3Statement (list node int indent string functionname) (declare)
    (body
     (if (equalBox (boxString "set") (first node))
       (then (ansi3Set node indent))
@@ -170,16 +174,21 @@
          (then (ansi3SetStruct node indent))
          (else
           (if (equalBox (boxString "if") (first node))
-            (then (ansi3If node indent))
+            (then (ansi3If node indent functionname))
             (else
              (if (equalBox (boxString "return") (first node))
-               (then (ansi3Return node indent))
+               (then 
+                (if (inList (boxString functionname) (NoStackTrace_list))
+                  (then )
+                  (else
+                    (printf "\nStackTraceMove(\"out\", \"\", \"\", \"\");\n")))
+               (ansi3Return node indent))
                (else
                 (newLine indent)
                 (ansi3Expression  node indent)))))))))
     (ansi3displays ";\n")))
 
-  (void ansi3Body (list tree int indent) (declare (list code nil))
+  (void ansi3Body (list tree int indent string functionName) (declare (list code nil))
    (body
     (if (isEmpty tree)
       (then (return))
@@ -201,8 +210,8 @@
 	    (printf "%s" "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n")
       )(else)
     )
-       (ansi3Statement code indent)
-       (ansi3Body (cdr tree) indent)))))
+       (ansi3Statement code indent functionName)
+       (ansi3Body (cdr tree) indent functionName)))))
 
   (void ansi3Declarations (list decls int indent) (declare (box decl nil))
    (body
@@ -242,15 +251,14 @@
        (if releaseMode
          (then (printf ""))
          (else
-          ;;(printf "\n  stackTracePush(\"%s\", \"%s\", %s, %d );\n" (stringify (getTag name (boxString "filename"))) (stringify name) (stringify (getTag name (boxString "line"))) 0)
+          (if (inList  name (NoStackTrace_list))
+          (then )
+          (else
+          (printf "\n  StackTraceMove(\"in\", \"%s\", \"%s\", \"%s\" );\n" (stringify (getTag name (boxString "filename"))) (stringify name) (stringify (getTag name (boxString "line"))) )))
           ))
 	   ;(display (second(fifth node)))
-       (ansi3Body (cdr (fifth node)) 1)
-       (if releaseMode
-         (then (printf ""))
-         (else
-            (printf "\nif (globalTrace)\n    printf(\"Leaving %s\\n\");\n" (stringify name))
-            ))
+       (ansi3Body (cdr (fifth node)) 1 (stringify name))
+   
        (printf "\n}\n")))))
 
   (void ansi3ForwardDeclaration (list node) (declare)

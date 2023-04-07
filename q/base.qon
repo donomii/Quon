@@ -342,15 +342,15 @@
   (void stron  () (declare) (body (set globalStepTrace true)))
   (void stroff () (declare) (body (set globalStepTrace false)))
 
-  (void StackTracePush (string filename string fname string line) (declare)
-  ; StackTracePush - pushes a new stack frame onto the stack trace
-        (body
-         (set globalStackTrace (cons (cons (boxString filename) (cons (boxString fname) (boxString line))) globalStackTrace))))
 
-  (void StackTracePop () (declare)
-  ; StackTracePop - pops the top stack frame off the stack trace
-        (body
-         (set globalStackTrace (cdr globalStackTrace))))
+
+  (void StackTraceMove (string direction string filename string fname string line)(declare)
+(body
+(if (equalString direction "in")
+(then 
+  (set globalStackTrace (cons (cons (boxString filename) (cons (boxString fname) (boxString line))) globalStackTrace)))
+  (else (set globalStackTrace (cdr globalStackTrace))))
+))
 
   (void StackTracePrint () (declare)
   ; StackTracePrint - prints the stack trace
@@ -371,4 +371,10 @@
             (display (cdr stack))
             ;(printf "  %s:%s %s\n" (unBoxString(car (car stack)))  (unBoxString (cdr (car stack)))  (unBoxString(cdr stack)))
             (StackTracePrintHelper (cdr stack))))))
+
+            (list NoStackTrace_list () (declare)
+(body
+  (return (stringList "StackTraceMove" "StackTracePrint" "StackTracePrintHelper" "NoStackTrace_list" "car" "cdr" "cons" "set" "boxString" "makePair" "set-struct" "display" "list" "assertType" "isEmpty" "isNil" "get-struct" "equalString" "binop" "strcmp" "main" "makeBox" "string_length" "boxType" "displayList" "newLine"))))
+ 
  ))
+
