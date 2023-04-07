@@ -707,7 +707,7 @@ public Box NoStackTrace_list() {
 
 public Box NoTrace_list() {
     
-  return(cons(boxString("StackTraceMove"), cons(boxString("StackTracePrint"), cons(boxString("StackTracePrintHelper"), cons(boxString("NoStackTrace_list"), cons(boxString("car"), cons(boxString("cdr"), cons(boxString("cons"), cons(boxString("set"), cons(boxString("boxString"), cons(boxString("makePair"), cons(boxString("set-struct"), cons(boxString("display"), cons(boxString("list"), cons(boxString("assertType"), cons(boxString("isEmpty"), cons(boxString("isNil"), cons(boxString("get-struct"), cons(boxString("equalString"), cons(boxString("binop"), cons(boxString("strcmp"), cons(boxString("main"), cons(boxString("makeBox"), cons(boxString("string_length"), cons(boxString("boxType"), cons(boxString("displayList"), cons(boxString("newLine"), cons(boxString("panic"), cons(boxString("boxString"), cons(boxString("boxSymbol"), cons(boxString("boxType"), cons(boxString("equalString"), cons(boxString("unBoxSymbol"), cons(boxString("isList"), cons(boxString("makeBox"), null)))))))))))))))))))))))))))))))))));
+  return(cons(boxString("StackTraceMove"), cons(boxString("StackTracePrint"), cons(boxString("StackTracePrintHelper"), cons(boxString("NoStackTrace_list"), cons(boxString("car"), cons(boxString("cdr"), cons(boxString("cons"), cons(boxString("set"), cons(boxString("boxString"), cons(boxString("makePair"), cons(boxString("set-struct"), cons(boxString("display"), cons(boxString("list"), cons(boxString("assertType"), cons(boxString("isEmpty"), cons(boxString("isNil"), cons(boxString("get-struct"), cons(boxString("equalString"), cons(boxString("binop"), cons(boxString("strcmp"), cons(boxString("main"), cons(boxString("makeBox"), cons(boxString("string_length"), cons(boxString("boxType"), cons(boxString("displayList"), cons(boxString("newLine"), cons(boxString("panic"), cons(boxString("boxString"), cons(boxString("boxSymbol"), cons(boxString("boxType"), cons(boxString("equalString"), cons(boxString("unBoxSymbol"), cons(boxString("isList"), cons(boxString("makeBox"), cons(boxString("equalBox"), cons(boxString("sub"), cons(boxString("sub1"), cons(boxString("stringify"), cons(boxString("add"), cons(boxString("greaterthan"), null)))))))))))))))))))))))))))))))))))))))));
 }
 
 
@@ -4221,8 +4221,8 @@ public void ansi3Body(Box tree,Integer indent,String functionName) {
     } else {      
       code = car(tree);      
       if ( not(releaseMode)) {        
-        System.out.printf("//Comparing %s to no trace list\n", functionName);        
-        if ( inList(boxString(functionName), NoTrace_list())) {
+        if ( inList(boxString(functionName), NoTrace_list())) {          
+          System.out.printf("//Function %s omitted due to the no trace list\n", functionName);
         } else {          
           System.out.printf("\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n", stringify(getTagFail(car(code), boxString("filename"), boxString("Unknown file (not provided by parser)"))), stringify(getTagFail(car(code), boxString("line"), boxString("Line missing"))));
         }
@@ -4243,7 +4243,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Declarations from line: 218
+//Building function ansi3Declarations from line: 219
 
 public void ansi3Declarations(Box decls,Integer indent) {
   Box decl = null;
@@ -4263,7 +4263,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Function from line: 232
+//Building function ansi3Function from line: 233
 
 public void ansi3Function(Box node) {
   Box name = null;
@@ -4304,7 +4304,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3ForwardDeclaration from line: 270
+//Building function ansi3ForwardDeclaration from line: 271
 
 public void ansi3ForwardDeclaration(Box node) {
     
@@ -4321,7 +4321,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3ForwardDeclarations from line: 280
+//Building function ansi3ForwardDeclarations from line: 281
 
 public void ansi3ForwardDeclarations(Box tree) {
     
@@ -4337,7 +4337,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Functions from line: 286
+//Building function ansi3Functions from line: 287
 
 public void ansi3Functions(Box tree) {
     
@@ -4353,7 +4353,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Includes from line: 292
+//Building function ansi3Includes from line: 293
 
 public void ansi3Includes(Box nodes) {
     
@@ -4365,7 +4365,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3TypeDecl from line: 300
+//Building function ansi3TypeDecl from line: 301
 
 public void ansi3TypeDecl(Box l) {
     
@@ -4382,7 +4382,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3StructComponents from line: 317
+//Building function ansi3StructComponents from line: 318
 
 public void ansi3StructComponents(Box node) {
     
@@ -4398,7 +4398,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Struct from line: 323
+//Building function ansi3Struct from line: 324
 
 public void ansi3Struct(Box node) {
     
@@ -4409,7 +4409,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3TypeMap from line: 326
+//Building function ansi3TypeMap from line: 327
 
 public Box ansi3TypeMap(Box aSym) {
   Box symMap = null;
@@ -4423,7 +4423,7 @@ public Box ansi3TypeMap(Box aSym) {
 }
 
 
-//Building function ansi3FuncMap from line: 336
+//Building function ansi3FuncMap from line: 337
 
 public Box ansi3FuncMap(Box aSym) {
   Box symMap = null;
@@ -4441,7 +4441,7 @@ public Box ansi3FuncMap(Box aSym) {
 }
 
 
-//Building function ansi3Type from line: 367
+//Building function ansi3Type from line: 368
 
 public void ansi3Type(Box node) {
     
@@ -4459,7 +4459,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Types from line: 377
+//Building function ansi3Types from line: 378
 
 public void ansi3Types(Box nodes) {
     
@@ -4475,7 +4475,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Compile from line: 387
+//Building function ansi3Compile from line: 388
 
 public void ansi3Compile(String filename) {
   Box tree = null;

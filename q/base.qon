@@ -390,7 +390,7 @@
 ; These functions are called so often they spam the trace output
   (list NoTrace_list () (declare)
 (body
-  (return (stringList "StackTraceMove" "StackTracePrint" "StackTracePrintHelper" "NoStackTrace_list" "car" "cdr" "cons" "set" "boxString" "makePair" "set-struct" "display" "list" "assertType" "isEmpty" "isNil" "get-struct" "equalString" "binop" "strcmp" "main" "makeBox" "string_length" "boxType" "displayList" "newLine" "panic" "boxString" "boxSymbol" "boxType" "equalString" "unBoxSymbol" "isList" "makeBox" ))))
+  (return (stringList "StackTraceMove" "StackTracePrint" "StackTracePrintHelper" "NoStackTrace_list" "car" "cdr" "cons" "set" "boxString" "makePair" "set-struct" "display" "list" "assertType" "isEmpty" "isNil" "get-struct" "equalString" "binop" "strcmp" "main" "makeBox" "string_length" "boxType" "displayList" "newLine" "panic" "boxString" "boxSymbol" "boxType" "equalString" "unBoxSymbol" "isList" "makeBox" "equalBox" "sub" "sub1" "stringify" "add" "greaterthan"))))
  
  ))
 
