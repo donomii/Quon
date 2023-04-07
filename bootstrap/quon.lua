@@ -4442,7 +4442,12 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
           if not(releaseMode) then
 caller = ":Unknown file:-1"
-              printf("\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n", stringify(getTagFail(car(code), boxString("filename"), boxString("Unknown file (not provided by parser)"))), stringify(getTagFail(car(code), boxString("line"), boxString("Line missing"))));
+              if not(inList(boxString(functionName), NoTrace_list())) then
+caller = ":Unknown file:-1"
+                  printf("\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n", stringify(getTagFail(car(code), boxString("filename"), boxString("Unknown file (not provided by parser)"))), stringify(getTagFail(car(code), boxString("line"), boxString("Line missing"))));
+
+              else
+              end
 
           else
           end
@@ -8290,25 +8295,25 @@ caller = ":Unknown file:-1"
 
 end
 -- Chose function name macrosingle
-function macrosingle(l,search,replace)
+function macrosingle(tree,search,replace)
 print("caller: ", caller, "-> macrosingle")
 local val =nil
 caller = "macrosingle:Unknown file:-1"
-  if isEmpty(l) then
+  if isEmpty(tree) then
 caller = ":Unknown file:-1"
       return nil
 
   else
 caller = ":Unknown file:-1"
-      if isList(l) then
+      if isList(tree) then
 caller = ":Unknown file:-1"
-          return cons(macrosingle(car(l), search, replace), macrosingle(cdr(l), search, replace))
+          return cons(macrosingle(car(tree), search, replace), macrosingle(cdr(tree), search, replace))
 
       else
 caller = ":Unknown file:-1"
-          if equalString(search, stringify(l)) then
+          if equalString(search, stringify(tree)) then
 caller = ":Unknown file:-1"
-              val = clone(l)
+              val = clone(tree)
 caller = ":Unknown file:-1"
 val.str = replace
 caller = ":Unknown file:-1"
@@ -8318,7 +8323,7 @@ caller = ":Unknown file:-1"
           end
 
 caller = ":Unknown file:-1"
-          return l
+          return tree
 
       end
 
@@ -10148,7 +10153,7 @@ end
 -- Chose function name StackTracePrintHelper
 function StackTracePrintHelper(stack)
 print("caller: ", caller, "-> StackTracePrintHelper")
-local file =""
+local file =stringify(first(car(stack)))
 local line =""
 local func =""
 caller = "StackTracePrintHelper:Unknown file:-1"
@@ -10176,7 +10181,14 @@ end
 function NoStackTrace_list()
 print("caller: ", caller, "-> NoStackTrace_list")
 caller = "NoStackTrace_list:Unknown file:-1"
-  return cons(boxString("StackTraceMove"), cons(boxString("StackTracePrint"), cons(boxString("StackTracePrintHelper"), cons(boxString("NoStackTrace_list"), cons(boxString("car"), cons(boxString("cdr"), cons(boxString("cons"), cons(boxString("set"), cons(boxString("boxString"), cons(boxString("makePair"), cons(boxString("set-struct"), cons(boxString("display"), cons(boxString("list"), cons(boxString("assertType"), cons(boxString("isEmpty"), cons(boxString("isNil"), cons(boxString("get-struct"), cons(boxString("equalString"), cons(boxString("binop"), cons(boxString("strcmp"), cons(boxString("main"), cons(boxString("makeBox"), cons(boxString("string_length"), cons(boxString("boxType"), cons(boxString("displayList"), cons(boxString("newLine"), nil))))))))))))))))))))))))))
+  return cons(boxString("StackTraceMove"), cons(boxString("StackTracePrint"), cons(boxString("StackTracePrintHelper"), cons(boxString("NoStackTrace_list"), cons(boxString("car"), cons(boxString("cdr"), cons(boxString("cons"), cons(boxString("set"), cons(boxString("boxString"), cons(boxString("makePair"), cons(boxString("set-struct"), cons(boxString("display"), cons(boxString("list"), cons(boxString("assertType"), cons(boxString("isEmpty"), cons(boxString("isNil"), cons(boxString("get-struct"), cons(boxString("equalString"), cons(boxString("binop"), cons(boxString("strcmp"), cons(boxString("main"), cons(boxString("makeBox"), cons(boxString("string_length"), cons(boxString("boxType"), cons(boxString("displayList"), cons(boxString("newLine"), cons(boxString("panic"), nil)))))))))))))))))))))))))))
+
+end
+-- Chose function name NoTrace_list
+function NoTrace_list()
+print("caller: ", caller, "-> NoTrace_list")
+caller = "NoTrace_list:Unknown file:-1"
+  return cons(boxString("StackTraceMove"), cons(boxString("StackTracePrint"), cons(boxString("StackTracePrintHelper"), cons(boxString("NoStackTrace_list"), cons(boxString("car"), cons(boxString("cdr"), cons(boxString("cons"), cons(boxString("set"), cons(boxString("boxString"), cons(boxString("makePair"), cons(boxString("set-struct"), cons(boxString("display"), cons(boxString("list"), cons(boxString("assertType"), cons(boxString("isEmpty"), cons(boxString("isNil"), cons(boxString("get-struct"), cons(boxString("equalString"), cons(boxString("binop"), cons(boxString("strcmp"), cons(boxString("main"), cons(boxString("makeBox"), cons(boxString("string_length"), cons(boxString("boxType"), cons(boxString("displayList"), cons(boxString("newLine"), cons(boxString("panic"), cons(boxString("boxString"), cons(boxString("boxSymbol"), cons(boxString("boxType"), cons(boxString("equalString"), cons(boxString("unBoxSymbol"), cons(boxString("isList"), cons(boxString("makeBox"), nil))))))))))))))))))))))))))))))))))
 
 end
 -- Chose function name start
