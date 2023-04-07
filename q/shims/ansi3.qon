@@ -27,6 +27,7 @@
 
 (void panic (char* s) (declare)
 	(body
+    (StackTracePrint)
 		(abort)
 		(exit 1)))
 

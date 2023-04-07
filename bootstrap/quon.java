@@ -640,24 +640,17 @@ public void stroff() {
 }
 
 
-//Building function StackTracePush from line: 344
+//Building function StackTraceMove from line: 346
 
-public void StackTracePush(String filename,String fname,String line) {
+public void StackTraceMove(String direction,String filename,String fname,String line) {
     
-  globalStackTrace = cons(cons(boxString(filename), cons(boxString(fname), boxString(line))), globalStackTrace);
+  if ( equalString(direction, "in")) {    
+    globalStackTrace = cons(cons(boxString(filename), cons(boxString(line), cons(boxString(fname), null))), globalStackTrace);
+  } else {    
+    globalStackTrace = cdr(globalStackTrace);
+  }
 if (globalTrace)
-   System.out. printf("Leaving StackTracePush\n");
-
-}
-
-
-//Building function StackTracePop from line: 349
-
-public void StackTracePop() {
-    
-  globalStackTrace = cdr(globalStackTrace);
-if (globalTrace)
-   System.out. printf("Leaving StackTracePop\n");
+   System.out. printf("Leaving StackTraceMove\n");
 
 }
 
@@ -681,18 +674,30 @@ if (globalTrace)
 //Building function StackTracePrintHelper from line: 362
 
 public void StackTracePrintHelper(Box stack) {
-    
+  String file = "";
+String line = "";
+String func = "";
+  
   if ( isNil(stack)) {    
     return;
   } else {    
-    display(car(car(stack)));    
-    display(cdr(car(stack)));    
-    display(cdr(stack));    
+    file = stringify(first(car(stack)));    
+    line = stringify(second(car(stack)));    
+    func = stringify(third(first(stack)));    
+    System.out.printf("  %s:%s %s\n", file, line, func);    
     StackTracePrintHelper(cdr(stack));
   }
 if (globalTrace)
    System.out. printf("Leaving StackTracePrintHelper\n");
 
+}
+
+
+//Building function NoStackTrace_list from line: 383
+
+public Box NoStackTrace_list() {
+    
+  return(cons(boxString("StackTraceMove"), cons(boxString("StackTracePrint"), cons(boxString("StackTracePrintHelper"), cons(boxString("NoStackTrace_list"), cons(boxString("car"), cons(boxString("cdr"), cons(boxString("cons"), cons(boxString("set"), cons(boxString("boxString"), cons(boxString("makePair"), cons(boxString("set-struct"), cons(boxString("display"), cons(boxString("list"), cons(boxString("assertType"), cons(boxString("isEmpty"), cons(boxString("isNil"), cons(boxString("get-struct"), cons(boxString("equalString"), cons(boxString("binop"), cons(boxString("strcmp"), cons(boxString("main"), cons(boxString("makeBox"), cons(boxString("string_length"), cons(boxString("boxType"), cons(boxString("displayList"), cons(boxString("newLine"), null)))))))))))))))))))))))))));
 }
 
 
@@ -4062,7 +4067,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3RecurList from line: 98
+//Building function ansi3RecurList from line: 99
 
 public void ansi3RecurList(Box expr,Integer indent) {
     
@@ -4083,18 +4088,18 @@ if (globalTrace)
 }
 
 
-//Building function ansi3If from line: 115
+//Building function ansi3If from line: 116
 
-public void ansi3If(Box node,Integer indent) {
+public void ansi3If(Box node,Integer indent,String functionName) {
     
   newLine(indent);  
   ansi3displays("if ( ");  
   ansi3Expression(second(node), 0);  
   ansi3displays(") {");  
-  ansi3Body(cdr(third(node)), add1(indent));  
+  ansi3Body(cdr(third(node)), add1(indent), functionName);  
   newLine(indent);  
   ansi3displays("} else {");  
-  ansi3Body(cdr(fourth(node)), add1(indent));  
+  ansi3Body(cdr(fourth(node)), add1(indent), functionName);  
   newLine(indent);  
   ansi3displays("}");
 if (globalTrace)
@@ -4103,7 +4108,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3SetStruct from line: 128
+//Building function ansi3SetStruct from line: 129
 
 public void ansi3SetStruct(Box node,Integer indent) {
     
@@ -4116,7 +4121,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3GetStruct from line: 137
+//Building function ansi3GetStruct from line: 138
 
 public void ansi3GetStruct(Box node,Integer indent) {
     
@@ -4128,7 +4133,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Set from line: 145
+//Building function ansi3Set from line: 146
 
 public void ansi3Set(Box node,Integer indent) {
     
@@ -4142,7 +4147,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Return from line: 152
+//Building function ansi3Return from line: 153
 
 public void ansi3Return(Box node,Integer indent) {
     
@@ -4160,9 +4165,9 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Statement from line: 163
+//Building function ansi3Statement from line: 167
 
-public void ansi3Statement(Box node,Integer indent) {
+public void ansi3Statement(Box node,Integer indent,String functionname) {
     
   if ( equalBox(boxString("set"), first(node))) {    
     ansi3Set(node, indent);
@@ -4171,9 +4176,13 @@ public void ansi3Statement(Box node,Integer indent) {
       ansi3SetStruct(node, indent);
     } else {      
       if ( equalBox(boxString("if"), first(node))) {        
-        ansi3If(node, indent);
+        ansi3If(node, indent, functionname);
       } else {        
         if ( equalBox(boxString("return"), first(node))) {          
+          if ( inList(boxString(functionname), NoStackTrace_list())) {
+          } else {            
+            System.out.printf("\nStackTraceMove(\"out\", \"\", \"\", \"\");\n");
+          }          
           ansi3Return(node, indent);
         } else {          
           newLine(indent);          
@@ -4189,9 +4198,9 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Body from line: 181
+//Building function ansi3Body from line: 190
 
-public void ansi3Body(Box tree,Integer indent) {
+public void ansi3Body(Box tree,Integer indent,String functionName) {
   Box code = null;
   
   if ( isEmpty(tree)) {    
@@ -4211,8 +4220,8 @@ public void ansi3Body(Box tree,Integer indent) {
       System.out.printf("%s", "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n");
     } else {
     }    
-    ansi3Statement(code, indent);    
-    ansi3Body(cdr(tree), indent);
+    ansi3Statement(code, indent, functionName);    
+    ansi3Body(cdr(tree), indent, functionName);
   }
 if (globalTrace)
    System.out. printf("Leaving ansi3Body\n");
@@ -4220,7 +4229,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Declarations from line: 206
+//Building function ansi3Declarations from line: 215
 
 public void ansi3Declarations(Box decls,Integer indent) {
   Box decl = null;
@@ -4240,7 +4249,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Function from line: 220
+//Building function ansi3Function from line: 229
 
 public void ansi3Function(Box node) {
   Box name = null;
@@ -4264,14 +4273,13 @@ public void ansi3Function(Box node) {
     }    
     if ( releaseMode) {      
       System.out.printf("");
-    } else {
-    }    
-    ansi3Body(cdr(fifth(node)), 1);    
-    if ( releaseMode) {      
-      System.out.printf("");
     } else {      
-      System.out.printf("\nif (globalTrace)\n    printf(\"Leaving %s\\n\");\n", stringify(name));
+      if ( inList(name, NoStackTrace_list())) {
+      } else {        
+        System.out.printf("\n  StackTraceMove(\"in\", \"%s\", \"%s\", \"%s\" );\n", stringify(getTag(name, boxString("filename"))), stringify(name), stringify(getTag(name, boxString("line"))));
+      }
     }    
+    ansi3Body(cdr(fifth(node)), 1, stringify(name));    
     System.out.printf("\n}\n");
   }
 if (globalTrace)
@@ -4280,7 +4288,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3ForwardDeclaration from line: 255
+//Building function ansi3ForwardDeclaration from line: 263
 
 public void ansi3ForwardDeclaration(Box node) {
     
@@ -4297,7 +4305,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3ForwardDeclarations from line: 265
+//Building function ansi3ForwardDeclarations from line: 273
 
 public void ansi3ForwardDeclarations(Box tree) {
     
@@ -4313,7 +4321,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Functions from line: 271
+//Building function ansi3Functions from line: 279
 
 public void ansi3Functions(Box tree) {
     
@@ -4329,7 +4337,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Includes from line: 277
+//Building function ansi3Includes from line: 285
 
 public void ansi3Includes(Box nodes) {
     
@@ -4341,7 +4349,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3TypeDecl from line: 285
+//Building function ansi3TypeDecl from line: 293
 
 public void ansi3TypeDecl(Box l) {
     
@@ -4358,7 +4366,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3StructComponents from line: 302
+//Building function ansi3StructComponents from line: 310
 
 public void ansi3StructComponents(Box node) {
     
@@ -4374,7 +4382,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Struct from line: 308
+//Building function ansi3Struct from line: 316
 
 public void ansi3Struct(Box node) {
     
@@ -4385,7 +4393,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3TypeMap from line: 311
+//Building function ansi3TypeMap from line: 319
 
 public Box ansi3TypeMap(Box aSym) {
   Box symMap = null;
@@ -4399,7 +4407,7 @@ public Box ansi3TypeMap(Box aSym) {
 }
 
 
-//Building function ansi3FuncMap from line: 321
+//Building function ansi3FuncMap from line: 329
 
 public Box ansi3FuncMap(Box aSym) {
   Box symMap = null;
@@ -4417,7 +4425,7 @@ public Box ansi3FuncMap(Box aSym) {
 }
 
 
-//Building function ansi3Type from line: 352
+//Building function ansi3Type from line: 360
 
 public void ansi3Type(Box node) {
     
@@ -4435,7 +4443,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Types from line: 362
+//Building function ansi3Types from line: 370
 
 public void ansi3Types(Box nodes) {
     
@@ -4451,7 +4459,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Compile from line: 372
+//Building function ansi3Compile from line: 380
 
 public void ansi3Compile(String filename) {
   Box tree = null;

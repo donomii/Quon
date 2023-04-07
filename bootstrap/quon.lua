@@ -4273,7 +4273,7 @@ caller = ":Unknown file:-1"
 
 end
 -- Chose function name ansi3If
-function ansi3If(node,indent)
+function ansi3If(node,indent,functionName)
 print("caller: ", caller, "-> ansi3If")
 caller = "ansi3If:Unknown file:-1"
   newLine(indent);
@@ -4288,7 +4288,7 @@ caller = "ansi3If:Unknown file:-1"
   ansi3displays(") {");
 
 caller = "ansi3If:Unknown file:-1"
-  ansi3Body(cdr(third(node)), add1(indent));
+  ansi3Body(cdr(third(node)), add1(indent), functionName);
 
 caller = "ansi3If:Unknown file:-1"
   newLine(indent);
@@ -4297,7 +4297,7 @@ caller = "ansi3If:Unknown file:-1"
   ansi3displays("} else {");
 
 caller = "ansi3If:Unknown file:-1"
-  ansi3Body(cdr(fourth(node)), add1(indent));
+  ansi3Body(cdr(fourth(node)), add1(indent), functionName);
 
 caller = "ansi3If:Unknown file:-1"
   newLine(indent);
@@ -4370,7 +4370,7 @@ caller = ":Unknown file:-1"
 
 end
 -- Chose function name ansi3Statement
-function ansi3Statement(node,indent)
+function ansi3Statement(node,indent,functionname)
 print("caller: ", caller, "-> ansi3Statement")
 caller = "ansi3Statement:Unknown file:-1"
   if equalBox(boxString("set"), first(node)) then
@@ -4387,11 +4387,19 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
           if equalBox(boxString("if"), first(node)) then
 caller = ":Unknown file:-1"
-              ansi3If(node, indent);
+              ansi3If(node, indent, functionname);
 
           else
 caller = ":Unknown file:-1"
               if equalBox(boxString("return"), first(node)) then
+caller = ":Unknown file:-1"
+                  if inList(boxString(functionname), NoStackTrace_list()) then
+                  else
+caller = ":Unknown file:-1"
+                      printf("\nStackTraceMove(\"out\", \"\", \"\", \"\");\n");
+
+                  end
+
 caller = ":Unknown file:-1"
                   ansi3Return(node, indent);
 
@@ -4415,7 +4423,7 @@ caller = "ansi3Statement:Unknown file:-1"
 
 end
 -- Chose function name ansi3Body
-function ansi3Body(tree,indent)
+function ansi3Body(tree,indent,functionName)
 print("caller: ", caller, "-> ansi3Body")
 local code =nil
 caller = "ansi3Body:Unknown file:-1"
@@ -4453,10 +4461,10 @@ caller = ":Unknown file:-1"
       end
 
 caller = ":Unknown file:-1"
-      ansi3Statement(code, indent);
+      ansi3Statement(code, indent, functionName);
 
 caller = ":Unknown file:-1"
-      ansi3Body(cdr(tree), indent);
+      ansi3Body(cdr(tree), indent, functionName);
 
   end
 
@@ -4541,21 +4549,18 @@ caller = ":Unknown file:-1"
           printf("");
 
       else
-      end
+caller = ":Unknown file:-1"
+          if inList(name, NoStackTrace_list()) then
+          else
+caller = ":Unknown file:-1"
+              printf("\n  StackTraceMove(\"in\", \"%s\", \"%s\", \"%s\" );\n", stringify(getTag(name, boxString("filename"))), stringify(name), stringify(getTag(name, boxString("line"))));
 
-caller = ":Unknown file:-1"
-      ansi3Body(cdr(fifth(node)), 1);
-
-caller = ":Unknown file:-1"
-      if releaseMode then
-caller = ":Unknown file:-1"
-          printf("");
-
-      else
-caller = ":Unknown file:-1"
-          printf("\nif (globalTrace)\n    printf(\"Leaving %s\\n\");\n", stringify(name));
+          end
 
       end
+
+caller = ":Unknown file:-1"
+      ansi3Body(cdr(fifth(node)), 1, stringify(name));
 
 caller = ":Unknown file:-1"
       printf("\n}\n");
@@ -10109,17 +10114,18 @@ print("caller: ", caller, "-> stroff")
 caller = "stroff:Unknown file:-1"
   globalStepTrace = false
 end
--- Chose function name StackTracePush
-function StackTracePush(filename,fname,line)
-print("caller: ", caller, "-> StackTracePush")
-caller = "StackTracePush:Unknown file:-1"
-  globalStackTrace = cons(cons(boxString(filename), cons(boxString(fname), boxString(line))), globalStackTrace)
-end
--- Chose function name StackTracePop
-function StackTracePop()
-print("caller: ", caller, "-> StackTracePop")
-caller = "StackTracePop:Unknown file:-1"
-  globalStackTrace = cdr(globalStackTrace)
+-- Chose function name StackTraceMove
+function StackTraceMove(direction,filename,fname,line)
+print("caller: ", caller, "-> StackTraceMove")
+caller = "StackTraceMove:Unknown file:-1"
+  if equalString(direction, "in") then
+caller = ":Unknown file:-1"
+      globalStackTrace = cons(cons(boxString(filename), cons(boxString(line), cons(boxString(fname), nil))), globalStackTrace)
+  else
+caller = ":Unknown file:-1"
+      globalStackTrace = cdr(globalStackTrace)
+  end
+
 end
 -- Chose function name StackTracePrint
 function StackTracePrint()
@@ -10142,6 +10148,9 @@ end
 -- Chose function name StackTracePrintHelper
 function StackTracePrintHelper(stack)
 print("caller: ", caller, "-> StackTracePrintHelper")
+local file =""
+local line =""
+local func =""
 caller = "StackTracePrintHelper:Unknown file:-1"
   if isNil(stack) then
 caller = ":Unknown file:-1"
@@ -10149,18 +10158,25 @@ caller = ":Unknown file:-1"
 
   else
 caller = ":Unknown file:-1"
-      display(car(car(stack)));
-
+      file = stringify(first(car(stack)))
 caller = ":Unknown file:-1"
-      display(cdr(car(stack)));
-
+      line = stringify(second(car(stack)))
 caller = ":Unknown file:-1"
-      display(cdr(stack));
+      func = stringify(third(first(stack)))
+caller = ":Unknown file:-1"
+      printf("  %s:%s %s\n", file, line, func);
 
 caller = ":Unknown file:-1"
       StackTracePrintHelper(cdr(stack));
 
   end
+
+end
+-- Chose function name NoStackTrace_list
+function NoStackTrace_list()
+print("caller: ", caller, "-> NoStackTrace_list")
+caller = "NoStackTrace_list:Unknown file:-1"
+  return cons(boxString("StackTraceMove"), cons(boxString("StackTracePrint"), cons(boxString("StackTracePrintHelper"), cons(boxString("NoStackTrace_list"), cons(boxString("car"), cons(boxString("cdr"), cons(boxString("cons"), cons(boxString("set"), cons(boxString("boxString"), cons(boxString("makePair"), cons(boxString("set-struct"), cons(boxString("display"), cons(boxString("list"), cons(boxString("assertType"), cons(boxString("isEmpty"), cons(boxString("isNil"), cons(boxString("get-struct"), cons(boxString("equalString"), cons(boxString("binop"), cons(boxString("strcmp"), cons(boxString("main"), cons(boxString("makeBox"), cons(boxString("string_length"), cons(boxString("boxType"), cons(boxString("displayList"), cons(boxString("newLine"), nil))))))))))))))))))))))))))
 
 end
 -- Chose function name start
