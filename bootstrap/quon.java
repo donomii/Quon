@@ -4282,7 +4282,8 @@ public void ansi3Function(Box node) {
     if ( releaseMode) {      
       System.out.printf("");
     } else {      
-      if ( inList(name, NoTrace_list())) {
+      if ( inList(name, NoTrace_list())) {        
+        System.out.printf("//Function %s omitted due to no trace list\n", stringify(name));
       } else {        
         System.out.printf("\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n", stringify(name), stringify(getTag(name, boxString("filename"))), stringify(getTag(name, boxString("line"))));
       }
@@ -4304,7 +4305,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3ForwardDeclaration from line: 271
+//Building function ansi3ForwardDeclaration from line: 272
 
 public void ansi3ForwardDeclaration(Box node) {
     
@@ -4321,7 +4322,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3ForwardDeclarations from line: 281
+//Building function ansi3ForwardDeclarations from line: 282
 
 public void ansi3ForwardDeclarations(Box tree) {
     
@@ -4337,7 +4338,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Functions from line: 287
+//Building function ansi3Functions from line: 288
 
 public void ansi3Functions(Box tree) {
     
@@ -4353,7 +4354,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Includes from line: 293
+//Building function ansi3Includes from line: 294
 
 public void ansi3Includes(Box nodes) {
     
@@ -4365,7 +4366,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3TypeDecl from line: 301
+//Building function ansi3TypeDecl from line: 302
 
 public void ansi3TypeDecl(Box l) {
     
@@ -4382,7 +4383,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3StructComponents from line: 318
+//Building function ansi3StructComponents from line: 319
 
 public void ansi3StructComponents(Box node) {
     
@@ -4398,7 +4399,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Struct from line: 324
+//Building function ansi3Struct from line: 325
 
 public void ansi3Struct(Box node) {
     
@@ -4409,7 +4410,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3TypeMap from line: 327
+//Building function ansi3TypeMap from line: 328
 
 public Box ansi3TypeMap(Box aSym) {
   Box symMap = null;
@@ -4423,7 +4424,7 @@ public Box ansi3TypeMap(Box aSym) {
 }
 
 
-//Building function ansi3FuncMap from line: 337
+//Building function ansi3FuncMap from line: 338
 
 public Box ansi3FuncMap(Box aSym) {
   Box symMap = null;
@@ -4441,7 +4442,7 @@ public Box ansi3FuncMap(Box aSym) {
 }
 
 
-//Building function ansi3Type from line: 368
+//Building function ansi3Type from line: 369
 
 public void ansi3Type(Box node) {
     
@@ -4459,7 +4460,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Types from line: 378
+//Building function ansi3Types from line: 379
 
 public void ansi3Types(Box nodes) {
     
@@ -4475,7 +4476,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Compile from line: 388
+//Building function ansi3Compile from line: 389
 
 public void ansi3Compile(String filename) {
   Box tree = null;

@@ -4545,6 +4545,9 @@ caller = ":Unknown file:-1"
       else
 caller = ":Unknown file:-1"
           if inList(name, NoTrace_list()) then
+caller = ":Unknown file:-1"
+              printf("//Function %s omitted due to no trace list\n", stringify(name));
+
           else
 caller = ":Unknown file:-1"
               printf("\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n", stringify(name), stringify(getTag(name, boxString("filename"))), stringify(getTag(name, boxString("line"))));
