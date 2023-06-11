@@ -247,21 +247,31 @@
  
  
  (list doStringList (list l) (declare (list newlist nil) (list ret nil))
- (body
- (if (isNil l)
- (then (return (cons (boxSymbol "nil") nil)))
- (else
- (set newlist (cons (boxSymbol "boxString") (cons (first l) newlist)))
- (set ret
-    (cons
-            (cons
-                (boxSymbol "cons")
+       (body
+        (if (isNil l)
+          (then (return (cons (boxSymbol "nil") nil)))
+          (else
+          (if (equalString "symbol" (boxType (first l)))
+            (then
+              (set newlist  (cons (first l) newlist))
+              (set ret
+                  (cons
+                  (cons
+                    (boxSymbol "cons")
+                    (cons
+                    (first l)
+                    (doStringList (cdr l)))) nil))
+              (return ret))
+              (else 
+           (set newlist (cons (boxSymbol "boxString") (cons (first l) newlist)))
+           (set ret
                 (cons
-                   newlist 
-                    (doStringList (cdr l)))
-            ) nil)
-    )
- (return ret))) ))
+                 (cons
+                  (boxSymbol "cons")
+                  (cons
+                   newlist
+                   (doStringList (cdr l)))) nil))
+           (return ret)))))))
 
  (list doSymbolList (list l) (declare (list newlist nil) (list ret nil))
  (body
