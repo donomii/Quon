@@ -370,7 +370,9 @@
        
          
          (if (isNil stack)
-           (then (return))
+           (then 
+           (printf "  <end>\n")
+           (return))
            (else
            ;(display (car (car stack)))
            ;(display (cdr (car stack)))

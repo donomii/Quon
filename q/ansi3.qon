@@ -254,7 +254,8 @@
        ;
         (if (inList  name (NoTrace_list))
        (then
-       (printf "//Function %s omitted due to no trace list\n" (stringify name) ))
+       ;(printf "//Function %s omitted due to no trace list\n" (stringify name) )
+       )
        (else 
            (printf "\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n" (stringify name) (stringify (getTag name (boxString "filename"))) (stringify (getTag name (boxString "line")))))   )))
        (if releaseMode

@@ -4112,6 +4112,29 @@ caller = ":Unknown file:-1"
   end
 
 end
+-- Chose function name test27
+function test27()
+print("caller: ", caller, "-> test27")
+local expected ="a b c d e"
+local res =""
+local variable =cons(boxString("c "), cons(boxString("d "), nil))
+local input =nil
+caller = "test27:Unknown file:-1"
+  input = cons(boxString("a "), cons(boxString("b "), cons(id(variable), cons(boxString("e"), nil))))
+caller = "test27:Unknown file:-1"
+  res = ListToString(flatten(input), 0, true, false)
+caller = "test27:Unknown file:-1"
+  if equalString(expected, res) then
+caller = ":Unknown file:-1"
+      printf("27. pass Interpolated List\n");
+
+  else
+caller = ":Unknown file:-1"
+      printf("27. fail Interpolated List.  expected '%s', got '%s'\n", expected, res);
+
+  end
+
+end
 -- Chose function name ansi3displays
 function ansi3displays(s)
 print("caller: ", caller, "-> ansi3displays")
@@ -4545,9 +4568,6 @@ caller = ":Unknown file:-1"
       else
 caller = ":Unknown file:-1"
           if inList(name, NoTrace_list()) then
-caller = ":Unknown file:-1"
-              printf("//Function %s omitted due to no trace list\n", stringify(name));
-
           else
 caller = ":Unknown file:-1"
               printf("\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n", stringify(name), stringify(getTag(name, boxString("filename"))), stringify(getTag(name, boxString("line"))));
@@ -10167,6 +10187,9 @@ local func =""
 caller = "StackTracePrintHelper:Unknown file:-1"
   if isNil(stack) then
 caller = ":Unknown file:-1"
+      printf("  <end>\n");
+
+caller = ":Unknown file:-1"
       return 
 
   else
@@ -10398,6 +10421,9 @@ caller = ":Unknown file:-1"
 
 caller = ":Unknown file:-1"
       test25();
+
+caller = ":Unknown file:-1"
+      test27();
 
 caller = ":Unknown file:-1"
       printf("\n\nAfter all that hard work, I need a beer...\n");

@@ -681,6 +681,7 @@ String line = "";
 String func = "";
   
   if ( isNil(stack)) {    
+    System.out.printf("  <end>\n");    
     return;
   } else {    
     file = stringify(first(car(stack)));    
@@ -695,7 +696,7 @@ if (globalTrace)
 }
 
 
-//Building function NoStackTrace_list from line: 385
+//Building function NoStackTrace_list from line: 387
 
 public Box NoStackTrace_list() {
     
@@ -703,7 +704,7 @@ public Box NoStackTrace_list() {
 }
 
 
-//Building function NoTrace_list from line: 390
+//Building function NoTrace_list from line: 392
 
 public Box NoTrace_list() {
     
@@ -4282,8 +4283,7 @@ public void ansi3Function(Box node) {
     if ( releaseMode) {      
       System.out.printf("");
     } else {      
-      if ( inList(name, NoTrace_list())) {        
-        System.out.printf("//Function %s omitted due to no trace list\n", stringify(name));
+      if ( inList(name, NoTrace_list())) {
       } else {        
         System.out.printf("\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n", stringify(name), stringify(getTag(name, boxString("filename"))), stringify(getTag(name, boxString("line"))));
       }
@@ -4305,7 +4305,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3ForwardDeclaration from line: 272
+//Building function ansi3ForwardDeclaration from line: 273
 
 public void ansi3ForwardDeclaration(Box node) {
     
@@ -4322,7 +4322,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3ForwardDeclarations from line: 282
+//Building function ansi3ForwardDeclarations from line: 283
 
 public void ansi3ForwardDeclarations(Box tree) {
     
@@ -4338,7 +4338,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Functions from line: 288
+//Building function ansi3Functions from line: 289
 
 public void ansi3Functions(Box tree) {
     
@@ -4354,7 +4354,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Includes from line: 294
+//Building function ansi3Includes from line: 295
 
 public void ansi3Includes(Box nodes) {
     
@@ -4366,7 +4366,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3TypeDecl from line: 302
+//Building function ansi3TypeDecl from line: 303
 
 public void ansi3TypeDecl(Box l) {
     
@@ -4383,7 +4383,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3StructComponents from line: 319
+//Building function ansi3StructComponents from line: 320
 
 public void ansi3StructComponents(Box node) {
     
@@ -4399,7 +4399,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Struct from line: 325
+//Building function ansi3Struct from line: 326
 
 public void ansi3Struct(Box node) {
     
@@ -4410,7 +4410,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3TypeMap from line: 328
+//Building function ansi3TypeMap from line: 329
 
 public Box ansi3TypeMap(Box aSym) {
   Box symMap = null;
@@ -4424,7 +4424,7 @@ public Box ansi3TypeMap(Box aSym) {
 }
 
 
-//Building function ansi3FuncMap from line: 338
+//Building function ansi3FuncMap from line: 339
 
 public Box ansi3FuncMap(Box aSym) {
   Box symMap = null;
@@ -4442,7 +4442,7 @@ public Box ansi3FuncMap(Box aSym) {
 }
 
 
-//Building function ansi3Type from line: 369
+//Building function ansi3Type from line: 370
 
 public void ansi3Type(Box node) {
     
@@ -4460,7 +4460,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Types from line: 379
+//Building function ansi3Types from line: 380
 
 public void ansi3Types(Box nodes) {
     
@@ -4476,7 +4476,7 @@ if (globalTrace)
 }
 
 
-//Building function ansi3Compile from line: 389
+//Building function ansi3Compile from line: 390
 
 public void ansi3Compile(String filename) {
   Box tree = null;
@@ -5122,6 +5122,30 @@ Box input = null;
   }
 if (globalTrace)
    System.out. printf("Leaving test25\n");
+
+}
+
+
+//Building function test27 from line: 416
+
+public void test27() {
+  String expected = "a b c d e";
+String res = "";
+Box variable = [cons 
+("boxString" "c ") 
+(cons 
+  ("boxString" "d ") nil)];
+Box input = null;
+  
+  input = cons(boxString("a "), cons(boxString("b "), cons(id(variable), cons(boxString("e"), null))));  
+  res = ListToString(flatten(input), 0, true, false);  
+  if ( equalString(expected, res)) {    
+    System.out.printf("27. pass Interpolated List\n");
+  } else {    
+    System.out.printf("27. fail Interpolated List.  expected '%s', got '%s'\n", expected, res);
+  }
+if (globalTrace)
+   System.out. printf("Leaving test27\n");
 
 }
 
@@ -7474,6 +7498,7 @@ boolean runTree = false;
     test23();    
     test24();    
     test25();    
+    test27();    
     System.out.printf("\n\nAfter all that hard work, I need a beer...\n");    
     beers(9);
   } else {    
