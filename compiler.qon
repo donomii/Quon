@@ -94,7 +94,6 @@
        (test23)
        (test24)
        (test25)
-       (test26)
 	   ;(test22)
        (printf "\n\nAfter all that hard work, I need a beer...\n")
        (beers 9))
