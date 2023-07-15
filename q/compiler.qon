@@ -511,7 +511,10 @@
 
 
     (bool isLeaf (list n) (declare)
-       (body (return (equalBox (boxString "leaf") (subnameof n)))))
+       
+       (body 
+       ;(assertType "list" n __LINE__ __FILE__ )
+        (return (equalBox (boxString "leaf") (subnameof n)))))
 
       (list noStackTrace () (declare)
     (body

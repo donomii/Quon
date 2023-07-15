@@ -20,11 +20,79 @@
       (then (nodeGetStruct thisNode indent))
       (else (nodeLeaf thisNode indent)))))
 
-  (void nodeExpression (list node int indent) (declare)
+ 
+  (void nodeExpression (list tree int indent) (declare (list thing nil))
    (body
-    (if (isLeaf node)
-      (then (display (nodeFuncMap (codeof node))))
-      (else (nodeSubExpression node indent)))))
+    (if (isList tree)
+		;It is a function call
+      (then
+
+	  (if (equal 1 (listLength  tree))
+				;A function call with no args
+               (then
+               
+                (display (car  tree))
+				;C does not allow "return();"
+                (if (equalBox
+                     (boxString "return")
+                      (car  tree))
+                  (then )
+                  (else (printf "()"))))
+               (else
+			   ;Handle special functions
+                (set thing (first   tree))
+                (if (equalBox (boxSymbol "get-struct") thing)
+				;Get a value from a C struct ref
+                  (then
+                   (printf
+                    "%s->%s"
+                    (stringify (second  tree))
+                    (stringify (third  tree))))
+                  (else
+                   (if (equalBox (boxSymbol "new") thing)
+				   ;Create a new value on the heap
+                     (then
+                      (printf
+                       "malloc(sizeof(%s))"
+                       (stringify  (third tree))))
+                     (else
+                      (if (equalBox (boxSymbol "passthrough") thing)
+				   ;Print the second arg directly into the compiler output.  Hope you got it perfectly right!
+                     (then
+                      (printf
+                       "%s"
+                       (stringify  (second tree))))
+                     (else
+                      (if (equalBox (boxSymbol "binop") thing)
+				   ;Print the expression as a binop, i.e. the first element is moved to the middle
+                     (then
+                      (printf "(")
+                      (nodeExpression (third tree) indent)
+                      (printf
+                       " %s "
+                       (stringify  (second tree)))
+                      (nodeExpression (fourth tree) indent)
+                      (printf ")")
+                      )
+					   ;It's a normal expression
+                     (else
+                      (printf
+                       "%s("
+                       (stringify
+                        (nodeFuncMap (car tree))))
+                      (nodeRecurList (cdr  tree) indent)
+                      (printf ")")))))))))))
+
+
+
+
+	  )
+
+	  ;It is a variable or literal
+      (else (display (nodeFuncMap  tree))))))
+
+
+
   (void
    nodeRecurList
    (list expr int indent)
@@ -39,46 +107,7 @@
          (else (printf ", ") (nodeRecurList (cdr expr) indent)))))
     ))
 
-  (void nodeSubExpression (list tree int indent) (declare (box thing nil))
-   (body
-    (if (isEmpty tree)
-      (then (return))
-      (else
-       (if (isNode (childrenof tree))
-         (then (nodeSubExpression (childrenof tree) indent))
-         (else
-          (if (isLeaf tree)
-            (then (display (nodeFuncMap (codeof tree))))
-            (else
-             (if (equal 1 (listLength (childrenof tree)))
-               (then
-                (display (codeof (car (childrenof tree))))
-                (if (equalBox
-                     (boxString "return")
-                     (codeof (car (childrenof tree))))
-                  (then (printf ""))
-                  (else (printf "()"))))
-               (else
-                (set thing (codeof (car (childrenof tree))))
-                (if (equalBox (boxSymbol "get-struct") thing)
-                  (then
-                   (printf
-                    "%s.%s"
-                    (stringify (codeof (second (childrenof tree))))
-                    (stringify (codeof (third (childrenof tree))))))
-                  (else
-                   (if (equalBox (boxSymbol "new") thing)
-                     (then
-                      (printf
-                       "{}"
-                       ))
-                     (else
-                      (printf
-                       "%s("
-                       (stringify
-                        (nodeFuncMap (codeof (car (childrenof tree))))))
-                      (nodeRecurList (cdr (childrenof tree)) indent)
-                      (printf ")")))))))))))))))
+
 
   (void nodeIf (list node int indent) (declare)
    (body
@@ -158,7 +187,7 @@
        (printf
         "var %s = "
         (stringify (second decl)))
-       (display (nodeFuncMap (third decl)))
+       (nodeExpression (makeList (third decl)) indent)
        (printf ";\n")
        (nodeDeclarations (cdr decls) indent)))))
 

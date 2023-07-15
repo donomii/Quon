@@ -23,12 +23,15 @@
 
   (void perlLeaf (list thisNode int indent) (declare)
         (body
+         (if (isEmpty thisNode)
+            (then (return))
+            (else
          (if (equalString "symbol" (lexType (codeof thisNode)))
              (then (printf "%s" (dollar) ))
              (else (printf "" ))
              )
          (display (perlFuncMap (codeof thisNode)))
-         ))
+         ))))
 
   (void perlStructGetterExpression (list thisNode int indent) (declare)
         (body
@@ -38,9 +41,33 @@
 
   (void perlExpression (list node int indent) (declare)
         (body
-         (if (isLeaf node)
-             (then (perlLeaf node indent))
-             (else (perlSubExpression node indent)))))
+        (printf "perlExpression!\n")
+        (if (isNil node)
+            (then 
+            (printf "perlExpression: node\n")
+            (return))
+            (else
+            (if (isList node)
+            (then (printf "perlExpression: list\n")
+            (printf "perlExpression: node:")
+            (display node)
+            (assertType "list" node __LINE__ __FILE__ )
+            
+        (if (isEmpty node)
+            (then 
+            (printf "perlExpression! empty\n")
+            (return))
+            (else
+            (printf "perlExpression! not empty\n")
+                (if (isLeaf node)
+                    (then 
+                    (printf "perlExpression! leaf\n")
+                    (perlLeaf node indent))
+                    (else 
+                    (printf "perlExpression: recurse\n")
+                    (perlSubExpression node indent))))))
+                    (else
+            (printf "perlExpression: not list\n")))))))
 
   (void perlRecurList (list expr int indent) (declare)
         (body
@@ -55,17 +82,27 @@
 
   (void perlSubExpression (list tree int indent) (declare (box thing nil))
         (body
+        (printf "perlSubExpression!\n")
          (if (isEmpty tree)
-             (then (return))
+         
+             (then (printf "perlSubExpression: tree is empty")
+             (return))
              (else
+             (if (isList tree)
+             (then
+             (printf "perlSubExpression: is list\n")
               (if (isNode (childrenof tree))
-                  (then (perlSubExpression (childrenof tree) indent))
+                  (then 
+                  (printf "perlSubExpression: is node\n")
+                  (perlSubExpression (childrenof tree) indent))
                   (else
                    (if (isLeaf tree)
                        (then
+                       (printf "perlSubExpression: is leaf\n")
                         (printf "%s" (dollar))
                         (display (perlFuncMap (codeof tree))))
                        (else
+                       ;Function with no args
                         (if (equal 1 (listLength (childrenof tree)))
                             (then
                              (display (codeof (car (childrenof tree))))
@@ -75,6 +112,7 @@
                                  (then (printf ""))
                                  (else (printf "()"))))
                             (else
+                            ;Function with args
                              (set thing (codeof (car (childrenof tree))))
                              (if (equalBox (boxSymbol "get-struct") thing)
                                  (then
@@ -89,7 +127,12 @@
                                         (stringify
                                          (perlFuncMap (codeof (car (childrenof tree))))))
                                        (perlRecurList (cdr (childrenof tree)) indent)
-                                       (printf ")")))))))))))))))
+                                       (printf ")"))))))))))))
+                                       (else
+                                       ;it's a symbol
+                                       (printf "perlSubExpression: symbol \n")
+                                       (display (perlConstMap tree)))
+                                       )))))
 
   (void perlIf (list node int indent) (declare)
         (body
@@ -195,7 +238,9 @@
              (else
               (set decl (car decls))
               (printf "my %s%s = " (dollar) (stringify (second decl)))
-              (display (perlConstMap (third decl)))
+              ;(set globalStepTrace true)
+              (perlExpression (third decl) indent)
+              ;(set globalStepTrace false)
               (printf ";\n")
               (perlDeclarations (cdr decls) indent)))))
 
@@ -331,7 +376,10 @@
             (then
              (set
               symMap
-              (alistCons (boxSymbol "false") (boxSymbol "0") (alistCons (boxSymbol "nil") (boxSymbol "undef")  nil)))
+              (alistCons (boxSymbol "false") (boxSymbol "0") 
+              (alistCons (boxSymbol "true") (boxSymbol "1") 
+              (alistCons (boxSymbol "nil") (boxSymbol "undef")  
+              nil))))
              (return (cdr (assocFail (stringify aSym) symMap aSym))))
             (else (return aSym)))))
 

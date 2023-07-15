@@ -17,7 +17,7 @@
 			(then (return true))
 			(else (return false)))
 ))
-(bool isNil (a)(declare)
+(bool isNil (void* a)(declare)
     (body
         (return (node2IsNil a))))
 
@@ -27,7 +27,7 @@
 
 (char* getEnv (char* key) (declare)
 	(body
-		(return (process.env[key]))))
+		(return (get-struct  process.env key))))
 
 (void panic (char* s) (declare)
 	(body

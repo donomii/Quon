@@ -21,19 +21,24 @@
   (float addf (float a float b) (declare) (body (return (subf a (subf 0 b)))))
   (int sub1 (int a) (declare) (body (return (sub a 1))))
   (int add1 (int a) (declare) (body (return (add a 1))))
-  (box
-   clone
-   (box b)
+  
+  (box clone (box b)
    (declare (box newb nil))
    (body
     (set newb (makeBox))
-    (set-struct newb typ (get-struct b typ))
-    (set-struct newb tag (get-struct b tag))
-    (set-struct newb lis (get-struct b lis))
-    (set-struct newb str (get-struct b str))
-    (set-struct newb i (get-struct b i))
-    (set-struct newb lengt (get-struct b lengt))
-    (return newb)))
+    (if (isNil newb)
+    (then 
+      (printf "clone: newb is nil\n")
+      (panic "clone: newb is nil")
+      (return newb))
+    (else
+      (set-struct newb typ (get-struct b typ))
+      (set-struct newb tag (get-struct b tag))
+      (set-struct newb lis (get-struct b lis))
+      (set-struct newb str (get-struct b str))
+      (set-struct newb i (get-struct b i))
+      (set-struct newb lengt (get-struct b lengt))
+      (return newb)))))
 
   (box tern (bool cond list tr list fal) (declare)
        (body
@@ -155,7 +160,9 @@
   (void assertType (string atype box abox int line string file) (declare)
         (body
          (if (isNil abox)
-           (then (if (equalString atype "nil") (then (return)) (else (return))))
+           (then (if (equalString atype "nil") 
+            (then (return)) 
+            (else (return))))
            (else
             (if (equalString atype (boxType abox))
               (then (return))

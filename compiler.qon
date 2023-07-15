@@ -108,8 +108,7 @@
       (then
       (nodeCompile filename) (printf "\n"))
       (else (if runNode2
-      (then
-      (printf (StringListJoin (flatten (node2Compile  filename)) " ")))
+      (then (node2Compile  filename)(printf "\n"))
       (else
       (if runPerl
       (then (perlCompile  filename) (printf "\n"))

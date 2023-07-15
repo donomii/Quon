@@ -23,7 +23,7 @@
 
   (list cdr (list l) (declare)
    (body
-    (assertType "list" l __LINE__ __FILE__)
+    ;(assertType "list" l __LINE__ __FILE__)
     (if (isEmpty l)
       (then
        (printf "Attempt to cdr an empty list!!!!\n")
@@ -385,9 +385,9 @@
               (else (return (stringify (car l))))
    )))
 
-(box ListToBoxString (list l) (declare)
+(box ListToBoxString (list l int indent) (declare)
 (body
- (return (boxString (ListToString l 0 true false)))
+ (return (boxString (ListToString l indent true false)))
 ))
 
 (string ListToString (list l int indent bool first bool withNewLines) (declare (box val nil))
