@@ -37,9 +37,7 @@
                
                 
 				;C does not allow "return();"
-                (if (equalBox
-                     (boxString "return")
-                      (car  tree))
+                (if (equalBox (boxString "return") (car  tree))
                   (then (return (boxString "return")))
                   (else (return (ListToBoxString (flatten ( makeList (car  tree) "()")) indent)))))
                (else
@@ -119,7 +117,7 @@
    (body
     (newLine indent)
     (node2isplays "if ( ")
-    (display (node2Expression (second node) 0))
+    (printf "%s" (stringify (node2Expression (second node) 0)))
     (node2isplays ") {")
     (node2Body (cdr (third node)) (add1 indent) functionName)
     (newLine indent)
@@ -135,7 +133,7 @@
      "%s->%s = "
      (stringify (second  node))
      (stringify (third  node)))
-    (display (node2Expression (fourth node) indent))))
+    (printf "%s" (stringify (node2Expression (fourth node) indent)))))
 
   (void node2GetStruct (list node int indent) (declare)
    (body
@@ -148,9 +146,9 @@
   (void node2Set (list node int indent) (declare)
    (body
     (newLine indent)
-    (display (node2Expression (first  (cdr node)) indent))
+    (printf "%s" (stringify (node2Expression (first  (cdr node)) indent)))
     (printf " = " )
-    (display (node2Expression (third node) indent))))
+    (printf "%s" (stringify (node2Expression (third node) indent)))))
 
   (void node2Return (list node int indent) (declare)
    (body
@@ -162,7 +160,7 @@
 	(then (node2isplays "return;"))
 	(else
     (node2isplays "return ")
-    (node2Expression (cadr node) indent)
+    (printf "%s" (stringify (node2Expression (cadr node) indent)))
 	(node2isplays ";")
 	))))
 
@@ -186,7 +184,7 @@
                (node2Return node indent))
                (else
                 (newLine indent)
-                (display (node2Expression  node indent))))))))))
+                (printf "%s\n" (stringify (node2Expression  node indent)))))))))))
     (node2isplays ";\n")))
 
   (void node2Body (list tree int indent string functionName) (declare (list code nil))
@@ -224,11 +222,10 @@
       (then (return))
       (else
        (set decl (car decls))
-       (printf
-        "%s %s = "
+       (printf "%s %s = "
         (stringify (node2TypeMap (first decl)))
         (stringify (second decl)))
-       (display (node2Expression (third decl) indent))
+       (printf "%s" (stringify (node2Expression (third decl) indent)))
        (printf ";\n")
        (node2eclarations (cdr decls) indent)))))
 
@@ -272,21 +269,9 @@
    
        (printf "\n}\n")))))
 
-  (void node2ForwardDeclaration (list node) (declare)
-   (body
-    (if (isNil node) (then (return)) (else
-       (printf
-        "\n%s %s("
-        (stringify (node2TypeMap (first node)))
-        (stringify (second node)))
-       (printf (ListToString (flatten (node2FunctionArgs (third node))) 0 false false))
-       (node2isplays ");")))))
 
-  (void node2ForwardDeclarations (list tree) (declare)
-   (body
-    (if (isEmpty tree) (then (return)) (else
-       (node2ForwardDeclaration (car tree))
-       (node2ForwardDeclarations (cdr tree))))))
+
+
 
   (void node2Functions (list tree) (declare)
    (body
@@ -418,7 +403,6 @@
     (node2isplays "Box* globalStackTrace = NULL;\n")
     (node2isplays
      "\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n")
-    (node2ForwardDeclarations (cdr (third tree)))
     (node2isplays "\n\n//End forward declarations\n\n")
     (node2Functions (cdr (third tree)))
     (node2isplays "\n")

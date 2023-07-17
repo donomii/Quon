@@ -4,8 +4,8 @@ ln working/quon working/quon1
 rm working/quon1.exe
 cp working/quon.exe working/quon1.exe
 echo Preparing quon1.c
-./working/quon1 compiler.qon   > working/quon1.c
-./working/quon1 compiler.qon --node  > working/quon1.js
+./working/quon1 compiler.qon    > working/quon1.c
+#./working/quon1 compiler.qon --node  > working/quon1.js
 rm working/quon2
 rm working/quon2.exe
 echo Compiling quon1.c into quon2
