@@ -180,11 +180,13 @@
                 (if (inList (boxString functionname) (NoStackTrace_list))
                   (then )
                   (else
-                    (printf "\nStackTraceMove(\"out\", \"\", \"\", \"\");\n")))
+                    (printf "\n")
+                    (printIndent indent)
+                    (printf "StackTraceMove(\"out\", \"\", \"\", \"\");\n")))
                (node2Return node indent))
                (else
                 (newLine indent)
-                (printf "%s\n" (stringify (node2Expression  node indent)))))))))))
+                (printf "%s" (stringify (node2Expression  node indent)))))))))))
     (node2isplays ";\n")))
 
   (void node2Body (list tree int indent string functionName) (declare (list code nil))
