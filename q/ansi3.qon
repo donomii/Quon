@@ -181,7 +181,9 @@
                 (if (inList (boxString functionname) (NoStackTrace_list))
                   (then )
                   (else
-                    (printf "\nStackTraceMove(\"out\", \"\", \"\", \"\");\n")))
+                    (printf "\n")
+                    (printIndent indent)
+                    (printf "%s" "StackTraceMove(\"out\", \"\", \"\", \"\");\n")))
                (ansi3Return node indent))
                (else
                 (newLine indent)
