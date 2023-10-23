@@ -3,11 +3,6 @@
 
  (functions
 
-(void node2isplays (string s) (declare)
-	(body
-		(printf "%s" s)
-	)
-)
 
   (list node2FunctionArgs (list tree) (declare (list out nil))
    (body
@@ -25,7 +20,7 @@
 
 
 
-  (box node2Expression (list tree int indent) (declare (list thing nil))
+  (list node2Expression (list tree int indent) (declare (list thing nil))
    (body
     (if (isList tree)
 		;It is a function call
@@ -39,24 +34,24 @@
 				;C does not allow "return();"
                 (if (equalBox (boxString "return") (car  tree))
                   (then (return (boxString "return")))
-                  (else (return (ListToBoxString (flatten ( makeList (car  tree) "()")) indent)))))
+                  (else (return  ( makeList (car  tree) "()")))))
                (else
 			   ;Handle special functions
                 (set thing (first   tree))
                 (if (equalBox (boxSymbol "get-struct") thing)
-				;Get a value from a C struct ref
+				;Get a value from an object
                   (then
-                   (return (ListToBoxString (flatten  (makeList 
+                   (return   (makeList 
                     (second  tree)
-                    (boxString "->")
-                     (third  tree))) indent)))
+                    (boxString ".")
+                     (third  tree))))
                   (else
                    (if (equalBox (boxSymbol "new") thing)
 				   ;Create a new value on the heap
                      (then
-                      (return (ListToBoxString (flatten (makeList
+                      (return (makeList
                        (boxString "new")
-                         (third tree))) indent)))
+                         (third tree))))
                      (else
                       (if (equalBox (boxSymbol "passthrough") thing)
 				   ;Print the second arg directly into the compiler output.  Hope you got it perfectly right!
@@ -66,7 +61,7 @@
                       (if (equalBox (boxSymbol "binop") thing)
 				   ;Print the expression as a binop, i.e. the first element is moved to the middle
                      (then
-                      (ListToBoxString (flatten (makeList
+                      (return (makeList
                       (boxString "(")
                       (node2Expression (third tree) indent)
                       
@@ -75,27 +70,20 @@
                        (boxString " ")
                       (node2Expression (fourth tree) indent)
                        (boxString ")")
-                      )) indent))
+                      )))
 					   ;It's a normal expression
                      (else
-                      (ListToBoxString (flatten (makeList
-                       
-                       
+                       (return (makeList
                         (node2FuncMap (car tree))
-                        
                         (boxString "(")
-                      (node2RecurList (cdr  tree) indent)
-                       (boxString ")"))) indent)))))))))))
-
-
-
-
+                        (node2RecurList (cdr  tree) indent)
+                        (boxString ")")))))))))))))
 	  )
 
 	  ;It is a variable or literal
       (else (return (node2FuncMap  tree))))))
 
-  (box node2RecurList (list expr int indent)
+  (list node2RecurList (list expr int indent)
    (declare)
    (body
     (if (isEmpty expr)
@@ -105,212 +93,198 @@
        (if (isNil (cdr expr))
          (then (boxString ""))
          (else 
-         (return (ListToBoxString (flatten  (makeList (boxString ", ")
-         (node2RecurList (cdr expr) indent))) indent))))))
+         (return (makeList (boxString ", ")
+         (node2RecurList (cdr expr) indent)))))))
     ))
 
 
 
 
 
-  (void node2If (list node int indent string functionName) (declare)
+  (list node2If (list node int indent string functionName) (declare)
    (body
-    (newLine indent)
-    (node2isplays "if ( ")
-    (printf "%s" (stringify (node2Expression (second node) 0)))
-    (node2isplays ") {")
+   (return (makeList
+    (listNewLine indent)
+    (boxString "if ( ")
+    (boxString (stringify (node2Expression (second node) 0)))
+    (boxString ") {")
     (node2Body (cdr (third node)) (add1 indent) functionName)
-    (newLine indent)
-    (node2isplays "} else {")
+    (listNewLine indent)
+    (boxString "} else {")
     (node2Body (cdr (fourth node)) (add1 indent) functionName)
-    (newLine indent)
-    (node2isplays "}")))
+    (listNewLine indent)
+    (boxString "}")))))
 
-  (void node2SetStruct (list node int indent) (declare)
+  (list node2SetStruct (list node int indent) (declare)
    (body
-    (newLine indent)
-    (printf
-     "%s->%s = "
-     (stringify (second  node))
-     (stringify (third  node)))
-    (printf "%s" (stringify (node2Expression (fourth node) indent)))))
+   (return (makeList
+    (listNewLine indent)
+    (boxString (stringify (second  node)))
+    (boxString ".")
+    (boxString (stringify (third  node)))
+    (boxString " = ")
+    (boxString (stringify (node2Expression (fourth node) indent)))))))
 
-  (void node2GetStruct (list node int indent) (declare)
+  (list node2GetStruct (list node int indent) (declare)
    (body
-    (newLine indent)
-    (printf
-     "%s->%s"
-     (stringify (first  node))
-     (stringify (second  node)))))
+   (return (makeList
+    (listNewLine indent)
+    (boxString (stringify (first  node)))
+    (boxString ".")
+    (boxString (stringify (second  node)))))))
 
-  (void node2Set (list node int indent) (declare)
+  (list node2Set (list node int indent) (declare)
    (body
-    (newLine indent)
-    (printf "%s" (stringify (node2Expression (first  (cdr node)) indent)))
-    (printf " = " )
-    (printf "%s" (stringify (node2Expression (third node) indent)))))
+    (return (makeList
+    (listNewLine indent)
+    (boxString (stringify (node2Expression (first  (cdr node)) indent)))
+    (boxString " = " )
+    (boxString (stringify (node2Expression (third node) indent)))))))
 
-  (void node2Return (list node int indent) (declare)
+  (list node2Return (list node int indent) (declare)
    (body
-   ;Stackpop here
+    (if (equal (listLength node) 1)
+      (then (return (makeList  (listNewLine indent) (boxString "return;"))))
+      (else
+        (return (makeList  (listNewLine indent)
+          (boxString "return ")
+          (boxString (stringify (node2Expression (cadr node) indent)))
+          (boxString ";")))))))
 
-
-    (newLine indent)
-	(if (equal (listLength node) 1)
-	(then (node2isplays "return;"))
-	(else
-    (node2isplays "return ")
-    (printf "%s" (stringify (node2Expression (cadr node) indent)))
-	(node2isplays ";")
-	))))
-
-  (void node2Statement (list node int indent string functionname) (declare)
+  (list node2Statement (list node int indent string functionname) (declare (list out nil))
    (body
+   (set out (makeList))
     (if (equalBox (boxString "set") (first node))
-      (then (node2Set node indent))
+      (then (set out (node2Set node indent)))
       (else
        (if (equalBox (boxString "set-struct") (first node))
-         (then (node2SetStruct node indent))
+         (then (set out (node2SetStruct node indent)))
          (else
           (if (equalBox (boxString "if") (first node))
-            (then (node2If node indent functionname))
+            (then (set out (node2If node indent functionname)))
             (else
              (if (equalBox (boxString "return") (first node))
                (then 
                 (if (inList (boxString functionname) (NoStackTrace_list))
                   (then )
                   (else
-                    (printf "\n")
-                    (printIndent indent)
-                    (printf "StackTraceMove(\"out\", \"\", \"\", \"\");\n")))
-               (node2Return node indent))
+                  (set out (makeList
+                    (boxString "\n")
+                    (listIndent indent)
+                    (boxString "StackTraceMove(\"out\", \"\", \"\", \"\");\n")))))
+               (set out (makeList out (node2Return node indent))))
                (else
-                (newLine indent)
-                (printf "%s" (stringify (node2Expression  node indent)))))))))))
-    (node2isplays ";\n")))
+                (set out (makeList 
+                  (listNewLine indent)
+                  (boxString (stringify (node2Expression  node indent)))))))))))))
+    (set out (makeList out (boxString ";\n")))
+    (return out)))
 
-  (void node2Body (list tree int indent string functionName) (declare (list code nil))
+  (list node2Body (list tree int indent string functionName) (declare (list code nil)(list out nil))
    (body
+   (set out (makeList))
     (if (isEmpty tree)
-      (then (return))
+      (then (return (makeList)))
       (else
-       (set code  tree)
-       (if (isNil code)
-       (then)
-       (else
-       (set code (car tree))
-       (if (not releaseMode)
-       (then
-       
-        (if  (inList (boxString functionName) (NoTrace_list))
-	      (then
-        (printf "//Function %s omitted due to the no trace list\n" functionName ))
-        (else  (printf "\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n"  (stringify (getTagFail (car code)  (boxString "filename")  (boxString "Unknown file (not provided by parser)"))) (stringify (getTagFail (car code) (boxString "line") (boxString "Line missing") ))))
-        )
-        )
-        (else))
-        ))
-        (if (not releaseMode) (then
-      (printIndent indent)
-	    (printf "%s" "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n")
-      )(else)
-    )
-       (node2Statement code indent functionName)
-       (node2Body (cdr tree) indent functionName)))))
+        (set code  tree)
+        (if (isNil code)
+          (then (return (makeList)))
+          (else
+            (set code (car tree))
+            (if (not releaseMode)
+              (then
+                (if  (inList (boxString functionName) (NoTrace_list))
+                  (then
+                    (set out (makeList out
+                    (boxString "//Function ")
+                    (boxString functionName)
+                    (boxString " omitted due to the no trace list\n"))))
+                  (else  
+                    (set out (makeList out
+                    (boxString "\nif (globalTrace)\n    snprintf(caller, 1024, \"from:%s:%s\", ")
+                    (boxString (stringify (getTagFail (car code)  (boxString "filename")  (boxString "Unknown file (not provided by parser)"))))
+                    (boxString (stringify (getTagFail (car code) (boxString "line") (boxString "Line missing"))))
+                    )))))
+              (else))))
+        (if (not releaseMode) 
+          (then
+            (set out (makeList out
+              (listIndent indent)
+              (boxString "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n")))
+              )
+          (else))
+        (return (makeList out 
+          (node2Statement code indent functionName)
+          (node2Body (cdr tree) indent functionName)))))))
 
-  (void node2eclarations (list decls int indent) (declare (box decl nil))
+  (list node2eclarations (list decls int indent) (declare (box decl nil))
    (body
     (if (isEmpty decls)
-      (then (return))
+      (then (return (makeList)))
       (else
        (set decl (car decls))
-       (printf "%s %s = "
-        (stringify (node2TypeMap (first decl)))
-        (stringify (second decl)))
-       (printf "%s" (stringify (node2Expression (third decl) indent)))
-       (printf ";\n")
-       (node2eclarations (cdr decls) indent)))))
+       (return (makeList 
+       (boxString "var ")
+       (boxString (stringify (node2TypeMap (first decl))))
+       (boxString " ")
+       (boxString (stringify (second decl)))
+       (boxString " = ")
+       (node2Expression (third decl) indent)
+       (boxString ";\n")
+       (node2eclarations (cdr decls) indent)))))))
 
-  (void node2Function (list node) (declare (box name nil))
+  (list node2Function (list node) (declare (box name nil))
    (body
+   
     (set name  (second node))
     ;(printf "\n\n//Building function %s from file %s, line: %s" (stringify name) (stringify (getTag name (boxString "filename"))) (stringify (getTag name (boxString "line"))))
     (newLine 0)
     (if (isNil node)
-      (then (return))
+      (then (return (makeList)))
       (else
-       (newLine 0)
-       (printf
-        "%s %s("
-        (stringify (node2TypeMap (first node)))
-        (stringify (second node)))
-       (printf (ListToString (flatten (node2FunctionArgs (third node))) 0 false false))
-       (printf ") {")
-       (newLine 1)
+      (return (makeList
+       (listNewLine 0)
+       (boxString (stringify (node2TypeMap (first node))))
+       (boxString " ")
+       (boxString (stringify (second node)))
+       (boxString "(")
+       (node2FunctionArgs (third node))
+       (boxString ") {")
+       (listNewLine 1)
        (node2eclarations (cdr (fourth node)) 1)
-       (if releaseMode
-       (then (printf ""))
-       (else
-       ;
-        (if (inList  name (NoTrace_list))
-       (then
-       ;(printf "//Function %s omitted due to no trace list\n" (stringify name) )
-       )
-       (else 
-           (printf "\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n" (stringify name) (stringify (getTag name (boxString "filename"))) (stringify (getTag name (boxString "line")))))   )))
-       (if releaseMode
-         (then (printf ""))
-         (else
-          (if (inList  name (NoStackTrace_list))
-          (then )
-          (else
-          (printf "\n  StackTraceMove(\"in\", \"%s\", \"%s\", \"%s\" );\n" (stringify (getTag name (boxString "filename"))) (stringify name) (stringify (getTag name (boxString "line"))) )))
-          ))
-	   ;(display (second(fifth node)))
+      
+       
        (node2Body (cdr (fifth node)) 1 (stringify name))
    
-       (printf "\n}\n")))))
+       (boxString "\n}\n")))))))
 
 
 
 
 
-  (void node2Functions (list tree) (declare)
+  (list node2Functions (list tree) (declare)
    (body
-    (if (isEmpty tree) (then (return))(else
-		(node2Function (car tree)) (node2Functions (cdr tree))))))
-
-
-  (void node2Includes (list nodes) (declare)
-   (body
-    (printf
-     "%s"
-     "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#include <unistd.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n")
-     (printf "%s" "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n")
-))
-
-  (void node2TypeDecl (list l) (declare)
-   (body
-    (if (> (listLength l) 2)
-      (then
-       (printIndent 1)
-       (printf
-        "%s %s %s;\n"
-        (stringify (second l))
-        (stringify (node2TypeMap (listLast l)))
-        (stringify (first l))))
+    (if (isEmpty tree) 
+      (then (return (makeList)))
       (else
-       (printIndent 1)
-       (printf
-        "%s %s;\n"
-        (stringify (node2TypeMap (listLast l)))
-        (stringify (car l)))))))
+        (return (makeList
+		    (node2Function (car tree)) 
+        (node2Functions (cdr tree))))))))
 
-  (void node2StructComponents (list node) (declare)
+
+  (list node2Includes (list nodes) (declare)
+   (body
+    (return (makeList))))
+
+  (list node2TypeDecl (list l) (declare)
+   (body
+    (return (makeList))))
+
+  (list node2StructComponents (list node) (declare)
    (body
     (if (isEmpty node)
-      (then (return))
-      (else (node2TypeDecl (car node)) (node2StructComponents (cdr node))))))
+      (then (return (makeList)))
+      (else (return (makeList (node2TypeDecl (car node)) (node2StructComponents (cdr node))))))))
 
   (void node2Struct (list node) (declare)
    (body (node2StructComponents (cdr  node))))
@@ -356,21 +330,16 @@
          (else (return aSym))))
       (else (return aSym)))))
 
-  (void node2Type (list node) (declare)
+  (list node2Type (list node) (declare)
    (body
-    (if (isList  (second node))
-      (then
-       (printf "\ntypedef struct %s {\n" (stringify (first  node)))
-       (node2Struct  (second node))
-       (printf "\n} %s;\n" (stringify (first  node))))
-      (else (node2isplays "typedef ") (node2TypeDecl  node)))
+    (return (makeList))
     ))
 
-  (void node2Types (list nodes) (declare)
+  (list node2Types (list nodes) (declare)
    (body
     (if (isEmpty nodes)
-      (then (return))
-      (else  (node2Type (car nodes)) (node2Types (cdr nodes))))))
+      (then (return (makeList)))
+      (else  (return (makeList (node2Type (car nodes)) (node2Types (cdr nodes))))))))
 
 
 
@@ -381,33 +350,29 @@
 
 
 
-   	(qlog "//Scanning file...%s\n" filename)
+      (qlog "//Scanning file...%s\n" filename)
 
-	(set tree (loadQuon filename))
-   	(qlog "//Building sexpr\n")
+      (set tree (loadQuon filename))
+      (qlog "//Building sexpr\n")
 
-(qlog "Loading shim node2\n")
-  (set tree (buildProg (cons (boxString "q/shims/node2.qon") (getIncludes tree)) (getTypes tree) (getFunctions tree))) ;FIXME check includes are recursive
-(qlog "Loading all includes\n")
-	(set tree (loadIncludes tree))
-(qlog "Applying macros\n")
-	(set tree (macrowalk tree))
-        (set replace (symbolList "fprintf" "stderr"))
-       (set tree (macrolist tree (stringConcatenate "q" "log") replace))
+      (qlog "Loading shim node2\n")
+      (set tree (buildProg (cons (boxString "q/shims/node2.qon") (getIncludes tree)) (getTypes tree) (getFunctions tree))) ;FIXME check includes are recursive
+      (qlog "Loading all includes\n")
+      (set tree (loadIncludes tree))
+      (qlog "Applying macros\n")
+      (set tree (macrowalk tree))
+          (set replace (symbolList "fprintf" "stderr"))
+          (set tree (macrolist tree (stringConcatenate "q" "log") replace))
 
 
 
-   (qlog "//Printing program\n")
-
-    (node2Includes (cdr (first tree)))
-    (node2Types (cdr (second tree)))
-	;(display (cdr (second tree)))(exit 1)
-    (node2isplays "Box* globalStackTrace = NULL;\n")
-    (node2isplays
-     "\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n")
-    (node2isplays "\n\n//End forward declarations\n\n")
-    (node2Functions (cdr (third tree)))
-    (node2isplays "\n")
-   (qlog "//Done printing program\n")
+      (qlog "//Printing program\n")
+      (printf "%s" (stringify (flatten (node2Includes (cdr (first tree))))))
+      (printf "%s" (stringify (flatten (node2Types (cdr (second tree))))))
+      (printf "%s" (stringify (flatten (node2Functions (cdr (third tree))))))
+      (printf "\n")
+      
+      (qlog "//Done printing program\n")
 ))
+
   ))

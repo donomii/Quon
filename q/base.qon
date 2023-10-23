@@ -332,6 +332,16 @@
            (if (> ii 0)
              (then (return (stringConcatenate "  " (stringIndent (sub1 ii)))))
              (else (return "")))))
+  (list listIndent (int ii) (declare)
+      ; listIndent - returns a list containing a string with the given number of spaces
+          (body
+           (return (makeList (boxString (stringIndent ii))))))
+
+
+  (list listNewLine (int ii) (declare)
+      ; listNewLine - returns a list containing a newline, and the given number of spaces
+          (body
+           (return (makeList (boxString (stringConcatenate "\n" (stringIndent ii)))))))
 
 ; Return command line args.  FIXME rename
   (list argList
