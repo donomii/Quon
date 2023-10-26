@@ -2,9 +2,8 @@
  (types)
 
  (functions
-
-
-  (list node2FunctionArgs (list tree) (declare (list out nil))
+  (list node2FunctionArgs (list tree) 
+  (declare (list out nil))
    (body
     (set out (makeList))
     (if (isEmpty tree)
@@ -13,9 +12,9 @@
        (if (equalString (stringify (first tree))  "...")
            (then (set out (makeList out "...")))
            (else
-            (set out (makeList (node2TypeMap (first tree)) " " (second tree)))
+            (set out (makeList " " (second tree)))
             ))
-       (if ( isNil (cddr tree)) (then ) (else (set out (makeList out  ", "))))
+       (if (isNil (cddr tree)) (then ) (else (set out (makeList out  ", "))))
        (return (makeList out (node2FunctionArgs (cddr tree))))))))
 
 
@@ -34,7 +33,7 @@
 				;C does not allow "return();"
                 (if (equalBox (boxString "return") (car  tree))
                   (then (return (boxString "return")))
-                  (else (return  ( makeList (car  tree) "()")))))
+                  (else (return  (makeList (car  tree) "()")))))
                (else
 			   ;Handle special functions
                 (set thing (first   tree))
@@ -62,7 +61,7 @@
 				   ;Print the expression as a binop, i.e. the first element is moved to the middle
                      (then
                       (return (makeList
-                      (boxString "(")
+                      (boxString "(1")
                       (node2Expression (third tree) indent)
                       
                        (boxString " ")
@@ -75,9 +74,10 @@
                      (else
                        (return (makeList
                         (node2FuncMap (car tree))
-                        (boxString "(")
+                        (boxString "(2")
                         (node2RecurList (cdr  tree) indent)
-                        (boxString ")")))))))))))))
+                        (boxString ")")
+                        ))))))))))))
 	  )
 
 	  ;It is a variable or literal
@@ -105,7 +105,7 @@
    (body
    (return (makeList
     (listNewLine indent)
-    (boxString "if ( ")
+    (boxString "if (4 ")
     (boxString (stringify (node2Expression (second node) 0)))
     (boxString ") {")
     (node2Body (cdr (third node)) (add1 indent) functionName)
@@ -148,7 +148,7 @@
       (else
         (return (makeList  (listNewLine indent)
           (boxString "return ")
-          (boxString (stringify (node2Expression (cadr node) indent)))
+          (node2Expression (cadr node) indent)
           (boxString ";")))))))
 
   (list node2Statement (list node int indent string functionname) (declare (list out nil))
@@ -244,10 +244,10 @@
       (else
       (return (makeList
        (listNewLine 0)
-       (boxString (stringify (node2TypeMap (first node))))
+       (boxString "function")
        (boxString " ")
        (boxString (stringify (second node)))
-       (boxString "(")
+       (boxString "(3")
        (node2FunctionArgs (third node))
        (boxString ") {")
        (listNewLine 1)
