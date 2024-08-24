@@ -11,45 +11,44 @@
 	  ;(printf "//type: %s\n" (get-struct l typ))
        (if (isList l)
          (then
-		 ;(printf "//Processing list\n")
-		;	(printf "//Listlength: %d\n" (listLength l))
-			;(display l)
+        ;(printf "//Processing list\n")
+        ;	(printf "//Listlength: %d\n" (listLength l))
+          ;(display l)
 
-        ;Handle boxList
+            ;Handle boxList
           (if (equalString (stringConcatenate "box" "List") (stringify (car l)))
-          (then
-            ;(display (doBoxList (cdr l)))
-          (return (car (doBoxList (cdr l)))))
-          (else))
+              (then
+                ;(display (doBoxList (cdr l)))
+              (return (car (doBoxList (cdr l)))))
+              (else))
 
-        ;Handle stringList
+            ;Handle stringList
           (if (equalString (stringConcatenate "string" "List") (stringify (car l)))
-          (then
-            ;(display (doStringList (cdr l)))
-          (return (car (doStringList (cdr l)))))
-          (else))
-          
-          ;Handle symList
-          (if (equalString (stringConcatenate "symbol" "List") (stringify (car l)))
-          (then
-           
-          (return (car (doSymbolList (cdr l)))))
-          (else))
-		  (if (equalString (stringConcatenate "multi" "List") (stringify (car l)))
-          (then
-            ;(display (doStringList (cdr l)))
-          (return (car (doMultiList (cdr l)))))
-          (else))
+              (then
+                ;(display (doStringList (cdr l)))
+              (return (car (doStringList (cdr l)))))
+              (else))
+
+              ;Handle symList
+              (if (equalString (stringConcatenate "symbol" "List") (stringify (car l)))
+              (then
+
+              (return (car (doSymbolList (cdr l)))))
+              (else))
+          (if (equalString (stringConcatenate "multi" "List") (stringify (car l)))
+              (then
+                ;(display (doStringList (cdr l)))
+              (return (car (doMultiList (cdr l)))))
+              (else))
 
           (if (equalString (stringConcatenate "makeL" "ist") (stringify (car l)))
-          (then
-        
-          (return  (car (doInterpolatedList (cdr l)))))
-          (else))
-		  
-            (return   (cons (macrowalk (car l) ) (macrowalk (cdr l) ))))
+              (then
+                (return  (car (doInterpolatedList (cdr l)))))
+              (else))
+
+          (return   (cons (macrowalk (car l) ) (macrowalk (cdr l) ))))
          (else
-         (return l)
+           (return l)
 			))))))
 
 

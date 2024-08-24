@@ -1,0 +1,47 @@
+( (includes q/boolean.qon q/base.qon q/compiler.qon q/macros.qon q/lists.qon q/newparser.qon)
+(types )
+
+(functions
+
+
+(void greet ( string name) (declare
+(int x 1)
+
+(int y 2)
+
+(int z 0)
+
+
+)(body
+(set z (add x y)
+)
+(if (equal x y)
+ (then 
+
+(printf "hello ")
+
+) (else 
+
+(printf "goodbye ")
+
+))
+
+(printf name)
+
+(printf "\n")
+
+(printf (add x y)
+ "%dn")
+
+))
+(int start () (declare
+)(body
+(greet "Jeremy")
+
+))
+
+)
+
+
+ )
+

@@ -177,7 +177,7 @@
          (set caller (calloc 1024 1))
 	 (set globalArgs argv)
 	 (set globalArgsCount argc)
-         (return (start argc argv))
+         (return (start))
 ))
 
 (char* character (int num)  (declare (string buffer nil) (string str NULL))

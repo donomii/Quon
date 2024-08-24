@@ -20,10 +20,14 @@
 
 	(bool nand (bool a bool b) (declare)
 		(body
-		(return (not (andBool a b)))
-	))
-	
+		(return (not (andBool a b)))))
+
 	(bool xor (bool a bool b) (declare)
 		(body
-			(return (nand (nand a (nand a b)) (nand b (nand a b)))))
+			(return (nand (nand a (nand a b)) (nand b (nand a b))))))
+
+	(bool lessThan (int a int b) (declare)
+		(body
+			(return (andBool (not (equal a b)) (not (greaterthan a b))))))
 ))
+

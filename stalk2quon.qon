@@ -1,0 +1,218 @@
+((includes q/base.qon q/boolean.qon q/lists.qon q/newparser.qon q/compiler.qon q/macros.qon)
+ (types)
+ (functions
+
+(string stringTransform (string code) (declare
+  (string result ""))
+  (body
+    (printf "Entering stringTransform with code: %.20s...\n" code)
+    (set result code)
+    (set result (stringReplace result ".\\n" ")\\n("))
+    (set result (stringReplace result ". " ") ("))
+    (set result (stringReplace result "|" ") | ("))
+    (set result (stringReplace result "[" " (("))
+    (set result (stringReplace result "]" "))"))
+    (set result (stringReplace result "(() | ())" "(emptyList)"))
+    (set result (stringReplace result ":" " ")) ; Remove colons from method calls
+    (printf "Exiting stringTransform with result: %.20s...\n" result)
+    (return (StringListJoin (stringList "((" result "))") ""))))
+
+
+
+(list parseTree (string s) (declare
+  (list tokens nil))
+  (body
+    (printf "Parsing input: %.50s...\n" s)
+    (set tokens (filterTokens (scan s 0 1 0 0 "input")))
+    (printf "Parsed tokens: %s\n" (stringify tokens))
+    (return tokens)))
+
+(string convertToQuon (string input) (declare
+  (string transformed "")
+  (list tree nil)
+  (string quonCode ""))
+  (body
+    (printf "Converting input: %.50s...\n" input)
+    (set transformed (stringTransform input))
+    (printf "After stringTransform: %.50s...\n" transformed)
+    (set tree (parseTree transformed))
+    (if (isNil tree)
+      (then
+        (printf "Error: Failed to parse input\n")
+        (return ""))
+      (else
+        (printf "Parsed tree: %s\n" (stringify tree))
+        (set quonCode (generateQuon tree))
+        (printf "Final quonCode: %.50s...\n" quonCode)
+        (return quonCode)))))
+
+(string generateQuon (list tree) (declare)
+  (body
+    (printf "Entering generateQuon with tree: %s\n" (stringify tree))
+    (return (BuildQon tree 0 true))))
+
+(list filterVoidElements (list l) (declare)
+  (body
+    (if (isEmpty l)
+      (then (return (emptyList)))
+      (else
+        (if (equalString (boxType (car l)) "void")
+          (then (return (filterVoidElements (cdr l))))
+          (else (return (cons (car l) (filterVoidElements (cdr l))))))))))
+
+(string BuildQon (list t int indent bool printit) (declare
+  (string out "")
+  (box obj nil)
+  (string firstToken "")
+  (list filteredT nil))
+  (body
+    (set filteredT (filterVoidElements t))
+    (if (isEmpty filteredT)
+      (then (return ""))
+      (else
+        (set obj (car filteredT))
+        (if (equalString "list" (boxType obj))
+          (then
+            (set firstToken (stringify (car obj)))
+            (if (equalString (stringify (second obj)) "=")
+              (then
+                (set out (BuildQonAssignment obj indent)))
+              (else (if (equalString firstToken "if")
+                (then
+                  (set out (BuildQonIf obj indent)))
+                (else (if (equalString firstToken "func")
+                  (then
+                    (set out (BuildQonFunc obj indent)))
+                  (else
+                    (set out (BuildQonGenericCall obj indent)))))))))
+          (else
+            (set out (stringify obj))))
+        (if (isEmpty (cdr filteredT))
+          (then (return out))
+          (else (return (StringListJoin (stringList out " " (BuildQon (cdr filteredT) indent printit)) ""))))))))
+
+
+
+(string BuildQonGenericCall (list node int indent) (declare
+  (string funcName "")
+  (string args ""))
+  (body
+    (set funcName (stringify (car node)))
+    (set args (BuildQonArgs (cdr node) indent))
+    (return (StringListJoin (stringList funcName " " args) ""))))
+
+(string BuildQonArgs (list args int indent) (declare
+  (string result ""))
+  (body
+    (if (isEmpty args)
+      (then (return ""))
+      (else
+        (set result (BuildQon (makeList (car args)) indent true))
+        (if (isEmpty (cdr args))
+          (then (return result))
+          (else (return (StringListJoin (stringList result " " (BuildQonArgs (cdr args) indent)) ""))))))))
+
+(string BuildQonAssignment (list node int indent) (declare
+  (string lhs "")
+  (string rhs ""))
+  (body
+    (set lhs (stringify (second node)))
+    (set rhs (BuildQon (cddr node) indent true))
+    (return (StringListJoin (stringList "set " lhs " " rhs) ""))))
+
+(string BuildQonIf (list node int indent) (declare
+  (string condition "")
+  (string thenBranch "")
+  (string elseBranch "")
+  (list filteredNode nil))
+  (body
+    (set filteredNode (filterVoidElements node))
+    (set condition (BuildQon (makeList (second filteredNode)) indent true))
+    (if (equalString (stringify (third filteredNode)) "then:")
+      (then
+        (set thenBranch (BuildQon (fourth filteredNode) (add1 indent) true))
+        (if (greaterthan (listLength filteredNode) 5)
+          (then
+            (set elseBranch (BuildQon (sixth filteredNode) (add1 indent) true))
+            (return (StringListJoin (stringList "(if " condition " (then " thenBranch ") (else " elseBranch "))") "")))
+          (else
+            (return (StringListJoin (stringList "(if " condition " (then " thenBranch "))") "")))))
+      (else
+        (set thenBranch (BuildQon (third filteredNode) (add1 indent) true))
+        (if (greaterthan (listLength filteredNode) 4)
+          (then
+            (set elseBranch (BuildQon (fifth filteredNode) (add1 indent) true))
+            (return (StringListJoin (stringList "(if " condition " " thenBranch " " elseBranch ")") "")))
+          (else
+            (return (StringListJoin (stringList "(if " condition " " thenBranch ")") ""))))))))
+
+
+(string BuildQonFunc (list node int indent) (declare
+  (string name "")
+  (string vars "")
+  (string returns "")
+  (string body "")
+  (list filteredNode nil))
+  (body
+    (set filteredNode (filterVoidElements node))
+    (set name (stringify (third filteredNode)))
+    (set vars (BuildQonVars (fifth filteredNode)))
+    (set returns (stringify (seventh filteredNode)))
+    (set body (BuildQon (ninth filteredNode) (add1 indent) true))
+    (return (StringListJoin (stringList "(function " name " " vars " " returns " (body " body "))") ""))))
+
+
+
+(string BuildQonVars (list vars) (declare
+  (string result "")
+  (list var nil))
+  (body
+    (if (isEmpty vars)
+      (then (return "()"))
+      (else
+        (set var (car vars))
+        (if (equalString (stringify (car var)) "declare")
+          (then
+            (set result (StringListJoin (stringList result " " (stringify (fifth var)) " " (stringify (third var))) "")))
+          (else
+            (set result (StringListJoin (stringList result " " (stringify (first var)) " " (stringify (second var))) ""))))
+        (return (StringListJoin (stringList "(" result (BuildQonVars (cdr vars)) ")") ""))))))
+
+(int start () (declare
+  (string inputFilename "")
+  (string outputFilename "")
+  (string input "")
+  (string output ""))
+  (body
+    (printf "Entering start\n")
+    (if (lessThan globalArgsCount 2)
+      (then
+        (printf "Usage: %s <input_file> [output_file]\n" (getStringArray 0 globalArgs))
+        (return 1))
+      (else
+        (set inputFilename (getStringArray 1 globalArgs))
+        (if (greaterthan globalArgsCount 2)
+          (then
+            (set outputFilename (getStringArray 2 globalArgs)))
+          (else
+            (set outputFilename "")))
+        
+        (printf "Reading input file: %s\n" inputFilename)
+        (set input (read-file inputFilename))
+        (if (equalString input "")
+          (then
+            (printf "Error: Could not read file or file is empty: %s\n" inputFilename)
+            (return 1))
+          (else
+            (printf "Converting input to Quon\n")
+            (set output (convertToQuon input))
+            (if (equalString outputFilename "")
+              (then
+                (printf "Printing output to console:\n%s\n" output))
+              (else
+                (printf "Writing output to file: %s\n" outputFilename)
+                (write-file outputFilename output)
+                (printf "Conversion complete. Output written to %s\n" outputFilename)))
+            (return 0)))))))
+
+ ))

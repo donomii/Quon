@@ -1,0 +1,23 @@
+print text: "Hello World\\n". 
+
+x = readFile name: "hello.sta".  
+
+print text: "\\n\\nMy source code: \\n\\n". 
+print text: x.
+
+print text: "\\n\\n". 
+
+y = stringContains haystack: "abcde" needle: "a". 
+y ifTrue: [| io print: "Yes\\n"] ifFalse: [| io print: "Nnnnoooo\\n"]. 
+
+lexTest = "lextest works\\n". 
+if y then: [| io print: lexTest] else: [| io print: lexTest]. 
+
+z = countStrings needle: "a" haystack: "abcdea". 
+printf format: "a occurs %v times\\n" values: [| z]. 
+
+func name: sayHello vars: [| declare name: tmpVar type: float initially: 0 .] returns: void body: [name: string| 
+print text: "Hello ". 
+print text: name. 
+printnl. 
+]. 

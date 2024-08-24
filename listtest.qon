@@ -1,0 +1,30 @@
+(
+ (includes q/base.qon q/lists.qon q/boolean.qon)
+ (types)
+    
+ (functions
+
+(void test27 () 
+  (declare 
+    (string expected  "a b c d e")
+    (string res "")
+    (list variable  (makeList "c "  "d "))
+    (list input nil)
+  )
+  (body
+    (set input  (makeList "a " "b " variable "e"))
+    (display (flatten input))
+    (set res (ListToString (flatten input) 0 true false))
+    (if (equalString expected res)
+      (then (printf "27. pass Interpolated List\n"))
+      (else (printf "27. fail Interpolated List.  expected '%s', got '%s'\n" expected res))
+    )
+  )
+)
+
+  (int start () (declare)
+       (body
+        (test27)
+        (return 0)
+        ))
+  ))

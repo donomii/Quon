@@ -216,7 +216,7 @@
                                                                     (stringConcatenate " "
                                                                                        (stringConcatenate (stringify_rec (cdr b)) ")"))))))
                             (else
-                             (return (stringConcatenate "Unsupported type: " (boxType b)))))))))))))))))
+                             (return (stringConcatenate "Unsupported type in stringify: " (boxType b)))))))))))))))))
   ;;;;;;;;;;;;;;;;;;
   ;; Tag functions
   ;;;;;;;;;;;;;;;;;;
@@ -411,5 +411,128 @@
 (body
   (return (stringList "StackTraceMove" "StackTracePrint" "StackTracePrintHelper" "NoStackTrace_list" "car" "cdr" "cons" "set" "boxString" "makePair" "set-struct" "display" "list" "assertType" "isEmpty" "isNil" "get-struct" "equalString" "binop" "strcmp" "main" "makeBox" "string_length" "boxType" "displayList" "newLine" "panic" "boxString" "boxSymbol" "boxType" "equalString" "unBoxSymbol" "isList" "makeBox" "equalBox" "sub" "sub1" "stringify" "add" "greaterthan"))))
  
- ))
 
+
+
+ ;  String functions
+
+ (int indexOfHelper (string haystack string needle int start int current) (declare)
+  (body
+    (if (greaterthan (add current (string-length needle)) (string-length haystack))
+      (then (return -1))
+      (else
+        (if (equalString (sub-string haystack current (string-length needle)) needle)
+          (then (return current))
+          (else (return (indexOfHelper haystack needle start (add1 current)))))))))
+
+(int indexOf (string haystack string needle int start) (declare)
+  (body
+    (if (equal (string-length needle) 0)
+      (then (return start))
+      (else (return (indexOfHelper haystack needle start start))))))
+
+
+(string stringReplace (string source string search string replace) (declare
+  (int sourceLength 0)
+  (int searchLength 0)
+  (int index 0)
+  (string result ""))
+  (body
+    (printf "Entering stringReplace with source: %.20s..., search: %s, replace: %s\n" source search replace)
+    (set sourceLength (string-length source))
+    (set searchLength (string-length search))
+    (set index (indexOf source search 0))
+    (if (equal index -1)
+      (then
+        (printf "No match found in stringReplace\n")
+        (return source))
+      (else
+        (set result (stringConcatenate 
+          (sub-string source 0 index)
+          (stringConcatenate
+            replace
+            (stringReplace 
+              (sub-string source (add index searchLength) sourceLength)
+              search
+              replace))))
+        (printf "Exiting stringReplace with result: %.30s...\n" result)
+        (return result)))))
+
+(bool stringContains (string haystack string needle) (declare
+  (int haystackLength 0)
+  (int needleLength 0))
+  (body
+    (printf "Entering stringContains with haystack: %.20s..., needle: %s\n" haystack needle)
+    (set haystackLength (string-length haystack))
+    (set needleLength (string-length needle))
+    
+    (if (greaterthan needleLength haystackLength)
+      (then
+        (printf "Needle longer than haystack in stringContains\n")
+        (return false))
+      (else
+        (printf "Calling stringContainsHelper in stringContains\n")
+        (return (stringContainsHelper haystack needle 0))))))
+
+(bool stringContainsHelper (string haystack string needle int startIndex) (declare
+  (int haystackLength 0)
+  (int needleLength 0))
+  (body
+    (printf "Entering stringContainsHelper with startIndex: %d\n" startIndex)
+    (set haystackLength (string-length haystack))
+    (set needleLength (string-length needle))
+    
+    (if (greaterthan (add startIndex needleLength) haystackLength)
+      (then
+        (printf "Reached end of haystack in stringContainsHelper\n")
+        (return false))
+      (else
+        (if (equalString (sub-string haystack startIndex needleLength) needle)
+          (then
+            (printf "Found match in stringContainsHelper\n")
+            (return true))
+          (else
+            (printf "Recursing in stringContainsHelper\n")
+            (return (stringContainsHelper haystack needle (add startIndex 1)))))))))
+
+(string stringTrim (string s) (declare)
+  (body
+    (printf "Entering stringTrim with s: %.20s...\n" s)
+    (if (equal (string-length s) 0)
+      (then
+        (printf "Empty string in stringTrim\n")
+        (return ""))
+      (else
+        (if (isWhiteSpace (sub-string s 0 1))
+          (then
+            (printf "Trimming left in stringTrim\n")
+            (return (stringTrim (sub-string s 1 (string-length s)))))
+          (else
+            (if (isWhiteSpace (sub-string s (sub (string-length s) 1) (string-length s)))
+              (then
+                (printf "Trimming right in stringTrim\n")
+                (return (stringTrim (sub-string s 0 (sub (string-length s) 1)))))
+              (else
+                (printf "No more trimming needed in stringTrim\n")
+                (return s)))))))))
+
+(list stringSplit (string s string delimiter) (declare
+  (int end 0)
+  (int delimiterLength 0))
+  (body
+    (printf "Entering stringSplit with s: %.20s..., delimiter: %s\n" s delimiter)
+    (set delimiterLength (string-length delimiter))
+    (set end (indexOf s delimiter 0))
+    (if (equal end -1)
+      (then
+        (printf "No delimiter found in stringSplit\n")
+        (return (cons (boxString s) nil)))
+      (else
+        (printf "Splitting string in stringSplit\n")
+        (return (cons
+          (boxString (sub-string s 0 end))
+          (stringSplit 
+            (sub-string s (add end delimiterLength) (string-length s))
+            delimiter)))))))
+
+ ))

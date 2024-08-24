@@ -54,6 +54,14 @@
   (box third (list l) (declare) (body (return (caddr l))))
   (box fourth (list l) (declare) (body (return (cadddr l))))
   (box fifth (list l) (declare) (body (return (caddddr l))))
+  (box sixth (list l) (declare) (body (return (car (cdr (cdr (cdr (cdr (cdr l)))))))))
+  (box seventh (list l) (declare) (body (return (car (cdr (cdr (cdr (cdr (cdr (cdr l))))))))))
+  (box eighth (list l) (declare) (body (return (car (cdr (cdr (cdr (cdr (cdr (cdr (cdr l)))))))))))
+  (box ninth (list l) (declare) (body (return (car (cdr (cdr (cdr (cdr (cdr (cdr (cdr (cdr l))))))))))))
+  (box tenth (list l) (declare) (body (return (car (cdr (cdr (cdr (cdr (cdr (cdr (cdr (cdr (cdr l)))))))))))))
+  (box eleventh (list l) (declare) (body (return (car (cdr (cdr (cdr (cdr (cdr (cdr (cdr (cdr (cdr (cdr l))))))))))))))
+  (box twelfth (list l) (declare) (body (return (car (cdr (cdr (cdr (cdr (cdr (cdr (cdr (cdr (cdr (cdr (cdr l)))))))))))))))
+  (box rest (list l) (declare) (body (return (cdr l))))
 
 
   (bool isList (box b) (declare)
@@ -140,7 +148,7 @@
                   (else
                     
                       
-                  (return (boxString (stringConcatenate "Unsupported type: " (boxType b))))))))))))))))
+                  (return (boxString (stringConcatenate "Unsupported type in mlistLiteral: " (boxType b))))))))))))))))
 
 
 ; Is roughly (quote ...) in lisp.  Boxes every element of the list and conses them together
