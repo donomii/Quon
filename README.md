@@ -1,14 +1,12 @@
 # Quon
 
-Quon is a self hosting programming language.  A self-compiling compiler, or a kind of portable macro language.  It is a system that can compile itself into many other programming languages, and then compile itself again from there.  It can run on any system that it has a compiler target for, and adding new targets is relatively easy.
+Quon is a self hosting programming language.  A self-compiling compiler, or a kind of portable macro language.  It is a program that can compile itself into many other programming languages, and then compile itself again from there.  It can run on any system that it has a compiler target for, and adding new targets is relatively easy.
 
-## Write your program in every language
+It has no practical use, except to exist.
 
-Quon is a self-hosting compiler that targets other languages, rather than direct machine code.  It uses the data types and functions of the host language, and is completely interoperable with it.  This provides access to all the libraries and abilities of the host language, (but then the program is no longer portable).
+## How
 
-## Build portable libraries
-
-Despite the focus on portable programs, the real use of Quon is building portable libraries.  Write your program as a library, and you can be confident that no matter which language you end up using, your library will be available there.
+Quon is a self-hosting compiler that targets other languages, rather than direct machine code.  It uses the data types and functions of the host language, and is completely interoperable with it.  This provides access to all the libraries and abilities of the host language.  There is o need to provide external declarations or bindings, quon accesses all the host language's functions and data types directly.
 
 ## Current status
 
@@ -51,7 +49,9 @@ See build.bat and build.bash for more detailed examples
 
 ### Unicode
 
-Quon does not support unicode.  I rely on the underlying programming language for string support, so if that language does not have unicode support, then Quon can't have it either.  Worse, Quon cannot detect unicode support, so instead it silently corrupts the string and gets confused.  If your compile starts failing and the code looks ok, check for unicode characters.
+Quon does not support unicode.  I rely on the underlying programming language for string support, so if that language does not have unicode support, then Quon can't have it either.  Worse, Quon cannot detect unicode support, so instead it silently corrupts the string and gets confused.  
+
+If your compile keeps failing but the code looks ok, check for hidden unicode characters.
 
 ### Garbage collection
 
@@ -147,7 +147,7 @@ Quon offers _perfect_ integration with the target language.  You can call any fu
 
 Quon uses types from the target language.  If you use a type that isn't declared in your program, quon will assume that it will be provided in the target language.
 
-In order to stop you going insane trying to manage basic types between different platforms, quon provides the following types, which will be translated into their closest equivalent in the target language:
+In order to stop you going insane trying to manage basic types between different platforms, quon provides the following built-in types, which will be translated into their closest equivalent in the target language:
 
 * int
 * float

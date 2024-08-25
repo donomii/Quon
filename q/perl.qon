@@ -92,7 +92,7 @@
              (then
              (printf "perlSubExpression: is list\n")
               (if (isNode (childrenof tree))
-                  (then 
+                  (then
                   (printf "perlSubExpression: is node\n")
                   (perlSubExpression (childrenof tree) indent))
                   (else
@@ -231,18 +231,21 @@
               (perlStatement (car tree) indent)
               (perlBody (cdr tree) indent)))))
 
-  (void perlDeclarations (list decls int indent) (declare (box decl nil))
-        (body
-         (if (isEmpty decls)
-             (then (return))
-             (else
-              (set decl (car decls))
-              (printf "my %s%s = " (dollar) (stringify (second decl)))
-              ;(set globalStepTrace true)
-              (perlExpression (third decl) indent)
-              ;(set globalStepTrace false)
-              (printf ";\n")
-              (perlDeclarations (cdr decls) indent)))))
+(void perlDeclarations (list decls int indent) (declare (box decl nil) (list exprList nil))
+   (body
+    (if (isEmpty decls)
+      (then (return))
+      (else
+       (set decl (car decls))
+       (printf "my %s%s = " (dollar) (stringify (second decl)))
+       (set exprList (third decl))
+       (if (isList exprList)
+         (then
+           (perlExpressionStart indent exprList))
+         (else
+           (printf "%s" (stringify exprList))))
+       (printf ";\n")
+       (perlDeclarations (cdr decls) indent)))))
 
   (void perlFunction (list node) (declare (box name nil))
         (body
