@@ -377,7 +377,7 @@
            (then (printf "  <empty>\n"))
            (else (StackTracePrintHelper globalStackTrace)))))
 
-  (void StackTracePrintHelper (list stack) (declare 
+  (void StackTracePrintHelper (list stack) (declare
   (string file (stringify (first (car stack))) )
   (string line "")
   (string func "")
