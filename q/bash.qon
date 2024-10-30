@@ -206,14 +206,14 @@
        (then)
        (else
        (set code (car tree))
-       (if (not releaseMode)
+       (if (notBool releaseMode)
        (then
 
 	      (printf "\nif (( $globalTrace )) ; then\n    caller=\"from %s:%s\"\nfi"  (stringify (getTagFail (car code)  (boxString "filename")  (boxString "Unknown file (not provided by parser)"))) (stringify (getTagFail (car code) (boxString "line") (boxString "Line missing") )))
         )
         (else))
         ))
-        (if (not releaseMode) (then
+        (if (notBool releaseMode) (then
       )(else)
     )
        (bashStatement code indent)

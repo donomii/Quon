@@ -6,9 +6,13 @@
       (body
        (return "$")))
 
+(string escapeSingleQuotes (string s) (declare)
+   (body
+    (return (stringReplace "'" "\\'" s))))
+
   (list getGlobalVariables () (declare)
    (body
-    (return (makeList (boxSymbol "globalArgsCount") (boxSymbol "globalArgs") (boxSymbol "quonGlobalArgs")))))
+    (return (makeList (boxSymbol "stderr") (boxSymbol "true") (boxSymbol "false") (boxSymbol "releaseMode") (boxSymbol "caller") (boxSymbol "globalTrace") (boxSymbol "globalArgsCount") (boxSymbol "globalArgs") (boxSymbol "quonGlobalArgs")))))
 
   (list collectVariables (list args list decls) (declare (list variables nil) (box decl nil))
    (body
@@ -21,6 +25,12 @@
    (body
     (printf "our $globalArgsCount;\n")
     (printf "our $globalArgs;\n")
+    (printf "our $releaseMode;\n")
+    (printf "our $globalTrace;\n")
+    (printf "our $caller;\n")
+    (printf "our $false = 0;\n")
+    (printf "our $true = 1;\n")
+    (printf "my $stderr = \\*STDERR;\n")
     (printf "our $quonGlobalArgs;\n")))
 
 (void perlMainEntry () (declare)
@@ -57,7 +67,7 @@
       (else
        (set decl (car decls))
        (set variables (cons (second decl) variables))
-       (return (collectVariablesFromDecls (cdr decls)))))))
+       (return (appendVariables variables (collectVariablesFromDecls (cdr decls))))))))
 
 (list appendVariables (list vars1 list vars2) (declare)
    (body
@@ -117,7 +127,11 @@
                       (perlRecurList (cdr tree) indent variables)
                       (printf ")")))))))))))
       )
-      (else (display (perlFuncMap tree variables))))))
+      (else
+       (if (equalString "string" (boxType tree))
+         (then
+           (printf "'%s'" (escapeSingleQuotes (stringify tree))))
+         (else (display (perlFuncMap tree variables))))))))
 
 (void perlRecurList (list expr int indent list variables) (declare)
    (body
@@ -284,13 +298,14 @@
          (then (return (boxSymbol (stringConcatenate (dollar) (stringify aSym)))))
          (else
           (set symMap
+          (alistCons (boxSymbol "sub") (boxSymbol "subtract")
            (alistCons (boxSymbol "=") (boxSymbol "equal")
             (alistCons (boxSymbol "sub-string") (boxSymbol "substr")
              (alistCons (boxSymbol "read-file") (boxSymbol "read_file")
               (alistCons (boxSymbol "write-file") (boxSymbol "write_file")
-               (alistCons (boxSymbol ">") (boxSymbol "gt")
+               (alistCons (boxSymbol ">") (boxSymbol "greaterthan")
                 (alistCons (boxSymbol "string-length") (boxSymbol "length")
-                 (alistCons (boxSymbol "nil") (boxSymbol "undef") nil))))))))
+                 (alistCons (boxSymbol "nil") (boxSymbol "undef") nil)))))))))
           (if (truthy (assoc (stringify aSym) symMap))
             (then (return (cdr (assoc (stringify aSym) symMap))))
             (else (return aSym))))))

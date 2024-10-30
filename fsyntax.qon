@@ -21,7 +21,7 @@
 
   (bool lessThan (int a int b) (declare)
     (body
-      (return (andBool (not (equal a b)) (not (greaterthan a b))))))
+      (return (andBool (notBool  (equal a b)) (notBool  (greaterthan a b))))))
 
   (string addParens (string line) (declare)
     (body
@@ -55,7 +55,7 @@
 (list splitLines (string input int start) (declare
   (int newlinePos 0))
   (body
-    (if (not (lessThan start (string-length input)))
+    (if (notBool  (lessThan start (string-length input)))
       (then (return (emptyList)))
       (else
         (set newlinePos (indexOf input "\n" start))

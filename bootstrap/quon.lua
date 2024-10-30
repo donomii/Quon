@@ -487,7 +487,7 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
           code = car(tree)
 caller = ":Unknown file:-1"
-          if not(releaseMode) then
+          if notBool(releaseMode) then
 caller = ":Unknown file:-1"
               printf("\nif (( $globalTrace )) ; then\n    caller=\"from %s:%s\"\nfi", stringify(getTagFail(car(code), boxString("filename"), boxString("Unknown file (not provided by parser)"))), stringify(getTagFail(car(code), boxString("line"), boxString("Line missing"))));
 
@@ -497,7 +497,7 @@ caller = ":Unknown file:-1"
       end
 
 caller = ":Unknown file:-1"
-      if not(releaseMode) then
+      if notBool(releaseMode) then
       else
       end
 
@@ -820,559 +820,10 @@ caller = "bashCompile:Unknown file:-1"
   qlog("//Done printing program\n");
 
 end
--- Chose function name imaFunctionArgs
-function imaFunctionArgs(indent,tree)
-print("caller: ", caller, "-> imaFunctionArgs")
-caller = "imaFunctionArgs:Unknown file:-1"
-  if isEmpty(tree) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      display(second(tree));
-
-caller = ":Unknown file:-1"
-      printf(": ");
-
-caller = ":Unknown file:-1"
-      display(first(tree));
-
-caller = ":Unknown file:-1"
-      if isNil(cddr(tree)) then
-caller = ":Unknown file:-1"
-          printf("");
-
-      else
-caller = ":Unknown file:-1"
-          printf(", ");
-
-      end
-
-caller = ":Unknown file:-1"
-      imaFunctionArgs(indent, cddr(tree));
-
-  end
-
-end
--- Chose function name imaFunction
-function imaFunction(indent,functionDefinition)
-print("caller: ", caller, "-> imaFunction")
-local fname =""
-caller = "imaFunction:Unknown file:-1"
-  fname = stringify(second(functionDefinition))
-caller = "imaFunction:Unknown file:-1"
-  printf("\nfu %s(", fname);
-
-caller = "imaFunction:Unknown file:-1"
-  imaFunctionArgs(indent, third(functionDefinition));
-
-caller = "imaFunction:Unknown file:-1"
-  printf(") ");
-
-caller = "imaFunction:Unknown file:-1"
-  printf("-> %s", stringify(first(functionDefinition)));
-
-caller = "imaFunction:Unknown file:-1"
-  imaDeclarations(add1(indent), cdr(fourth(functionDefinition)));
-
-caller = "imaFunction:Unknown file:-1"
-  if greaterthan(listLength(cdr(fourth(functionDefinition))), 0) then
-caller = ":Unknown file:-1"
-      printf("\n");
-
-  else
-caller = ":Unknown file:-1"
-      printf(" ");
-
-  end
-
-caller = "imaFunction:Unknown file:-1"
-  printIndent(indent);
-
-caller = "imaFunction:Unknown file:-1"
-  printf("in\n");
-
-caller = "imaFunction:Unknown file:-1"
-  imaBody(fname, indent, cdr(fifth(functionDefinition)));
-
-caller = "imaFunction:Unknown file:-1"
-  printf("end function\n");
-
-end
--- Chose function name imaDeclarations
-function imaDeclarations(indent,declarations)
-print("caller: ", caller, "-> imaDeclarations")
-local decl =nil
-caller = "imaDeclarations:Unknown file:-1"
-  if isNil(declarations) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      decl = first(declarations)
-caller = ":Unknown file:-1"
-      printf("\n");
-
-caller = ":Unknown file:-1"
-      printIndent(indent);
-
-caller = ":Unknown file:-1"
-      printf("%s: %s ", stringify(second(decl)), stringify(first(decl)));
-
-caller = ":Unknown file:-1"
-      imaExpressionStart(indent, third(decl));
-
-caller = ":Unknown file:-1"
-      imaDeclarations(indent, cdr(declarations));
-
-  end
-
-end
--- Chose function name imaExpressionStart
-function imaExpressionStart(indent,program)
-print("caller: ", caller, "-> imaExpressionStart")
-caller = "imaExpressionStart:Unknown file:-1"
-  if isNil(program) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      if isList(program) then
-caller = ":Unknown file:-1"
-          if equalString(stringify(car(program)), "get-struct") then
-caller = ":Unknown file:-1"
-              printf("%s.%s", stringify(second(program)), stringify(third(program)));
-
-          else
-caller = ":Unknown file:-1"
-              if equalString(stringify(car(program)), ">") then
-caller = ":Unknown file:-1"
-                  printf("greaterthan(");
-
-caller = ":Unknown file:-1"
-                  imaExpression(indent, cdr(program));
-
-caller = ":Unknown file:-1"
-                  printf(")");
-
-              else
-caller = ":Unknown file:-1"
-                  if equalString(stringify(car(program)), "=") then
-caller = ":Unknown file:-1"
-                      printf("equal(");
-
-caller = ":Unknown file:-1"
-                      imaExpression(indent, cdr(program));
-
-caller = ":Unknown file:-1"
-                      printf(")");
-
-                  else
-caller = ":Unknown file:-1"
-                      printf("%s(", stringify(car(program)));
-
-caller = ":Unknown file:-1"
-                      imaExpression(indent, cdr(program));
-
-caller = ":Unknown file:-1"
-                      printf(")");
-
-                  end
-
-              end
-
-          end
-
-      else
-caller = ":Unknown file:-1"
-          imaExpression(indent, program);
-
-      end
-
-  end
-
-end
--- Chose function name imaExpression
-function imaExpression(indent,program)
-print("caller: ", caller, "-> imaExpression")
-caller = "imaExpression:Unknown file:-1"
-  if isNil(program) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      if isList(program) then
-caller = ":Unknown file:-1"
-          if isList(car(program)) then
-caller = ":Unknown file:-1"
-              imaExpressionStart(indent, car(program));
-
-          else
-caller = ":Unknown file:-1"
-              display(car(program));
-
-          end
-
-caller = ":Unknown file:-1"
-          if greaterthan(listLength(program), 1) then
-caller = ":Unknown file:-1"
-              printf(", ");
-
-          else
-          end
-
-caller = ":Unknown file:-1"
-          imaExpression(indent, cdr(program));
-
-      else
-caller = ":Unknown file:-1"
-          display(program);
-
-      end
-
-  end
-
-end
--- Chose function name imaStatement
-function imaStatement(indent,statement)
-print("caller: ", caller, "-> imaStatement")
-caller = "imaStatement:Unknown file:-1"
-  if equalString(stringify(car(statement)), "if") then
-caller = ":Unknown file:-1"
-      printIndent(indent);
-
-caller = ":Unknown file:-1"
-      printf("if ");
-
-caller = ":Unknown file:-1"
-      add1(indent);
-
-caller = ":Unknown file:-1"
-      imaExpressionStart(add1(indent), second(statement));
-
-caller = ":Unknown file:-1"
-      printf(" then\n");
-
-caller = ":Unknown file:-1"
-      imaBody(caller, add1(indent), cdr(third(statement)));
-
-caller = ":Unknown file:-1"
-      printIndent(indent);
-
-caller = ":Unknown file:-1"
-      printf("else\n");
-
-caller = ":Unknown file:-1"
-      imaBody(caller, add1(indent), cdr(fourth(statement)));
-
-caller = ":Unknown file:-1"
-      printIndent(indent);
-
-caller = ":Unknown file:-1"
-      printf("end\n");
-
-  else
-caller = ":Unknown file:-1"
-      if equalString(stringify(car(statement)), "set") then
-caller = ":Unknown file:-1"
-          printIndent(indent);
-
-caller = ":Unknown file:-1"
-          printf("%s = ", stringify(second(statement)));
-
-caller = ":Unknown file:-1"
-          imaExpressionStart(add1(indent), third(statement));
-
-caller = ":Unknown file:-1"
-          printf(";\n");
-
-      else
-caller = ":Unknown file:-1"
-          if equalString(stringify(car(statement)), "set-struct") then
-caller = ":Unknown file:-1"
-              printIndent(indent);
-
-caller = ":Unknown file:-1"
-              printf("%s.%s = ", stringify(second(statement)), stringify(third(statement)));
-
-caller = ":Unknown file:-1"
-              imaExpressionStart(indent, fourth(statement));
-
-caller = ":Unknown file:-1"
-              printf(";\n");
-
-          else
-caller = ":Unknown file:-1"
-              if equalString(stringify(car(statement)), "return") then
-caller = ":Unknown file:-1"
-                  printIndent(indent);
-
-caller = ":Unknown file:-1"
-                  printf("return; ");
-
-caller = ":Unknown file:-1"
-                  if greaterthan(listLength(statement), 1) then
-caller = ":Unknown file:-1"
-                      imaExpressionStart(indent, second(statement));
-
-                  else
-                  end
-
-caller = ":Unknown file:-1"
-                  printf("\n");
-
-              else
-caller = ":Unknown file:-1"
-                  printIndent(indent);
-
-caller = ":Unknown file:-1"
-                  imaExpressionStart(indent, statement);
-
-caller = ":Unknown file:-1"
-                  printf(";\n");
-
-              end
-
-          end
-
-      end
-
-  end
-
-end
--- Chose function name imaBody
-function imaBody(local_caller,indent,program)
-print("caller: ", caller, "-> imaBody")
-local statement =nil
-caller = "imaBody:Unknown file:-1"
-  if isNil(program) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      statement = car(program)
-caller = ":Unknown file:-1"
-      imaStatement(add1(indent), statement);
-
-caller = ":Unknown file:-1"
-      imaBody(local_caller, indent, cdr(program));
-
-  end
-
-end
--- Chose function name imaFunctions
-function imaFunctions(indent,program)
-print("caller: ", caller, "-> imaFunctions")
-caller = "imaFunctions:Unknown file:-1"
-  if isNil(program) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      imaFunction(indent, car(program));
-
-caller = ":Unknown file:-1"
-      imaFunctions(indent, cdr(program));
-
-  end
-
-end
--- Chose function name imaTypeDecl
-function imaTypeDecl(l)
-print("caller: ", caller, "-> imaTypeDecl")
-local name =""
-local body =nil
-caller = "imaTypeDecl:Unknown file:-1"
-  name = stringify(first(l))
-caller = "imaTypeDecl:Unknown file:-1"
-  body = cdr(l)
-caller = "imaTypeDecl:Unknown file:-1"
-  if greaterthan(listLength(l), 2) then
-caller = ":Unknown file:-1"
-      printIndent(1);
-
-caller = ":Unknown file:-1"
-      printf("%s is ", name);
-
-caller = ":Unknown file:-1"
-      displayList(body, 0, true);
-
-caller = ":Unknown file:-1"
-      printf(";\n");
-
-  else
-caller = ":Unknown file:-1"
-      printIndent(1);
-
-caller = ":Unknown file:-1"
-      printf("%s is %s;\n", name, stringify(second(l)));
-
-  end
-
-end
--- Chose function name imaStructComponents
-function imaStructComponents(node)
-print("caller: ", caller, "-> imaStructComponents")
-caller = "imaStructComponents:Unknown file:-1"
-  if isEmpty(node) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      imaTypeDecl(car(node));
-
-caller = ":Unknown file:-1"
-      imaStructComponents(cdr(node));
-
-  end
-
-end
--- Chose function name imaStruct
-function imaStruct(node)
-print("caller: ", caller, "-> imaStruct")
-caller = "imaStruct:Unknown file:-1"
-  imaStructComponents(cdr(car(node)));
-
-end
--- Chose function name imaTypeMap
-function imaTypeMap(aSym)
-print("caller: ", caller, "-> imaTypeMap")
-local symMap =nil
-caller = "imaTypeMap:Unknown file:-1"
-  symMap = alistCons(boxSymbol("stringArray"), boxSymbol("char**"), alistCons(boxSymbol("string"), boxSymbol("char*"), nil))
-caller = "imaTypeMap:Unknown file:-1"
-  if truthy(assoc(stringify(aSym), symMap)) then
-caller = ":Unknown file:-1"
-      return cdr(assoc(stringify(aSym), symMap))
-
-  else
-caller = ":Unknown file:-1"
-      return aSym
-
-  end
-
-end
--- Chose function name imaType
-function imaType(node)
-print("caller: ", caller, "-> imaType")
-local name =""
-local body =nil
-caller = "imaType:Unknown file:-1"
-  name = stringify(first(node))
-caller = "imaType:Unknown file:-1"
-  body = cdr(node)
-caller = "imaType:Unknown file:-1"
-  if isList(first(body)) then
-caller = ":Unknown file:-1"
-      printf("\ntype %s is struct (\n", name);
-
-caller = ":Unknown file:-1"
-      imaStruct(body);
-
-caller = ":Unknown file:-1"
-      printf(");\n");
-
-  else
-caller = ":Unknown file:-1"
-      printf("type");
-
-caller = ":Unknown file:-1"
-      imaTypeDecl(node);
-
-  end
-
-end
--- Chose function name imaTypes
-function imaTypes(indent,nodes)
-print("caller: ", caller, "-> imaTypes")
-caller = "imaTypes:Unknown file:-1"
-  if isEmpty(nodes) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      imaType(car(nodes));
-
-caller = ":Unknown file:-1"
-      imaTypes(indent, cdr(nodes));
-
-  end
-
-end
--- Chose function name imaProgram
-function imaProgram(program)
-print("caller: ", caller, "-> imaProgram")
-caller = "imaProgram:Unknown file:-1"
-  imaIncludes(0, cdr(first(program)));
-
-caller = "imaProgram:Unknown file:-1"
-  printf("\nTypes:\n");
-
-caller = "imaProgram:Unknown file:-1"
-  imaTypes(0, cdr(second(program)));
-
-caller = "imaProgram:Unknown file:-1"
-  printf("\nFunctions:\n");
-
-caller = "imaProgram:Unknown file:-1"
-  imaFunctions(0, cdr(third(program)));
-
-end
--- Chose function name imaIncludes
-function imaIncludes(indent,nodes)
-print("caller: ", caller, "-> imaIncludes")
-caller = "imaIncludes:Unknown file:-1"
-  printf("Includes: \n");
-
-caller = "imaIncludes:Unknown file:-1"
-  displayList(nodes, 0, true);
-
-end
--- Chose function name imaCompile
-function imaCompile(filename)
-print("caller: ", caller, "-> imaCompile")
-local tree =nil
-caller = "imaCompile:Unknown file:-1"
-  tree = loadQuon("compiler.qon")
-caller = "imaCompile:Unknown file:-1"
-  tree = loadIncludes(tree)
-caller = "imaCompile:Unknown file:-1"
-  tree = macrowalk(tree)
-caller = "imaCompile:Unknown file:-1"
-  tree = macrosingle(tree, "luaWriteFile", "imaWriteFile")
-caller = "imaCompile:Unknown file:-1"
-  tree = macrosingle(tree, "luaReadFile", "imaReadFile")
-caller = "imaCompile:Unknown file:-1"
-  tree = macrosingle(tree, "string.len", "string.len")
-caller = "imaCompile:Unknown file:-1"
-  tree = macrosingle(tree, "luaSubstring", "imaSubstring")
-caller = "imaCompile:Unknown file:-1"
-  tree = macrosingle(tree, "string.len", "string.len")
-caller = "imaCompile:Unknown file:-1"
-  imaProgram(tree);
-
-caller = "imaCompile:Unknown file:-1"
-  printf("\n");
-
-caller = "imaCompile:Unknown file:-1"
-  printf("function main()\nglobalArgs = arg\nglobalArgsCount = #arg\nstart()\nend\n");
-
-caller = "imaCompile:Unknown file:-1"
-  printf("main()");
-
-end
--- Chose function name not
-function not(a)
-print("caller: ", caller, "-> not")
-caller = "not:Unknown file:-1"
+-- Chose function name notBool
+function notBool(a)
+print("caller: ", caller, "-> notBool")
+caller = "notBool:Unknown file:-1"
   if a then
 caller = ":Unknown file:-1"
       return false
@@ -1411,7 +862,7 @@ end
 function nand(a,b)
 print("caller: ", caller, "-> nand")
 caller = "nand:Unknown file:-1"
-  return not(andBool(a, b))
+  return notBool(andBool(a, b))
 
 end
 -- Chose function name xor
@@ -1419,6 +870,13 @@ function xor(a,b)
 print("caller: ", caller, "-> xor")
 caller = "xor:Unknown file:-1"
   return nand(nand(a, nand(a, b)), nand(b, nand(a, b)))
+
+end
+-- Chose function name lessThan
+function lessThan(a,b)
+print("caller: ", caller, "-> lessThan")
+caller = "lessThan:Unknown file:-1"
+  return andBool(notBool(equal(a, b)), notBool(greaterthan(a, b)))
 
 end
 -- Chose function name luaFunctionArgs
@@ -2549,47 +2007,290 @@ caller = "javaCompile:Unknown file:-1"
   printf("}\n");
 
 end
--- Chose function name node2Compile
-function node2Compile(filename)
-print("caller: ", caller, "-> node2Compile")
-local programStr =""
-local tree =nil
-local program =nil
-caller = "node2Compile:Unknown file:-1"
-  programStr = luaReadFile(filename)
-caller = "node2Compile:Unknown file:-1"
-  tree = readSexpr(programStr, filename)
-caller = "node2Compile:Unknown file:-1"
-  program = alistCons(boxString("includes"), astIncludes(first(tree)), alistCons(boxString("types"), astTypes(second(tree)), alistCons(boxString("functions"), astFunctions(third(tree)), emptyList())))
-caller = "node2Compile:Unknown file:-1"
-  program = mergeIncludes(program)
-caller = "node2Compile:Unknown file:-1"
-  qlog("Loading shim node2\n");
-
-caller = "node2Compile:Unknown file:-1"
-  program = buildProg(cons(boxString("q/shims/node2.qon"), getIncludes(program)), getTypes(program), getFunctions(program))
-caller = "node2Compile:Unknown file:-1"
-  return cons(node2Includes(cdr(assoc("includes", program))), cons(boxString("\nvar globalStackTrace = NULL;\n"), cons(boxString("\nvar caller = \"\";\n"), cons(boxString("\nfunction isNil(p) {\n    return p == NULL;\n}\n\n"), cons(node2Functions(cdr(assoc("children", cdr(cdr(assoc("functions", program)))))), cons(boxString("\n"), cons(boxString("const [asfdasdf, ...qwerqwer] = process.argv;"), cons(boxString("globalArgs = qwerqwer;"), cons(boxString("globalArgsCount = qwerqwer.length;"), cons(boxString("start();\n"), emptyList()))))))))))
-
-end
--- Chose function name node2Includes
-function node2Includes(nodes)
-print("caller: ", caller, "-> node2Includes")
-caller = "node2Includes:Unknown file:-1"
-  return cons(boxString("function read_file(filename) {return fs.readFileSync(filename);}\n"), cons(boxString("function write_file(filename, data) {fs.writeFileSync(filename, data);}\n"), cons(boxString("var util = require('util');\n"), cons(boxString("function printf() {process.stdout.write(util.format.apply(this, arguments));}\n"), cons(boxString("function qlog()   {process.stderr.write(util.format.apply(this, arguments));}\n"), cons(boxString("var fs = require('fs');\n"), cons(boxString("function equalString(a,b) {if (a==null) {return false;}if (b==null) {return false;}return a.toString()===b.toString() }\n"), cons(boxString("function panic(s){console.trace(s);process.exit(1);}\n"), cons(boxString("function dump(s){console.log(s)}"), cons(boxString("function sub(a, b) { return a - b; }\n"), cons(boxString("function mult(a, b) { return a * b; }\n"), cons(boxString("function greaterthan(a, b) { return a > b; }\n"), cons(boxString("function subf(a, b) { return a - b; }\n"), cons(boxString("function multf(a, b) { return a * b; }\n"), cons(boxString("function greaterthanf(a, b) { return a > b; }\n"), cons(boxString("function equal(a, b) { return a == b; }\n"), cons(boxString("function andBool(a, b) { return a == b;}\n"), cons(boxString("function string_length(s) { return s.length;}\n"), cons(boxString("function sub_string(str, start, len) {str = ''+str;return str.substring(start, start+len)};\n"), cons(boxString("function stringConcatenate(a, b) { return a + b}\n"), cons(boxString("function intToString(a) {}\n\n\n"), cons(boxString("function gc_malloc( size ) {\nreturn {};\n}\n\n"), cons(boxString("function makeArray(length) {\n   return [];\n}\n\n"), cons(boxString("function at(arr, index) {\n  return arr[index];\n}\n\n"), cons(boxString("function setAt(array, index, value) {\n    array[index] = value;\n}\n\n"), cons(boxString("function getStringArray(index, strs) {\nreturn strs[index];\n}\n\n"), cons(boxString("var NULL = null;"), cons(boxString("var globalArgs;\nvar globalArgsCount;\nvar globalTrace = false;\nvar globalStepTrace = false;\nvar releaseMode = false;\n"), cons(boxString("function character(num) {}"), nil)))))))))))))))))))))))))))))
-
-end
--- Chose function name node2Functions
-function node2Functions(tree)
-print("caller: ", caller, "-> node2Functions")
-caller = "node2Functions:Unknown file:-1"
+-- Chose function name node2FunctionArgs
+function node2FunctionArgs(tree)
+print("caller: ", caller, "-> node2FunctionArgs")
+local out =nil
+caller = "node2FunctionArgs:Unknown file:-1"
+  out = nil
+caller = "node2FunctionArgs:Unknown file:-1"
   if isEmpty(tree) then
 caller = ":Unknown file:-1"
-      return emptyList()
+      return nil
 
   else
 caller = ":Unknown file:-1"
-      return cons(node2Function(car(tree)), node2Functions(cdr(tree)))
+      if equalString(stringify(first(tree)), "...") then
+caller = ":Unknown file:-1"
+          out = cons(id(out), cons(boxString("..."), nil))
+      else
+caller = ":Unknown file:-1"
+          out = cons(boxString(" "), cons(id(second(tree)), nil))
+      end
+
+caller = ":Unknown file:-1"
+      if isNil(cddr(tree)) then
+      else
+caller = ":Unknown file:-1"
+          out = cons(id(out), cons(boxString(", "), nil))
+      end
+
+caller = ":Unknown file:-1"
+      return cons(id(out), cons(id(node2FunctionArgs(cddr(tree))), nil))
+
+  end
+
+end
+-- Chose function name node2Expression
+function node2Expression(tree,indent)
+print("caller: ", caller, "-> node2Expression")
+local thing =nil
+caller = "node2Expression:Unknown file:-1"
+  if isList(tree) then
+caller = ":Unknown file:-1"
+      if equal(1, listLength(tree)) then
+caller = ":Unknown file:-1"
+          if equalBox(boxString("return"), car(tree)) then
+caller = ":Unknown file:-1"
+              return boxString("return")
+
+          else
+caller = ":Unknown file:-1"
+              return cons(id(car(tree)), cons(boxString("()"), nil))
+
+          end
+
+      else
+caller = ":Unknown file:-1"
+          thing = first(tree)
+caller = ":Unknown file:-1"
+          if equalBox(boxSymbol("get-struct"), thing) then
+caller = ":Unknown file:-1"
+              return cons(id(second(tree)), cons(id(boxString(".")), cons(id(third(tree)), nil)))
+
+          else
+caller = ":Unknown file:-1"
+              if equalBox(boxSymbol("new"), thing) then
+caller = ":Unknown file:-1"
+                  return cons(id(boxString("new")), cons(id(third(tree)), nil))
+
+              else
+caller = ":Unknown file:-1"
+                  if equalBox(boxSymbol("passthrough"), thing) then
+caller = ":Unknown file:-1"
+                      return second(tree)
+
+                  else
+caller = ":Unknown file:-1"
+                      if equalBox(boxSymbol("binop"), thing) then
+caller = ":Unknown file:-1"
+                          return cons(id(boxString("(1")), cons(id(node2Expression(third(tree), indent)), cons(id(boxString(" ")), cons(id(second(tree)), cons(id(boxString(" ")), cons(id(node2Expression(fourth(tree), indent)), cons(id(boxString(")")), nil)))))))
+
+                      else
+caller = ":Unknown file:-1"
+                          return cons(id(node2FuncMap(car(tree))), cons(id(boxString("(2")), cons(id(node2RecurList(cdr(tree), indent)), cons(id(boxString(")")), nil))))
+
+                      end
+
+                  end
+
+              end
+
+          end
+
+      end
+
+  else
+caller = ":Unknown file:-1"
+      return node2FuncMap(tree)
+
+  end
+
+end
+-- Chose function name node2RecurList
+function node2RecurList(expr,indent)
+print("caller: ", caller, "-> node2RecurList")
+caller = "node2RecurList:Unknown file:-1"
+  if isEmpty(expr) then
+caller = ":Unknown file:-1"
+      return boxString("")
+
+  else
+caller = ":Unknown file:-1"
+      return node2Expression(car(expr), indent)
+
+caller = ":Unknown file:-1"
+      if isNil(cdr(expr)) then
+caller = ":Unknown file:-1"
+          boxString("");
+
+      else
+caller = ":Unknown file:-1"
+          return cons(id(boxString(", ")), cons(id(node2RecurList(cdr(expr), indent)), nil))
+
+      end
+
+  end
+
+end
+-- Chose function name node2If
+function node2If(node,indent,functionName)
+print("caller: ", caller, "-> node2If")
+caller = "node2If:Unknown file:-1"
+  return cons(id(listNewLine(indent)), cons(id(boxString("if (4 ")), cons(id(boxString(stringify(node2Expression(second(node), 0)))), cons(id(boxString(") {")), cons(id(node2Body(cdr(third(node)), add1(indent), functionName)), cons(id(listNewLine(indent)), cons(id(boxString("} else {")), cons(id(node2Body(cdr(fourth(node)), add1(indent), functionName)), cons(id(listNewLine(indent)), cons(id(boxString("}")), nil))))))))))
+
+end
+-- Chose function name node2SetStruct
+function node2SetStruct(node,indent)
+print("caller: ", caller, "-> node2SetStruct")
+caller = "node2SetStruct:Unknown file:-1"
+  return cons(id(listNewLine(indent)), cons(id(boxString(stringify(second(node)))), cons(id(boxString(".")), cons(id(boxString(stringify(third(node)))), cons(id(boxString(" = ")), cons(id(boxString(stringify(node2Expression(fourth(node), indent)))), nil))))))
+
+end
+-- Chose function name node2GetStruct
+function node2GetStruct(node,indent)
+print("caller: ", caller, "-> node2GetStruct")
+caller = "node2GetStruct:Unknown file:-1"
+  return cons(id(listNewLine(indent)), cons(id(boxString(stringify(first(node)))), cons(id(boxString(".")), cons(id(boxString(stringify(second(node)))), nil))))
+
+end
+-- Chose function name node2Set
+function node2Set(node,indent)
+print("caller: ", caller, "-> node2Set")
+caller = "node2Set:Unknown file:-1"
+  return cons(id(listNewLine(indent)), cons(id(boxString(stringify(node2Expression(first(cdr(node)), indent)))), cons(id(boxString(" = ")), cons(id(boxString(stringify(node2Expression(third(node), indent)))), nil))))
+
+end
+-- Chose function name node2Return
+function node2Return(node,indent)
+print("caller: ", caller, "-> node2Return")
+caller = "node2Return:Unknown file:-1"
+  if equal(listLength(node), 1) then
+caller = ":Unknown file:-1"
+      return cons(id(listNewLine(indent)), cons(id(boxString("return;")), nil))
+
+  else
+caller = ":Unknown file:-1"
+      return cons(id(listNewLine(indent)), cons(id(boxString("return ")), cons(id(node2Expression(cadr(node), indent)), cons(id(boxString(";")), nil))))
+
+  end
+
+end
+-- Chose function name node2Statement
+function node2Statement(node,indent,functionname)
+print("caller: ", caller, "-> node2Statement")
+local out =nil
+caller = "node2Statement:Unknown file:-1"
+  out = nil
+caller = "node2Statement:Unknown file:-1"
+  if equalBox(boxString("set"), first(node)) then
+caller = ":Unknown file:-1"
+      out = node2Set(node, indent)
+  else
+caller = ":Unknown file:-1"
+      if equalBox(boxString("set-struct"), first(node)) then
+caller = ":Unknown file:-1"
+          out = node2SetStruct(node, indent)
+      else
+caller = ":Unknown file:-1"
+          if equalBox(boxString("if"), first(node)) then
+caller = ":Unknown file:-1"
+              out = node2If(node, indent, functionname)
+          else
+caller = ":Unknown file:-1"
+              if equalBox(boxString("return"), first(node)) then
+caller = ":Unknown file:-1"
+                  if inList(boxString(functionname), NoStackTrace_list()) then
+                  else
+caller = ":Unknown file:-1"
+                      out = cons(id(boxString("\n")), cons(id(listIndent(indent)), cons(id(boxString("StackTraceMove(\"out\", \"\", \"\", \"\");\n")), nil)))
+                  end
+
+caller = ":Unknown file:-1"
+                  out = cons(id(out), cons(id(node2Return(node, indent)), nil))
+              else
+caller = ":Unknown file:-1"
+                  out = cons(id(listNewLine(indent)), cons(id(boxString(stringify(node2Expression(node, indent)))), nil))
+              end
+
+          end
+
+      end
+
+  end
+
+caller = "node2Statement:Unknown file:-1"
+  out = cons(id(out), cons(id(boxString(";\n")), nil))
+caller = "node2Statement:Unknown file:-1"
+  return out
+
+end
+-- Chose function name node2Body
+function node2Body(tree,indent,functionName)
+print("caller: ", caller, "-> node2Body")
+local code =nil
+local out =nil
+caller = "node2Body:Unknown file:-1"
+  out = nil
+caller = "node2Body:Unknown file:-1"
+  if isEmpty(tree) then
+caller = ":Unknown file:-1"
+      return nil
+
+  else
+caller = ":Unknown file:-1"
+      code = tree
+caller = ":Unknown file:-1"
+      if isNil(code) then
+caller = ":Unknown file:-1"
+          return nil
+
+      else
+caller = ":Unknown file:-1"
+          code = car(tree)
+caller = ":Unknown file:-1"
+          if notBool(releaseMode) then
+caller = ":Unknown file:-1"
+              if inList(boxString(functionName), NoTrace_list()) then
+caller = ":Unknown file:-1"
+                  out = cons(id(out), cons(id(boxString("//Function ")), cons(id(boxString(functionName)), cons(id(boxString(" omitted due to the no trace list\n")), nil))))
+              else
+caller = ":Unknown file:-1"
+                  out = cons(id(out), cons(id(boxString("\nif (globalTrace)\n    snprintf(caller, 1024, \"from:%s:%s\", ")), cons(id(boxString(stringify(getTagFail(car(code), boxString("filename"), boxString("Unknown file (not provided by parser)"))))), cons(id(boxString(stringify(getTagFail(car(code), boxString("line"), boxString("Line missing"))))), nil))))
+              end
+
+          else
+          end
+
+      end
+
+caller = ":Unknown file:-1"
+      if notBool(releaseMode) then
+caller = ":Unknown file:-1"
+          out = cons(id(out), cons(id(listIndent(indent)), cons(id(boxString("if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n")), nil)))
+      else
+      end
+
+caller = ":Unknown file:-1"
+      return cons(id(out), cons(id(node2Statement(code, indent, functionName)), cons(id(node2Body(cdr(tree), indent, functionName)), nil)))
+
+  end
+
+end
+-- Chose function name node2eclarations
+function node2eclarations(decls,indent)
+print("caller: ", caller, "-> node2eclarations")
+local decl =nil
+caller = "node2eclarations:Unknown file:-1"
+  if isEmpty(decls) then
+caller = ":Unknown file:-1"
+      return nil
+
+  else
+caller = ":Unknown file:-1"
+      decl = car(decls)
+caller = ":Unknown file:-1"
+      return cons(id(boxString("var ")), cons(id(boxString(stringify(node2TypeMap(first(decl))))), cons(id(boxString(" ")), cons(id(boxString(stringify(second(decl)))), cons(id(boxString(" = ")), cons(id(node2Expression(third(decl), indent)), cons(id(boxString(";\n")), cons(id(node2eclarations(cdr(decls), indent)), nil))))))))
 
   end
 
@@ -2599,53 +2300,188 @@ function node2Function(node)
 print("caller: ", caller, "-> node2Function")
 local name =nil
 caller = "node2Function:Unknown file:-1"
-  if isNil(node) then
-caller = ":Unknown file:-1"
-      return emptyList()
-
-  else
-caller = ":Unknown file:-1"
-      name = subnameof(node)
-caller = ":Unknown file:-1"
-      return cons(boxString("\n\n//Building function "), cons(boxString(stringify(name)), cons(boxString(" from line: "), cons(boxString(stringify(getTag(name, boxString("line")))), nil))))
-
-  end
+  name = second(node)
+caller = "node2Function:Unknown file:-1"
+  newLine(0);
 
 caller = "node2Function:Unknown file:-1"
-  return emptyList()
+  if isNil(node) then
+caller = ":Unknown file:-1"
+      return nil
+
+  else
+caller = ":Unknown file:-1"
+      return cons(id(listNewLine(0)), cons(id(boxString("function")), cons(id(boxString(" ")), cons(id(boxString(stringify(second(node)))), cons(id(boxString("(3")), cons(id(node2FunctionArgs(third(node))), cons(id(boxString(") {")), cons(id(listNewLine(1)), cons(id(node2eclarations(cdr(fourth(node)), 1)), cons(id(node2Body(cdr(fifth(node)), 1, stringify(name))), cons(id(boxString("\n}\n")), nil)))))))))))
+
+  end
 
 end
--- Chose function name node2FunctionArgs
-function node2FunctionArgs(tree)
-print("caller: ", caller, "-> node2FunctionArgs")
-caller = "node2FunctionArgs:Unknown file:-1"
+-- Chose function name node2Functions
+function node2Functions(tree)
+print("caller: ", caller, "-> node2Functions")
+caller = "node2Functions:Unknown file:-1"
   if isEmpty(tree) then
 caller = ":Unknown file:-1"
-      return emptyList()
+      return nil
 
   else
 caller = ":Unknown file:-1"
-      return cons(second(tree), cons(tern(isNil(cddr(tree)), boxString(""), boxString(",")), cons(node2FunctionArgs(cddr(tree)), emptyList())))
+      return cons(id(node2Function(car(tree))), cons(id(node2Functions(cdr(tree))), nil))
 
   end
 
 end
--- Chose function name node2Declarations
-function node2Declarations(decls,indent)
-print("caller: ", caller, "-> node2Declarations")
-local decl =nil
-caller = "node2Declarations:Unknown file:-1"
-  if isEmpty(decls) then
+-- Chose function name node2Includes
+function node2Includes(nodes)
+print("caller: ", caller, "-> node2Includes")
+caller = "node2Includes:Unknown file:-1"
+  return nil
+
+end
+-- Chose function name node2TypeDecl
+function node2TypeDecl(l)
+print("caller: ", caller, "-> node2TypeDecl")
+caller = "node2TypeDecl:Unknown file:-1"
+  return nil
+
+end
+-- Chose function name node2StructComponents
+function node2StructComponents(node)
+print("caller: ", caller, "-> node2StructComponents")
+caller = "node2StructComponents:Unknown file:-1"
+  if isEmpty(node) then
 caller = ":Unknown file:-1"
-      return emptyList()
+      return nil
 
   else
 caller = ":Unknown file:-1"
-      decl = car(decls)
-caller = ":Unknown file:-1"
-      return cons(boxString("var %s = "), cons(second(decl), cons(nodeFuncMap(third(decl)), cons(boxString(";\n"), node2Declarations(cdr(decls), indent)))))
+      return cons(id(node2TypeDecl(car(node))), cons(id(node2StructComponents(cdr(node))), nil))
 
   end
+
+end
+-- Chose function name node2Struct
+function node2Struct(node)
+print("caller: ", caller, "-> node2Struct")
+caller = "node2Struct:Unknown file:-1"
+  node2StructComponents(cdr(node));
+
+end
+-- Chose function name node2TypeMap
+function node2TypeMap(aSym)
+print("caller: ", caller, "-> node2TypeMap")
+local symMap =nil
+caller = "node2TypeMap:Unknown file:-1"
+  symMap = alistCons(boxSymbol("stringArray"), boxSymbol("char**"), alistCons(boxSymbol("string"), boxSymbol("char*"), nil))
+caller = "node2TypeMap:Unknown file:-1"
+  if truthy(assoc(stringify(aSym), symMap)) then
+caller = ":Unknown file:-1"
+      return cdr(assoc(stringify(aSym), symMap))
+
+  else
+caller = ":Unknown file:-1"
+      return aSym
+
+  end
+
+end
+-- Chose function name node2FuncMap
+function node2FuncMap(aSym)
+print("caller: ", caller, "-> node2FuncMap")
+local symMap =nil
+caller = "node2FuncMap:Unknown file:-1"
+  if equalString("symbol", boxType(aSym)) then
+caller = ":Unknown file:-1"
+      symMap = alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("luaSubstring"), boxSymbol("sub_string"), alistCons(boxSymbol("luaReadFile"), boxSymbol("read_file"), alistCons(boxSymbol("luaWriteFile"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string.len"), boxSymbol("string_length"), alistCons(boxSymbol("nil"), boxSymbol("NULL"), nil)))))))
+caller = ":Unknown file:-1"
+      if truthy(assoc(stringify(aSym), symMap)) then
+caller = ":Unknown file:-1"
+          return cdr(assoc(stringify(aSym), symMap))
+
+      else
+caller = ":Unknown file:-1"
+          return aSym
+
+      end
+
+  else
+caller = ":Unknown file:-1"
+      return aSym
+
+  end
+
+end
+-- Chose function name node2Type
+function node2Type(node)
+print("caller: ", caller, "-> node2Type")
+caller = "node2Type:Unknown file:-1"
+  return nil
+
+end
+-- Chose function name node2Types
+function node2Types(nodes)
+print("caller: ", caller, "-> node2Types")
+caller = "node2Types:Unknown file:-1"
+  if isEmpty(nodes) then
+caller = ":Unknown file:-1"
+      return nil
+
+  else
+caller = ":Unknown file:-1"
+      return cons(id(node2Type(car(nodes))), cons(id(node2Types(cdr(nodes))), nil))
+
+  end
+
+end
+-- Chose function name node2Compile
+function node2Compile(filename)
+print("caller: ", caller, "-> node2Compile")
+local tree =nil
+local replace =nil
+caller = "node2Compile:Unknown file:-1"
+  qlog("//Scanning file...%s\n", filename);
+
+caller = "node2Compile:Unknown file:-1"
+  tree = loadQuon(filename)
+caller = "node2Compile:Unknown file:-1"
+  qlog("//Building sexpr\n");
+
+caller = "node2Compile:Unknown file:-1"
+  qlog("Loading shim node2\n");
+
+caller = "node2Compile:Unknown file:-1"
+  tree = buildProg(cons(boxString("q/shims/node2.qon"), getIncludes(tree)), getTypes(tree), getFunctions(tree))
+caller = "node2Compile:Unknown file:-1"
+  qlog("Loading all includes\n");
+
+caller = "node2Compile:Unknown file:-1"
+  tree = loadIncludes(tree)
+caller = "node2Compile:Unknown file:-1"
+  qlog("Applying macros\n");
+
+caller = "node2Compile:Unknown file:-1"
+  tree = macrowalk(tree)
+caller = "node2Compile:Unknown file:-1"
+  replace = cons(boxSymbol("fprintf"), cons(boxSymbol("stderr"), nil))
+caller = "node2Compile:Unknown file:-1"
+  tree = macrolist(tree, stringConcatenate("q", "log"), replace)
+caller = "node2Compile:Unknown file:-1"
+  qlog("//Printing program\n");
+
+caller = "node2Compile:Unknown file:-1"
+  printf("%s", stringify(flatten(node2Includes(cdr(first(tree))))));
+
+caller = "node2Compile:Unknown file:-1"
+  printf("%s", stringify(flatten(node2Types(cdr(second(tree))))));
+
+caller = "node2Compile:Unknown file:-1"
+  printf("%s", stringify(flatten(node2Functions(cdr(third(tree))))));
+
+caller = "node2Compile:Unknown file:-1"
+  printf("\n");
+
+caller = "node2Compile:Unknown file:-1"
+  qlog("//Done printing program\n");
 
 end
 -- Chose function name nodeFunctionArgs
@@ -2700,16 +2536,85 @@ caller = ":Unknown file:-1"
 
 end
 -- Chose function name nodeExpression
-function nodeExpression(node,indent)
+function nodeExpression(tree,indent)
 print("caller: ", caller, "-> nodeExpression")
+local thing =nil
 caller = "nodeExpression:Unknown file:-1"
-  if isLeaf(node) then
+  if isList(tree) then
 caller = ":Unknown file:-1"
-      display(nodeFuncMap(codeof(node)));
+      if equal(1, listLength(tree)) then
+caller = ":Unknown file:-1"
+          display(car(tree));
+
+caller = ":Unknown file:-1"
+          if equalBox(boxString("return"), car(tree)) then
+          else
+caller = ":Unknown file:-1"
+              printf("()");
+
+          end
+
+      else
+caller = ":Unknown file:-1"
+          thing = first(tree)
+caller = ":Unknown file:-1"
+          if equalBox(boxSymbol("get-struct"), thing) then
+caller = ":Unknown file:-1"
+              printf("%s->%s", stringify(second(tree)), stringify(third(tree)));
+
+          else
+caller = ":Unknown file:-1"
+              if equalBox(boxSymbol("new"), thing) then
+caller = ":Unknown file:-1"
+                  printf("malloc(sizeof(%s))", stringify(third(tree)));
+
+              else
+caller = ":Unknown file:-1"
+                  if equalBox(boxSymbol("passthrough"), thing) then
+caller = ":Unknown file:-1"
+                      printf("%s", stringify(second(tree)));
+
+                  else
+caller = ":Unknown file:-1"
+                      if equalBox(boxSymbol("binop"), thing) then
+caller = ":Unknown file:-1"
+                          printf("(");
+
+caller = ":Unknown file:-1"
+                          nodeExpression(third(tree), indent);
+
+caller = ":Unknown file:-1"
+                          printf(" %s ", stringify(second(tree)));
+
+caller = ":Unknown file:-1"
+                          nodeExpression(fourth(tree), indent);
+
+caller = ":Unknown file:-1"
+                          printf(")");
+
+                      else
+caller = ":Unknown file:-1"
+                          printf("%s(", stringify(nodeFuncMap(car(tree))));
+
+caller = ":Unknown file:-1"
+                          nodeRecurList(cdr(tree), indent);
+
+caller = ":Unknown file:-1"
+                          printf(")");
+
+                      end
+
+                  end
+
+              end
+
+          end
+
+      end
 
   else
 caller = ":Unknown file:-1"
-      nodeSubExpression(node, indent);
+      display(nodeFuncMap(tree));
 
   end
 
@@ -2737,81 +2642,6 @@ caller = ":Unknown file:-1"
 
 caller = ":Unknown file:-1"
           nodeRecurList(cdr(expr), indent);
-
-      end
-
-  end
-
-end
--- Chose function name nodeSubExpression
-function nodeSubExpression(tree,indent)
-print("caller: ", caller, "-> nodeSubExpression")
-local thing =nil
-caller = "nodeSubExpression:Unknown file:-1"
-  if isEmpty(tree) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      if isNode(childrenof(tree)) then
-caller = ":Unknown file:-1"
-          nodeSubExpression(childrenof(tree), indent);
-
-      else
-caller = ":Unknown file:-1"
-          if isLeaf(tree) then
-caller = ":Unknown file:-1"
-              display(nodeFuncMap(codeof(tree)));
-
-          else
-caller = ":Unknown file:-1"
-              if equal(1, listLength(childrenof(tree))) then
-caller = ":Unknown file:-1"
-                  display(codeof(car(childrenof(tree))));
-
-caller = ":Unknown file:-1"
-                  if equalBox(boxString("return"), codeof(car(childrenof(tree)))) then
-caller = ":Unknown file:-1"
-                      printf("");
-
-                  else
-caller = ":Unknown file:-1"
-                      printf("()");
-
-                  end
-
-              else
-caller = ":Unknown file:-1"
-                  thing = codeof(car(childrenof(tree)))
-caller = ":Unknown file:-1"
-                  if equalBox(boxSymbol("get-struct"), thing) then
-caller = ":Unknown file:-1"
-                      printf("%s.%s", stringify(codeof(second(childrenof(tree)))), stringify(codeof(third(childrenof(tree)))));
-
-                  else
-caller = ":Unknown file:-1"
-                      if equalBox(boxSymbol("new"), thing) then
-caller = ":Unknown file:-1"
-                          printf("{}");
-
-                      else
-caller = ":Unknown file:-1"
-                          printf("%s(", stringify(nodeFuncMap(codeof(car(childrenof(tree))))));
-
-caller = ":Unknown file:-1"
-                          nodeRecurList(cdr(childrenof(tree)), indent);
-
-caller = ":Unknown file:-1"
-                          printf(")");
-
-                      end
-
-                  end
-
-              end
-
-          end
 
       end
 
@@ -2976,7 +2806,7 @@ caller = ":Unknown file:-1"
       printf("var %s = ", stringify(second(decl)));
 
 caller = ":Unknown file:-1"
-      display(nodeFuncMap(third(decl)));
+      nodeExpression(cons(id(third(decl)), nil), indent);
 
 caller = ":Unknown file:-1"
       printf(";\n");
@@ -4419,7 +4249,13 @@ caller = ":Unknown file:-1"
                   if inList(boxString(functionname), NoStackTrace_list()) then
                   else
 caller = ":Unknown file:-1"
-                      printf("\nStackTraceMove(\"out\", \"\", \"\", \"\");\n");
+                      printf("\n");
+
+caller = ":Unknown file:-1"
+                      printIndent(indent);
+
+caller = ":Unknown file:-1"
+                      printf("%s", "StackTraceMove(\"out\", \"\", \"\", \"\");\n");
 
                   end
 
@@ -4463,7 +4299,7 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
           code = car(tree)
 caller = ":Unknown file:-1"
-          if not(releaseMode) then
+          if notBool(releaseMode) then
 caller = ":Unknown file:-1"
               if inList(boxString(functionName), NoTrace_list()) then
 caller = ":Unknown file:-1"
@@ -4481,7 +4317,7 @@ caller = ":Unknown file:-1"
       end
 
 caller = ":Unknown file:-1"
-      if not(releaseMode) then
+      if notBool(releaseMode) then
 caller = ":Unknown file:-1"
           printIndent(indent);
 
@@ -4863,69 +4699,224 @@ caller = "ansi3Compile:Unknown file:-1"
   qlog("//Done printing program\n");
 
 end
--- Chose function name ansi2displays
-function ansi2displays(s)
-print("caller: ", caller, "-> ansi2displays")
-caller = "ansi2displays:Unknown file:-1"
-  printf("%s", s);
+-- Chose function name dollar
+function dollar()
+print("caller: ", caller, "-> dollar")
+caller = "dollar:Unknown file:-1"
+  return "$"
 
 end
--- Chose function name ansi2FunctionArgs
-function ansi2FunctionArgs(tree)
-print("caller: ", caller, "-> ansi2FunctionArgs")
-caller = "ansi2FunctionArgs:Unknown file:-1"
+-- Chose function name escapeSingleQuotes
+function escapeSingleQuotes(s)
+print("caller: ", caller, "-> escapeSingleQuotes")
+caller = "escapeSingleQuotes:Unknown file:-1"
+  return stringReplace("'", "\\'", s)
+
+end
+-- Chose function name getGlobalVariables
+function getGlobalVariables()
+print("caller: ", caller, "-> getGlobalVariables")
+caller = "getGlobalVariables:Unknown file:-1"
+  return cons(id(boxSymbol("stderr")), cons(id(boxSymbol("true")), cons(id(boxSymbol("false")), cons(id(boxSymbol("releaseMode")), cons(id(boxSymbol("caller")), cons(id(boxSymbol("globalTrace")), cons(id(boxSymbol("globalArgsCount")), cons(id(boxSymbol("globalArgs")), cons(id(boxSymbol("quonGlobalArgs")), nil)))))))))
+
+end
+-- Chose function name collectVariables
+function collectVariables(args,decls)
+print("caller: ", caller, "-> collectVariables")
+local variables =nil
+local decl =nil
+caller = "collectVariables:Unknown file:-1"
+  variables = collectVariablesFromArgs(args)
+caller = "collectVariables:Unknown file:-1"
+  variables = appendVariables(variables, collectVariablesFromDecls(decls))
+caller = "collectVariables:Unknown file:-1"
+  variables = appendVariables(variables, getGlobalVariables())
+caller = "collectVariables:Unknown file:-1"
+  return variables
+
+end
+-- Chose function name perlGlobalVariables
+function perlGlobalVariables()
+print("caller: ", caller, "-> perlGlobalVariables")
+caller = "perlGlobalVariables:Unknown file:-1"
+  printf("our $globalArgsCount;\n");
+
+caller = "perlGlobalVariables:Unknown file:-1"
+  printf("our $globalArgs;\n");
+
+caller = "perlGlobalVariables:Unknown file:-1"
+  printf("our $releaseMode;\n");
+
+caller = "perlGlobalVariables:Unknown file:-1"
+  printf("our $globalTrace;\n");
+
+caller = "perlGlobalVariables:Unknown file:-1"
+  printf("our $caller;\n");
+
+caller = "perlGlobalVariables:Unknown file:-1"
+  printf("our $false = 0;\n");
+
+caller = "perlGlobalVariables:Unknown file:-1"
+  printf("our $true = 1;\n");
+
+caller = "perlGlobalVariables:Unknown file:-1"
+  printf("my $stderr = \\*STDERR;\n");
+
+caller = "perlGlobalVariables:Unknown file:-1"
+  printf("our $quonGlobalArgs;\n");
+
+end
+-- Chose function name perlMainEntry
+function perlMainEntry()
+print("caller: ", caller, "-> perlMainEntry")
+caller = "perlMainEntry:Unknown file:-1"
+  printf("\n# Main entry point\n");
+
+caller = "perlMainEntry:Unknown file:-1"
+  printf("$globalArgsCount = scalar(@ARGV);\n");
+
+caller = "perlMainEntry:Unknown file:-1"
+  printf("$globalArgs = \\@ARGV;\n");
+
+caller = "perlMainEntry:Unknown file:-1"
+  printf("$quonGlobalArgs = [];\n");
+
+caller = "perlMainEntry:Unknown file:-1"
+  printf("for my $arg (@$globalArgs) {\n");
+
+caller = "perlMainEntry:Unknown file:-1"
+  printf("    push @$quonGlobalArgs, {car => $arg, cdr => undef};\n");
+
+caller = "perlMainEntry:Unknown file:-1"
+  printf("}\n");
+
+caller = "perlMainEntry:Unknown file:-1"
+  printf("for (my $i = $#$quonGlobalArgs - 1; $i >= 0; $i--) {\n");
+
+caller = "perlMainEntry:Unknown file:-1"
+  printf("    $quonGlobalArgs->[$i]->{cdr} = $quonGlobalArgs->[$i + 1];\n");
+
+caller = "perlMainEntry:Unknown file:-1"
+  printf("}\n");
+
+caller = "perlMainEntry:Unknown file:-1"
+  printf("start();\n");
+
+end
+-- Chose function name collectVariablesFromArgs
+function collectVariablesFromArgs(args)
+print("caller: ", caller, "-> collectVariablesFromArgs")
+local variables =nil
+caller = "collectVariablesFromArgs:Unknown file:-1"
+  if isNil(args) then
+caller = ":Unknown file:-1"
+      return variables
+
+  else
+caller = ":Unknown file:-1"
+      if equalString(stringify(first(args)), "list") then
+caller = ":Unknown file:-1"
+          variables = cons(second(args), variables)
+caller = ":Unknown file:-1"
+          return appendVariables(variables, collectVariablesFromArgs(cddr(args)))
+
+      else
+caller = ":Unknown file:-1"
+          variables = cons(second(args), variables)
+caller = ":Unknown file:-1"
+          return appendVariables(variables, collectVariablesFromArgs(cddr(args)))
+
+      end
+
+  end
+
+end
+-- Chose function name collectVariablesFromDecls
+function collectVariablesFromDecls(decls)
+print("caller: ", caller, "-> collectVariablesFromDecls")
+local variables =nil
+local decl =nil
+caller = "collectVariablesFromDecls:Unknown file:-1"
+  if isNil(decls) then
+caller = ":Unknown file:-1"
+      return variables
+
+  else
+caller = ":Unknown file:-1"
+      decl = car(decls)
+caller = ":Unknown file:-1"
+      variables = cons(second(decl), variables)
+caller = ":Unknown file:-1"
+      return appendVariables(variables, collectVariablesFromDecls(cdr(decls)))
+
+  end
+
+end
+-- Chose function name appendVariables
+function appendVariables(vars1,vars2)
+print("caller: ", caller, "-> appendVariables")
+caller = "appendVariables:Unknown file:-1"
+  if isNil(vars2) then
+caller = ":Unknown file:-1"
+      return vars1
+
+  else
+caller = ":Unknown file:-1"
+      vars1 = cons(car(vars2), vars1)
+caller = ":Unknown file:-1"
+      return appendVariables(vars1, cdr(vars2))
+
+  end
+
+end
+-- Chose function name perlFunctionArgs
+function perlFunctionArgs(tree)
+print("caller: ", caller, "-> perlFunctionArgs")
+caller = "perlFunctionArgs:Unknown file:-1"
   if isEmpty(tree) then
 caller = ":Unknown file:-1"
       return 
 
   else
 caller = ":Unknown file:-1"
-      if equalString(stringify(first(tree)), "...") then
-caller = ":Unknown file:-1"
-          printf("...");
-
-      else
-caller = ":Unknown file:-1"
-          display(ansi2TypeMap(first(tree)));
+      printf(dollar());
 
 caller = ":Unknown file:-1"
-          ansi2displays(" ");
-
-caller = ":Unknown file:-1"
-          display(second(tree));
-
-      end
+      display(second(tree));
 
 caller = ":Unknown file:-1"
       if isNil(cddr(tree)) then
+caller = ":Unknown file:-1"
+          printf("");
+
       else
 caller = ":Unknown file:-1"
-          ansi2displays(", ");
+          printf(", ");
 
       end
 
 caller = ":Unknown file:-1"
-      ansi2FunctionArgs(cddr(tree));
+      perlFunctionArgs(cddr(tree));
 
   end
 
 end
--- Chose function name ansi2Expression
-function ansi2Expression(tree,indent)
-print("caller: ", caller, "-> ansi2Expression")
+-- Chose function name perlExpression
+function perlExpression(tree,indent,variables)
+print("caller: ", caller, "-> perlExpression")
 local thing =nil
-caller = "ansi2Expression:Unknown file:-1"
+caller = "perlExpression:Unknown file:-1"
   if isList(tree) then
 caller = ":Unknown file:-1"
       if equal(1, listLength(tree)) then
 caller = ":Unknown file:-1"
-          display(car(tree));
+          display(perlFuncMap(car(tree), variables));
 
 caller = ":Unknown file:-1"
           if equalBox(boxString("return"), car(tree)) then
           else
 caller = ":Unknown file:-1"
-              ansi2displays("()");
+              printf("()");
 
           end
 
@@ -4935,13 +4926,13 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
           if equalBox(boxSymbol("get-struct"), thing) then
 caller = ":Unknown file:-1"
-              printf("%s->%s", stringify(second(tree)), stringify(third(tree)));
+              printf("$%s->{%s}", stringify(second(tree)), stringify(third(tree)));
 
           else
 caller = ":Unknown file:-1"
               if equalBox(boxSymbol("new"), thing) then
 caller = ":Unknown file:-1"
-                  printf("malloc(sizeof(%s))", stringify(third(tree)));
+                  printf("{}");
 
               else
 caller = ":Unknown file:-1"
@@ -4956,23 +4947,23 @@ caller = ":Unknown file:-1"
                           printf("(");
 
 caller = ":Unknown file:-1"
-                          ansi2Expression(third(tree), indent);
+                          perlExpression(third(tree), indent, variables);
 
 caller = ":Unknown file:-1"
                           printf(" %s ", stringify(second(tree)));
 
 caller = ":Unknown file:-1"
-                          ansi2Expression(fourth(tree), indent);
+                          perlExpression(fourth(tree), indent, variables);
 
 caller = ":Unknown file:-1"
                           printf(")");
 
                       else
 caller = ":Unknown file:-1"
-                          printf("%s(", stringify(ansi2FuncMap(car(tree))));
+                          printf("%s(", stringify(perlFuncMap(car(tree), variables)));
 
 caller = ":Unknown file:-1"
-                          ansi2RecurList(cdr(tree), indent);
+                          perlRecurList(cdr(tree), indent, variables);
 
 caller = ":Unknown file:-1"
                           printf(")");
@@ -4989,1366 +4980,21 @@ caller = ":Unknown file:-1"
 
   else
 caller = ":Unknown file:-1"
-      display(ansi2FuncMap(tree));
-
-  end
-
-end
--- Chose function name ansi2RecurList
-function ansi2RecurList(expr,indent)
-print("caller: ", caller, "-> ansi2RecurList")
-caller = "ansi2RecurList:Unknown file:-1"
-  if isEmpty(expr) then
+      if equalString("string", boxType(tree)) then
 caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      ansi2Expression(car(expr), indent);
-
-caller = ":Unknown file:-1"
-      if isNil(cdr(expr)) then
-caller = ":Unknown file:-1"
-          ansi2displays("");
+          printf("'%s'", escapeSingleQuotes(stringify(tree)));
 
       else
 caller = ":Unknown file:-1"
-          ansi2displays(", ");
-
-caller = ":Unknown file:-1"
-          ansi2RecurList(cdr(expr), indent);
+          display(perlFuncMap(tree, variables));
 
       end
-
-  end
-
-end
--- Chose function name ansi2If
-function ansi2If(node,indent)
-print("caller: ", caller, "-> ansi2If")
-caller = "ansi2If:Unknown file:-1"
-  newLine(indent);
-
-caller = "ansi2If:Unknown file:-1"
-  ansi2displays("if ( ");
-
-caller = "ansi2If:Unknown file:-1"
-  ansi2Expression(second(node), 0);
-
-caller = "ansi2If:Unknown file:-1"
-  ansi2displays(") {");
-
-caller = "ansi2If:Unknown file:-1"
-  ansi2Body(cdr(third(node)), add1(indent));
-
-caller = "ansi2If:Unknown file:-1"
-  newLine(indent);
-
-caller = "ansi2If:Unknown file:-1"
-  ansi2displays("} else {");
-
-caller = "ansi2If:Unknown file:-1"
-  ansi2Body(cdr(fourth(node)), add1(indent));
-
-caller = "ansi2If:Unknown file:-1"
-  newLine(indent);
-
-caller = "ansi2If:Unknown file:-1"
-  ansi2displays("}");
-
-end
--- Chose function name ansi2SetStruct
-function ansi2SetStruct(node,indent)
-print("caller: ", caller, "-> ansi2SetStruct")
-caller = "ansi2SetStruct:Unknown file:-1"
-  newLine(indent);
-
-caller = "ansi2SetStruct:Unknown file:-1"
-  printf("%s->%s = ", stringify(second(node)), stringify(third(node)));
-
-caller = "ansi2SetStruct:Unknown file:-1"
-  ansi2Expression(fourth(node), indent);
-
-end
--- Chose function name ansi2GetStruct
-function ansi2GetStruct(node,indent)
-print("caller: ", caller, "-> ansi2GetStruct")
-caller = "ansi2GetStruct:Unknown file:-1"
-  newLine(indent);
-
-caller = "ansi2GetStruct:Unknown file:-1"
-  printf("%s->%s", stringify(first(node)), stringify(second(node)));
-
-end
--- Chose function name ansi2Set
-function ansi2Set(node,indent)
-print("caller: ", caller, "-> ansi2Set")
-caller = "ansi2Set:Unknown file:-1"
-  newLine(indent);
-
-caller = "ansi2Set:Unknown file:-1"
-  ansi2Expression(first(cdr(node)), indent);
-
-caller = "ansi2Set:Unknown file:-1"
-  printf(" = ");
-
-caller = "ansi2Set:Unknown file:-1"
-  ansi2Expression(third(node), indent);
-
-end
--- Chose function name ansi2Return
-function ansi2Return(node,indent)
-print("caller: ", caller, "-> ansi2Return")
-caller = "ansi2Return:Unknown file:-1"
-  newLine(indent);
-
-caller = "ansi2Return:Unknown file:-1"
-  if equal(listLength(node), 1) then
-caller = ":Unknown file:-1"
-      ansi2displays("return;");
-
-  else
-caller = ":Unknown file:-1"
-      ansi2displays("return ");
-
-caller = ":Unknown file:-1"
-      ansi2Expression(cadr(node), indent);
-
-caller = ":Unknown file:-1"
-      ansi2displays(";");
-
-  end
-
-end
--- Chose function name ansi2Statement
-function ansi2Statement(node,indent)
-print("caller: ", caller, "-> ansi2Statement")
-caller = "ansi2Statement:Unknown file:-1"
-  if equalBox(boxString("set"), first(node)) then
-caller = ":Unknown file:-1"
-      ansi2Set(node, indent);
-
-  else
-caller = ":Unknown file:-1"
-      if equalBox(boxString("set-struct"), first(node)) then
-caller = ":Unknown file:-1"
-          ansi2SetStruct(node, indent);
-
-      else
-caller = ":Unknown file:-1"
-          if equalBox(boxString("if"), first(node)) then
-caller = ":Unknown file:-1"
-              ansi2If(node, indent);
-
-          else
-caller = ":Unknown file:-1"
-              if equalBox(boxString("return"), first(node)) then
-caller = ":Unknown file:-1"
-                  ansi2Return(node, indent);
-
-              else
-caller = ":Unknown file:-1"
-                  newLine(indent);
-
-caller = ":Unknown file:-1"
-                  ansi2Expression(node, indent);
-
-              end
-
-          end
-
-      end
-
-  end
-
-caller = "ansi2Statement:Unknown file:-1"
-  ansi2displays(";\n");
-
-end
--- Chose function name ansi2Body
-function ansi2Body(tree,indent)
-print("caller: ", caller, "-> ansi2Body")
-local code =nil
-caller = "ansi2Body:Unknown file:-1"
-  if isEmpty(tree) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      code = tree
-caller = ":Unknown file:-1"
-      if isNil(code) then
-      else
-caller = ":Unknown file:-1"
-          code = car(tree)
-caller = ":Unknown file:-1"
-          printf("\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n", stringify(getTagFail(car(code), boxString("filename"), boxString("Unknown file (not provided by parser)"))), stringify(getTagFail(car(code), boxString("line"), boxString("Line missing"))));
-
-      end
-
-caller = ":Unknown file:-1"
-      printIndent(indent);
-
-caller = ":Unknown file:-1"
-      printf("%s", "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n");
-
-caller = ":Unknown file:-1"
-      ansi2Statement(code, indent);
-
-caller = ":Unknown file:-1"
-      ansi2Body(cdr(tree), indent);
-
-  end
-
-end
--- Chose function name ansi2Declarations
-function ansi2Declarations(decls,indent)
-print("caller: ", caller, "-> ansi2Declarations")
-local decl =nil
-caller = "ansi2Declarations:Unknown file:-1"
-  if isEmpty(decls) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      decl = car(decls)
-caller = ":Unknown file:-1"
-      printf("%s %s = ", stringify(ansi2TypeMap(first(decl))), stringify(second(decl)));
-
-caller = ":Unknown file:-1"
-      ansi2Expression(third(decl), indent);
-
-caller = ":Unknown file:-1"
-      printf(";\n");
-
-caller = ":Unknown file:-1"
-      ansi2Declarations(cdr(decls), indent);
-
-  end
-
-end
--- Chose function name ansi2Function
-function ansi2Function(node)
-print("caller: ", caller, "-> ansi2Function")
-local name =nil
-caller = "ansi2Function:Unknown file:-1"
-  name = second(node)
-caller = "ansi2Function:Unknown file:-1"
-  printf("\n\n//Building function %s from line: %s", stringify(name), stringify(getTag(name, boxString("line"))));
-
-caller = "ansi2Function:Unknown file:-1"
-  newLine(0);
-
-caller = "ansi2Function:Unknown file:-1"
-  if isNil(node) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      newLine(0);
-
-caller = ":Unknown file:-1"
-      printf("%s %s(", stringify(ansi2TypeMap(first(node))), stringify(second(node)));
-
-caller = ":Unknown file:-1"
-      ansi2FunctionArgs(third(node));
-
-caller = ":Unknown file:-1"
-      printf(") {");
-
-caller = ":Unknown file:-1"
-      newLine(1);
-
-caller = ":Unknown file:-1"
-      ansi2Declarations(cdr(fourth(node)), 1);
-
-caller = ":Unknown file:-1"
-      if inList(toStr(name), noStackTrace()) then
-caller = ":Unknown file:-1"
-          printf("");
-
-      else
-caller = ":Unknown file:-1"
-          printf("\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n", stringify(name), stringify(getTag(name, boxString("filename"))), stringify(getTag(name, boxString("line"))));
-
-      end
-
-caller = ":Unknown file:-1"
-      if inList(toStr(name), noStackTrace()) then
-caller = ":Unknown file:-1"
-          printf("");
-
-      else
-      end
-
-caller = ":Unknown file:-1"
-      ansi2Body(cdr(fifth(node)), 1);
-
-caller = ":Unknown file:-1"
-      if inList(toStr(name), noStackTrace()) then
-caller = ":Unknown file:-1"
-          printf("");
-
-      else
-caller = ":Unknown file:-1"
-          printf("\nif (globalTrace)\n    printf(\"Leaving %s\\n\");\n", stringify(name));
-
-      end
-
-caller = ":Unknown file:-1"
-      printf("\n}\n");
-
-  end
-
-end
--- Chose function name ansi2ForwardDeclaration
-function ansi2ForwardDeclaration(node)
-print("caller: ", caller, "-> ansi2ForwardDeclaration")
-caller = "ansi2ForwardDeclaration:Unknown file:-1"
-  if isNil(node) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      printf("\n%s %s(", stringify(ansi2TypeMap(first(node))), stringify(second(node)));
-
-caller = ":Unknown file:-1"
-      ansi2FunctionArgs(third(node));
-
-caller = ":Unknown file:-1"
-      ansi2displays(");");
-
-  end
-
-end
--- Chose function name ansi2ForwardDeclarations
-function ansi2ForwardDeclarations(tree)
-print("caller: ", caller, "-> ansi2ForwardDeclarations")
-caller = "ansi2ForwardDeclarations:Unknown file:-1"
-  if isEmpty(tree) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      ansi2ForwardDeclaration(car(tree));
-
-caller = ":Unknown file:-1"
-      ansi2ForwardDeclarations(cdr(tree));
-
-  end
-
-end
--- Chose function name ansi2Functions
-function ansi2Functions(tree)
-print("caller: ", caller, "-> ansi2Functions")
-caller = "ansi2Functions:Unknown file:-1"
-  if isEmpty(tree) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      ansi2Function(car(tree));
-
-caller = ":Unknown file:-1"
-      ansi2Functions(cdr(tree));
-
-  end
-
-end
--- Chose function name ansi2Includes
-function ansi2Includes(nodes)
-print("caller: ", caller, "-> ansi2Includes")
-caller = "ansi2Includes:Unknown file:-1"
-  printf("%s", "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nconst char* getEnv(char* key){return getenv(key);}\n void panic(char* s){abort();exit(1);}\nint sub(int a, int b) { return a - b; }\nfloat mult(int a, int b) { return a * b; }\nint greaterthan(int a, int b) { return a > b; }\nfloat subf(float a, float b) { return a - b; }\nfloat multf(float a, float b) { return a * b; }\nint greaterthanf(float a, float b) { return a > b; }\nint equal(int a, int b) { return a == b; }\nint equalString(char* a, char* b) { return !strcmp(a,b); }\nint andBool(int a, int b) { return a && b;}\nint string_length(char* s) { return strlen(s);}\nchar* setSubString(char* target, int start,char *source){target[start]=source[0]; return target;}\nchar* sub_string(char* s, int start, int length) {\nchar* substr = calloc(length+1, 1);\nstrncpy(substr, s+start, length);\nreturn substr;\n}\n\n\n\nchar* stringConcatenate(char* a, char* b) {\nint len = strlen(a) + strlen(b) + 1;\nchar* target = calloc(len,1);\nstrncat(target, a, len);\nstrncat(target, b, len);\nreturn target;\n}\n\nchar* intToString(int a) {\nint len = 100;\nchar* target = calloc(len,1);\nsnprintf(target, 99, \"%d\", a);\nreturn target;\n}\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\nvoid * gc_malloc( unsigned int size ) {\nreturn malloc( size);\n}\n\nint* makeArray(int length) {\n    int * array = gc_malloc(length*sizeof(int));\n    return array;\n}\n\nint at(int* arr, int index) {\n  return arr[index];\n}\n\nvoid setAt(int* array, int index, int value) {\n    array[index] = value;\n}\n\nchar * read_file(char * filename) {\nchar * buffer = 0;\nlong length;\nFILE * f = fopen (filename, \"rb\");\n\nif (f)\n{\n  fseek (f, 0, SEEK_END);\n  length = ftell (f);\n  fseek (f, 0, SEEK_SET);\n  buffer = calloc (length+1,1);\n  if (buffer == NULL) {\n  printf(\"Malloc failed!\\n\");\n  exit(1);\n}\n  if (buffer)\n  {\n    fread (buffer, 1, length, f);\n  }\n  fclose (f);\n}\nreturn buffer;\n}\n\n\nvoid write_file (char * filename, char * data) {\nFILE *f = fopen(filename, \"w\");\nif (f == NULL)\n{\n    printf(\"Error opening file!\");\n    exit(1);\n}\n\nfprintf(f, \"%s\", data);\n\nfclose(f);\n}\n\nchar* getStringArray(int index, char** strs) {\nreturn strs[index];\n}\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\nint main( int argc, char *argv[] )  {\n  globalArgs = argv;\n  globalArgsCount = argc;\n  caller=calloc(1024,1);\n\n  return start();\n\n}\n\n");
-
-caller = "ansi2Includes:Unknown file:-1"
-  printf("%s", "char * character(int num) { char *string = malloc(2); if (!string) return 0; string[0] = num; string[1] = 0; return string; }");
-
-caller = "ansi2Includes:Unknown file:-1"
-  printf("%s", "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n\n");
-
-caller = "ansi2Includes:Unknown file:-1"
-  printf("%s", "bool nand(bool a, bool b) { return !(a&&b); }\n//End include block\n");
-
-end
--- Chose function name ansi2TypeDecl
-function ansi2TypeDecl(l)
-print("caller: ", caller, "-> ansi2TypeDecl")
-caller = "ansi2TypeDecl:Unknown file:-1"
-  if greaterthan(listLength(l), 2) then
-caller = ":Unknown file:-1"
-      printIndent(1);
-
-caller = ":Unknown file:-1"
-      printf("%s %s %s;\n", stringify(second(l)), stringify(ansi2TypeMap(listLast(l))), stringify(first(l)));
-
-  else
-caller = ":Unknown file:-1"
-      printIndent(1);
-
-caller = ":Unknown file:-1"
-      printf("%s %s;\n", stringify(ansi2TypeMap(listLast(l))), stringify(car(l)));
-
-  end
-
-end
--- Chose function name ansi2StructComponents
-function ansi2StructComponents(node)
-print("caller: ", caller, "-> ansi2StructComponents")
-caller = "ansi2StructComponents:Unknown file:-1"
-  if isEmpty(node) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      ansi2TypeDecl(car(node));
-
-caller = ":Unknown file:-1"
-      ansi2StructComponents(cdr(node));
-
-  end
-
-end
--- Chose function name ansi2Struct
-function ansi2Struct(node)
-print("caller: ", caller, "-> ansi2Struct")
-caller = "ansi2Struct:Unknown file:-1"
-  ansi2StructComponents(cdr(node));
-
-end
--- Chose function name ansi2TypeMap
-function ansi2TypeMap(aSym)
-print("caller: ", caller, "-> ansi2TypeMap")
-local symMap =nil
-caller = "ansi2TypeMap:Unknown file:-1"
-  symMap = alistCons(boxSymbol("stringArray"), boxSymbol("char**"), alistCons(boxSymbol("string"), boxSymbol("char*"), nil))
-caller = "ansi2TypeMap:Unknown file:-1"
-  if truthy(assoc(stringify(aSym), symMap)) then
-caller = ":Unknown file:-1"
-      return cdr(assoc(stringify(aSym), symMap))
-
-  else
-caller = ":Unknown file:-1"
-      return aSym
-
-  end
-
-end
--- Chose function name ansi2FuncMap
-function ansi2FuncMap(aSym)
-print("caller: ", caller, "-> ansi2FuncMap")
-local symMap =nil
-caller = "ansi2FuncMap:Unknown file:-1"
-  if equalString("symbol", boxType(aSym)) then
-caller = ":Unknown file:-1"
-      symMap = alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("luaSubstring"), boxSymbol("sub_string"), alistCons(boxSymbol("luaReadFile"), boxSymbol("read_file"), alistCons(boxSymbol("luaWriteFile"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string.len"), boxSymbol("string_length"), alistCons(boxSymbol("nil"), boxSymbol("NULL"), nil)))))))
-caller = ":Unknown file:-1"
-      if truthy(assoc(stringify(aSym), symMap)) then
-caller = ":Unknown file:-1"
-          return cdr(assoc(stringify(aSym), symMap))
-
-      else
-caller = ":Unknown file:-1"
-          return aSym
-
-      end
-
-  else
-caller = ":Unknown file:-1"
-      return aSym
-
-  end
-
-end
--- Chose function name ansi2Type
-function ansi2Type(node)
-print("caller: ", caller, "-> ansi2Type")
-caller = "ansi2Type:Unknown file:-1"
-  if isList(second(node)) then
-caller = ":Unknown file:-1"
-      printf("\ntypedef struct %s {\n", stringify(first(node)));
-
-caller = ":Unknown file:-1"
-      ansi2Struct(second(node));
-
-caller = ":Unknown file:-1"
-      printf("\n} %s;\n", stringify(first(node)));
-
-  else
-caller = ":Unknown file:-1"
-      ansi2displays("typedef ");
-
-caller = ":Unknown file:-1"
-      ansi2TypeDecl(node);
-
-  end
-
-end
--- Chose function name ansi2Types
-function ansi2Types(nodes)
-print("caller: ", caller, "-> ansi2Types")
-caller = "ansi2Types:Unknown file:-1"
-  if isEmpty(nodes) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      ansi2Type(car(nodes));
-
-caller = ":Unknown file:-1"
-      ansi2Types(cdr(nodes));
-
-  end
-
-end
--- Chose function name ansi2Compile
-function ansi2Compile(filename)
-print("caller: ", caller, "-> ansi2Compile")
-local tree =nil
-local replace =nil
-caller = "ansi2Compile:Unknown file:-1"
-  qlog("//Scanning file...%s\n", filename);
-
-caller = "ansi2Compile:Unknown file:-1"
-  tree = loadQuon(filename)
-caller = "ansi2Compile:Unknown file:-1"
-  qlog("//Building sexpr\n");
-
-caller = "ansi2Compile:Unknown file:-1"
-  tree = loadIncludes(tree)
-caller = "ansi2Compile:Unknown file:-1"
-  tree = macrowalk(tree)
-caller = "ansi2Compile:Unknown file:-1"
-  replace = cons(boxSymbol("fprintf"), cons(boxSymbol("stderr"), nil))
-caller = "ansi2Compile:Unknown file:-1"
-  tree = macrolist(tree, stringConcatenate("q", "log"), replace)
-caller = "ansi2Compile:Unknown file:-1"
-  qlog("//Printing program\n");
-
-caller = "ansi2Compile:Unknown file:-1"
-  ansi2Includes(cdr(first(tree)));
-
-caller = "ansi2Compile:Unknown file:-1"
-  ansi2Types(cdr(second(tree)));
-
-caller = "ansi2Compile:Unknown file:-1"
-  ansi2displays("Box* globalStackTrace = NULL;\n");
-
-caller = "ansi2Compile:Unknown file:-1"
-  ansi2displays("\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n");
-
-caller = "ansi2Compile:Unknown file:-1"
-  ansi2ForwardDeclarations(cdr(third(tree)));
-
-caller = "ansi2Compile:Unknown file:-1"
-  ansi2displays("\n\n//End forward declarations\n\n");
-
-caller = "ansi2Compile:Unknown file:-1"
-  ansi2Functions(cdr(third(tree)));
-
-caller = "ansi2Compile:Unknown file:-1"
-  ansi2displays("\n");
-
-end
--- Chose function name ansiFunctionArgs
-function ansiFunctionArgs(tree)
-print("caller: ", caller, "-> ansiFunctionArgs")
-caller = "ansiFunctionArgs:Unknown file:-1"
-  if isEmpty(tree) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      display(ansiTypeMap(first(tree)));
-
-caller = ":Unknown file:-1"
-      printf(" ");
-
-caller = ":Unknown file:-1"
-      display(second(tree));
-
-caller = ":Unknown file:-1"
-      if isNil(cddr(tree)) then
-caller = ":Unknown file:-1"
-          printf("");
-
-      else
-caller = ":Unknown file:-1"
-          printf(",");
-
-      end
-
-caller = ":Unknown file:-1"
-      ansiFunctionArgs(cddr(tree));
-
-  end
-
-end
--- Chose function name ansiLeaf
-function ansiLeaf(thisNode,indent)
-print("caller: ", caller, "-> ansiLeaf")
-caller = "ansiLeaf:Unknown file:-1"
-  display(ansiFuncMap(codeof(thisNode)));
-
-end
--- Chose function name ansiStructGetterExpression
-function ansiStructGetterExpression(thisNode,indent)
-print("caller: ", caller, "-> ansiStructGetterExpression")
-caller = "ansiStructGetterExpression:Unknown file:-1"
-  if equalBox(boxString("structGetter"), subnameof(thisNode)) then
-caller = ":Unknown file:-1"
-      ansiGetStruct(thisNode, indent);
-
-  else
-caller = ":Unknown file:-1"
-      ansiLeaf(thisNode, indent);
-
-  end
-
-end
--- Chose function name ansiExpression
-function ansiExpression(node,indent)
-print("caller: ", caller, "-> ansiExpression")
-caller = "ansiExpression:Unknown file:-1"
-  if isLeaf(node) then
-caller = ":Unknown file:-1"
-      display(ansiFuncMap(codeof(node)));
-
-  else
-caller = ":Unknown file:-1"
-      ansiSubExpression(node, indent);
-
-  end
-
-end
--- Chose function name ansiRecurList
-function ansiRecurList(expr,indent)
-print("caller: ", caller, "-> ansiRecurList")
-caller = "ansiRecurList:Unknown file:-1"
-  if isEmpty(expr) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      ansiExpression(car(expr), indent);
-
-caller = ":Unknown file:-1"
-      if isNil(cdr(expr)) then
-caller = ":Unknown file:-1"
-          printf("");
-
-      else
-caller = ":Unknown file:-1"
-          printf(", ");
-
-caller = ":Unknown file:-1"
-          ansiRecurList(cdr(expr), indent);
-
-      end
-
-  end
-
-end
--- Chose function name ansiSubExpression
-function ansiSubExpression(tree,indent)
-print("caller: ", caller, "-> ansiSubExpression")
-local thing =nil
-caller = "ansiSubExpression:Unknown file:-1"
-  if isEmpty(tree) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      if isNode(childrenof(tree)) then
-caller = ":Unknown file:-1"
-          ansiSubExpression(childrenof(tree), indent);
-
-      else
-caller = ":Unknown file:-1"
-          if isLeaf(tree) then
-caller = ":Unknown file:-1"
-              display(ansiFuncMap(codeof(tree)));
-
-          else
-caller = ":Unknown file:-1"
-              if equal(1, listLength(childrenof(tree))) then
-caller = ":Unknown file:-1"
-                  display(codeof(car(childrenof(tree))));
-
-caller = ":Unknown file:-1"
-                  if equalBox(boxString("return"), codeof(car(childrenof(tree)))) then
-caller = ":Unknown file:-1"
-                      printf("");
-
-                  else
-caller = ":Unknown file:-1"
-                      printf("()");
-
-                  end
-
-              else
-caller = ":Unknown file:-1"
-                  thing = codeof(car(childrenof(tree)))
-caller = ":Unknown file:-1"
-                  if equalBox(boxSymbol("get-struct"), thing) then
-caller = ":Unknown file:-1"
-                      printf("%s->%s", stringify(codeof(second(childrenof(tree)))), stringify(codeof(third(childrenof(tree)))));
-
-                  else
-caller = ":Unknown file:-1"
-                      if equalBox(boxSymbol("new"), thing) then
-caller = ":Unknown file:-1"
-                          printf("malloc(sizeof(%s))", stringify(codeof(third(childrenof(tree)))));
-
-                      else
-caller = ":Unknown file:-1"
-                          printf("%s(", stringify(ansiFuncMap(codeof(car(childrenof(tree))))));
-
-caller = ":Unknown file:-1"
-                          ansiRecurList(cdr(childrenof(tree)), indent);
-
-caller = ":Unknown file:-1"
-                          printf(")");
-
-                      end
-
-                  end
-
-              end
-
-          end
-
-      end
-
-  end
-
-end
--- Chose function name ansiIf
-function ansiIf(node,indent)
-print("caller: ", caller, "-> ansiIf")
-caller = "ansiIf:Unknown file:-1"
-  newLine(indent);
-
-caller = "ansiIf:Unknown file:-1"
-  printf("if ( ");
-
-caller = "ansiIf:Unknown file:-1"
-  ansiExpression(car(first(childrenof(node))), 0);
-
-caller = "ansiIf:Unknown file:-1"
-  printf(") {");
-
-caller = "ansiIf:Unknown file:-1"
-  ansiBody(second(childrenof(node)), add1(indent));
-
-caller = "ansiIf:Unknown file:-1"
-  newLine(indent);
-
-caller = "ansiIf:Unknown file:-1"
-  printf("} else {");
-
-caller = "ansiIf:Unknown file:-1"
-  ansiBody(third(childrenof(node)), add1(indent));
-
-caller = "ansiIf:Unknown file:-1"
-  newLine(indent);
-
-caller = "ansiIf:Unknown file:-1"
-  printf("}");
-
-end
--- Chose function name ansiSetStruct
-function ansiSetStruct(node,indent)
-print("caller: ", caller, "-> ansiSetStruct")
-caller = "ansiSetStruct:Unknown file:-1"
-  newLine(indent);
-
-caller = "ansiSetStruct:Unknown file:-1"
-  printf("%s->%s = ", stringify(first(codeof(node))), stringify(second(codeof(node))));
-
-caller = "ansiSetStruct:Unknown file:-1"
-  ansiExpression(childrenof(node), indent);
-
-end
--- Chose function name ansiGetStruct
-function ansiGetStruct(node,indent)
-print("caller: ", caller, "-> ansiGetStruct")
-caller = "ansiGetStruct:Unknown file:-1"
-  newLine(indent);
-
-caller = "ansiGetStruct:Unknown file:-1"
-  printf("%s->%s", stringify(first(codeof(node))), stringify(second(codeof(node))));
-
-end
--- Chose function name ansiSet
-function ansiSet(node,indent)
-print("caller: ", caller, "-> ansiSet")
-caller = "ansiSet:Unknown file:-1"
-  newLine(indent);
-
-caller = "ansiSet:Unknown file:-1"
-  printf("%s = ", stringify(first(codeof(node))));
-
-caller = "ansiSet:Unknown file:-1"
-  ansiExpression(childrenof(node), indent);
-
-end
--- Chose function name ansiStatement
-function ansiStatement(node,indent)
-print("caller: ", caller, "-> ansiStatement")
-caller = "ansiStatement:Unknown file:-1"
-  if equalBox(boxString("setter"), subnameof(node)) then
-caller = ":Unknown file:-1"
-      ansiSet(node, indent);
-
-  else
-caller = ":Unknown file:-1"
-      if equalBox(boxString("structSetter"), subnameof(node)) then
-caller = ":Unknown file:-1"
-          ansiSetStruct(node, indent);
-
-      else
-caller = ":Unknown file:-1"
-          if equalBox(boxString("if"), subnameof(node)) then
-caller = ":Unknown file:-1"
-              ansiIf(node, indent);
-
-          else
-caller = ":Unknown file:-1"
-              if equalBox(boxString("returnvoid"), subnameof(node)) then
-caller = ":Unknown file:-1"
-                  newLine(indent);
-
-caller = ":Unknown file:-1"
-                  printf("return");
-
-              else
-caller = ":Unknown file:-1"
-                  newLine(indent);
-
-caller = ":Unknown file:-1"
-                  ansiExpression(childrenof(node), indent);
-
-              end
-
-          end
-
-      end
-
-  end
-
-caller = "ansiStatement:Unknown file:-1"
-  printf(";\n");
-
-end
--- Chose function name ansiBody
-function ansiBody(tree,indent)
-print("caller: ", caller, "-> ansiBody")
-local code =nil
-caller = "ansiBody:Unknown file:-1"
-  if isEmpty(tree) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      code = codeof(car(tree))
-caller = ":Unknown file:-1"
-      if isNil(code) then
-      else
-caller = ":Unknown file:-1"
-          code = car(codeof(car(tree)))
-caller = ":Unknown file:-1"
-          printf("\n");
-
-caller = ":Unknown file:-1"
-          printIndent(indent);
-
-caller = ":Unknown file:-1"
-          printf("if (globalTrace)   snprintf(caller, 1024, \"from %s:%s\");\n", stringify(getTagFail(code, boxString("filename"), boxString("Unknown"))), stringify(getTagFail(code, boxString("line"), boxString("Unknown"))));
-
-      end
-
-caller = ":Unknown file:-1"
-      printIndent(indent);
-
-caller = ":Unknown file:-1"
-      printf("%s", "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n");
-
-caller = ":Unknown file:-1"
-      ansiStatement(car(tree), indent);
-
-caller = ":Unknown file:-1"
-      ansiBody(cdr(tree), indent);
-
-  end
-
-end
--- Chose function name ansiDeclarations
-function ansiDeclarations(decls,indent)
-print("caller: ", caller, "-> ansiDeclarations")
-local decl =nil
-caller = "ansiDeclarations:Unknown file:-1"
-  if isEmpty(decls) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      decl = car(decls)
-caller = ":Unknown file:-1"
-      printf("%s %s = ", stringify(ansiTypeMap(first(decl))), stringify(second(decl)));
-
-caller = ":Unknown file:-1"
-      display(ansiFuncMap(third(decl)));
-
-caller = ":Unknown file:-1"
-      printf(";\n");
-
-caller = ":Unknown file:-1"
-      ansiDeclarations(cdr(decls), indent);
-
-  end
-
-end
--- Chose function name ansiFunction
-function ansiFunction(node)
-print("caller: ", caller, "-> ansiFunction")
-local name =nil
-caller = "ansiFunction:Unknown file:-1"
-  name = subnameof(node)
-caller = "ansiFunction:Unknown file:-1"
-  printf("\n\n//Building function %s from line: %s", stringify(name), stringify(getTag(name, boxString("line"))));
-
-caller = "ansiFunction:Unknown file:-1"
-  newLine(0);
-
-caller = "ansiFunction:Unknown file:-1"
-  if isNil(node) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      newLine(0);
-
-caller = ":Unknown file:-1"
-      printf("%s %s(", stringify(ansiTypeMap(cdr(assoc("outtype", cdr(node))))), stringify(subnameof(node)));
-
-caller = ":Unknown file:-1"
-      ansiFunctionArgs(cdr(assoc("intype", cdr(node))));
-
-caller = ":Unknown file:-1"
-      printf(") {");
-
-caller = ":Unknown file:-1"
-      newLine(1);
-
-caller = ":Unknown file:-1"
-      ansiDeclarations(declarationsof(node), 1);
-
-caller = ":Unknown file:-1"
-      if inList(toStr(name), noStackTrace()) then
-caller = ":Unknown file:-1"
-          printf("");
-
-      else
-caller = ":Unknown file:-1"
-          printf("\nif (globalTrace)\n    fprintf(stderr, \"%s at %s:%s (%%s)\\n\", caller);\n", stringify(name), stringify(getTag(name, boxString("filename"))), stringify(getTag(name, boxString("line"))));
-
-      end
-
-caller = ":Unknown file:-1"
-      if inList(toStr(name), noStackTrace()) then
-caller = ":Unknown file:-1"
-          printf("");
-
-      else
-      end
-
-caller = ":Unknown file:-1"
-      ansiBody(childrenof(node), 1);
-
-caller = ":Unknown file:-1"
-      if inList(toStr(name), noStackTrace()) then
-caller = ":Unknown file:-1"
-          printf("");
-
-      else
-caller = ":Unknown file:-1"
-          printf("\nif (globalTrace)\n    fprintf(stderr, \"Leaving %s\\n\");\n", stringify(name));
-
-      end
-
-caller = ":Unknown file:-1"
-      printf("\n}\n");
-
-  end
-
-end
--- Chose function name ansiForwardDeclaration
-function ansiForwardDeclaration(node)
-print("caller: ", caller, "-> ansiForwardDeclaration")
-caller = "ansiForwardDeclaration:Unknown file:-1"
-  if isNil(node) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      printf("\n%s %s(", stringify(ansiTypeMap(cdr(assoc("outtype", cdr(node))))), stringify(subnameof(node)));
-
-caller = ":Unknown file:-1"
-      ansiFunctionArgs(cdr(assoc("intype", cdr(node))));
-
-caller = ":Unknown file:-1"
-      printf(");");
-
-  end
-
-end
--- Chose function name ansiForwardDeclarations
-function ansiForwardDeclarations(tree)
-print("caller: ", caller, "-> ansiForwardDeclarations")
-caller = "ansiForwardDeclarations:Unknown file:-1"
-  if isEmpty(tree) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      ansiForwardDeclaration(car(tree));
-
-caller = ":Unknown file:-1"
-      ansiForwardDeclarations(cdr(tree));
-
-  end
-
-end
--- Chose function name ansiFunctions
-function ansiFunctions(tree)
-print("caller: ", caller, "-> ansiFunctions")
-caller = "ansiFunctions:Unknown file:-1"
-  if isEmpty(tree) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      ansiFunction(car(tree));
-
-caller = ":Unknown file:-1"
-      ansiFunctions(cdr(tree));
-
-  end
-
-end
--- Chose function name ansiIncludes
-function ansiIncludes(nodes)
-print("caller: ", caller, "-> ansiIncludes")
-caller = "ansiIncludes:Unknown file:-1"
-  printf("%s", "\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nconst char* getEnv(char* key){return getenv(key);}\n void panic(char* s){abort();exit(1);}\nint not(int a){return !a;}\nint sub(int a, int b) { return a - b; }\nfloat mult(int a, int b) { return a * b; }\nint greaterthan(int a, int b) { return a > b; }\nfloat subf(float a, float b) { return a - b; }\nfloat multf(float a, float b) { return a * b; }\nint greaterthanf(float a, float b) { return a > b; }\nint equal(int a, int b) { return a == b; }\nint equalString(char* a, char* b) { return !strcmp(a,b); }\nint andBool(int a, int b) { return a && b;}\nint string_length(char* s) { return strlen(s);}\nchar* setSubString(char* target, int start,char *source){target[start]=source[0]; return target;}\nchar* sub_string(char* s, int start, int length) {\nchar* substr = calloc(length+1, 1);\nstrncpy(substr, s+start, length);\nreturn substr;\n}\n\n\n\nchar* stringConcatenate(char* a, char* b) {\nint len = strlen(a) + strlen(b) + 1;\nchar* target = calloc(len,1);\nstrncat(target, a, len);\nstrncat(target, b, len);\nreturn target;\n}\n\nchar* intToString(int a) {\nint len = 100;\nchar* target = calloc(len,1);\nsnprintf(target, 99, \"%d\", a);\nreturn target;\n}\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\nvoid * gc_malloc( unsigned int size ) {\nreturn malloc(size);\n}\n\nint* makeArray(int length) {\n    int * array = gc_malloc(length*sizeof(int));\n    return array;\n}\n\nint at(int* arr, int index) {\n  return arr[index];\n}\n\nvoid setAt(int* array, int index, int value) {\n    array[index] = value;\n}\n\nchar * read_file(char * filename) {\nchar * buffer = 0;\nlong length;\nFILE * f = fopen (filename, \"rb\");\n\nif (f)\n{\n  fseek (f, 0, SEEK_END);\n  length = ftell (f);\n  fseek (f, 0, SEEK_SET);\n  buffer = calloc (length+1,1);\n  if (buffer == NULL) {\n  printf(\"Malloc failed!\\n\");\n  exit(1);\n}\n  if (buffer)\n  {\n    fread (buffer, 1, length, f);\n  }\n  fclose (f);\n}\nreturn buffer;\n}\n\n\nvoid write_file (char * filename, char * data) {\nFILE *f = fopen(filename, \"w\");\nif (f == NULL)\n{\n    printf(\"Error opening file!\");\n    exit(1);\n}\n\nfprintf(f, \"%s\", data);\n\nfclose(f);\n}\n\nchar* getStringArray(int index, char** strs) {\nreturn strs[index];\n}\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\n\nint main( int argc, char *argv[] )  {\n  globalArgs = argv;\n  globalArgsCount = argc;\n  caller=calloc(1024,1);\n\n  return start();\n\n}\n\n");
-
-caller = "ansiIncludes:Unknown file:-1"
-  printf("%s", "char * character(int num) { char *string = malloc(2); if (!string) return 0; string[0] = num; string[1] = 0; return string; }");
-
-caller = "ansiIncludes:Unknown file:-1"
-  printf("%s", "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }");
-
-caller = "ansiIncludes:Unknown file:-1"
-  printf("%s", "bool nand(bool a, bool b) { return !(a&&b); }\n//End include block\n");
-
-end
--- Chose function name ansiTypeDecl
-function ansiTypeDecl(l)
-print("caller: ", caller, "-> ansiTypeDecl")
-caller = "ansiTypeDecl:Unknown file:-1"
-  if greaterthan(listLength(l), 2) then
-caller = ":Unknown file:-1"
-      printIndent(1);
-
-caller = ":Unknown file:-1"
-      printf("%s %s %s;\n", stringify(second(l)), stringify(ansiTypeMap(listLast(l))), stringify(first(l)));
-
-  else
-caller = ":Unknown file:-1"
-      printIndent(1);
-
-caller = ":Unknown file:-1"
-      printf("%s %s;\n", stringify(ansiTypeMap(listLast(l))), stringify(car(l)));
-
-  end
-
-end
--- Chose function name ansiStructComponents
-function ansiStructComponents(node)
-print("caller: ", caller, "-> ansiStructComponents")
-caller = "ansiStructComponents:Unknown file:-1"
-  if isEmpty(node) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      ansiTypeDecl(car(node));
-
-caller = ":Unknown file:-1"
-      ansiStructComponents(cdr(node));
-
-  end
-
-end
--- Chose function name ansiStruct
-function ansiStruct(node)
-print("caller: ", caller, "-> ansiStruct")
-caller = "ansiStruct:Unknown file:-1"
-  ansiStructComponents(cdr(car(node)));
-
-end
--- Chose function name ansiTypeMap
-function ansiTypeMap(aSym)
-print("caller: ", caller, "-> ansiTypeMap")
-local symMap =nil
-caller = "ansiTypeMap:Unknown file:-1"
-  symMap = alistCons(boxSymbol("stringArray"), boxSymbol("char**"), alistCons(boxSymbol("string"), boxSymbol("char*"), nil))
-caller = "ansiTypeMap:Unknown file:-1"
-  if truthy(assoc(stringify(aSym), symMap)) then
-caller = ":Unknown file:-1"
-      return cdr(assoc(stringify(aSym), symMap))
-
-  else
-caller = ":Unknown file:-1"
-      return aSym
-
-  end
-
-end
--- Chose function name ansiFuncMap
-function ansiFuncMap(aSym)
-print("caller: ", caller, "-> ansiFuncMap")
-local symMap =nil
-caller = "ansiFuncMap:Unknown file:-1"
-  if equalString("symbol", boxType(aSym)) then
-caller = ":Unknown file:-1"
-      symMap = alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("luaSubstring"), boxSymbol("sub_string"), alistCons(boxSymbol("luaReadFile"), boxSymbol("read_file"), alistCons(boxSymbol("luaWriteFile"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string.len"), boxSymbol("string_length"), alistCons(boxSymbol("nil"), boxSymbol("NULL"), nil)))))))
-caller = ":Unknown file:-1"
-      if truthy(assoc(stringify(aSym), symMap)) then
-caller = ":Unknown file:-1"
-          return cdr(assoc(stringify(aSym), symMap))
-
-      else
-caller = ":Unknown file:-1"
-          return aSym
-
-      end
-
-  else
-caller = ":Unknown file:-1"
-      return aSym
-
-  end
-
-end
--- Chose function name ansiType
-function ansiType(node)
-print("caller: ", caller, "-> ansiType")
-caller = "ansiType:Unknown file:-1"
-  if equalBox(subnameof(node), boxString("struct")) then
-caller = ":Unknown file:-1"
-      printf("\ntypedef struct %s {\n", stringify(first(codeof(node))));
-
-caller = ":Unknown file:-1"
-      ansiStruct(cdr(codeof(node)));
-
-caller = ":Unknown file:-1"
-      printf("\n} %s;\n", stringify(first(codeof(node))));
-
-  else
-caller = ":Unknown file:-1"
-      printf("typedef ");
-
-caller = ":Unknown file:-1"
-      ansiTypeDecl(codeof(node));
-
-  end
-
-end
--- Chose function name ansiTypes
-function ansiTypes(nodes)
-print("caller: ", caller, "-> ansiTypes")
-caller = "ansiTypes:Unknown file:-1"
-  if isEmpty(nodes) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      ansiType(car(nodes));
-
-caller = ":Unknown file:-1"
-      ansiTypes(cdr(nodes));
-
-  end
-
-end
--- Chose function name ansiCompile
-function ansiCompile(filename)
-print("caller: ", caller, "-> ansiCompile")
-local programStr =""
-local tree =nil
-local program =nil
-caller = "ansiCompile:Unknown file:-1"
-  printf("//Scanning file...%s\n", filename);
-
-caller = "ansiCompile:Unknown file:-1"
-  programStr = luaReadFile(filename)
-caller = "ansiCompile:Unknown file:-1"
-  printf("//Building sexpr\n");
-
-caller = "ansiCompile:Unknown file:-1"
-  tree = readSexpr(programStr, filename)
-caller = "ansiCompile:Unknown file:-1"
-  tree = macrowalk(tree)
-caller = "ansiCompile:Unknown file:-1"
-  cons(boxString("a"), cons(boxString("b"), cons(boxString("c"), nil)));
-
-caller = "ansiCompile:Unknown file:-1"
-  printf("//Building AST\n");
-
-caller = "ansiCompile:Unknown file:-1"
-  program = alistCons(boxString("includes"), astIncludes(first(tree)), alistCons(boxString("types"), astTypes(second(tree)), alistCons(boxString("functions"), astFunctions(third(tree)), nil)))
-caller = "ansiCompile:Unknown file:-1"
-  printf("//Merging ASTs\n");
-
-caller = "ansiCompile:Unknown file:-1"
-  program = mergeIncludes(program)
-caller = "ansiCompile:Unknown file:-1"
-  printf("//Printing program\n");
-
-caller = "ansiCompile:Unknown file:-1"
-  ansiIncludes(cdr(assoc("includes", program)));
-
-caller = "ansiCompile:Unknown file:-1"
-  ansiTypes(childrenof(cdr(assoc("types", program))));
-
-caller = "ansiCompile:Unknown file:-1"
-  printf("Box* globalStackTrace = NULL;\n");
-
-caller = "ansiCompile:Unknown file:-1"
-  printf("\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n");
-
-caller = "ansiCompile:Unknown file:-1"
-  ansiForwardDeclarations(cdr(assoc("children", cdr(cdr(assoc("functions", program))))));
-
-caller = "ansiCompile:Unknown file:-1"
-  printf("\n\n//End forward declarations\n\n");
-
-caller = "ansiCompile:Unknown file:-1"
-  ansiFunctions(cdr(assoc("children", cdr(cdr(assoc("functions", program))))));
-
-caller = "ansiCompile:Unknown file:-1"
-  printf("\n");
-
-end
--- Chose function name numbers
-function numbers(num)
-print("caller: ", caller, "-> numbers")
-caller = "numbers:Unknown file:-1"
-  if greaterthan(0, num) then
-caller = ":Unknown file:-1"
-      return cons(boxString("-"), nil)
-
-  else
-caller = ":Unknown file:-1"
-      return cons(boxString(stringify(boxInt(num))), numbers(sub1(num)))
-
-  end
-
-end
--- Chose function name lexType
-function lexType(abox)
-print("caller: ", caller, "-> lexType")
-caller = "lexType:Unknown file:-1"
-  if equalString("string", boxType(abox)) then
-caller = ":Unknown file:-1"
-      return "string"
-
-  else
-caller = ":Unknown file:-1"
-      if inList(boxString(luaSubstring(stringify(abox), 0, 1)), numbers(9)) then
-caller = ":Unknown file:-1"
-          return "number"
-
-      else
-caller = ":Unknown file:-1"
-          return "symbol"
-
-      end
-
-  end
-
-end
--- Chose function name perlLeaf
-function perlLeaf(thisNode,indent)
-print("caller: ", caller, "-> perlLeaf")
-caller = "perlLeaf:Unknown file:-1"
-  if equalString("symbol", lexType(codeof(thisNode))) then
-caller = ":Unknown file:-1"
-      printf("%s", dollar());
-
-  else
-caller = ":Unknown file:-1"
-      printf("");
-
-  end
-
-caller = "perlLeaf:Unknown file:-1"
-  display(perlFuncMap(codeof(thisNode)));
-
-end
--- Chose function name perlStructGetterExpression
-function perlStructGetterExpression(thisNode,indent)
-print("caller: ", caller, "-> perlStructGetterExpression")
-caller = "perlStructGetterExpression:Unknown file:-1"
-  if equalBox(boxString("structGetter"), subnameof(thisNode)) then
-caller = ":Unknown file:-1"
-      perlGetStruct(thisNode, indent);
-
-  else
-caller = ":Unknown file:-1"
-      perlLeaf(thisNode, indent);
-
-  end
-
-end
--- Chose function name perlExpression
-function perlExpression(node,indent)
-print("caller: ", caller, "-> perlExpression")
-caller = "perlExpression:Unknown file:-1"
-  if isLeaf(node) then
-caller = ":Unknown file:-1"
-      perlLeaf(node, indent);
-
-  else
-caller = ":Unknown file:-1"
-      perlSubExpression(node, indent);
 
   end
 
 end
 -- Chose function name perlRecurList
-function perlRecurList(expr,indent)
+function perlRecurList(expr,indent,variables)
 print("caller: ", caller, "-> perlRecurList")
 caller = "perlRecurList:Unknown file:-1"
   if isEmpty(expr) then
@@ -6357,7 +5003,7 @@ caller = ":Unknown file:-1"
 
   else
 caller = ":Unknown file:-1"
-      perlExpression(car(expr), indent);
+      perlExpression(car(expr), indent, variables);
 
 caller = ":Unknown file:-1"
       if isNil(cdr(expr)) then
@@ -6369,267 +5015,62 @@ caller = ":Unknown file:-1"
           printf(", ");
 
 caller = ":Unknown file:-1"
-          perlRecurList(cdr(expr), indent);
+          perlRecurList(cdr(expr), indent, variables);
 
       end
-
-  end
-
-end
--- Chose function name perlSubExpression
-function perlSubExpression(tree,indent)
-print("caller: ", caller, "-> perlSubExpression")
-local thing =nil
-caller = "perlSubExpression:Unknown file:-1"
-  if isEmpty(tree) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      if isNode(childrenof(tree)) then
-caller = ":Unknown file:-1"
-          perlSubExpression(childrenof(tree), indent);
-
-      else
-caller = ":Unknown file:-1"
-          if isLeaf(tree) then
-caller = ":Unknown file:-1"
-              printf("%s", dollar());
-
-caller = ":Unknown file:-1"
-              display(perlFuncMap(codeof(tree)));
-
-          else
-caller = ":Unknown file:-1"
-              if equal(1, listLength(childrenof(tree))) then
-caller = ":Unknown file:-1"
-                  display(codeof(car(childrenof(tree))));
-
-caller = ":Unknown file:-1"
-                  if equalBox(boxString("return"), codeof(car(childrenof(tree)))) then
-caller = ":Unknown file:-1"
-                      printf("");
-
-                  else
-caller = ":Unknown file:-1"
-                      printf("()");
-
-                  end
-
-              else
-caller = ":Unknown file:-1"
-                  thing = codeof(car(childrenof(tree)))
-caller = ":Unknown file:-1"
-                  if equalBox(boxSymbol("get-struct"), thing) then
-caller = ":Unknown file:-1"
-                      printf("%s%s->{%s}", dollar(), stringify(codeof(second(childrenof(tree)))), stringify(codeof(third(childrenof(tree)))));
-
-                  else
-caller = ":Unknown file:-1"
-                      if equalBox(boxSymbol("new"), thing) then
-caller = ":Unknown file:-1"
-                          printf("{}");
-
-                      else
-caller = ":Unknown file:-1"
-                          printf("%s(", stringify(perlFuncMap(codeof(car(childrenof(tree))))));
-
-caller = ":Unknown file:-1"
-                          perlRecurList(cdr(childrenof(tree)), indent);
-
-caller = ":Unknown file:-1"
-                          printf(")");
-
-                      end
-
-                  end
-
-              end
-
-          end
-
-      end
-
-  end
-
-end
--- Chose function name perlIf
-function perlIf(node,indent)
-print("caller: ", caller, "-> perlIf")
-caller = "perlIf:Unknown file:-1"
-  newLine(indent);
-
-caller = "perlIf:Unknown file:-1"
-  printf("if ( ");
-
-caller = "perlIf:Unknown file:-1"
-  perlExpression(car(first(childrenof(node))), 0);
-
-caller = "perlIf:Unknown file:-1"
-  printf(") {");
-
-caller = "perlIf:Unknown file:-1"
-  perlBody(second(childrenof(node)), add1(indent));
-
-caller = "perlIf:Unknown file:-1"
-  newLine(indent);
-
-caller = "perlIf:Unknown file:-1"
-  printf("} else {");
-
-caller = "perlIf:Unknown file:-1"
-  perlBody(third(childrenof(node)), add1(indent));
-
-caller = "perlIf:Unknown file:-1"
-  newLine(indent);
-
-caller = "perlIf:Unknown file:-1"
-  printf("}");
-
-end
--- Chose function name perlSetStruct
-function perlSetStruct(node,indent)
-print("caller: ", caller, "-> perlSetStruct")
-caller = "perlSetStruct:Unknown file:-1"
-  newLine(indent);
-
-caller = "perlSetStruct:Unknown file:-1"
-  printf("%s%s->{%s} = ", dollar(), stringify(first(codeof(node))), stringify(second(codeof(node))));
-
-caller = "perlSetStruct:Unknown file:-1"
-  perlExpression(childrenof(node), indent);
-
-end
--- Chose function name perlGetStruct
-function perlGetStruct(node,indent)
-print("caller: ", caller, "-> perlGetStruct")
-caller = "perlGetStruct:Unknown file:-1"
-  newLine(indent);
-
-caller = "perlGetStruct:Unknown file:-1"
-  printf("%s%s->{%s}", dollar(), stringify(first(codeof(node))), stringify(second(codeof(node))));
-
-end
--- Chose function name perlSet
-function perlSet(node,indent)
-print("caller: ", caller, "-> perlSet")
-caller = "perlSet:Unknown file:-1"
-  newLine(indent);
-
-caller = "perlSet:Unknown file:-1"
-  printf("%s%s = ", dollar(), stringify(first(codeof(node))));
-
-caller = "perlSet:Unknown file:-1"
-  perlExpression(childrenof(node), indent);
-
-end
--- Chose function name assertNode
-function assertNode(node)
-print("caller: ", caller, "-> assertNode")
-caller = "assertNode:Unknown file:-1"
-  if isNode(node) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      panic("Not a node!");
 
   end
 
 end
 -- Chose function name perlStatement
-function perlStatement(node,indent)
+function perlStatement(node,indent,variables)
 print("caller: ", caller, "-> perlStatement")
-local functionName =nil
 caller = "perlStatement:Unknown file:-1"
-  assertNode(node);
-
-caller = "perlStatement:Unknown file:-1"
-  if equalBox(boxString("setter"), subnameof(node)) then
+  if equalBox(boxString("set"), first(node)) then
 caller = ":Unknown file:-1"
-      perlSet(node, indent);
+      perlSet(node, indent, variables);
 
   else
 caller = ":Unknown file:-1"
-      if equalBox(boxString("structSetter"), subnameof(node)) then
+      if equalBox(boxString("set-struct"), first(node)) then
 caller = ":Unknown file:-1"
-          perlSetStruct(node, indent);
+          perlSetStruct(node, indent, variables);
 
       else
 caller = ":Unknown file:-1"
-          if equalBox(boxString("if"), subnameof(node)) then
+          if equalBox(boxString("if"), first(node)) then
 caller = ":Unknown file:-1"
-              perlIf(node, indent);
+              perlIf(node, indent, variables);
 
           else
 caller = ":Unknown file:-1"
-              if equalBox(boxString("returnvoid"), subnameof(node)) then
-caller = ":Unknown file:-1"
-                  functionName = functionNameof(node)
-caller = ":Unknown file:-1"
-                  printf("\n#Returnvoid\n");
-
-caller = ":Unknown file:-1"
-                  newLine(indent);
-
+              if equalBox(boxString("return"), first(node)) then
 caller = ":Unknown file:-1"
                   newLine(indent);
 
 caller = ":Unknown file:-1"
                   printf("return");
 
-              else
 caller = ":Unknown file:-1"
-                  if equalBox(boxString("return"), subnameof(node)) then
+                  if greaterthan(listLength(node), 1) then
 caller = ":Unknown file:-1"
-                      functionName = functionNameof(node)
-caller = ":Unknown file:-1"
-                      if inList(functionName, noStackTrace()) then
-caller = ":Unknown file:-1"
-                          printf("");
-
-                      else
-caller = ":Unknown file:-1"
-                          printf("\n#standard return: %s\n", stringify(functionName));
+                      printf(" ");
 
 caller = ":Unknown file:-1"
-                          newLine(indent);
-
-caller = ":Unknown file:-1"
-                          printf("%s%s%s", "if (", dollar(), "globalTrace) {printf(\"Leaving \\n\")}\n");
-
-                      end
-
-caller = ":Unknown file:-1"
-                      newLine(indent);
-
-caller = ":Unknown file:-1"
-                      perlExpression(childrenof(node), indent);
+                      perlExpression(cadr(node), indent, variables);
 
                   else
 caller = ":Unknown file:-1"
-                      if inList(functionName, noStackTrace()) then
-caller = ":Unknown file:-1"
-                          printf("");
-
-                      else
-caller = ":Unknown file:-1"
-                          printf("\n#standard expression\n");
-
-                      end
-
-caller = ":Unknown file:-1"
-                      newLine(indent);
-
-caller = ":Unknown file:-1"
-                      perlExpression(childrenof(node), indent);
-
-caller = ":Unknown file:-1"
-                      newLine(indent);
+                      printf("");
 
                   end
+
+              else
+caller = ":Unknown file:-1"
+                  newLine(indent);
+
+caller = ":Unknown file:-1"
+                  perlExpression(node, indent, variables);
 
               end
 
@@ -6644,8 +5085,9 @@ caller = "perlStatement:Unknown file:-1"
 
 end
 -- Chose function name perlBody
-function perlBody(tree,indent)
+function perlBody(tree,indent,variables)
 print("caller: ", caller, "-> perlBody")
+local code =nil
 caller = "perlBody:Unknown file:-1"
   if isEmpty(tree) then
 caller = ":Unknown file:-1"
@@ -6653,22 +5095,88 @@ caller = ":Unknown file:-1"
 
   else
 caller = ":Unknown file:-1"
-      printIndent(indent);
+      code = car(tree)
+caller = ":Unknown file:-1"
+      perlStatement(code, indent, variables);
 
 caller = ":Unknown file:-1"
-      printf("%s%s%s", "if (", dollar(), "globalStepTrace) {printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__)}\n");
-
-caller = ":Unknown file:-1"
-      perlStatement(car(tree), indent);
-
-caller = ":Unknown file:-1"
-      perlBody(cdr(tree), indent);
+      perlBody(cdr(tree), indent, variables);
 
   end
 
 end
+-- Chose function name perlSet
+function perlSet(node,indent,variables)
+print("caller: ", caller, "-> perlSet")
+caller = "perlSet:Unknown file:-1"
+  newLine(indent);
+
+caller = "perlSet:Unknown file:-1"
+  printf("%s = ", stringify(perlFuncMap(first(cdr(node)), variables)));
+
+caller = "perlSet:Unknown file:-1"
+  perlExpression(third(node), indent, variables);
+
+end
+-- Chose function name perlSetStruct
+function perlSetStruct(node,indent,variables)
+print("caller: ", caller, "-> perlSetStruct")
+caller = "perlSetStruct:Unknown file:-1"
+  newLine(indent);
+
+caller = "perlSetStruct:Unknown file:-1"
+  printf("%s->{%s} = ", stringify(perlFuncMap(second(node), variables)), stringify(third(node)));
+
+caller = "perlSetStruct:Unknown file:-1"
+  perlExpression(fourth(node), indent, variables);
+
+end
+-- Chose function name perlIf
+function perlIf(node,indent,variables)
+print("caller: ", caller, "-> perlIf")
+caller = "perlIf:Unknown file:-1"
+  newLine(indent);
+
+caller = "perlIf:Unknown file:-1"
+  printf("if ( ");
+
+caller = "perlIf:Unknown file:-1"
+  perlExpression(second(node), 0, variables);
+
+caller = "perlIf:Unknown file:-1"
+  printf(" ) {");
+
+caller = "perlIf:Unknown file:-1"
+  perlBody(cdr(third(node)), add1(indent), variables);
+
+caller = "perlIf:Unknown file:-1"
+  newLine(indent);
+
+caller = "perlIf:Unknown file:-1"
+  printf("} else {");
+
+caller = "perlIf:Unknown file:-1"
+  perlBody(cdr(fourth(node)), add1(indent), variables);
+
+caller = "perlIf:Unknown file:-1"
+  newLine(indent);
+
+caller = "perlIf:Unknown file:-1"
+  printf("}");
+
+end
+-- Chose function name perlGetStruct
+function perlGetStruct(node,indent)
+print("caller: ", caller, "-> perlGetStruct")
+caller = "perlGetStruct:Unknown file:-1"
+  newLine(indent);
+
+caller = "perlGetStruct:Unknown file:-1"
+  printf("$%s->{%s}", stringify(first(node)), stringify(second(node)));
+
+end
 -- Chose function name perlDeclarations
-function perlDeclarations(decls,indent)
+function perlDeclarations(decls,indent,variables)
 print("caller: ", caller, "-> perlDeclarations")
 local decl =nil
 caller = "perlDeclarations:Unknown file:-1"
@@ -6680,16 +5188,16 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
       decl = car(decls)
 caller = ":Unknown file:-1"
-      printf("my %s%s = ", dollar(), stringify(second(decl)));
+      printf("my $%s = ", stringify(second(decl)));
 
 caller = ":Unknown file:-1"
-      display(perlConstMap(third(decl)));
+      perlExpression(third(decl), indent, variables);
 
 caller = ":Unknown file:-1"
       printf(";\n");
 
 caller = ":Unknown file:-1"
-      perlDeclarations(cdr(decls), indent);
+      perlDeclarations(cdr(decls), indent, variables);
 
   end
 
@@ -6698,10 +5206,13 @@ end
 function perlFunction(node)
 print("caller: ", caller, "-> perlFunction")
 local name =nil
+local variables =nil
+local args =nil
+local decls =nil
 caller = "perlFunction:Unknown file:-1"
-  name = subnameof(node)
+  name = second(node)
 caller = "perlFunction:Unknown file:-1"
-  printf("\n\n#Building function %s from line: %s", stringify(name), stringify(getTag(name, boxString("line"))));
+  printf("\n\n# Function %s from line %s", stringify(name), stringify(getTag(name, boxString("line"))));
 
 caller = "perlFunction:Unknown file:-1"
   newLine(0);
@@ -6716,50 +5227,34 @@ caller = ":Unknown file:-1"
       newLine(0);
 
 caller = ":Unknown file:-1"
-      printf("sub %s", stringify(subnameof(node)));
-
-caller = ":Unknown file:-1"
-      printf(" {");
+      printf("sub %s {", stringify(second(node)));
 
 caller = ":Unknown file:-1"
       newLine(1);
 
 caller = ":Unknown file:-1"
-      perlFunctionArgs(cdr(assoc("intype", cdr(node))));
+      printf("my (");
+
+caller = ":Unknown file:-1"
+      perlFunctionArgs(third(node));
+
+caller = ":Unknown file:-1"
+      printf(") = @_;");
 
 caller = ":Unknown file:-1"
       newLine(1);
 
 caller = ":Unknown file:-1"
-      perlDeclarations(declarationsof(node), 1);
+      args = third(node)
+caller = ":Unknown file:-1"
+      decls = cdr(fourth(node))
+caller = ":Unknown file:-1"
+      variables = collectVariables(args, decls)
+caller = ":Unknown file:-1"
+      perlDeclarations(decls, 1, variables);
 
 caller = ":Unknown file:-1"
-      printf("\nif (%sglobalTrace) { printf(\"%s at %s:%s\\n\") }\n", dollar(), stringify(subnameof(node)), stringify(getTag(name, boxString("filename"))), stringify(getTag(name, boxString("line"))));
-
-caller = ":Unknown file:-1"
-      if inList(name, noStackTrace()) then
-caller = ":Unknown file:-1"
-          printf("");
-
-      else
-caller = ":Unknown file:-1"
-          printf("");
-
-      end
-
-caller = ":Unknown file:-1"
-      perlBody(childrenof(node), 1);
-
-caller = ":Unknown file:-1"
-      if inList(name, noStackTrace()) then
-caller = ":Unknown file:-1"
-          printf("");
-
-      else
-caller = ":Unknown file:-1"
-          printf("");
-
-      end
+      perlBody(cdr(fifth(node)), 1, variables);
 
 caller = ":Unknown file:-1"
       printf("\n}\n");
@@ -6777,10 +5272,7 @@ caller = ":Unknown file:-1"
 
   else
 caller = ":Unknown file:-1"
-      printf("\nsub %s", stringify(subnameof(node)));
-
-caller = ":Unknown file:-1"
-      printf(";");
+      printf("sub %s;", stringify(second(node)));
 
   end
 
@@ -6821,120 +5313,17 @@ caller = ":Unknown file:-1"
   end
 
 end
--- Chose function name dollar
-function dollar()
-print("caller: ", caller, "-> dollar")
-caller = "dollar:Unknown file:-1"
-  return character(36)
-
-end
--- Chose function name atSym
-function atSym()
-print("caller: ", caller, "-> atSym")
-caller = "atSym:Unknown file:-1"
-  return character(64)
-
-end
 -- Chose function name perlIncludes
 function perlIncludes(nodes)
 print("caller: ", caller, "-> perlIncludes")
 caller = "perlIncludes:Unknown file:-1"
-  printf("%s\n", "use strict;");
+  printf("use strict;\n");
 
 caller = "perlIncludes:Unknown file:-1"
-  printf("%s%s%s", "my ", dollar(), "caller;\n");
+  printf("use warnings;\n");
 
 caller = "perlIncludes:Unknown file:-1"
-  printf("%s%s%s", "my ", dollar(), "releaseMode;\n");
-
-caller = "perlIncludes:Unknown file:-1"
-  printf("%s\n", "use Carp;");
-
-caller = "perlIncludes:Unknown file:-1"
-  dollar();
-
-caller = "perlIncludes:Unknown file:-1"
-  printf("%s\n", "use Carp::Always;");
-
-caller = "perlIncludes:Unknown file:-1"
-  printf("%s%s%s%s%s\n", "sub greaterthan { ", dollar(), "_[0] > ", dollar(), "_[1] };");
-
-caller = "perlIncludes:Unknown file:-1"
-  printf("%s%s%s\n", "sub qlog { warn ", "@", "_ };");
-
-caller = "perlIncludes:Unknown file:-1"
-  printf("%s%s%s%s%s\n", "sub mult { ", dollar(), "_[0] * ", dollar(), "_[1] };");
-
-caller = "perlIncludes:Unknown file:-1"
-  printf("%s%s%s%s%s\n", "sub multf { ", dollar(), "_[0] * ", dollar(), "_[1] };");
-
-caller = "perlIncludes:Unknown file:-1"
-  printf("%s%s%s%s%s\n", "sub greaterthanf { ", dollar(), "_[0] > ", dollar(), "_[1] };");
-
-caller = "perlIncludes:Unknown file:-1"
-  printf("%s%s%s%s%s\n", "sub equalString { ", dollar(), "_[0] eq ", dollar(), "_[1] };");
-
-caller = "perlIncludes:Unknown file:-1"
-  printf("sub read_file { my %sfile = shift; %sfile || die \"Empty file name!!!\"; open my %sfh, '<', %sfile or die; local %s/ = undef; my %scont = <%sfh>; close %sfh; return %scont; }; \n", dollar(), dollar(), dollar(), dollar(), dollar(), dollar(), dollar(), dollar(), dollar());
-
-caller = "perlIncludes:Unknown file:-1"
-  printf("sub write_file {my %sfile = shift; my %sdata = shift; %sfile || die \"Empty file name!!!\"; open my %sfh, '>', %sfile or die; print %sfh %sdata; close %sfh; } \n", dollar(), dollar(), dollar(), dollar(), dollar(), dollar(), dollar(), dollar());
-
-caller = "perlIncludes:Unknown file:-1"
-  printf("%s%s%s%s%s\n", "sub stringConcatenate { ", dollar(), "_[0] . ", dollar(), "_[1]}");
-
-caller = "perlIncludes:Unknown file:-1"
-  printf("%s%s%s%s%s\n", "sub subtract { ", dollar(), "_[0] - ", dollar(), "_[1]}");
-
-caller = "perlIncludes:Unknown file:-1"
-  printf("%s%s%s%s%s\n", "sub subf { ", dollar(), "_[0] - ", dollar(), "_[1]}");
-
-caller = "perlIncludes:Unknown file:-1"
-  printf("%s%s%s%s%s\n", "sub andBool { ", dollar(), "_[0] && ", dollar(), "_[1]}");
-
-caller = "perlIncludes:Unknown file:-1"
-  printf("%s%s%s%s%s\n", "sub equal { ", dollar(), "_[0] == ", dollar(), "_[1]}");
-
-caller = "perlIncludes:Unknown file:-1"
-  printf("%s%s%s%s%s\n", "sub panic { carp ", atSym(), "_; die \"", atSym(), "_\"}");
-
-caller = "perlIncludes:Unknown file:-1"
-  printf("sub intToString { return %s_[0]}\n", dollar());
-
-caller = "perlIncludes:Unknown file:-1"
-  printf("sub character { return chr(%s_[0])}\n", dollar());
-
-caller = "perlIncludes:Unknown file:-1"
-  printf("%s%s%s%s%s%s%s%s%s\n", "sub getStringArray { my ", dollar(), "index = shift; my ", dollar(), "arr = shift; return ", dollar(), "arr->[", dollar(), "index]}");
-
-end
--- Chose function name perlTypeDecl
-function perlTypeDecl(l)
-print("caller: ", caller, "-> perlTypeDecl")
-end
--- Chose function name perlStructComponents
-function perlStructComponents(node)
-print("caller: ", caller, "-> perlStructComponents")
-caller = "perlStructComponents:Unknown file:-1"
-  if isEmpty(node) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      perlTypeDecl(car(node));
-
-caller = ":Unknown file:-1"
-      perlStructComponents(cdr(node));
-
-  end
-
-end
--- Chose function name perlStruct
-function perlStruct(node)
-print("caller: ", caller, "-> perlStruct")
-caller = "perlStruct:Unknown file:-1"
-  perlStructComponents(cdr(car(node)));
+  printf("use v5.10;\n\n");
 
 end
 -- Chose function name perlTypeMap
@@ -6942,7 +5331,7 @@ function perlTypeMap(aSym)
 print("caller: ", caller, "-> perlTypeMap")
 local symMap =nil
 caller = "perlTypeMap:Unknown file:-1"
-  symMap = alistCons(boxSymbol("stringArray"), boxSymbol("char**"), alistCons(boxSymbol("string"), boxSymbol("char*"), nil))
+  symMap = alistCons(boxSymbol("stringArray"), boxSymbol("array"), alistCons(boxSymbol("string"), boxSymbol("string"), nil))
 caller = "perlTypeMap:Unknown file:-1"
   if truthy(assoc(stringify(aSym), symMap)) then
 caller = ":Unknown file:-1"
@@ -6955,84 +5344,36 @@ caller = ":Unknown file:-1"
   end
 
 end
--- Chose function name perlConstMap
-function perlConstMap(aSym)
-print("caller: ", caller, "-> perlConstMap")
-local symMap =nil
-caller = "perlConstMap:Unknown file:-1"
-  if equalString("symbol", boxType(aSym)) then
-caller = ":Unknown file:-1"
-      symMap = alistCons(boxSymbol("false"), boxSymbol("0"), alistCons(boxSymbol("nil"), boxSymbol("undef"), nil))
-caller = ":Unknown file:-1"
-      return cdr(assocFail(stringify(aSym), symMap, aSym))
-
-  else
-caller = ":Unknown file:-1"
-      return aSym
-
-  end
-
-end
 -- Chose function name perlFuncMap
-function perlFuncMap(aSym)
+function perlFuncMap(aSym,variables)
 print("caller: ", caller, "-> perlFuncMap")
 local symMap =nil
 caller = "perlFuncMap:Unknown file:-1"
   if equalString("symbol", boxType(aSym)) then
 caller = ":Unknown file:-1"
-      symMap = alistCons(boxSymbol("sub"), boxSymbol("subtract"), alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("luaSubstring"), boxSymbol("substr"), alistCons(boxSymbol("luaReadFile"), boxSymbol("read_file"), alistCons(boxSymbol("luaWriteFile"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string.len"), boxSymbol("length"), alistCons(boxSymbol("nil"), boxSymbol("undef"), nil))))))))
+      if inList(aSym, variables) then
 caller = ":Unknown file:-1"
-      return cdr(assocFail(stringify(aSym), symMap, aSym))
+          return boxSymbol(stringConcatenate(dollar(), stringify(aSym)))
+
+      else
+caller = ":Unknown file:-1"
+          symMap = alistCons(boxSymbol("sub"), boxSymbol("subtract"), alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("luaSubstring"), boxSymbol("substr"), alistCons(boxSymbol("luaReadFile"), boxSymbol("read_file"), alistCons(boxSymbol("luaWriteFile"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string.len"), boxSymbol("length"), alistCons(boxSymbol("nil"), boxSymbol("undef"), nil))))))))
+caller = ":Unknown file:-1"
+          if truthy(assoc(stringify(aSym), symMap)) then
+caller = ":Unknown file:-1"
+              return cdr(assoc(stringify(aSym), symMap))
+
+          else
+caller = ":Unknown file:-1"
+              return aSym
+
+          end
+
+      end
 
   else
 caller = ":Unknown file:-1"
       return aSym
-
-  end
-
-end
--- Chose function name perlType
-function perlType(node)
-print("caller: ", caller, "-> perlType")
-end
--- Chose function name perlTypes
-function perlTypes(nodes)
-print("caller: ", caller, "-> perlTypes")
-caller = "perlTypes:Unknown file:-1"
-  if isEmpty(nodes) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      perlType(car(nodes));
-
-caller = ":Unknown file:-1"
-      perlTypes(cdr(nodes));
-
-  end
-
-end
--- Chose function name perlFunctionArgs
-function perlFunctionArgs(tree)
-print("caller: ", caller, "-> perlFunctionArgs")
-caller = "perlFunctionArgs:Unknown file:-1"
-  if isEmpty(tree) then
-caller = ":Unknown file:-1"
-      return 
-
-  else
-caller = ":Unknown file:-1"
-      printf("%s%s", "my ", dollar());
-
-caller = ":Unknown file:-1"
-      display(second(tree));
-
-caller = ":Unknown file:-1"
-      printf(" = shift;\n");
-
-caller = ":Unknown file:-1"
-      perlFunctionArgs(cddr(tree));
 
   end
 
@@ -7040,79 +5381,41 @@ end
 -- Chose function name perlCompile
 function perlCompile(filename)
 print("caller: ", caller, "-> perlCompile")
-local programStr =""
 local tree =nil
-local program =nil
+local replace =nil
 caller = "perlCompile:Unknown file:-1"
-  programStr = luaReadFile(filename)
-caller = "perlCompile:Unknown file:-1"
-  tree = readSexpr(programStr, filename)
-caller = "perlCompile:Unknown file:-1"
-  program = alistCons(boxString("includes"), astIncludes(first(tree)), alistCons(boxString("types"), astTypes(second(tree)), alistCons(boxString("functions"), astFunctions(third(tree)), nil)))
-caller = "perlCompile:Unknown file:-1"
-  program = mergeIncludes(program)
-caller = "perlCompile:Unknown file:-1"
-  perlIncludes(cdr(assoc("includes", program)));
+  qlog("Scanning file...%s\n", filename);
 
 caller = "perlCompile:Unknown file:-1"
-  perlTypes(childrenof(cdr(assoc("types", program))));
+  tree = loadQuon(filename)
+caller = "perlCompile:Unknown file:-1"
+  qlog("Building sexpr\n");
 
 caller = "perlCompile:Unknown file:-1"
-  printf("use strict;\n");
+  tree = loadIncludes(tree)
+caller = "perlCompile:Unknown file:-1"
+  tree = macrowalk(tree)
+caller = "perlCompile:Unknown file:-1"
+  replace = cons(boxSymbol("fprintf"), cons(boxSymbol("stderr"), nil))
+caller = "perlCompile:Unknown file:-1"
+  tree = macrolist(tree, stringConcatenate("q", "log"), replace)
+caller = "perlCompile:Unknown file:-1"
+  qlog("Printing program\n");
 
 caller = "perlCompile:Unknown file:-1"
-  printf("use Carp;\n");
+  perlIncludes(cdr(first(tree)));
 
 caller = "perlCompile:Unknown file:-1"
-  printf("use Data::Dumper;\n");
+  perlGlobalVariables();
 
 caller = "perlCompile:Unknown file:-1"
-  printf("%s%s%s", "my ", dollar(), "globalStackTrace = undef;\n");
+  perlFunctions(cdr(third(tree)));
 
 caller = "perlCompile:Unknown file:-1"
-  printf("%s%s%s", "my ", dollar(), "globalTrace = undef;\n");
+  perlMainEntry();
 
 caller = "perlCompile:Unknown file:-1"
-  printf("%s%s%s", "my ", dollar(), "globalStepTrace = undef;\n");
-
-caller = "perlCompile:Unknown file:-1"
-  printf("%s%s%s", "my ", dollar(), "globalArgs = undef;\n");
-
-caller = "perlCompile:Unknown file:-1"
-  printf("%s%s%s", "my ", dollar(), "globalArgsCount = undef;\n");
-
-caller = "perlCompile:Unknown file:-1"
-  printf("%s%s%s\n", "my ", dollar(), "true = 1;\n");
-
-caller = "perlCompile:Unknown file:-1"
-  printf("%s%s%s", "my ", dollar(), "false = 0;\n");
-
-caller = "perlCompile:Unknown file:-1"
-  printf("%s%s%s", "my ", dollar(), "undef;\n");
-
-caller = "perlCompile:Unknown file:-1"
-  printf("%s%s%s", "\nsub isNil {\n    return !defined(", dollar(), "_[0]);\n}\n\n\n#Forward declarations\n");
-
-caller = "perlCompile:Unknown file:-1"
-  perlForwardDeclarations(cdr(assoc("children", cdr(cdr(assoc("functions", program))))));
-
-caller = "perlCompile:Unknown file:-1"
-  printf("\n\n#End forward declarations\n\n");
-
-caller = "perlCompile:Unknown file:-1"
-  perlFunctions(cdr(assoc("children", cdr(cdr(assoc("functions", program))))));
-
-caller = "perlCompile:Unknown file:-1"
-  printf(";\n");
-
-caller = "perlCompile:Unknown file:-1"
-  printf("%s%s%s%s", dollar(), "globalArgs = [ 1, ", atSym(), "ARGV];");
-
-caller = "perlCompile:Unknown file:-1"
-  printf("%s%s%s%s", dollar(), "globalArgsCount = scalar(", atSym(), "ARGV)+1;\n");
-
-caller = "perlCompile:Unknown file:-1"
-  printf("start();");
+  printf("\n");
 
 end
 -- Chose function name readSexpr
@@ -7280,9 +5583,6 @@ end
 function cdr(l)
 print("caller: ", caller, "-> cdr")
 caller = "cdr:Unknown file:-1"
-  assertType("list", l, 25, "q/lists.qon");
-
-caller = "cdr:Unknown file:-1"
   if isEmpty(l) then
 caller = ":Unknown file:-1"
       printf("Attempt to cdr an empty list!!!!\n");
@@ -7393,6 +5693,62 @@ caller = "fifth:Unknown file:-1"
   return caddddr(l)
 
 end
+-- Chose function name sixth
+function sixth(l)
+print("caller: ", caller, "-> sixth")
+caller = "sixth:Unknown file:-1"
+  return car(cdr(cdr(cdr(cdr(cdr(l))))))
+
+end
+-- Chose function name seventh
+function seventh(l)
+print("caller: ", caller, "-> seventh")
+caller = "seventh:Unknown file:-1"
+  return car(cdr(cdr(cdr(cdr(cdr(cdr(l)))))))
+
+end
+-- Chose function name eighth
+function eighth(l)
+print("caller: ", caller, "-> eighth")
+caller = "eighth:Unknown file:-1"
+  return car(cdr(cdr(cdr(cdr(cdr(cdr(cdr(l))))))))
+
+end
+-- Chose function name ninth
+function ninth(l)
+print("caller: ", caller, "-> ninth")
+caller = "ninth:Unknown file:-1"
+  return car(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(l)))))))))
+
+end
+-- Chose function name tenth
+function tenth(l)
+print("caller: ", caller, "-> tenth")
+caller = "tenth:Unknown file:-1"
+  return car(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(l))))))))))
+
+end
+-- Chose function name eleventh
+function eleventh(l)
+print("caller: ", caller, "-> eleventh")
+caller = "eleventh:Unknown file:-1"
+  return car(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(l)))))))))))
+
+end
+-- Chose function name twelfth
+function twelfth(l)
+print("caller: ", caller, "-> twelfth")
+caller = "twelfth:Unknown file:-1"
+  return car(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(l))))))))))))
+
+end
+-- Chose function name rest
+function rest(l)
+print("caller: ", caller, "-> rest")
+caller = "rest:Unknown file:-1"
+  return cdr(l)
+
+end
 -- Chose function name isList
 function isList(b)
 print("caller: ", caller, "-> isList")
@@ -7457,7 +5813,7 @@ function assoc(searchTerm,l)
 print("caller: ", caller, "-> assoc")
 local elem =nil
 caller = "assoc:Unknown file:-1"
-  assertType("list", l, 88, "q/lists.qon");
+  assertType("list", l, 96, "q/lists.qon");
 
 caller = "assoc:Unknown file:-1"
   if isEmpty(l) then
@@ -7468,7 +5824,7 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
       elem = car(l)
 caller = ":Unknown file:-1"
-      assertType("list", elem, 94, "q/lists.qon");
+      assertType("list", elem, 102, "q/lists.qon");
 
 caller = ":Unknown file:-1"
       if isEmpty(elem) then
@@ -7587,7 +5943,7 @@ caller = ":Unknown file:-1"
 
                   else
 caller = ":Unknown file:-1"
-                      return boxString(stringConcatenate("Unsupported type: ", boxType(b)))
+                      return boxString(stringConcatenate("Unsupported type in mlistLiteral: ", boxType(b)))
 
                   end
 
@@ -8081,10 +6437,10 @@ caller = ":Unknown file:-1"
 
 end
 -- Chose function name ListToBoxString
-function ListToBoxString(l)
+function ListToBoxString(l,indent)
 print("caller: ", caller, "-> ListToBoxString")
 caller = "ListToBoxString:Unknown file:-1"
-  return boxString(ListToString(l, 0, true, false))
+  return boxString(ListToString(l, indent, true, false))
 
 end
 -- Chose function name ListToString
@@ -9479,19 +7835,33 @@ local newb =nil
 caller = "clone:Unknown file:-1"
   newb = makeBox()
 caller = "clone:Unknown file:-1"
+  if isNil(newb) then
+caller = ":Unknown file:-1"
+      printf("clone: newb is nil\n");
+
+caller = ":Unknown file:-1"
+      panic("clone: newb is nil");
+
+caller = ":Unknown file:-1"
+      return newb
+
+  else
+caller = ":Unknown file:-1"
 newb.typ = b.typ
-caller = "clone:Unknown file:-1"
+caller = ":Unknown file:-1"
 newb.tag = b.tag
-caller = "clone:Unknown file:-1"
+caller = ":Unknown file:-1"
 newb.lis = b.lis
-caller = "clone:Unknown file:-1"
+caller = ":Unknown file:-1"
 newb.str = b.str
-caller = "clone:Unknown file:-1"
+caller = ":Unknown file:-1"
 newb.i = b.i
-caller = "clone:Unknown file:-1"
+caller = ":Unknown file:-1"
 newb.lengt = b.lengt
-caller = "clone:Unknown file:-1"
-  return newb
+caller = ":Unknown file:-1"
+      return newb
+
+  end
 
 end
 -- Chose function name tern
@@ -9784,7 +8154,7 @@ end
 function unBoxString(b)
 print("caller: ", caller, "-> unBoxString")
 caller = "unBoxString:Unknown file:-1"
-  assertType("string", b, 170, "q/base.qon");
+  assertType("string", b, 177, "q/base.qon");
 
 caller = "unBoxString:Unknown file:-1"
   return b.str
@@ -9874,7 +8244,7 @@ caller = ":Unknown file:-1"
 
                       else
 caller = ":Unknown file:-1"
-                          return stringConcatenate("Unsupported type: ", boxType(b))
+                          return stringConcatenate("Unsupported type in stringify: ", boxType(b))
 
                       end
 
@@ -10108,6 +8478,20 @@ caller = ":Unknown file:-1"
   end
 
 end
+-- Chose function name listIndent
+function listIndent(ii)
+print("caller: ", caller, "-> listIndent")
+caller = "listIndent:Unknown file:-1"
+  return cons(id(boxString(stringIndent(ii))), nil)
+
+end
+-- Chose function name listNewLine
+function listNewLine(ii)
+print("caller: ", caller, "-> listNewLine")
+caller = "listNewLine:Unknown file:-1"
+  return cons(id(boxString(stringConcatenate("\n", stringIndent(ii)))), nil)
+
+end
 -- Chose function name argList
 function argList(count,pos,args)
 print("caller: ", caller, "-> argList")
@@ -10222,6 +8606,162 @@ caller = "NoTrace_list:Unknown file:-1"
   return cons(boxString("StackTraceMove"), cons(boxString("StackTracePrint"), cons(boxString("StackTracePrintHelper"), cons(boxString("NoStackTrace_list"), cons(boxString("car"), cons(boxString("cdr"), cons(boxString("cons"), cons(boxString("set"), cons(boxString("boxString"), cons(boxString("makePair"), cons(boxString("set-struct"), cons(boxString("display"), cons(boxString("list"), cons(boxString("assertType"), cons(boxString("isEmpty"), cons(boxString("isNil"), cons(boxString("get-struct"), cons(boxString("equalString"), cons(boxString("binop"), cons(boxString("strcmp"), cons(boxString("main"), cons(boxString("makeBox"), cons(boxString("string_length"), cons(boxString("boxType"), cons(boxString("displayList"), cons(boxString("newLine"), cons(boxString("panic"), cons(boxString("boxString"), cons(boxString("boxSymbol"), cons(boxString("boxType"), cons(boxString("equalString"), cons(boxString("unBoxSymbol"), cons(boxString("isList"), cons(boxString("makeBox"), cons(boxString("equalBox"), cons(boxString("sub"), cons(boxString("sub1"), cons(boxString("stringify"), cons(boxString("add"), cons(boxString("greaterthan"), nil))))))))))))))))))))))))))))))))))))))))
 
 end
+-- Chose function name indexOfHelper
+function indexOfHelper(haystack,needle,start,current)
+print("caller: ", caller, "-> indexOfHelper")
+caller = "indexOfHelper:Unknown file:-1"
+  if greaterthan(add(current, string.len(needle)), string.len(haystack)) then
+caller = ":Unknown file:-1"
+      return -1
+
+  else
+caller = ":Unknown file:-1"
+      if equalString(luaSubstring(haystack, current, string.len(needle)), needle) then
+caller = ":Unknown file:-1"
+          return current
+
+      else
+caller = ":Unknown file:-1"
+          return indexOfHelper(haystack, needle, start, add1(current))
+
+      end
+
+  end
+
+end
+-- Chose function name indexOf
+function indexOf(haystack,needle,start)
+print("caller: ", caller, "-> indexOf")
+caller = "indexOf:Unknown file:-1"
+  if equal(string.len(needle), 0) then
+caller = ":Unknown file:-1"
+      return start
+
+  else
+caller = ":Unknown file:-1"
+      return indexOfHelper(haystack, needle, start, start)
+
+  end
+
+end
+-- Chose function name stringReplace
+function stringReplace(old,new,s)
+print("caller: ", caller, "-> stringReplace")
+caller = "stringReplace:Unknown file:-1"
+  return stringConcatenate(luaSubstring(s, 0, indexOf(s, old, 0)), stringConcatenate(new, luaSubstring(s, add(indexOf(s, old, 0), string.len(old)), sub(string.len(s), add(indexOf(s, old, 0), string.len(old))))))
+
+end
+-- Chose function name stringContains
+function stringContains(haystack,needle)
+print("caller: ", caller, "-> stringContains")
+local haystackLength =0
+local needleLength =0
+caller = "stringContains:Unknown file:-1"
+  haystackLength = string.len(haystack)
+caller = "stringContains:Unknown file:-1"
+  needleLength = string.len(needle)
+caller = "stringContains:Unknown file:-1"
+  if greaterthan(needleLength, haystackLength) then
+caller = ":Unknown file:-1"
+      return false
+
+  else
+caller = ":Unknown file:-1"
+      return stringContainsHelper(haystack, needle, 0)
+
+  end
+
+end
+-- Chose function name stringContainsHelper
+function stringContainsHelper(haystack,needle,startIndex)
+print("caller: ", caller, "-> stringContainsHelper")
+local haystackLength =0
+local needleLength =0
+caller = "stringContainsHelper:Unknown file:-1"
+  haystackLength = string.len(haystack)
+caller = "stringContainsHelper:Unknown file:-1"
+  needleLength = string.len(needle)
+caller = "stringContainsHelper:Unknown file:-1"
+  if greaterthan(add(startIndex, needleLength), haystackLength) then
+caller = ":Unknown file:-1"
+      return false
+
+  else
+caller = ":Unknown file:-1"
+      if equalString(luaSubstring(haystack, startIndex, needleLength), needle) then
+caller = ":Unknown file:-1"
+          return true
+
+      else
+caller = ":Unknown file:-1"
+          return stringContainsHelper(haystack, needle, add(startIndex, 1))
+
+      end
+
+  end
+
+end
+-- Chose function name stringTrim
+function stringTrim(s)
+print("caller: ", caller, "-> stringTrim")
+caller = "stringTrim:Unknown file:-1"
+  if equal(string.len(s), 0) then
+caller = ":Unknown file:-1"
+      return ""
+
+  else
+caller = ":Unknown file:-1"
+      if isWhiteSpace(luaSubstring(s, 0, 1)) then
+caller = ":Unknown file:-1"
+          return stringTrim(luaSubstring(s, 1, string.len(s)))
+
+      else
+caller = ":Unknown file:-1"
+          if isWhiteSpace(luaSubstring(s, sub(string.len(s), 1), string.len(s))) then
+caller = ":Unknown file:-1"
+              return stringTrim(luaSubstring(s, 0, sub(string.len(s), 1)))
+
+          else
+caller = ":Unknown file:-1"
+              return s
+
+          end
+
+      end
+
+  end
+
+end
+-- Chose function name stringSplit
+function stringSplit(s,delimiter)
+print("caller: ", caller, "-> stringSplit")
+local end =0
+local delimiterLength =0
+caller = "stringSplit:Unknown file:-1"
+  printf("Entering stringSplit with s: %.20s..., delimiter: %s\n", s, delimiter);
+
+caller = "stringSplit:Unknown file:-1"
+  delimiterLength = string.len(delimiter)
+caller = "stringSplit:Unknown file:-1"
+  end = indexOf(s, delimiter, 0)
+caller = "stringSplit:Unknown file:-1"
+  if equal(end, -1) then
+caller = ":Unknown file:-1"
+      printf("No delimiter found in stringSplit\n");
+
+caller = ":Unknown file:-1"
+      return cons(boxString(s), nil)
+
+  else
+caller = ":Unknown file:-1"
+      printf("Splitting string in stringSplit\n");
+
+caller = ":Unknown file:-1"
+      return cons(boxString(luaSubstring(s, 0, end)), stringSplit(luaSubstring(s, add(end, delimiterLength), string.len(s)), delimiter))
+
+  end
+
+end
 -- Chose function name start
 function start()
 print("caller: ", caller, "-> start")
@@ -10236,7 +8776,6 @@ local runNode =false
 local runNode2 =false
 local runLua =false
 local runIma =false
-local runAnsi2 =false
 local runAnsi3 =false
 local runBash =false
 local runTree =false
@@ -10273,8 +8812,6 @@ caller = "start:Unknown file:-1"
   runLua = inList(boxString("--lua"), cmdLine)
 caller = "start:Unknown file:-1"
   runIma = inList(boxString("--ima"), cmdLine)
-caller = "start:Unknown file:-1"
-  runAnsi2 = inList(boxString("--ansi2"), cmdLine)
 caller = "start:Unknown file:-1"
   runAnsi3 = inList(boxString("--ansi3"), cmdLine)
 caller = "start:Unknown file:-1"
@@ -10323,9 +8860,6 @@ caller = ":Unknown file:-1"
 
 caller = ":Unknown file:-1"
       printf("  --ima       Compile to Imaginary, the human-friendly language\n");
-
-caller = ":Unknown file:-1"
-      printf("  --ansi2     Compile to ANSI C, (quon version 2)\n");
 
 caller = ":Unknown file:-1"
       printf("  --ansi3     Compile to ANSI C (quon version 3)\n");
@@ -10456,7 +8990,10 @@ caller = ":Unknown file:-1"
 caller = ":Unknown file:-1"
                   if runNode2 then
 caller = ":Unknown file:-1"
-                      printf(StringListJoin(flatten(node2Compile(filename)), " "));
+                      node2Compile(filename);
+
+caller = ":Unknown file:-1"
+                      printf("\n");
 
                   else
 caller = ":Unknown file:-1"
@@ -10487,50 +9024,28 @@ caller = ":Unknown file:-1"
 
                               else
 caller = ":Unknown file:-1"
-                                  if runIma then
+                                  if runAnsi3 then
 caller = ":Unknown file:-1"
-                                      imaCompile(filename);
+                                      ansi3Compile(filename);
 
 caller = ":Unknown file:-1"
                                       printf("\n");
 
                                   else
 caller = ":Unknown file:-1"
-                                      if runAnsi2 then
+                                      if runBash then
 caller = ":Unknown file:-1"
-                                          ansi2Compile(filename);
+                                          bashCompile(filename);
 
 caller = ":Unknown file:-1"
                                           printf("\n");
 
                                       else
 caller = ":Unknown file:-1"
-                                          if runAnsi3 then
-caller = ":Unknown file:-1"
-                                              ansi3Compile(filename);
+                                          ansi3Compile(filename);
 
 caller = ":Unknown file:-1"
-                                              printf("\n");
-
-                                          else
-caller = ":Unknown file:-1"
-                                              if runBash then
-caller = ":Unknown file:-1"
-                                                  bashCompile(filename);
-
-caller = ":Unknown file:-1"
-                                                  printf("\n");
-
-                                              else
-caller = ":Unknown file:-1"
-                                                  ansi3Compile(filename);
-
-caller = ":Unknown file:-1"
-                                                  printf("\n");
-
-                                              end
-
-                                          end
+                                          printf("\n");
 
                                       end
 

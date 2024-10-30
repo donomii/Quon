@@ -191,7 +191,7 @@
           (then (return (makeList)))
           (else
             (set code (car tree))
-            (if (not releaseMode)
+            (if (notBool releaseMode)
               (then
                 (if  (inList (boxString functionName) (NoTrace_list))
                   (then
@@ -206,7 +206,7 @@
                     (boxString (stringify (getTagFail (car code) (boxString "line") (boxString "Line missing"))))
                     )))))
               (else))))
-        (if (not releaseMode) 
+        (if (notBool releaseMode) 
           (then
             (set out (makeList out
               (listIndent indent)

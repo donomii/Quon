@@ -200,7 +200,7 @@
        (then)
        (else
        (set code (car tree))
-       (if (not releaseMode)
+       (if (notBool releaseMode)
        (then
        
         (if  (inList (boxString functionName) (NoTrace_list))
@@ -211,7 +211,7 @@
         )
         (else))
         ))
-        (if (not releaseMode) (then
+        (if (notBool releaseMode) (then
       (printIndent indent)
 	    (printf "%s" "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n")
       )(else)

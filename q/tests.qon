@@ -159,7 +159,7 @@
     (if (equalString "33" (intToString 33))
       (then (printf "9.13  pass intToString\n"))
       (else (printf "9.13  fail intToString\n")))
-    ;(if (not false)
+    ;(if (notBool false)
       ;(then (printf "9.14  pass not\n"))
       ;(else (printf "9.14  fail not\n")))
     (if (equalString "llo" (sub-string "hello" a b ))
