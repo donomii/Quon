@@ -1,5 +1,5 @@
 ;  compiler.qon - the compiler for quon
-((includes q/base.qon q/compiler.qon q/macros.qon q/lists.qon q/newparser.qon q/perl.qon q/ansi3.qon q/tests.qon q/node.qon q/node2.qon q/java.qon q/lua.qon q/boolean.qon q/bash.qon)
+((includes q/base.qon q/compiler.qon q/macros.qon q/lists.qon q/newparser.qon q/perl.qon q/ansi3.qon q/tests.qon q/node.qon q/node2.qon q/java.qon q/lua.qon q/boolean.qon)
  (types)
  (functions
 
@@ -100,9 +100,7 @@
       (if runTree
       (then (display (macrowalk (treeCompile  filename))))
       (else
-      (if runAst
-      (then (astCompile  filename))
-      (else (if runNode
+      (if runNode
       (then
       (nodeCompile filename) (printf "\n"))
       (else (if runNode2
@@ -120,11 +118,9 @@
       (if runAnsi3
       (then (ansi3Compile  filename) (printf "\n"))
 	  (else
-      (if runBash
-      (then (bashCompile  filename) (printf "\n"))
-	  (else
-      (ansi3Compile  filename) (printf "\n"))))))))))))))
-      ))))))
+
+      (ansi3Compile  filename) (printf "\n"))))))))))))
+      ))))
     
     (return 0)
     )
