@@ -49,28 +49,35 @@
     (return  (cdr (third program)))))
 
 
-(list loadIncludes (list tree) (declare (list newProg nil) (string includeFile "") (list functionsCombined nil) (list typesCombined nil) (list includeTree nil) )
+(list loadIncludes (list tree) (declare
+  (list newProg nil)
+  (string includeFile "") 
+  (list functionsCombined nil)
+  (list typesCombined nil)
+  (list includeTree nil)
+  (string contents ""))
 (body
-
-(if ( greaterthan (listLength (getIncludes tree)) 0)
-(then
-
-  ;(printf "Includes: ")
-  ; (display tree)
-  ;(display (getIncludes tree))
-  (set includeFile (stringify (first (getIncludes tree))))
-  ;(printf "\nLoading %s\n" includeFile)
-  (set includeTree (loadQuon includeFile))
-  ;(display tree)
-  (set functionsCombined (concatLists (getFunctions includeTree) (getFunctions tree)))
-  (set typesCombined (concatLists (getTypes includeTree) (getTypes tree)))
-  ;(display typesCombined)
-  (set newProg (buildProg (cdr (getIncludes tree)) typesCombined functionsCombined)) ;FIXME check includes are recursive
-  (return (loadIncludes newProg))
-)
-(else
-  (return tree))
-)))
+  (if (greaterthan (listLength (getIncludes tree)) 0)
+    (then
+      (set includeFile (stringify (first (getIncludes tree))))
+      (set contents (read-file includeFile))
+      (if (equalString contents "")
+        (then
+          (qlog "Could not read include file" includeFile)
+          (return nil))
+        (else
+          (set includeTree (readSexpr contents includeFile))
+          (if (isNil includeTree)
+            (then
+              (qlog "Could not parse include file" includeFile)
+              (return nil))
+            (else
+              (set functionsCombined (concatLists (getFunctions includeTree) (getFunctions tree)))
+              (set typesCombined (concatLists (getTypes includeTree) (getTypes tree)))
+              (set newProg (buildProg (cdr (getIncludes tree)) typesCombined functionsCombined))
+              (return (loadIncludes newProg)))))))
+    (else
+      (return tree)))))
 
 (list buildProg (list includes list types list functions)(declare (list program nil))
 (body

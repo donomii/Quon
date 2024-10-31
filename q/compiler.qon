@@ -329,11 +329,18 @@
 
 
 
-    (list treeCompile (string filename) (declare (string programStr "") (list tree nil) )
-     (body
-      (set programStr (read-file filename))
-      (set tree (readSexpr programStr filename))
-      (return tree)))
+    (list treeCompile (string filename) (declare
+  (string programStr "") 
+  (list tree nil) )
+  (body
+    (set programStr (read-file filename))
+    (if (equalString programStr "")
+      (then
+        (printf "Error: Could not read file '%s'\n" filename)
+        (return nil))
+      (else
+        (set tree (readSexpr programStr filename))
+        (return tree)))))
 
 
 

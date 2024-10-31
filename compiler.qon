@@ -1,5 +1,5 @@
 ;  compiler.qon - the compiler for quon
-((includes q/base.qon q/compiler.qon q/macros.qon q/lists.qon q/newparser.qon q/perl.qon q/ansi3.qon q/tests.qon q/node2.qon q/lua.qon q/boolean.qon)
+((includes q/base.qon q/compiler.qon q/macros.qon q/lists.qon q/newparser.qon q/perl.qon q/ansi3.qon q/tests.qon q/node2.qon q/boolean.qon)
  (types)
  (functions
 
@@ -14,7 +14,6 @@
   (bool runAst false)
   (bool runNode false)
   (bool runNode2 false)
-   (bool runLua false)
    (bool runIma false)
    (bool runAnsi3 false)
    (bool runBash false)
@@ -35,7 +34,6 @@
     (set runTree (inList (boxString "--tree") cmdLine))
     (set runNode (inList (boxString "--node") cmdLine))
      (set runNode2 (inList (boxString "--node2") cmdLine))
-    (set runLua (inList (boxString "--lua") cmdLine))
     (set runIma (inList (boxString "--ima") cmdLine))
     (set runAnsi3 (inList (boxString "--ansi3") cmdLine))
     (set runBash (inList (boxString "--bash") cmdLine))
@@ -54,7 +52,6 @@
         (printf "  --tree      Compile to an s-expression tree\n")
         (printf "  --node      Compile to Node.js\n")
         (printf "  --node2      Compile to Node.js, new outputter\n")
-        (printf "  --lua       Compile to Lua\n")
         (printf "  --ima       Compile to Imaginary, the human-friendly language\n")
 
         (printf "  --ansi3     Compile to ANSI C (quon version 3)\n")
