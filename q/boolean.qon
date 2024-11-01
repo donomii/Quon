@@ -18,6 +18,17 @@
 			(else (return false)))
 	))
 
+	(bool orBool ( bool a bool b)  (declare)
+		(body
+			(if a 
+			(then (return true))
+			(else 
+				(if b
+					(then (return true))
+					(else (return false))))
+			)
+	))
+
 	(bool nand (bool a bool b) (declare)
 		(body
 		(return (notBool  (andBool a b)))))
