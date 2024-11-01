@@ -63,13 +63,15 @@
       (set contents (read-file includeFile))
       (if (equalString contents "")
         (then
-          (fprintf stderr "Could not read include file: %s\n" includeFile)
+          (qlog "Could not read include file: ")
+          (qlog includeFile)
           (return nil))
         (else
           (set includeTree (readSexpr contents includeFile))
           (if (isNil includeTree)
             (then
-              (fprintf stderr "Could not parse include file: %s\n" includeFile)
+              (qlog "Could not parse include file: " )
+              (qlog includeFile)
               (return nil))
             (else
               (set functionsCombined (concatLists (getFunctions includeTree) (getFunctions tree)))
