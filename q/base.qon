@@ -432,16 +432,19 @@
       (else (return (indexOfHelper haystack needle start start))))))
 
 
-(string stringReplace (string old string new string s) (declare)
-   (body
-    (return (stringConcatenate 
-             (sub-string s 0 (indexOf s old 0))
-             (stringConcatenate
-              new
-              (sub-string s
-                          (add (indexOf s old 0) (string-length old))
-                          (sub (string-length s)
-                               (add (indexOf s old 0) (string-length old)))))))))
+(string stringReplace (string old string new string s) (declare (int pos 0))
+  (body
+    (set pos (indexOf s old 0))  ;; Find the first occurrence of `old`
+      (if (equal pos -1)               ;; If `old` is not found, return the original string
+        (then (return s))
+        (else (return (stringConcatenate
+                 (sub-string s 0 pos)  ;; Part of the string before `old`
+                 (stringConcatenate
+                  new                 ;; The replacement string
+                  (stringReplace old new
+                                 (sub-string s
+                                             (add pos (string-length old))
+                                             (string-length s))))))))))  ;; Recursive call for remaining string
 
 (bool stringContains (string haystack string needle) (declare
   (int haystackLength 0)

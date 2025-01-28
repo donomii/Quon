@@ -56,20 +56,10 @@ bool isNil(list p) {
 
 bool notBool(bool a);
 bool andBool(bool a, bool b);
+bool orBool(bool a, bool b);
 bool nand(bool a, bool b);
 bool xor(bool a, bool b);
 bool lessThan(int a, int b);
-void luaFunctionArgs(int indent, list tree);
-void luaFunction(int indent, list functionDefinition);
-void luaDeclarations(int indent, list declarations);
-void luaExpressionStart(int indent, list program);
-void luaExpression(int indent, list program);
-void luaStatement(int indent, list statement);
-void luaBody(char* local_caller, int indent, list program);
-void luaFunctions(int indent, list program);
-void luaProgram(list program);
-void luaIncludes(list nodes);
-void luaCompile(char* filename);
 list node2FunctionArgs(list tree);
 list node2Expression(list tree, int indent);
 list node2RecurList(list expr, int indent);
@@ -152,6 +142,8 @@ void ansi3Type(list node);
 void ansi3Types(list nodes);
 void ansi3Compile(char* filename);
 char* dollar();
+char* singleQuote();
+char* escapedSingleQuote();
 char* escapeSingleQuotes(char* s);
 list getGlobalVariables();
 list collectVariables(list args, list decls);
@@ -184,6 +176,7 @@ list loadQuon(char* filename);
 list getIncludes(list program);
 list getTypes(list program);
 list getFunctions(list program);
+list insertInclude(list tree, char* extra);
 list loadIncludes(list tree);
 list buildProg(list includes, list types, list functions);
 box car(list l);
@@ -454,15 +447,65 @@ if (globalTrace)
 }
 
 
-bool nand(bool a, bool b) {
+bool orBool(bool a, bool b) {
   
 if (globalTrace)
-    printf("nand at q/boolean.qon:20 (%s)\n", caller);
+    printf("orBool at q/boolean.qon:20 (%s)\n", caller);
 
-  StackTraceMove("in", "q/boolean.qon", "nand", "20" );
+  StackTraceMove("in", "q/boolean.qon", "orBool", "20" );
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/boolean.qon:22");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( a) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/boolean.qon:23");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return true;;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/boolean.qon:25");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    if ( b) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/boolean.qon:26");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      StackTraceMove("out", "", "", "");
+
+      return true;;
+
+    } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/boolean.qon:27");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      StackTraceMove("out", "", "", "");
+
+      return false;;
+
+    };
+
+  };
+
+}
+
+
+bool nand(bool a, bool b) {
+  
+if (globalTrace)
+    printf("nand at q/boolean.qon:31 (%s)\n", caller);
+
+  StackTraceMove("in", "q/boolean.qon", "nand", "31" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/boolean.qon:33");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   StackTraceMove("out", "", "", "");
@@ -475,12 +518,12 @@ if (globalTrace)
 bool xor(bool a, bool b) {
   
 if (globalTrace)
-    printf("xor at q/boolean.qon:24 (%s)\n", caller);
+    printf("xor at q/boolean.qon:35 (%s)\n", caller);
 
-  StackTraceMove("in", "q/boolean.qon", "xor", "24" );
+  StackTraceMove("in", "q/boolean.qon", "xor", "35" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/boolean.qon:26");
+    snprintf(caller, 1024, "from q/boolean.qon:37");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   StackTraceMove("out", "", "", "");
@@ -493,805 +536,17 @@ if (globalTrace)
 bool lessThan(int a, int b) {
   
 if (globalTrace)
-    printf("lessThan at q/boolean.qon:28 (%s)\n", caller);
+    printf("lessThan at q/boolean.qon:39 (%s)\n", caller);
 
-  StackTraceMove("in", "q/boolean.qon", "lessThan", "28" );
+  StackTraceMove("in", "q/boolean.qon", "lessThan", "39" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/boolean.qon:30");
+    snprintf(caller, 1024, "from q/boolean.qon:41");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   StackTraceMove("out", "", "", "");
 
   return andBool(notBool(equal(a, b)), notBool(greaterthan(a, b)));;
-
-}
-
-
-void luaFunctionArgs(int indent, list tree) {
-  
-if (globalTrace)
-    printf("luaFunctionArgs at q/lua.qon:4 (%s)\n", caller);
-
-  StackTraceMove("in", "q/lua.qon", "luaFunctionArgs", "4" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:6");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  if ( isEmpty(tree)) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:7");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    StackTraceMove("out", "", "", "");
-
-    return;;
-
-  } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:9");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    display(second(tree));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:10");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    if ( isNil(cddr(tree))) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:10");
-      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-      printf("");
-
-    } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:10");
-      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-      printf(",");
-
-    };
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:11");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    luaFunctionArgs(indent, cddr(tree));
-
-  };
-
-}
-
-
-void luaFunction(int indent, list functionDefinition) {
-  char* fname = "";
-
-if (globalTrace)
-    printf("luaFunction at q/lua.qon:14 (%s)\n", caller);
-
-  StackTraceMove("in", "q/lua.qon", "luaFunction", "14" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:16");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  fname = stringify(second(functionDefinition));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:17");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("-- Chose function name %s", fname);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:18");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("\nfunction %s(", fname);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:19");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  luaFunctionArgs(indent, third(functionDefinition));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:20");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(")\n");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:21");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("print(\"caller: \", caller, \"-> %s\")\n", fname);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:22");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  luaDeclarations(add1(indent), cdr(fourth(functionDefinition)));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:23");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  luaBody(fname, indent, cdr(fifth(functionDefinition)));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:24");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("end\n");
-
-}
-
-
-void luaDeclarations(int indent, list declarations) {
-  list decl = NULL;
-
-if (globalTrace)
-    printf("luaDeclarations at q/lua.qon:26 (%s)\n", caller);
-
-  StackTraceMove("in", "q/lua.qon", "luaDeclarations", "26" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:28");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  if ( isNil(declarations)) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:30");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    StackTraceMove("out", "", "", "");
-
-    return;;
-
-  } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:32");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    decl = first(declarations);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:33");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    printf("local %s =", stringify(second(decl)));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:34");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    luaExpressionStart(indent, third(decl));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:35");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    printf("\n");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:36");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    luaDeclarations(indent, cdr(declarations));
-
-  };
-
-}
-
-
-void luaExpressionStart(int indent, list program) {
-  
-if (globalTrace)
-    printf("luaExpressionStart at q/lua.qon:42 (%s)\n", caller);
-
-  StackTraceMove("in", "q/lua.qon", "luaExpressionStart", "42" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:44");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  if ( isNil(program)) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:46");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    StackTraceMove("out", "", "", "");
-
-    return;;
-
-  } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:48");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    if ( isList(program)) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:50");
-      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-      if ( equalString(stringify(car(program)), "get-struct")) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:52");
-        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-        printf("%s.%s", stringify(second(program)), stringify(third(program)));
-
-      } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:55");
-        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-        if ( equalString(stringify(car(program)), ">")) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:57");
-          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-          printf("greaterthan(");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:58");
-          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-          luaExpression(indent, cdr(program));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:59");
-          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-          printf(")");
-
-        } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:62");
-          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-          if ( equalString(stringify(car(program)), "=")) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:64");
-            if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-            printf("equal(");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:65");
-            if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-            luaExpression(indent, cdr(program));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:66");
-            if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-            printf(")");
-
-          } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:69");
-            if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-            printf("%s(", stringify(car(program)));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:70");
-            if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-            luaExpression(indent, cdr(program));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:71");
-            if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-            printf(")");
-
-          };
-
-        };
-
-      };
-
-    } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:77");
-      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-      luaExpression(indent, program);
-
-    };
-
-  };
-
-}
-
-
-void luaExpression(int indent, list program) {
-  
-if (globalTrace)
-    printf("luaExpression at q/lua.qon:84 (%s)\n", caller);
-
-  StackTraceMove("in", "q/lua.qon", "luaExpression", "84" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:86");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  if ( isNil(program)) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:88");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    StackTraceMove("out", "", "", "");
-
-    return;;
-
-  } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:90");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    if ( isList(program)) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:92");
-      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-      if ( isList(car(program))) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:94");
-        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-        luaExpressionStart(indent, car(program));
-
-      } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:98");
-        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-        display(car(program));
-
-      };
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:101");
-      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-      if ( greaterthan(listLength(program), 1)) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:103");
-        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-        printf(", ");
-
-      } else {
-      };
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:105");
-      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-      luaExpression(indent, cdr(program));
-
-    } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:108");
-      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-      display(program);
-
-    };
-
-  };
-
-}
-
-
-void luaStatement(int indent, list statement) {
-  
-if (globalTrace)
-    printf("luaStatement at q/lua.qon:112 (%s)\n", caller);
-
-  StackTraceMove("in", "q/lua.qon", "luaStatement", "112" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:114");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  if ( equalString(stringify(car(statement)), "if")) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:117");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    printIndent(indent);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:118");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    printf("if ");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:119");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    add1(indent);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:120");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    luaExpressionStart(add1(indent), second(statement));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:122");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    printf(" then\n");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:123");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    luaBody(caller, add1(indent), cdr(third(statement)));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:124");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    printIndent(indent);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:125");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    printf("else\n");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:126");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    luaBody(caller, add1(indent), cdr(fourth(statement)));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:127");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    printIndent(indent);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:128");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    printf("end\n");
-
-  } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:131");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    if ( equalString(stringify(car(statement)), "set")) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:133");
-      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-      printIndent(indent);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:134");
-      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-      printf("%s = ", stringify(second(statement)));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:135");
-      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-      luaExpressionStart(add1(indent), third(statement));
-
-    } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:138");
-      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-      if ( equalString(stringify(car(statement)), "set-struct")) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:140");
-        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-        printf("%s.%s = ", stringify(second(statement)), stringify(third(statement)));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:141");
-        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-        luaExpressionStart(indent, fourth(statement));
-
-      } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:144");
-        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-        if ( equalString(stringify(car(statement)), "return")) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:146");
-          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-          printIndent(indent);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:147");
-          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-          printf("return ");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:148");
-          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-          if ( greaterthan(listLength(statement), 1)) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:150");
-            if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-            luaExpressionStart(indent, second(statement));
-
-          } else {
-          };
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:152");
-          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-          printf("\n");
-
-        } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:155");
-          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-          printIndent(indent);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:156");
-          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-          luaExpressionStart(indent, statement);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:157");
-          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-          printf(";\n");
-
-        };
-
-      };
-
-    };
-
-  };
-
-}
-
-
-void luaBody(char* local_caller, int indent, list program) {
-  list statement = NULL;
-
-if (globalTrace)
-    printf("luaBody at q/lua.qon:164 (%s)\n", caller);
-
-  StackTraceMove("in", "q/lua.qon", "luaBody", "164" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:166");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  if ( isNil(program)) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:167");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    StackTraceMove("out", "", "", "");
-
-    return;;
-
-  } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:169");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    statement = car(program);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:170");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    printf("caller = \"%s:%s:%d\"\n", local_caller, unBoxString(getTagFail(statement, boxString("filename"), boxString("Unknown file"))), unBoxInt(getTagFail(statement, boxString("line"), boxInt(-1))));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:171");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    luaStatement(add1(indent), statement);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:172");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    printf("\n");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:173");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    luaBody(local_caller, indent, cdr(program));
-
-  };
-
-}
-
-
-void luaFunctions(int indent, list program) {
-  
-if (globalTrace)
-    printf("luaFunctions at q/lua.qon:176 (%s)\n", caller);
-
-  StackTraceMove("in", "q/lua.qon", "luaFunctions", "176" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:178");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  if ( isNil(program)) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:180");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    StackTraceMove("out", "", "", "");
-
-    return;;
-
-  } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:182");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    luaFunction(indent, car(program));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:183");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    luaFunctions(indent, cdr(program));
-
-  };
-
-}
-
-
-void luaProgram(list program) {
-  
-if (globalTrace)
-    printf("luaProgram at q/lua.qon:188 (%s)\n", caller);
-
-  StackTraceMove("in", "q/lua.qon", "luaProgram", "188" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:190");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  luaIncludes(NULL);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:191");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  luaFunctions(0, cdr(third(program)));
-
-}
-
-
-void luaIncludes(list nodes) {
-  
-if (globalTrace)
-    printf("luaIncludes at q/lua.qon:195 (%s)\n", caller);
-
-  StackTraceMove("in", "q/lua.qon", "luaIncludes", "195" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:197");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("%s", "\nfunction luaDump(o)\n   if type(o) == 'table' then\n      local s = '{ '\n      for k,v in pairs(o) do\n         if type(k) ~= 'number' then k = '\"'..k..'\"' end\n         s = s .. '['..k..'] = ' .. luaDump(v) .. ','\n      end\n      return s .. '} '\n   else\n      return tostring(o)\n   end\nend\nprintf = function(s,...)\nreturn io.write(s:format(...))\nend -- function\n    \nfunction stringConcatenate(a,b)\nreturn a..b\nend\n    \nfunction getStringArray(index, arr)\nreturn arr[index]\nend\n       \nfunction luaWriteFile(name, data)  \nlocal file = io.open(name, \"w\")\nfile:write(data)\nfile:close(file)\nend\n    function luaSubstring(s, start, length)\nreturn string.sub(s, start, start+length)\nend\n    \n    function luaReadFile(file)\n      local f = assert(io.open(file, \"rb\"))\n      local content = f:read(\"*all\")      f:close()\n      return content\n    end\n     \nfunction equalString(a,b)\n        return a==b;\n     end\n    \n     function new()\n        return {};\n     end\n    \n     function isNil(val)\n        return val == nil;\n     end\n    \n     function getEnv(key)\n        return os.getenv(key);\n     end\n    \n    function panic(s)\n      print(s);\n    os.exit()\n    end\n    \n    function sub(a, b) \n      return a - b; \n    end\n\n    function mult(a, b) \n      return a * b;\n    end\n    \n    function greaterthan(a, b)\n      return a > b;\n    end\n    \n    function subf(a, b) \n      return a - b;\n    end\n    \n    function multf(a, b)\n      return a * b;\n    end\n    \n    function greaterthanf(a, b)\n      return a > b;\n    end\n    \n    function equal(a, b)\n      return a == b;\n    end\n    \n    function andBool(a, b)\n      return a == b;\n    end\n    \n    function string_length(s)\n      return strlen(s);\n    end\n    \n    function setSubString(target, start, source)\n      panic(\"stub\");\n      end\n    \n    function sub_string(s, start, length)\n      panic(\"stub\");\n    end\n    \n    function intToString(a)\n      panic(\"stub\")\n return a\n    end\n\n    function gc_malloc(size)\n      return \"\"\n    end\n    \n    function makeArray(length)\n      return {}\n    end\n    \n    function at(arr, index)\n      return arr[index+1];\n    end\n    \n    function setAt(array, index, value)\n      array[index+1] = value;\n    end\n    \n    function read_file(file)\n      local f = io.open(file, \"r\")\n      local content = \"\"\n      local length = 0\n\n      while f:read(0) ~= \"\" do\n          local current = f:read(\"*all\")\n\n          print(#current, length)\n          length = length + #current\n\n          content = content .. current\n      end\n\n      return content\n    end\n    \n    function write_file(filename, data)\n      local file = io.open(filename,'w')\n      file:write(tostring(data))\n      file:close()\n    end\n    \n    caller=\"main\";\n    \n    globalArgs={};\n    globalArgsCount=0;\n    globalTrace = false;\n    globalStepTrace = false;\n\n    function main()\n      globalArgs = arg;\n      globalArgsCount = #arg + 1;\n      return start();\n    end\n    \n");
-
-}
-
-
-void luaCompile(char* filename) {
-  list tree = NULL;
-
-if (globalTrace)
-    printf("luaCompile at q/lua.qon:203 (%s)\n", caller);
-
-  StackTraceMove("in", "q/lua.qon", "luaCompile", "203" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:206");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  tree = loadQuon(filename);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:209");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  tree = loadIncludes(tree);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:210");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  tree = macrowalk(tree);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:211");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  tree = macrosingle(tree, "write-file", "luaWriteFile");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:212");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  tree = macrosingle(tree, "read-file", "luaReadFile");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:213");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  tree = macrosingle(tree, "string-length", "string.len");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:215");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  tree = macrosingle(tree, "sub-string", "luaSubstring");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:216");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  tree = macrosingle(tree, "stringLength", "string.len");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:218");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  luaProgram(tree);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:219");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("\n");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:220");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("function main()\nglobalArgs = arg\nglobalArgsCount = #arg\nstart()\nend\n");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/lua.qon:221");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("main()");
 
 }
 
@@ -3830,7 +3085,7 @@ if (globalTrace)
     snprintf(caller, 1024, "from q/tests.qon:375");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-    printf("24. fail StringListJoin.  expected '%s', got '%s'\n", expected, res);
+    printf("24. fail StringListJoin.  expected %s, got %s\n", expected, res);
 
   };
 
@@ -3882,7 +3137,7 @@ if (globalTrace)
     snprintf(caller, 1024, "from q/tests.qon:393");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-    printf("25. fail ListToString.  expected '%s', got '%s'\n", expected, res);
+    printf("25. fail ListToString.  expected %s, got %s\n", expected, res);
 
   };
 
@@ -3928,7 +3183,7 @@ if (globalTrace)
     snprintf(caller, 1024, "from q/tests.qon:428");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-    printf("27. fail Interpolated List.  expected '%s', got '%s'\n", expected, res);
+    printf("27. fail Interpolated List.  expected %s, got %s\n", expected, res);
 
   };
 
@@ -5441,12 +4696,12 @@ if (globalTrace)
 }
 
 
-char* escapeSingleQuotes(char* s) {
+char* singleQuote() {
   
 if (globalTrace)
-    printf("escapeSingleQuotes at q/perl.qon:8 (%s)\n", caller);
+    printf("singleQuote at q/perl.qon:8 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "escapeSingleQuotes", "8" );
+  StackTraceMove("in", "q/perl.qon", "singleQuote", "8" );
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/perl.qon:10");
@@ -5454,17 +4709,17 @@ if (globalTrace)
 
   StackTraceMove("out", "", "", "");
 
-  return stringReplace("'", "\\'", s);;
+  return "'";;
 
 }
 
 
-list getGlobalVariables() {
+char* escapedSingleQuote() {
   
 if (globalTrace)
-    printf("getGlobalVariables at q/perl.qon:12 (%s)\n", caller);
+    printf("escapedSingleQuote at q/perl.qon:12 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "getGlobalVariables", "12" );
+  StackTraceMove("in", "q/perl.qon", "escapedSingleQuote", "12" );
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/perl.qon:14");
@@ -5472,7 +4727,43 @@ if (globalTrace)
 
   StackTraceMove("out", "", "", "");
 
-  return cons(id(boxSymbol("stderr")), cons(id(boxSymbol("true")), cons(id(boxSymbol("false")), cons(id(boxSymbol("releaseMode")), cons(id(boxSymbol("caller")), cons(id(boxSymbol("globalTrace")), cons(id(boxSymbol("globalArgsCount")), cons(id(boxSymbol("globalArgs")), cons(id(boxSymbol("quonGlobalArgs")), NULL)))))))));;
+  return "\\'";;
+
+}
+
+
+char* escapeSingleQuotes(char* s) {
+  
+if (globalTrace)
+    printf("escapeSingleQuotes at q/perl.qon:16 (%s)\n", caller);
+
+  StackTraceMove("in", "q/perl.qon", "escapeSingleQuotes", "16" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:18");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return stringReplace(singleQuote(), escapedSingleQuote(), s);;
+
+}
+
+
+list getGlobalVariables() {
+  
+if (globalTrace)
+    printf("getGlobalVariables at q/perl.qon:20 (%s)\n", caller);
+
+  StackTraceMove("in", "q/perl.qon", "getGlobalVariables", "20" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:22");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return cons(id(boxSymbol("stderr")), cons(id(boxSymbol("true")), cons(id(boxSymbol("false")), cons(id(boxSymbol("releaseMode")), cons(id(boxSymbol("caller")), cons(id(boxSymbol("globalTrace")), cons(id(boxSymbol("globalStepTrace")), cons(id(boxSymbol("globalStackTrace")), cons(id(boxSymbol("globalArgsCount")), cons(id(boxSymbol("globalArgs")), cons(id(boxSymbol("quonGlobalArgs")), NULL)))))))))));;
 
 }
 
@@ -5482,30 +4773,30 @@ list collectVariables(list args, list decls) {
 box decl = NULL;
 
 if (globalTrace)
-    printf("collectVariables at q/perl.qon:16 (%s)\n", caller);
+    printf("collectVariables at q/perl.qon:24 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "collectVariables", "16" );
+  StackTraceMove("in", "q/perl.qon", "collectVariables", "24" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:18");
+    snprintf(caller, 1024, "from q/perl.qon:26");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   variables = collectVariablesFromArgs(args);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:19");
+    snprintf(caller, 1024, "from q/perl.qon:27");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   variables = appendVariables(variables, collectVariablesFromDecls(decls));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:20");
+    snprintf(caller, 1024, "from q/perl.qon:28");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   variables = appendVariables(variables, getGlobalVariables());
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:21");
+    snprintf(caller, 1024, "from q/perl.qon:29");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   StackTraceMove("out", "", "", "");
@@ -5518,60 +4809,72 @@ if (globalTrace)
 void perlGlobalVariables() {
   
 if (globalTrace)
-    printf("perlGlobalVariables at q/perl.qon:23 (%s)\n", caller);
+    printf("perlGlobalVariables at q/perl.qon:31 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlGlobalVariables", "23" );
+  StackTraceMove("in", "q/perl.qon", "perlGlobalVariables", "31" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:25");
+    snprintf(caller, 1024, "from q/perl.qon:33");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("our $globalArgsCount;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:26");
+    snprintf(caller, 1024, "from q/perl.qon:34");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("our $globalArgs;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:27");
+    snprintf(caller, 1024, "from q/perl.qon:35");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("our $releaseMode;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:28");
+    snprintf(caller, 1024, "from q/perl.qon:36");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("our $globalTrace;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:29");
+    snprintf(caller, 1024, "from q/perl.qon:37");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  printf("our $globalStepTrace;\n");
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:38");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  printf("our $globalStackTrace;\n");
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:39");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("our $caller;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:30");
+    snprintf(caller, 1024, "from q/perl.qon:40");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("our $false = 0;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:31");
+    snprintf(caller, 1024, "from q/perl.qon:41");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("our $true = 1;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:32");
+    snprintf(caller, 1024, "from q/perl.qon:42");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("my $stderr = \\*STDERR;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:33");
+    snprintf(caller, 1024, "from q/perl.qon:43");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("our $quonGlobalArgs;\n");
@@ -5582,72 +4885,72 @@ if (globalTrace)
 void perlMainEntry() {
   
 if (globalTrace)
-    printf("perlMainEntry at q/perl.qon:35 (%s)\n", caller);
+    printf("perlMainEntry at q/perl.qon:45 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlMainEntry", "35" );
+  StackTraceMove("in", "q/perl.qon", "perlMainEntry", "45" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:37");
+    snprintf(caller, 1024, "from q/perl.qon:47");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("\n# Main entry point\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:38");
+    snprintf(caller, 1024, "from q/perl.qon:48");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("$globalArgsCount = scalar(@ARGV);\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:39");
+    snprintf(caller, 1024, "from q/perl.qon:49");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("$globalArgs = \\@ARGV;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:40");
+    snprintf(caller, 1024, "from q/perl.qon:50");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("$quonGlobalArgs = [];\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:41");
+    snprintf(caller, 1024, "from q/perl.qon:51");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("for my $arg (@$globalArgs) {\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:42");
+    snprintf(caller, 1024, "from q/perl.qon:52");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("    push @$quonGlobalArgs, {car => $arg, cdr => undef};\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:43");
+    snprintf(caller, 1024, "from q/perl.qon:53");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("}\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:44");
+    snprintf(caller, 1024, "from q/perl.qon:54");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("for (my $i = $#$quonGlobalArgs - 1; $i >= 0; $i--) {\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:45");
+    snprintf(caller, 1024, "from q/perl.qon:55");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("    $quonGlobalArgs->[$i]->{cdr} = $quonGlobalArgs->[$i + 1];\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:46");
+    snprintf(caller, 1024, "from q/perl.qon:56");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("}\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:47");
+    snprintf(caller, 1024, "from q/perl.qon:57");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("start();\n");
@@ -5659,17 +4962,17 @@ list collectVariablesFromArgs(list args) {
   list variables = NULL;
 
 if (globalTrace)
-    printf("collectVariablesFromArgs at q/perl.qon:49 (%s)\n", caller);
+    printf("collectVariablesFromArgs at q/perl.qon:59 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "collectVariablesFromArgs", "49" );
+  StackTraceMove("in", "q/perl.qon", "collectVariablesFromArgs", "59" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:51");
+    snprintf(caller, 1024, "from q/perl.qon:61");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isNil(args)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:52");
+    snprintf(caller, 1024, "from q/perl.qon:62");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -5678,18 +4981,18 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:54");
+    snprintf(caller, 1024, "from q/perl.qon:64");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( equalString(stringify(first(args)), "list")) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:56");
+    snprintf(caller, 1024, "from q/perl.qon:66");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       variables = cons(second(args), variables);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:57");
+    snprintf(caller, 1024, "from q/perl.qon:67");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       StackTraceMove("out", "", "", "");
@@ -5698,13 +5001,13 @@ if (globalTrace)
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:59");
+    snprintf(caller, 1024, "from q/perl.qon:69");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       variables = cons(second(args), variables);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:60");
+    snprintf(caller, 1024, "from q/perl.qon:70");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       StackTraceMove("out", "", "", "");
@@ -5723,17 +5026,17 @@ list collectVariablesFromDecls(list decls) {
 box decl = NULL;
 
 if (globalTrace)
-    printf("collectVariablesFromDecls at q/perl.qon:62 (%s)\n", caller);
+    printf("collectVariablesFromDecls at q/perl.qon:72 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "collectVariablesFromDecls", "62" );
+  StackTraceMove("in", "q/perl.qon", "collectVariablesFromDecls", "72" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:64");
+    snprintf(caller, 1024, "from q/perl.qon:74");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isNil(decls)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:65");
+    snprintf(caller, 1024, "from q/perl.qon:75");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -5742,19 +5045,19 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:67");
+    snprintf(caller, 1024, "from q/perl.qon:77");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     decl = car(decls);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:68");
+    snprintf(caller, 1024, "from q/perl.qon:78");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     variables = cons(second(decl), variables);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:69");
+    snprintf(caller, 1024, "from q/perl.qon:79");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -5769,17 +5072,17 @@ if (globalTrace)
 list appendVariables(list vars1, list vars2) {
   
 if (globalTrace)
-    printf("appendVariables at q/perl.qon:71 (%s)\n", caller);
+    printf("appendVariables at q/perl.qon:81 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "appendVariables", "71" );
+  StackTraceMove("in", "q/perl.qon", "appendVariables", "81" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:73");
+    snprintf(caller, 1024, "from q/perl.qon:83");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isNil(vars2)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:75");
+    snprintf(caller, 1024, "from q/perl.qon:85");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -5788,13 +5091,13 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:77");
+    snprintf(caller, 1024, "from q/perl.qon:87");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     vars1 = cons(car(vars2), vars1);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:78");
+    snprintf(caller, 1024, "from q/perl.qon:88");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -5809,17 +5112,17 @@ if (globalTrace)
 void perlFunctionArgs(list tree) {
   
 if (globalTrace)
-    printf("perlFunctionArgs at q/perl.qon:80 (%s)\n", caller);
+    printf("perlFunctionArgs at q/perl.qon:90 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlFunctionArgs", "80" );
+  StackTraceMove("in", "q/perl.qon", "perlFunctionArgs", "90" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:82");
+    snprintf(caller, 1024, "from q/perl.qon:92");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isEmpty(tree)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:83");
+    snprintf(caller, 1024, "from q/perl.qon:93");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -5828,31 +5131,31 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:85");
+    snprintf(caller, 1024, "from q/perl.qon:95");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf(dollar());
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:86");
+    snprintf(caller, 1024, "from q/perl.qon:96");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     display(second(tree));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:87");
+    snprintf(caller, 1024, "from q/perl.qon:97");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( isNil(cddr(tree))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:87");
+    snprintf(caller, 1024, "from q/perl.qon:97");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       printf("");
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:87");
+    snprintf(caller, 1024, "from q/perl.qon:97");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       printf(", ");
@@ -5860,7 +5163,7 @@ if (globalTrace)
     };
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:88");
+    snprintf(caller, 1024, "from q/perl.qon:98");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     perlFunctionArgs(cddr(tree));
@@ -5874,34 +5177,34 @@ void perlExpression(list tree, int indent, list variables) {
   list thing = NULL;
 
 if (globalTrace)
-    printf("perlExpression at q/perl.qon:90 (%s)\n", caller);
+    printf("perlExpression at q/perl.qon:100 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlExpression", "90" );
+  StackTraceMove("in", "q/perl.qon", "perlExpression", "100" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:92");
+    snprintf(caller, 1024, "from q/perl.qon:102");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isList(tree)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:94");
+    snprintf(caller, 1024, "from q/perl.qon:104");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( equal(1, listLength(tree))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:96");
+    snprintf(caller, 1024, "from q/perl.qon:106");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       display(perlFuncMap(car(tree), variables));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:97");
+    snprintf(caller, 1024, "from q/perl.qon:107");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       if ( equalBox(boxString("return"), car(tree))) {
       } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:99");
+    snprintf(caller, 1024, "from q/perl.qon:109");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         printf("()");
@@ -5910,97 +5213,97 @@ if (globalTrace)
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:101");
+    snprintf(caller, 1024, "from q/perl.qon:111");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       thing = first(tree);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:102");
+    snprintf(caller, 1024, "from q/perl.qon:112");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       if ( equalBox(boxSymbol("get-struct"), thing)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:104");
+    snprintf(caller, 1024, "from q/perl.qon:114");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         printf("$%s->{%s}", stringify(second(tree)), stringify(third(tree)));
 
       } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:108");
+    snprintf(caller, 1024, "from q/perl.qon:118");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         if ( equalBox(boxSymbol("new"), thing)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:110");
+    snprintf(caller, 1024, "from q/perl.qon:120");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
           printf("{}");
 
         } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:113");
+    snprintf(caller, 1024, "from q/perl.qon:123");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
           if ( equalBox(boxSymbol("passthrough"), thing)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:115");
+    snprintf(caller, 1024, "from q/perl.qon:125");
             if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
             printf("%s", stringify(second(tree)));
 
           } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:117");
+    snprintf(caller, 1024, "from q/perl.qon:127");
             if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
             if ( equalBox(boxSymbol("binop"), thing)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:119");
+    snprintf(caller, 1024, "from q/perl.qon:129");
               if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
               printf("(");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:120");
+    snprintf(caller, 1024, "from q/perl.qon:130");
               if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
               perlExpression(third(tree), indent, variables);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:121");
+    snprintf(caller, 1024, "from q/perl.qon:131");
               if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
               printf(" %s ", stringify(second(tree)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:122");
+    snprintf(caller, 1024, "from q/perl.qon:132");
               if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
               perlExpression(fourth(tree), indent, variables);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:123");
+    snprintf(caller, 1024, "from q/perl.qon:133");
               if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
               printf(")");
 
             } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:125");
+    snprintf(caller, 1024, "from q/perl.qon:135");
               if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
               printf("%s(", stringify(perlFuncMap(car(tree), variables)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:126");
+    snprintf(caller, 1024, "from q/perl.qon:136");
               if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
               perlRecurList(cdr(tree), indent, variables);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:127");
+    snprintf(caller, 1024, "from q/perl.qon:137");
               if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
               printf(")");
@@ -6017,19 +5320,19 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:130");
+    snprintf(caller, 1024, "from q/perl.qon:140");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( equalString("string", boxType(tree))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:132");
+    snprintf(caller, 1024, "from q/perl.qon:142");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       printf("'%s'", escapeSingleQuotes(stringify(tree)));
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:133");
+    snprintf(caller, 1024, "from q/perl.qon:143");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       display(perlFuncMap(tree, variables));
@@ -6044,17 +5347,17 @@ if (globalTrace)
 void perlRecurList(list expr, int indent, list variables) {
   
 if (globalTrace)
-    printf("perlRecurList at q/perl.qon:135 (%s)\n", caller);
+    printf("perlRecurList at q/perl.qon:145 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlRecurList", "135" );
+  StackTraceMove("in", "q/perl.qon", "perlRecurList", "145" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:137");
+    snprintf(caller, 1024, "from q/perl.qon:147");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isEmpty(expr)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:138");
+    snprintf(caller, 1024, "from q/perl.qon:148");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -6063,31 +5366,31 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:140");
+    snprintf(caller, 1024, "from q/perl.qon:150");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     perlExpression(car(expr), indent, variables);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:141");
+    snprintf(caller, 1024, "from q/perl.qon:151");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( isNil(cdr(expr))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:142");
+    snprintf(caller, 1024, "from q/perl.qon:152");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       printf("");
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:143");
+    snprintf(caller, 1024, "from q/perl.qon:153");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       printf(", ");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:143");
+    snprintf(caller, 1024, "from q/perl.qon:153");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       perlRecurList(cdr(expr), indent, variables);
@@ -6102,83 +5405,83 @@ if (globalTrace)
 void perlStatement(list node, int indent, list variables) {
   
 if (globalTrace)
-    printf("perlStatement at q/perl.qon:145 (%s)\n", caller);
+    printf("perlStatement at q/perl.qon:155 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlStatement", "145" );
+  StackTraceMove("in", "q/perl.qon", "perlStatement", "155" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:147");
+    snprintf(caller, 1024, "from q/perl.qon:157");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( equalBox(boxString("set"), first(node))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:148");
+    snprintf(caller, 1024, "from q/perl.qon:158");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     perlSet(node, indent, variables);
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:150");
+    snprintf(caller, 1024, "from q/perl.qon:160");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( equalBox(boxString("set-struct"), first(node))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:151");
+    snprintf(caller, 1024, "from q/perl.qon:161");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       perlSetStruct(node, indent, variables);
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:153");
+    snprintf(caller, 1024, "from q/perl.qon:163");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       if ( equalBox(boxString("if"), first(node))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:154");
+    snprintf(caller, 1024, "from q/perl.qon:164");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         perlIf(node, indent, variables);
 
       } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:156");
+    snprintf(caller, 1024, "from q/perl.qon:166");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         if ( equalBox(boxString("return"), first(node))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:158");
+    snprintf(caller, 1024, "from q/perl.qon:168");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
           newLine(indent);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:159");
+    snprintf(caller, 1024, "from q/perl.qon:169");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
           printf("return");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:160");
+    snprintf(caller, 1024, "from q/perl.qon:170");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
           if ( greaterthan(listLength(node), 1)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:162");
+    snprintf(caller, 1024, "from q/perl.qon:172");
             if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
             printf(" ");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:163");
+    snprintf(caller, 1024, "from q/perl.qon:173");
             if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
             perlExpression(cadr(node), indent, variables);
 
           } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:164");
+    snprintf(caller, 1024, "from q/perl.qon:174");
             if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
             printf("");
@@ -6187,13 +5490,13 @@ if (globalTrace)
 
         } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:166");
+    snprintf(caller, 1024, "from q/perl.qon:176");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
           newLine(indent);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:167");
+    snprintf(caller, 1024, "from q/perl.qon:177");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
           perlExpression(node, indent, variables);
@@ -6207,7 +5510,7 @@ if (globalTrace)
   };
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:168");
+    snprintf(caller, 1024, "from q/perl.qon:178");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf(";\n");
@@ -6219,17 +5522,17 @@ void perlBody(list tree, int indent, list variables) {
   list code = NULL;
 
 if (globalTrace)
-    printf("perlBody at q/perl.qon:170 (%s)\n", caller);
+    printf("perlBody at q/perl.qon:180 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlBody", "170" );
+  StackTraceMove("in", "q/perl.qon", "perlBody", "180" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:172");
+    snprintf(caller, 1024, "from q/perl.qon:182");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isEmpty(tree)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:173");
+    snprintf(caller, 1024, "from q/perl.qon:183");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -6238,19 +5541,19 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:175");
+    snprintf(caller, 1024, "from q/perl.qon:185");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     code = car(tree);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:176");
+    snprintf(caller, 1024, "from q/perl.qon:186");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     perlStatement(code, indent, variables);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:177");
+    snprintf(caller, 1024, "from q/perl.qon:187");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     perlBody(cdr(tree), indent, variables);
@@ -6263,24 +5566,24 @@ if (globalTrace)
 void perlSet(list node, int indent, list variables) {
   
 if (globalTrace)
-    printf("perlSet at q/perl.qon:179 (%s)\n", caller);
+    printf("perlSet at q/perl.qon:189 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlSet", "179" );
+  StackTraceMove("in", "q/perl.qon", "perlSet", "189" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:181");
+    snprintf(caller, 1024, "from q/perl.qon:191");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   newLine(indent);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:182");
+    snprintf(caller, 1024, "from q/perl.qon:192");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("%s = ", stringify(perlFuncMap(first(cdr(node)), variables)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:183");
+    snprintf(caller, 1024, "from q/perl.qon:193");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   perlExpression(third(node), indent, variables);
@@ -6291,24 +5594,24 @@ if (globalTrace)
 void perlSetStruct(list node, int indent, list variables) {
   
 if (globalTrace)
-    printf("perlSetStruct at q/perl.qon:185 (%s)\n", caller);
+    printf("perlSetStruct at q/perl.qon:195 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlSetStruct", "185" );
+  StackTraceMove("in", "q/perl.qon", "perlSetStruct", "195" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:187");
+    snprintf(caller, 1024, "from q/perl.qon:197");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   newLine(indent);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:188");
+    snprintf(caller, 1024, "from q/perl.qon:198");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("%s->{%s} = ", stringify(perlFuncMap(second(node), variables)), stringify(third(node)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:191");
+    snprintf(caller, 1024, "from q/perl.qon:201");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   perlExpression(fourth(node), indent, variables);
@@ -6319,79 +5622,39 @@ if (globalTrace)
 void perlIf(list node, int indent, list variables) {
   
 if (globalTrace)
-    printf("perlIf at q/perl.qon:193 (%s)\n", caller);
+    printf("perlIf at q/perl.qon:203 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlIf", "193" );
+  StackTraceMove("in", "q/perl.qon", "perlIf", "203" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:195");
+    snprintf(caller, 1024, "from q/perl.qon:205");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   newLine(indent);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:196");
+    snprintf(caller, 1024, "from q/perl.qon:206");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("if ( ");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:197");
+    snprintf(caller, 1024, "from q/perl.qon:207");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   perlExpression(second(node), 0, variables);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:198");
+    snprintf(caller, 1024, "from q/perl.qon:208");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf(" ) {");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:199");
+    snprintf(caller, 1024, "from q/perl.qon:209");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   perlBody(cdr(third(node)), add1(indent), variables);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:200");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  newLine(indent);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:201");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("} else {");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:202");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  perlBody(cdr(fourth(node)), add1(indent), variables);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:203");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  newLine(indent);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:204");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("}");
-
-}
-
-
-void perlGetStruct(list node, int indent) {
-  
-if (globalTrace)
-    printf("perlGetStruct at q/perl.qon:208 (%s)\n", caller);
-
-  StackTraceMove("in", "q/perl.qon", "perlGetStruct", "208" );
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/perl.qon:210");
@@ -6403,6 +5666,46 @@ if (globalTrace)
     snprintf(caller, 1024, "from q/perl.qon:211");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
+  printf("} else {");
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:212");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  perlBody(cdr(fourth(node)), add1(indent), variables);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:213");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  newLine(indent);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:214");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  printf("}");
+
+}
+
+
+void perlGetStruct(list node, int indent) {
+  
+if (globalTrace)
+    printf("perlGetStruct at q/perl.qon:218 (%s)\n", caller);
+
+  StackTraceMove("in", "q/perl.qon", "perlGetStruct", "218" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:220");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  newLine(indent);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:221");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
   printf("$%s->{%s}", stringify(first(node)), stringify(second(node)));
 
 }
@@ -6412,17 +5715,17 @@ void perlDeclarations(list decls, int indent, list variables) {
   box decl = NULL;
 
 if (globalTrace)
-    printf("perlDeclarations at q/perl.qon:218 (%s)\n", caller);
+    printf("perlDeclarations at q/perl.qon:228 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlDeclarations", "218" );
+  StackTraceMove("in", "q/perl.qon", "perlDeclarations", "228" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:220");
+    snprintf(caller, 1024, "from q/perl.qon:230");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isEmpty(decls)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:221");
+    snprintf(caller, 1024, "from q/perl.qon:231");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -6431,31 +5734,31 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:223");
+    snprintf(caller, 1024, "from q/perl.qon:233");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     decl = car(decls);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:224");
+    snprintf(caller, 1024, "from q/perl.qon:234");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("my $%s = ", stringify(second(decl)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:225");
+    snprintf(caller, 1024, "from q/perl.qon:235");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     perlExpression(third(decl), indent, variables);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:226");
+    snprintf(caller, 1024, "from q/perl.qon:236");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf(";\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:227");
+    snprintf(caller, 1024, "from q/perl.qon:237");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     perlDeclarations(cdr(decls), indent, variables);
@@ -6472,35 +5775,35 @@ list args = NULL;
 list decls = NULL;
 
 if (globalTrace)
-    printf("perlFunction at q/perl.qon:229 (%s)\n", caller);
+    printf("perlFunction at q/perl.qon:239 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlFunction", "229" );
+  StackTraceMove("in", "q/perl.qon", "perlFunction", "239" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:231");
+    snprintf(caller, 1024, "from q/perl.qon:241");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   name = second(node);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:232");
+    snprintf(caller, 1024, "from q/perl.qon:242");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("\n\n# Function %s from line %s", stringify(name), stringify(getTag(name, boxString("line"))));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:233");
+    snprintf(caller, 1024, "from q/perl.qon:243");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   newLine(0);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:234");
+    snprintf(caller, 1024, "from q/perl.qon:244");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isNil(node)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:235");
+    snprintf(caller, 1024, "from q/perl.qon:245");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -6509,79 +5812,79 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:237");
+    snprintf(caller, 1024, "from q/perl.qon:247");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     newLine(0);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:238");
+    snprintf(caller, 1024, "from q/perl.qon:248");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("sub %s {", stringify(second(node)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:239");
+    snprintf(caller, 1024, "from q/perl.qon:249");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     newLine(1);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:240");
+    snprintf(caller, 1024, "from q/perl.qon:250");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("my (");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:241");
+    snprintf(caller, 1024, "from q/perl.qon:251");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     perlFunctionArgs(third(node));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:242");
+    snprintf(caller, 1024, "from q/perl.qon:252");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf(") = @_;");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:243");
+    snprintf(caller, 1024, "from q/perl.qon:253");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     newLine(1);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:245");
+    snprintf(caller, 1024, "from q/perl.qon:255");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     args = third(node);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:246");
+    snprintf(caller, 1024, "from q/perl.qon:256");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     decls = cdr(fourth(node));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:247");
+    snprintf(caller, 1024, "from q/perl.qon:257");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     variables = collectVariables(args, decls);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:248");
+    snprintf(caller, 1024, "from q/perl.qon:258");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     perlDeclarations(decls, 1, variables);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:249");
+    snprintf(caller, 1024, "from q/perl.qon:259");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     perlBody(cdr(fifth(node)), 1, variables);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:250");
+    snprintf(caller, 1024, "from q/perl.qon:260");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("\n}\n");
@@ -6594,17 +5897,17 @@ if (globalTrace)
 void perlForwardDeclaration(list node) {
   
 if (globalTrace)
-    printf("perlForwardDeclaration at q/perl.qon:252 (%s)\n", caller);
+    printf("perlForwardDeclaration at q/perl.qon:262 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlForwardDeclaration", "252" );
+  StackTraceMove("in", "q/perl.qon", "perlForwardDeclaration", "262" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:254");
+    snprintf(caller, 1024, "from q/perl.qon:264");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isNil(node)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:255");
+    snprintf(caller, 1024, "from q/perl.qon:265");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -6613,7 +5916,7 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:257");
+    snprintf(caller, 1024, "from q/perl.qon:267");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("sub %s;", stringify(second(node)));
@@ -6626,17 +5929,17 @@ if (globalTrace)
 void perlForwardDeclarations(list tree) {
   
 if (globalTrace)
-    printf("perlForwardDeclarations at q/perl.qon:259 (%s)\n", caller);
+    printf("perlForwardDeclarations at q/perl.qon:269 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlForwardDeclarations", "259" );
+  StackTraceMove("in", "q/perl.qon", "perlForwardDeclarations", "269" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:261");
+    snprintf(caller, 1024, "from q/perl.qon:271");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isEmpty(tree)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:262");
+    snprintf(caller, 1024, "from q/perl.qon:272");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -6645,13 +5948,13 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:264");
+    snprintf(caller, 1024, "from q/perl.qon:274");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     perlForwardDeclaration(car(tree));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:265");
+    snprintf(caller, 1024, "from q/perl.qon:275");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     perlForwardDeclarations(cdr(tree));
@@ -6664,17 +5967,17 @@ if (globalTrace)
 void perlFunctions(list tree) {
   
 if (globalTrace)
-    printf("perlFunctions at q/perl.qon:267 (%s)\n", caller);
+    printf("perlFunctions at q/perl.qon:277 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlFunctions", "267" );
+  StackTraceMove("in", "q/perl.qon", "perlFunctions", "277" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:269");
+    snprintf(caller, 1024, "from q/perl.qon:279");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isEmpty(tree)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:270");
+    snprintf(caller, 1024, "from q/perl.qon:280");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -6683,13 +5986,13 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:272");
+    snprintf(caller, 1024, "from q/perl.qon:282");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     perlFunction(car(tree));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:273");
+    snprintf(caller, 1024, "from q/perl.qon:283");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     perlFunctions(cdr(tree));
@@ -6702,24 +6005,24 @@ if (globalTrace)
 void perlIncludes(list nodes) {
   
 if (globalTrace)
-    printf("perlIncludes at q/perl.qon:275 (%s)\n", caller);
+    printf("perlIncludes at q/perl.qon:285 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlIncludes", "275" );
+  StackTraceMove("in", "q/perl.qon", "perlIncludes", "285" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:277");
+    snprintf(caller, 1024, "from q/perl.qon:287");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("use strict;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:278");
+    snprintf(caller, 1024, "from q/perl.qon:288");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("use warnings;\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:279");
+    snprintf(caller, 1024, "from q/perl.qon:289");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("use v5.10;\n\n");
@@ -6731,23 +6034,23 @@ box perlTypeMap(box aSym) {
   list symMap = NULL;
 
 if (globalTrace)
-    printf("perlTypeMap at q/perl.qon:282 (%s)\n", caller);
+    printf("perlTypeMap at q/perl.qon:292 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlTypeMap", "282" );
+  StackTraceMove("in", "q/perl.qon", "perlTypeMap", "292" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:284");
+    snprintf(caller, 1024, "from q/perl.qon:294");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   symMap = alistCons(boxSymbol("stringArray"), boxSymbol("array"), alistCons(boxSymbol("string"), boxSymbol("string"), NULL));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:287");
+    snprintf(caller, 1024, "from q/perl.qon:297");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( truthy(assoc(stringify(aSym), symMap))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:288");
+    snprintf(caller, 1024, "from q/perl.qon:298");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -6756,7 +6059,7 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:289");
+    snprintf(caller, 1024, "from q/perl.qon:299");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -6772,22 +6075,22 @@ box perlFuncMap(box aSym, list variables) {
   list symMap = NULL;
 
 if (globalTrace)
-    printf("perlFuncMap at q/perl.qon:291 (%s)\n", caller);
+    printf("perlFuncMap at q/perl.qon:301 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlFuncMap", "291" );
+  StackTraceMove("in", "q/perl.qon", "perlFuncMap", "301" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:293");
+    snprintf(caller, 1024, "from q/perl.qon:303");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( equalString("symbol", boxType(aSym))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:296");
+    snprintf(caller, 1024, "from q/perl.qon:306");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( inList(aSym, variables)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:297");
+    snprintf(caller, 1024, "from q/perl.qon:307");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       StackTraceMove("out", "", "", "");
@@ -6796,18 +6099,18 @@ if (globalTrace)
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:299");
+    snprintf(caller, 1024, "from q/perl.qon:309");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       symMap = alistCons(boxSymbol("sub"), boxSymbol("subtract"), alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("substr"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("length"), alistCons(boxSymbol("nil"), boxSymbol("undef"), NULL))))))));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:308");
+    snprintf(caller, 1024, "from q/perl.qon:318");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       if ( truthy(assoc(stringify(aSym), symMap))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:309");
+    snprintf(caller, 1024, "from q/perl.qon:319");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         StackTraceMove("out", "", "", "");
@@ -6816,7 +6119,7 @@ if (globalTrace)
 
       } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:310");
+    snprintf(caller, 1024, "from q/perl.qon:320");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         StackTraceMove("out", "", "", "");
@@ -6829,7 +6132,7 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:311");
+    snprintf(caller, 1024, "from q/perl.qon:321");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -6846,9 +6149,9 @@ void perlCompile(char* filename) {
 list replace = NULL;
 
 if (globalTrace)
-    printf("perlCompile at q/perl.qon:312 (%s)\n", caller);
+    printf("perlCompile at q/perl.qon:322 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlCompile", "312" );
+  StackTraceMove("in", "q/perl.qon", "perlCompile", "322" );
 
 if (globalTrace)
     snprintf(caller, 1024, "from Unknown file (not provided by parser):Line missing");
@@ -6857,7 +6160,7 @@ if (globalTrace)
   fprintf(stderr, "Scanning file...%s\n", filename);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:315");
+    snprintf(caller, 1024, "from q/perl.qon:325");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   tree = loadQuon(filename);
@@ -6869,25 +6172,25 @@ if (globalTrace)
   fprintf(stderr, "Building sexpr\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:317");
+    snprintf(caller, 1024, "from q/perl.qon:329");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   tree = loadIncludes(tree);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:318");
+    snprintf(caller, 1024, "from q/perl.qon:330");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   tree = macrowalk(tree);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:319");
+    snprintf(caller, 1024, "from q/perl.qon:331");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   replace = cons(boxSymbol("fprintf"), cons(boxSymbol("stderr"), NULL));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:320");
+    snprintf(caller, 1024, "from q/perl.qon:332");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   tree = macrolist(tree, stringConcatenate("q", "log"), replace);
@@ -6899,31 +6202,31 @@ if (globalTrace)
   fprintf(stderr, "Printing program\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:322");
+    snprintf(caller, 1024, "from q/perl.qon:334");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   perlIncludes(cdr(first(tree)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:323");
+    snprintf(caller, 1024, "from q/perl.qon:335");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   perlGlobalVariables();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:324");
+    snprintf(caller, 1024, "from q/perl.qon:336");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   perlFunctions(cdr(third(tree)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:325");
+    snprintf(caller, 1024, "from q/perl.qon:337");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   perlMainEntry();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:326");
+    snprintf(caller, 1024, "from q/perl.qon:338");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   printf("\n");
@@ -7128,64 +6431,203 @@ if (globalTrace)
 }
 
 
+list insertInclude(list tree, char* extra) {
+  list newProg = NULL;
+list includes = NULL;
+list types = NULL;
+list functions = NULL;
+list boxedExtra = NULL;
+list newIncludes = NULL;
+
+if (globalTrace)
+    printf("insertInclude at q/newparser.qon:50 (%s)\n", caller);
+
+  StackTraceMove("in", "q/newparser.qon", "insertInclude", "50" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/newparser.qon:59");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isNil(tree)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/newparser.qon:61");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return NULL;;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/newparser.qon:63");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    includes = getIncludes(tree);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/newparser.qon:64");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    types = getTypes(tree);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/newparser.qon:65");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    functions = getFunctions(tree);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/newparser.qon:66");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    boxedExtra = cons(boxSymbol(extra), NULL);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/newparser.qon:67");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    newIncludes = cons(boxedExtra, includes);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/newparser.qon:68");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    newProg = buildProg(newIncludes, types, functions);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/newparser.qon:69");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return newProg;;
+
+  };
+
+}
+
+
 list loadIncludes(list tree) {
   list newProg = NULL;
 char* includeFile = "";
 list functionsCombined = NULL;
 list typesCombined = NULL;
 list includeTree = NULL;
+char* contents = "";
 
 if (globalTrace)
-    printf("loadIncludes at q/newparser.qon:51 (%s)\n", caller);
+    printf("loadIncludes at q/newparser.qon:72 (%s)\n", caller);
 
-  StackTraceMove("in", "q/newparser.qon", "loadIncludes", "51" );
+  StackTraceMove("in", "q/newparser.qon", "loadIncludes", "72" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/newparser.qon:54");
+    snprintf(caller, 1024, "from q/newparser.qon:80");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( greaterthan(listLength(getIncludes(tree)), 0)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/newparser.qon:60");
+    snprintf(caller, 1024, "from q/newparser.qon:82");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     includeFile = stringify(first(getIncludes(tree)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/newparser.qon:62");
+    snprintf(caller, 1024, "from q/newparser.qon:83");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-    includeTree = loadQuon(includeFile);
+    contents = read_file(includeFile);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/newparser.qon:64");
+    snprintf(caller, 1024, "from q/newparser.qon:84");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-    functionsCombined = concatLists(getFunctions(includeTree), getFunctions(tree));
+    if ( equalString(contents, "")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from Unknown file (not provided by parser):Line missing");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      fprintf(stderr, "Could not read include file: ");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/newparser.qon:65");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+    snprintf(caller, 1024, "from Unknown file (not provided by parser):Line missing");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-    typesCombined = concatLists(getTypes(includeTree), getTypes(tree));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/newparser.qon:67");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    newProg = buildProg(cdr(getIncludes(tree)), typesCombined, functionsCombined);
+      fprintf(stderr, includeFile);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/newparser.qon:68");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+    snprintf(caller, 1024, "from q/newparser.qon:88");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-    StackTraceMove("out", "", "", "");
+      StackTraceMove("out", "", "", "");
 
-    return loadIncludes(newProg);;
+      return NULL;;
+
+    } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/newparser.qon:90");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      includeTree = readSexpr(contents, includeFile);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/newparser.qon:91");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      if ( isNil(includeTree)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from Unknown file (not provided by parser):Line missing");
+        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+        fprintf(stderr, "Could not parse include file: ");
+
+if (globalTrace)
+    snprintf(caller, 1024, "from Unknown file (not provided by parser):Line missing");
+        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+        fprintf(stderr, includeFile);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/newparser.qon:95");
+        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+        StackTraceMove("out", "", "", "");
+
+        return NULL;;
+
+      } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/newparser.qon:97");
+        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+        functionsCombined = concatLists(getFunctions(includeTree), getFunctions(tree));
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/newparser.qon:98");
+        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+        typesCombined = concatLists(getTypes(includeTree), getTypes(tree));
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/newparser.qon:99");
+        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+        newProg = buildProg(cdr(getIncludes(tree)), typesCombined, functionsCombined);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/newparser.qon:100");
+        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+        StackTraceMove("out", "", "", "");
+
+        return loadIncludes(newProg);;
+
+      };
+
+    };
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/newparser.qon:71");
+    snprintf(caller, 1024, "from q/newparser.qon:102");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -7201,36 +6643,36 @@ list buildProg(list includes, list types, list functions) {
   list program = NULL;
 
 if (globalTrace)
-    printf("buildProg at q/newparser.qon:74 (%s)\n", caller);
+    printf("buildProg at q/newparser.qon:104 (%s)\n", caller);
 
-  StackTraceMove("in", "q/newparser.qon", "buildProg", "74" );
+  StackTraceMove("in", "q/newparser.qon", "buildProg", "104" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/newparser.qon:76");
+    snprintf(caller, 1024, "from q/newparser.qon:106");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   includes = cons(boxSymbol("includes"), includes);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/newparser.qon:77");
+    snprintf(caller, 1024, "from q/newparser.qon:107");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   types = cons(boxSymbol("types"), types);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/newparser.qon:78");
+    snprintf(caller, 1024, "from q/newparser.qon:108");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   functions = cons(boxSymbol("functions"), functions);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/newparser.qon:79");
+    snprintf(caller, 1024, "from q/newparser.qon:109");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   program = cons(includes, cons(types, cons(functions, NULL)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/newparser.qon:82");
+    snprintf(caller, 1024, "from q/newparser.qon:112");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   StackTraceMove("out", "", "", "");
@@ -10849,24 +10291,46 @@ if (globalTrace)
   StackTraceMove("in", "q/compiler.qon", "treeCompile", "331" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/compiler.qon:333");
+    snprintf(caller, 1024, "from q/compiler.qon:335");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   programStr = read_file(filename);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/compiler.qon:334");
+    snprintf(caller, 1024, "from q/compiler.qon:336");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  tree = readSexpr(programStr, filename);
+  if ( equalString(programStr, "")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/compiler.qon:338");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    printf("Error: Could not read file '%s'\n", filename);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/compiler.qon:335");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+    snprintf(caller, 1024, "from q/compiler.qon:339");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  StackTraceMove("out", "", "", "");
+    StackTraceMove("out", "", "", "");
 
-  return tree;;
+    return NULL;;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/compiler.qon:341");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    tree = readSexpr(programStr, filename);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/compiler.qon:342");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return tree;;
+
+  };
 
 }
 
@@ -10874,12 +10338,12 @@ if (globalTrace)
 list mergeIncludes(list program) {
   
 if (globalTrace)
-    printf("mergeIncludes at q/compiler.qon:339 (%s)\n", caller);
+    printf("mergeIncludes at q/compiler.qon:346 (%s)\n", caller);
 
-  StackTraceMove("in", "q/compiler.qon", "mergeIncludes", "339" );
+  StackTraceMove("in", "q/compiler.qon", "mergeIncludes", "346" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/compiler.qon:341");
+    snprintf(caller, 1024, "from q/compiler.qon:348");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   StackTraceMove("out", "", "", "");
@@ -10892,17 +10356,17 @@ if (globalTrace)
 list merge_recur(list incs, list program) {
   
 if (globalTrace)
-    printf("merge_recur at q/compiler.qon:346 (%s)\n", caller);
+    printf("merge_recur at q/compiler.qon:353 (%s)\n", caller);
 
-  StackTraceMove("in", "q/compiler.qon", "merge_recur", "346" );
+  StackTraceMove("in", "q/compiler.qon", "merge_recur", "353" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/compiler.qon:348");
+    snprintf(caller, 1024, "from q/compiler.qon:355");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( greaterthan(listLength(incs), 0)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/compiler.qon:350");
+    snprintf(caller, 1024, "from q/compiler.qon:357");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -10911,7 +10375,7 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/compiler.qon:351");
+    snprintf(caller, 1024, "from q/compiler.qon:358");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -10937,17 +10401,17 @@ list newTypeNode = NULL;
 list types = NULL;
 
 if (globalTrace)
-    printf("mergeInclude at q/compiler.qon:354 (%s)\n", caller);
+    printf("mergeInclude at q/compiler.qon:361 (%s)\n", caller);
 
-  StackTraceMove("in", "q/compiler.qon", "mergeInclude", "354" );
+  StackTraceMove("in", "q/compiler.qon", "mergeInclude", "361" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/compiler.qon:369");
+    snprintf(caller, 1024, "from q/compiler.qon:376");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isNil(inc)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/compiler.qon:370");
+    snprintf(caller, 1024, "from q/compiler.qon:377");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -10956,73 +10420,73 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/compiler.qon:372");
+    snprintf(caller, 1024, "from q/compiler.qon:379");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     functions = childrenof(cdr(assocPanic("functions", inc, "Included file has no functions section")));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/compiler.qon:373");
+    snprintf(caller, 1024, "from q/compiler.qon:380");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     oldfunctionsnode = cdr(assocPanic("functions", program, "Current module has no functions section"));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/compiler.qon:374");
+    snprintf(caller, 1024, "from q/compiler.qon:381");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     oldfunctions = childrenof(oldfunctionsnode);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/compiler.qon:375");
+    snprintf(caller, 1024, "from q/compiler.qon:382");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     newfunctions = concatLists(functions, oldfunctions);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/compiler.qon:376");
+    snprintf(caller, 1024, "from q/compiler.qon:383");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     newFunctionNode = cons(boxSymbol("node"), alistCons(boxSymbol("children"), newfunctions, cdr(oldfunctionsnode)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/compiler.qon:384");
+    snprintf(caller, 1024, "from q/compiler.qon:391");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     types = childrenof(cdr(assocPanic("types", inc, "Included file has no types section")));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/compiler.qon:385");
+    snprintf(caller, 1024, "from q/compiler.qon:392");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     oldtypesnode = cdr(assocPanic("types", program, "Current module has no types section"));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/compiler.qon:386");
+    snprintf(caller, 1024, "from q/compiler.qon:393");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     oldtypes = childrenof(oldtypesnode);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/compiler.qon:387");
+    snprintf(caller, 1024, "from q/compiler.qon:394");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     newtypes = concatLists(types, oldtypes);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/compiler.qon:388");
+    snprintf(caller, 1024, "from q/compiler.qon:395");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     newTypeNode = cons(boxSymbol("node"), alistCons(boxSymbol("children"), newtypes, cdr(oldtypesnode)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/compiler.qon:393");
+    snprintf(caller, 1024, "from q/compiler.qon:400");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     newProgram = alistCons(boxString("functions"), newFunctionNode, alistCons(boxString("types"), newTypeNode, alistCons(boxString("includes"), cons(boxSymbol("includes"), NULL), newProgram)));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/compiler.qon:405");
+    snprintf(caller, 1024, "from q/compiler.qon:412");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -12737,7 +12201,8 @@ if (globalTrace)
 
 
 char* stringReplace(char* old, char* new, char* s) {
-  
+  int pos = 0;
+
 if (globalTrace)
     printf("stringReplace at q/base.qon:434 (%s)\n", caller);
 
@@ -12747,9 +12212,31 @@ if (globalTrace)
     snprintf(caller, 1024, "from q/base.qon:436");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  StackTraceMove("out", "", "", "");
+  pos = indexOf(s, old, 0);
 
-  return stringConcatenate(sub_string(s, 0, indexOf(s, old, 0)), stringConcatenate(new, sub_string(s, add(indexOf(s, old, 0), string_length(old)), sub(string_length(s), add(indexOf(s, old, 0), string_length(old))))));;
+if (globalTrace)
+    snprintf(caller, 1024, "from q/base.qon:437");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equal(pos, -1)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/base.qon:438");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return s;;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/base.qon:439");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return stringConcatenate(sub_string(s, 0, pos), stringConcatenate(new, stringReplace(old, new, sub_string(s, add(pos, string_length(old)), string_length(s)))));;
+
+  };
 
 }
 
@@ -12759,29 +12246,29 @@ bool stringContains(char* haystack, char* needle) {
 int needleLength = 0;
 
 if (globalTrace)
-    printf("stringContains at q/base.qon:445 (%s)\n", caller);
+    printf("stringContains at q/base.qon:448 (%s)\n", caller);
 
-  StackTraceMove("in", "q/base.qon", "stringContains", "445" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:449");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  haystackLength = string_length(haystack);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:450");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  needleLength = string_length(needle);
+  StackTraceMove("in", "q/base.qon", "stringContains", "448" );
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/base.qon:452");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  if ( greaterthan(needleLength, haystackLength)) {
+  haystackLength = string_length(haystack);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/base.qon:453");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  needleLength = string_length(needle);
+
 if (globalTrace)
     snprintf(caller, 1024, "from q/base.qon:455");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( greaterthan(needleLength, haystackLength)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/base.qon:458");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -12790,7 +12277,7 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:458");
+    snprintf(caller, 1024, "from q/base.qon:461");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -12807,29 +12294,29 @@ bool stringContainsHelper(char* haystack, char* needle, int startIndex) {
 int needleLength = 0;
 
 if (globalTrace)
-    printf("stringContainsHelper at q/base.qon:460 (%s)\n", caller);
+    printf("stringContainsHelper at q/base.qon:463 (%s)\n", caller);
 
-  StackTraceMove("in", "q/base.qon", "stringContainsHelper", "460" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:465");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  haystackLength = string_length(haystack);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:466");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  needleLength = string_length(needle);
+  StackTraceMove("in", "q/base.qon", "stringContainsHelper", "463" );
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/base.qon:468");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  if ( greaterthan(add(startIndex, needleLength), haystackLength)) {
+  haystackLength = string_length(haystack);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/base.qon:469");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  needleLength = string_length(needle);
+
 if (globalTrace)
     snprintf(caller, 1024, "from q/base.qon:471");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( greaterthan(add(startIndex, needleLength), haystackLength)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/base.qon:474");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -12838,12 +12325,12 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:473");
+    snprintf(caller, 1024, "from q/base.qon:476");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( equalString(sub_string(haystack, startIndex, needleLength), needle)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:476");
+    snprintf(caller, 1024, "from q/base.qon:479");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       StackTraceMove("out", "", "", "");
@@ -12852,7 +12339,7 @@ if (globalTrace)
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:479");
+    snprintf(caller, 1024, "from q/base.qon:482");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       StackTraceMove("out", "", "", "");
@@ -12869,17 +12356,17 @@ if (globalTrace)
 char* stringTrim(char* s) {
   
 if (globalTrace)
-    printf("stringTrim at q/base.qon:481 (%s)\n", caller);
+    printf("stringTrim at q/base.qon:484 (%s)\n", caller);
 
-  StackTraceMove("in", "q/base.qon", "stringTrim", "481" );
+  StackTraceMove("in", "q/base.qon", "stringTrim", "484" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:483");
+    snprintf(caller, 1024, "from q/base.qon:486");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( equal(string_length(s), 0)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:485");
+    snprintf(caller, 1024, "from q/base.qon:488");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -12888,12 +12375,12 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:487");
+    snprintf(caller, 1024, "from q/base.qon:490");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( isWhiteSpace(sub_string(s, 0, 1))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:489");
+    snprintf(caller, 1024, "from q/base.qon:492");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       StackTraceMove("out", "", "", "");
@@ -12902,12 +12389,12 @@ if (globalTrace)
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:491");
+    snprintf(caller, 1024, "from q/base.qon:494");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       if ( isWhiteSpace(sub_string(s, sub(string_length(s), 1), string_length(s)))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:493");
+    snprintf(caller, 1024, "from q/base.qon:496");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         StackTraceMove("out", "", "", "");
@@ -12916,7 +12403,7 @@ if (globalTrace)
 
       } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:495");
+    snprintf(caller, 1024, "from q/base.qon:498");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         StackTraceMove("out", "", "", "");
@@ -12937,41 +12424,41 @@ list stringSplit(char* s, char* delimiter) {
 int delimiterLength = 0;
 
 if (globalTrace)
-    printf("stringSplit at q/base.qon:497 (%s)\n", caller);
+    printf("stringSplit at q/base.qon:500 (%s)\n", caller);
 
-  StackTraceMove("in", "q/base.qon", "stringSplit", "497" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:501");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("Entering stringSplit with s: %.20s..., delimiter: %s\n", s, delimiter);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:502");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  delimiterLength = string_length(delimiter);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:503");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  end = indexOf(s, delimiter, 0);
+  StackTraceMove("in", "q/base.qon", "stringSplit", "500" );
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/base.qon:504");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  if ( equal(end, -1)) {
+  printf("Entering stringSplit with s: %.20s..., delimiter: %s\n", s, delimiter);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/base.qon:505");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  delimiterLength = string_length(delimiter);
+
 if (globalTrace)
     snprintf(caller, 1024, "from q/base.qon:506");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  end = indexOf(s, delimiter, 0);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/base.qon:507");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equal(end, -1)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/base.qon:509");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("No delimiter found in stringSplit\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:507");
+    snprintf(caller, 1024, "from q/base.qon:510");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -12980,13 +12467,13 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:509");
+    snprintf(caller, 1024, "from q/base.qon:512");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("Splitting string in stringSplit\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:510");
+    snprintf(caller, 1024, "from q/base.qon:513");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -13746,7 +13233,6 @@ bool runJava = false;
 bool runAst = false;
 bool runNode = false;
 bool runNode2 = false;
-bool runLua = false;
 bool runIma = false;
 bool runAnsi3 = false;
 bool runBash = false;
@@ -13758,25 +13244,25 @@ if (globalTrace)
   StackTraceMove("in", "compiler.qon", "start", "5" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:22");
+    snprintf(caller, 1024, "from compiler.qon:21");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   cmdLine = listReverse(argList(globalArgsCount, 0, globalArgs));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:24");
+    snprintf(caller, 1024, "from compiler.qon:23");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( greaterthan(listLength(cmdLine), 1)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:25");
+    snprintf(caller, 1024, "from compiler.qon:24");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     filenameBox = second(cmdLine);
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:26");
+    snprintf(caller, 1024, "from compiler.qon:25");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     filenameBox = boxString("compiler.qon");
@@ -13784,210 +13270,198 @@ if (globalTrace)
   };
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:27");
+    snprintf(caller, 1024, "from compiler.qon:26");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   filename = unBoxString(filenameBox);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:29");
+    snprintf(caller, 1024, "from compiler.qon:28");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   releaseMode = inList(boxString("--release"), cmdLine);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:30");
+    snprintf(caller, 1024, "from compiler.qon:29");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   runTests = inList(boxString("--test"), cmdLine);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:31");
+    snprintf(caller, 1024, "from compiler.qon:30");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   runJava = inList(boxString("--java"), cmdLine);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:32");
+    snprintf(caller, 1024, "from compiler.qon:31");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   runPerl = inList(boxString("--perl"), cmdLine);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:33");
+    snprintf(caller, 1024, "from compiler.qon:32");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   runAst = inList(boxString("--ast"), cmdLine);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:34");
+    snprintf(caller, 1024, "from compiler.qon:33");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   runTree = inList(boxString("--tree"), cmdLine);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:35");
+    snprintf(caller, 1024, "from compiler.qon:34");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   runNode = inList(boxString("--node"), cmdLine);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:36");
+    snprintf(caller, 1024, "from compiler.qon:35");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   runNode2 = inList(boxString("--node2"), cmdLine);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:37");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  runLua = inList(boxString("--lua"), cmdLine);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:38");
+    snprintf(caller, 1024, "from compiler.qon:36");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   runIma = inList(boxString("--ima"), cmdLine);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:39");
+    snprintf(caller, 1024, "from compiler.qon:37");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   runAnsi3 = inList(boxString("--ansi3"), cmdLine);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:40");
+    snprintf(caller, 1024, "from compiler.qon:38");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   runBash = inList(boxString("--bash"), cmdLine);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:41");
+    snprintf(caller, 1024, "from compiler.qon:39");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   globalTrace = inList(boxString("--trace"), cmdLine);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:42");
+    snprintf(caller, 1024, "from compiler.qon:40");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   globalStepTrace = inList(boxString("--steptrace"), cmdLine);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:43");
+    snprintf(caller, 1024, "from compiler.qon:41");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( inList(boxString("--help"), cmdLine)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:45");
+    snprintf(caller, 1024, "from compiler.qon:43");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("Usage: quon file [options]\n\nNote the options go after the file name\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:46");
+    snprintf(caller, 1024, "from compiler.qon:44");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("Options:\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:47");
+    snprintf(caller, 1024, "from compiler.qon:45");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --help      Display this help\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:48");
+    snprintf(caller, 1024, "from compiler.qon:46");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --release   Compile in release mode\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:49");
+    snprintf(caller, 1024, "from compiler.qon:47");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --test      Run the test suite\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:50");
+    snprintf(caller, 1024, "from compiler.qon:48");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --java      Compile to Java\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:51");
+    snprintf(caller, 1024, "from compiler.qon:49");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --perl      Compile to Perl\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:52");
+    snprintf(caller, 1024, "from compiler.qon:50");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --ast       Compile to the Abstract Syntax Tree\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:53");
+    snprintf(caller, 1024, "from compiler.qon:51");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --tree      Compile to an s-expression tree\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:54");
+    snprintf(caller, 1024, "from compiler.qon:52");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --node      Compile to Node.js\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:55");
+    snprintf(caller, 1024, "from compiler.qon:53");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --node2      Compile to Node.js, new outputter\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:56");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    printf("  --lua       Compile to Lua\n");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:57");
+    snprintf(caller, 1024, "from compiler.qon:54");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --ima       Compile to Imaginary, the human-friendly language\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:59");
+    snprintf(caller, 1024, "from compiler.qon:56");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --ansi3     Compile to ANSI C (quon version 3)\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:60");
+    snprintf(caller, 1024, "from compiler.qon:57");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --bash      Compile to Bash\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:61");
+    snprintf(caller, 1024, "from compiler.qon:58");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --trace     Trace execution\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:62");
+    snprintf(caller, 1024, "from compiler.qon:59");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --steptrace Step trace execution\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:63");
+    snprintf(caller, 1024, "from compiler.qon:60");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --help      Display this help\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:64");
+    snprintf(caller, 1024, "from compiler.qon:61");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     exit(0);
@@ -13996,247 +13470,247 @@ if (globalTrace)
   };
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:68");
+    snprintf(caller, 1024, "from compiler.qon:65");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( runTests) {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:70");
+    snprintf(caller, 1024, "from compiler.qon:67");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test0();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:71");
+    snprintf(caller, 1024, "from compiler.qon:68");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test1();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:72");
+    snprintf(caller, 1024, "from compiler.qon:69");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test2();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:73");
+    snprintf(caller, 1024, "from compiler.qon:70");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test3();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:74");
+    snprintf(caller, 1024, "from compiler.qon:71");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test4();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:75");
+    snprintf(caller, 1024, "from compiler.qon:72");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test5();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:76");
+    snprintf(caller, 1024, "from compiler.qon:73");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test6();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:77");
+    snprintf(caller, 1024, "from compiler.qon:74");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test7();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:78");
+    snprintf(caller, 1024, "from compiler.qon:75");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test8();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:79");
+    snprintf(caller, 1024, "from compiler.qon:76");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test9();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:80");
+    snprintf(caller, 1024, "from compiler.qon:77");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test10();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:81");
+    snprintf(caller, 1024, "from compiler.qon:78");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test12();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:82");
+    snprintf(caller, 1024, "from compiler.qon:79");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test13();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:83");
+    snprintf(caller, 1024, "from compiler.qon:80");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test15();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:84");
+    snprintf(caller, 1024, "from compiler.qon:81");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test16();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:85");
+    snprintf(caller, 1024, "from compiler.qon:82");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test17();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:86");
+    snprintf(caller, 1024, "from compiler.qon:83");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test18();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:87");
+    snprintf(caller, 1024, "from compiler.qon:84");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test19();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:88");
+    snprintf(caller, 1024, "from compiler.qon:85");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test20();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:89");
+    snprintf(caller, 1024, "from compiler.qon:86");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test21();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:90");
+    snprintf(caller, 1024, "from compiler.qon:87");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test22();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:91");
+    snprintf(caller, 1024, "from compiler.qon:88");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test23();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:92");
+    snprintf(caller, 1024, "from compiler.qon:89");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test24();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:93");
+    snprintf(caller, 1024, "from compiler.qon:90");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test25();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:94");
+    snprintf(caller, 1024, "from compiler.qon:91");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test27();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:96");
+    snprintf(caller, 1024, "from compiler.qon:93");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("\n\nAfter all that hard work, I need a beer...\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:97");
+    snprintf(caller, 1024, "from compiler.qon:94");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     beers(9);
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:99");
+    snprintf(caller, 1024, "from compiler.qon:96");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( runTree) {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:100");
+    snprintf(caller, 1024, "from compiler.qon:97");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       display(macrowalk(treeCompile(filename)));
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:103");
+    snprintf(caller, 1024, "from compiler.qon:100");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       if ( runNode2) {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:104");
+    snprintf(caller, 1024, "from compiler.qon:101");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         node2Compile(filename);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:104");
+    snprintf(caller, 1024, "from compiler.qon:101");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         printf("\n");
 
       } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:106");
+    snprintf(caller, 1024, "from compiler.qon:103");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         if ( runPerl) {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:107");
+    snprintf(caller, 1024, "from compiler.qon:104");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
           perlCompile(filename);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:107");
+    snprintf(caller, 1024, "from compiler.qon:104");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
           printf("\n");
 
         } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:111");
+    snprintf(caller, 1024, "from compiler.qon:108");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
           if ( runAnsi3) {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:112");
+    snprintf(caller, 1024, "from compiler.qon:109");
             if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
             ansi3Compile(filename);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:112");
+    snprintf(caller, 1024, "from compiler.qon:109");
             if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
             printf("\n");
 
           } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:115");
+    snprintf(caller, 1024, "from compiler.qon:112");
             if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
             ansi3Compile(filename);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:115");
+    snprintf(caller, 1024, "from compiler.qon:112");
             if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
             printf("\n");
@@ -14252,7 +13726,7 @@ if (globalTrace)
   };
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:121");
+    snprintf(caller, 1024, "from compiler.qon:118");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   StackTraceMove("out", "", "", "");

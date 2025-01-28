@@ -6,6 +6,8 @@ our $globalArgsCount;
 our $globalArgs;
 our $releaseMode;
 our $globalTrace;
+our $globalStepTrace;
+our $globalStackTrace;
 our $caller;
 our $false = 0;
 our $true = 1;
@@ -51,7 +53,29 @@ sub andBool {
 }
 
 
-# Function nand from line 20
+# Function orBool from line 20
+
+sub orBool {
+  my ($a, $b) = @_;
+  
+  if ( $a ) {
+    return $true;
+
+  } else {
+    if ( $b ) {
+      return $true;
+
+    } else {
+      return $false;
+
+    };
+
+  };
+
+}
+
+
+# Function nand from line 31
 
 sub nand {
   my ($a, $b) = @_;
@@ -61,7 +85,7 @@ sub nand {
 }
 
 
-# Function xor from line 24
+# Function xor from line 35
 
 sub xor {
   my ($a, $b) = @_;
@@ -71,350 +95,12 @@ sub xor {
 }
 
 
-# Function lessThan from line 28
+# Function lessThan from line 39
 
 sub lessThan {
   my ($a, $b) = @_;
   
   return andBool(notBool(equal($a, $b)), notBool(greaterthan($a, $b)));
-
-}
-
-
-# Function luaFunctionArgs from line 4
-
-sub luaFunctionArgs {
-  my ($indent, $tree) = @_;
-  
-  if ( isEmpty($tree) ) {
-    return;
-
-  } else {
-    display(second($tree));
-
-    if ( isNil(cddr($tree)) ) {
-      printf('\'');
-
-    } else {
-      printf(',\',');
-
-    };
-
-    luaFunctionArgs($indent, cddr($tree));
-
-  };
-
-}
-
-
-# Function luaFunction from line 14
-
-sub luaFunction {
-  my ($indent, $functionDefinition) = @_;
-  my $fname = '\'';
-
-  $fname = stringify(second($functionDefinition));
-
-  printf('-- Chose functio-\'-- Chose function name %s', $fname);
-
-  printf('\nfunction %s(\'\nfunction %s(', $fname);
-
-  luaFunctionArgs($indent, third($functionDefinition));
-
-  printf(')\n\')\n');
-
-  printf('print(\"caller: p\'print(\"caller: \", caller, \"-> %s\")\n', $fname);
-
-  luaDeclarations(add1($indent), cdr(fourth($functionDefinition)));
-
-  luaBody($fname, $indent, cdr(fifth($functionDefinition)));
-
-  printf('end\n\'end\n');
-
-}
-
-
-# Function luaDeclarations from line 26
-
-sub luaDeclarations {
-  my ($indent, $declarations) = @_;
-  my $decl = undef;
-
-  if ( isNil($declarations) ) {
-    return;
-
-  } else {
-    $decl = first($declarations);
-
-    printf('local %s =\'local %s =', stringify(second($decl)));
-
-    luaExpressionStart($indent, third($decl));
-
-    printf('\n\'\n');
-
-    luaDeclarations($indent, cdr($declarations));
-
-  };
-
-}
-
-
-# Function luaExpressionStart from line 42
-
-sub luaExpressionStart {
-  my ($indent, $program) = @_;
-  
-  if ( isNil($program) ) {
-    return;
-
-  } else {
-    if ( isList($program) ) {
-      if ( equalString(stringify(car($program)), 'get-struct\'get-struct') ) {
-        printf('%s.%s\'%s.%s', stringify(second($program)), stringify(third($program)));
-
-      } else {
-        if ( equalString(stringify(car($program)), '>\'>') ) {
-          printf('greaterthan(\'greaterthan(');
-
-          luaExpression($indent, cdr($program));
-
-          printf(')\')');
-
-        } else {
-          if ( equalString(stringify(car($program)), '=\'=') ) {
-            printf('equal(\'equal(');
-
-            luaExpression($indent, cdr($program));
-
-            printf(')\')');
-
-          } else {
-            printf('%s(\'%s(', stringify(car($program)));
-
-            luaExpression($indent, cdr($program));
-
-            printf(')\')');
-
-          };
-
-        };
-
-      };
-
-    } else {
-      luaExpression($indent, $program);
-
-    };
-
-  };
-
-}
-
-
-# Function luaExpression from line 84
-
-sub luaExpression {
-  my ($indent, $program) = @_;
-  
-  if ( isNil($program) ) {
-    return;
-
-  } else {
-    if ( isList($program) ) {
-      if ( isList(car($program)) ) {
-        luaExpressionStart($indent, car($program));
-
-      } else {
-        display(car($program));
-
-      };
-
-      if ( greaterthan(listLength($program), 1) ) {
-        printf(', \', ');
-
-      } else {
-      };
-
-      luaExpression($indent, cdr($program));
-
-    } else {
-      display($program);
-
-    };
-
-  };
-
-}
-
-
-# Function luaStatement from line 112
-
-sub luaStatement {
-  my ($indent, $statement) = @_;
-  
-  if ( equalString(stringify(car($statement)), 'if\'if') ) {
-    printIndent($indent);
-
-    printf('if \'if ');
-
-    add1($indent);
-
-    luaExpressionStart(add1($indent), second($statement));
-
-    printf(' then\n\' then\n');
-
-    luaBody($caller, add1($indent), cdr(third($statement)));
-
-    printIndent($indent);
-
-    printf('else\n\'else\n');
-
-    luaBody($caller, add1($indent), cdr(fourth($statement)));
-
-    printIndent($indent);
-
-    printf('end\n\'end\n');
-
-  } else {
-    if ( equalString(stringify(car($statement)), 'set\'set') ) {
-      printIndent($indent);
-
-      printf('%s = \'%s = ', stringify(second($statement)));
-
-      luaExpressionStart(add1($indent), third($statement));
-
-    } else {
-      if ( equalString(stringify(car($statement)), 'set-struct\'set-struct') ) {
-        printf('%s.%s = \'%s.%s = ', stringify(second($statement)), stringify(third($statement)));
-
-        luaExpressionStart($indent, fourth($statement));
-
-      } else {
-        if ( equalString(stringify(car($statement)), 'return\'return') ) {
-          printIndent($indent);
-
-          printf('return \'return ');
-
-          if ( greaterthan(listLength($statement), 1) ) {
-            luaExpressionStart($indent, second($statement));
-
-          } else {
-          };
-
-          printf('\n\'\n');
-
-        } else {
-          printIndent($indent);
-
-          luaExpressionStart($indent, $statement);
-
-          printf(';\n\';\n');
-
-        };
-
-      };
-
-    };
-
-  };
-
-}
-
-
-# Function luaBody from line 164
-
-sub luaBody {
-  my ($local_caller, $indent, $program) = @_;
-  my $statement = undef;
-
-  if ( isNil($program) ) {
-    return;
-
-  } else {
-    $statement = car($program);
-
-    printf('caller = \"%s:%sc\'caller = \"%s:%s:%d\"\n', $local_caller, unBoxString(getTagFail($statement, boxString('filename\'filename'), boxString('Unknown file\'Unknown file'))), unBoxInt(getTagFail($statement, boxString('line\'line'), boxInt(-1))));
-
-    luaStatement(add1($indent), $statement);
-
-    printf('\n\'\n');
-
-    luaBody($local_caller, $indent, cdr($program));
-
-  };
-
-}
-
-
-# Function luaFunctions from line 176
-
-sub luaFunctions {
-  my ($indent, $program) = @_;
-  
-  if ( isNil($program) ) {
-    return;
-
-  } else {
-    luaFunction($indent, car($program));
-
-    luaFunctions($indent, cdr($program));
-
-  };
-
-}
-
-
-# Function luaProgram from line 188
-
-sub luaProgram {
-  my ($program) = @_;
-  
-  luaIncludes(undef);
-
-  luaFunctions(0, cdr(third($program)));
-
-}
-
-
-# Function luaIncludes from line 195
-
-sub luaIncludes {
-  my ($nodes) = @_;
-  
-  printf('%s\'%s', '\nfunction luaDump(o)\n   if type(o) == \'table' then\n      local s = '{ '\n      for k,v in pairs(o) do\n         if type(k) ~= 'number' then k = '\"'..k..'\"' end\n         s = s .. '['..k..'] = ' .. luaDump(v) .. ','\n      end\n      return s .. '} '\n   else\n      return tostring(o)\n   end\nend\nprintf = function(s,...)\nreturn io.write(s:format(...))\nend -- function\n    \nfunction stringConcatenate(a,b)\nreturn a..b\nend\n    \nfunction getStringArray(index, arr)\nreturn arr[index]\nend\n       \nfunction luaWriteFile(name, data)  \nlocal file = io.open(name, \"w\")\nfile:write(data)\nfile:close(file)\nend\n    function luaSubstring(s, start, length)\nreturn string.sub(s, start, start+length)\nend\n    \n    function luaReadFile(file)\n      local f = assert(io.open(file, \"rb\"))\n      local content = f:read(\"*all\")      f:close()\n      return content\n    end\n     \nfunction equalString(a,b)\n        return a==b;\n     end\n    \n     function new()\n        return {};\n     end\n    \n     function isNil(val)\n        return val == nil;\n     end\n    \n     function getEnv(key)\n        return os.getenv(key);\n     end\n    \n    function panic(s)\n      print(s);\n    os.exit()\n    end\n    \n    function sub(a, b) \n      return a - b; \n    end\n\n    function mult(a, b) \n      return a * b;\n    end\n    \n    function greaterthan(a, b)\n      return a > b;\n    end\n    \n    function subf(a, b) \n      return a - b;\n    end\n    \n    function multf(a, b)\n      return a * b;\n    end\n    \n    function greaterthanf(a, b)\n      return a > b;\n    end\n    \n    function equal(a, b)\n      return a == b;\n    end\n    \n    function andBool(a, b)\n      return a == b;\n    end\n    \n    function string_length(s)\n      return strlen(s);\n    end\n    \n    function setSubString(target, start, source)\n      panic(\"stub\");\n      end\n    \n    function sub_string(s, start, length)\n      panic(\"stub\");\n    end\n    \n    function intToString(a)\n      panic(\"stub\")\n return a\n    end\n\n    function gc_malloc(size)\n      return \"\"\n    end\n    \n    function makeArray(length)\n      return {}\n    end\n    \n    function at(arr, index)\n      return arr[index+1];\n    end\n    \n    function setAt(array, index, value)\n      array[index+1] = value;\n    end\n    \n    function read_file(file)\n      local f = io.open(file, \"r\")\n      local content = \"\"\n      local length = 0\n\n      while f:read(0) ~= \"\" do\n          local current = f:read(\"*all\")\n\n          print(#current, length)\n          length = length + #current\n\n          content = content .. current\n      end\n\n      return content\n    end\n    \n    function write_file(filename, data)\n      local file = io.open(filename,'w')\n      file:write(tostring(data))\n      file:close()\n    end\n    \n    caller=\"main\";\n    \n    globalArgs={};\n    globalArgsCount=0;\n    globalTrace = false;\n    globalStepTrace = false;\n\n    function main()\n      globalArgs = arg;\n      globalArgsCount = #arg + 1;\n      return start();\n    end\n    \n');
-
-}
-
-
-# Function luaCompile from line 203
-
-sub luaCompile {
-  my ($filename) = @_;
-  my $tree = undef;
-
-  $tree = loadQuon($filename);
-
-  $tree = loadIncludes($tree);
-
-  $tree = macrowalk($tree);
-
-  $tree = macrosingle($tree, 'write-file\'write-file', 'luaWriteFile\'luaWriteFile');
-
-  $tree = macrosingle($tree, 'read-file\'read-file', 'luaReadFile\'luaReadFile');
-
-  $tree = macrosingle($tree, 'string-length\'string-length', 'string.len\'string.len');
-
-  $tree = macrosingle($tree, 'sub-string\'sub-string', 'luaSubstring\'luaSubstring');
-
-  $tree = macrosingle($tree, 'stringLength\'stringLength', 'string.len\'string.len');
-
-  luaProgram($tree);
-
-  printf('\n\'\n');
-
-  printf('function main()\f\'function main()\nglobalArgs = arg\nglobalArgsCount = #arg\nstart()\nend\n');
-
-  printf('main()\'main()');
 
 }
 
@@ -431,17 +117,17 @@ sub node2FunctionArgs {
     return undef;
 
   } else {
-    if ( equalString(stringify(first($tree)), '...\'...') ) {
-      $out = cons(id($out), cons(boxString('...\'...'), undef));
+    if ( equalString(stringify(first($tree)), '...') ) {
+      $out = cons(id($out), cons(boxString('...'), undef));
 
     } else {
-      $out = cons(boxString(' \' '), cons(id(second($tree)), undef));
+      $out = cons(boxString(' '), cons(id(second($tree)), undef));
 
     };
 
     if ( isNil(cddr($tree)) ) {
     } else {
-      $out = cons(id($out), cons(boxString(', \', '), undef));
+      $out = cons(id($out), cons(boxString(', '), undef));
 
     };
 
@@ -460,34 +146,34 @@ sub node2Expression {
 
   if ( isList($tree) ) {
     if ( equal(1, listLength($tree)) ) {
-      if ( equalBox(boxString('return\'return'), car($tree)) ) {
-        return boxString('return\'return');
+      if ( equalBox(boxString('return'), car($tree)) ) {
+        return boxString('return');
 
       } else {
-        return cons(id(car($tree)), cons(boxString('()\'()'), undef));
+        return cons(id(car($tree)), cons(boxString('()'), undef));
 
       };
 
     } else {
       $thing = first($tree);
 
-      if ( equalBox(boxSymbol('get-struct\'get-struct'), $thing) ) {
-        return cons(id(second($tree)), cons(id(boxString('.\'.')), cons(id(third($tree)), undef)));
+      if ( equalBox(boxSymbol('get-struct'), $thing) ) {
+        return cons(id(second($tree)), cons(id(boxString('.')), cons(id(third($tree)), undef)));
 
       } else {
-        if ( equalBox(boxSymbol('new\'new'), $thing) ) {
-          return cons(id(boxString('new\'new')), cons(id(third($tree)), undef));
+        if ( equalBox(boxSymbol('new'), $thing) ) {
+          return cons(id(boxString('new')), cons(id(third($tree)), undef));
 
         } else {
-          if ( equalBox(boxSymbol('passthrough\'passthrough'), $thing) ) {
+          if ( equalBox(boxSymbol('passthrough'), $thing) ) {
             return second($tree);
 
           } else {
-            if ( equalBox(boxSymbol('binop\'binop'), $thing) ) {
-              return cons(id(boxString('(1\'(1')), cons(id(node2Expression(third($tree), $indent)), cons(id(boxString(' \' ')), cons(id(second($tree)), cons(id(boxString(' \' ')), cons(id(node2Expression(fourth($tree), $indent)), cons(id(boxString(')\')')), undef)))))));
+            if ( equalBox(boxSymbol('binop'), $thing) ) {
+              return cons(id(boxString('(1')), cons(id(node2Expression(third($tree), $indent)), cons(id(boxString(' ')), cons(id(second($tree)), cons(id(boxString(' ')), cons(id(node2Expression(fourth($tree), $indent)), cons(id(boxString(')')), undef)))))));
 
             } else {
-              return cons(id(node2FuncMap(car($tree))), cons(id(boxString('(2\'(2')), cons(id(node2RecurList(cdr($tree), $indent)), cons(id(boxString(')\')')), undef))));
+              return cons(id(node2FuncMap(car($tree))), cons(id(boxString('(2')), cons(id(node2RecurList(cdr($tree), $indent)), cons(id(boxString(')')), undef))));
 
             };
 
@@ -513,16 +199,16 @@ sub node2RecurList {
   my ($expr, $indent) = @_;
   
   if ( isEmpty($expr) ) {
-    return boxString('\'');
+    return boxString('');
 
   } else {
     return node2Expression(car($expr), $indent);
 
     if ( isNil(cdr($expr)) ) {
-      boxString('\'');
+      boxString('');
 
     } else {
-      return cons(id(boxString(', \', ')), cons(id(node2RecurList(cdr($expr), $indent)), undef));
+      return cons(id(boxString(', ')), cons(id(node2RecurList(cdr($expr), $indent)), undef));
 
     };
 
@@ -536,7 +222,7 @@ sub node2RecurList {
 sub node2If {
   my ($node, $indent, $functionName) = @_;
   
-  return cons(id(listNewLine($indent)), cons(id(boxString('if (4 \'if (4 ')), cons(id(boxString(stringify(node2Expression(second($node), 0)))), cons(id(boxString(') {\') {')), cons(id(node2Body(cdr(third($node)), add1($indent), $functionName)), cons(id(listNewLine($indent)), cons(id(boxString('} else {\'} else {')), cons(id(node2Body(cdr(fourth($node)), add1($indent), $functionName)), cons(id(listNewLine($indent)), cons(id(boxString('}\'}')), undef))))))))));
+  return cons(id(listNewLine($indent)), cons(id(boxString('if (4 ')), cons(id(boxString(stringify(node2Expression(second($node), 0)))), cons(id(boxString(') {')), cons(id(node2Body(cdr(third($node)), add1($indent), $functionName)), cons(id(listNewLine($indent)), cons(id(boxString('} else {')), cons(id(node2Body(cdr(fourth($node)), add1($indent), $functionName)), cons(id(listNewLine($indent)), cons(id(boxString('}')), undef))))))))));
 
 }
 
@@ -546,7 +232,7 @@ sub node2If {
 sub node2SetStruct {
   my ($node, $indent) = @_;
   
-  return cons(id(listNewLine($indent)), cons(id(boxString(stringify(second($node)))), cons(id(boxString('.\'.')), cons(id(boxString(stringify(third($node)))), cons(id(boxString(' = \' = ')), cons(id(boxString(stringify(node2Expression(fourth($node), $indent)))), undef))))));
+  return cons(id(listNewLine($indent)), cons(id(boxString(stringify(second($node)))), cons(id(boxString('.')), cons(id(boxString(stringify(third($node)))), cons(id(boxString(' = ')), cons(id(boxString(stringify(node2Expression(fourth($node), $indent)))), undef))))));
 
 }
 
@@ -556,7 +242,7 @@ sub node2SetStruct {
 sub node2GetStruct {
   my ($node, $indent) = @_;
   
-  return cons(id(listNewLine($indent)), cons(id(boxString(stringify(first($node)))), cons(id(boxString('.\'.')), cons(id(boxString(stringify(second($node)))), undef))));
+  return cons(id(listNewLine($indent)), cons(id(boxString(stringify(first($node)))), cons(id(boxString('.')), cons(id(boxString(stringify(second($node)))), undef))));
 
 }
 
@@ -566,7 +252,7 @@ sub node2GetStruct {
 sub node2Set {
   my ($node, $indent) = @_;
   
-  return cons(id(listNewLine($indent)), cons(id(boxString(stringify(node2Expression(first(cdr($node)), $indent)))), cons(id(boxString(' = \' = ')), cons(id(boxString(stringify(node2Expression(third($node), $indent)))), undef))));
+  return cons(id(listNewLine($indent)), cons(id(boxString(stringify(node2Expression(first(cdr($node)), $indent)))), cons(id(boxString(' = ')), cons(id(boxString(stringify(node2Expression(third($node), $indent)))), undef))));
 
 }
 
@@ -577,10 +263,10 @@ sub node2Return {
   my ($node, $indent) = @_;
   
   if ( equal(listLength($node), 1) ) {
-    return cons(id(listNewLine($indent)), cons(id(boxString('return;\'return;')), undef));
+    return cons(id(listNewLine($indent)), cons(id(boxString('return;')), undef));
 
   } else {
-    return cons(id(listNewLine($indent)), cons(id(boxString('return \'return ')), cons(id(node2Expression(cadr($node), $indent)), cons(id(boxString(';\';')), undef))));
+    return cons(id(listNewLine($indent)), cons(id(boxString('return ')), cons(id(node2Expression(cadr($node), $indent)), cons(id(boxString(';')), undef))));
 
   };
 
@@ -595,22 +281,22 @@ sub node2Statement {
 
   $out = undef;
 
-  if ( equalBox(boxString('set\'set'), first($node)) ) {
+  if ( equalBox(boxString('set'), first($node)) ) {
     $out = node2Set($node, $indent);
 
   } else {
-    if ( equalBox(boxString('set-struct\'set-struct'), first($node)) ) {
+    if ( equalBox(boxString('set-struct'), first($node)) ) {
       $out = node2SetStruct($node, $indent);
 
     } else {
-      if ( equalBox(boxString('if\'if'), first($node)) ) {
+      if ( equalBox(boxString('if'), first($node)) ) {
         $out = node2If($node, $indent, $functionname);
 
       } else {
-        if ( equalBox(boxString('return\'return'), first($node)) ) {
+        if ( equalBox(boxString('return'), first($node)) ) {
           if ( inList(boxString($functionname), NoStackTrace_list()) ) {
           } else {
-            $out = cons(id(boxString('\n\'\n')), cons(id(listIndent($indent)), cons(id(boxString('StackTraceMove(\S\'StackTraceMove(\"out\", \"\", \"\", \"\");\n')), undef)));
+            $out = cons(id(boxString('\n')), cons(id(listIndent($indent)), cons(id(boxString('StackTraceMove(\"out\", \"\", \"\", \"\");\n')), undef)));
 
           };
 
@@ -627,7 +313,7 @@ sub node2Statement {
 
   };
 
-  $out = cons(id($out), cons(id(boxString(';\n\';\n')), undef));
+  $out = cons(id($out), cons(id(boxString(';\n')), undef));
 
   return $out;
 
@@ -657,10 +343,10 @@ my $out = undef;
 
       if ( notBool($releaseMode) ) {
         if ( inList(boxString($functionName), NoTrace_list()) ) {
-          $out = cons(id($out), cons(id(boxString('//Function \'//Function ')), cons(id(boxString($functionName)), cons(id(boxString(' omitted due to  \' omitted due to the no trace list\n')), undef))));
+          $out = cons(id($out), cons(id(boxString('//Function ')), cons(id(boxString($functionName)), cons(id(boxString(' omitted due to the no trace list\n')), undef))));
 
         } else {
-          $out = cons(id($out), cons(id(boxString('\nif (globalTrac\\'\nif (globalTrace)\n    snprintf(caller, 1024, \"from:%s:%s\", ')), cons(id(boxString(stringify(getTagFail(car($code), boxString('filename\'filename'), boxString('Unknown file (noU\'Unknown file (not provided by parser)'))))), cons(id(boxString(stringify(getTagFail(car($code), boxString('line\'line'), boxString('Line missing\'Line missing'))))), undef))));
+          $out = cons(id($out), cons(id(boxString('\nif (globalTrace)\n    snprintf(caller, 1024, \"from:%s:%s\", ')), cons(id(boxString(stringify(getTagFail(car($code), boxString('filename'), boxString('Unknown file (not provided by parser)'))))), cons(id(boxString(stringify(getTagFail(car($code), boxString('line'), boxString('Line missing'))))), undef))));
 
         };
 
@@ -670,7 +356,7 @@ my $out = undef;
     };
 
     if ( notBool($releaseMode) ) {
-      $out = cons(id($out), cons(id(listIndent($indent)), cons(id(boxString('if (globalStepTri\'if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n')), undef)));
+      $out = cons(id($out), cons(id(listIndent($indent)), cons(id(boxString('if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n')), undef)));
 
     } else {
     };
@@ -694,7 +380,7 @@ sub node2eclarations {
   } else {
     $decl = car($decls);
 
-    return cons(id(boxString('var \'var ')), cons(id(boxString(stringify(node2TypeMap(first($decl))))), cons(id(boxString(' \' ')), cons(id(boxString(stringify(second($decl)))), cons(id(boxString(' = \' = ')), cons(id(node2Expression(third($decl), $indent)), cons(id(boxString(';\n\';\n')), cons(id(node2eclarations(cdr($decls), $indent)), undef))))))));
+    return cons(id(boxString('var ')), cons(id(boxString(stringify(node2TypeMap(first($decl))))), cons(id(boxString(' ')), cons(id(boxString(stringify(second($decl)))), cons(id(boxString(' = ')), cons(id(node2Expression(third($decl), $indent)), cons(id(boxString(';\n')), cons(id(node2eclarations(cdr($decls), $indent)), undef))))))));
 
   };
 
@@ -715,7 +401,7 @@ sub node2Function {
     return undef;
 
   } else {
-    return cons(id(listNewLine(0)), cons(id(boxString('function\'function')), cons(id(boxString(' \' ')), cons(id(boxString(stringify(second($node)))), cons(id(boxString('(3\'(3')), cons(id(node2FunctionArgs(third($node))), cons(id(boxString(') {\') {')), cons(id(listNewLine(1)), cons(id(node2eclarations(cdr(fourth($node)), 1)), cons(id(node2Body(cdr(fifth($node)), 1, stringify($name))), cons(id(boxString('\n}\n\'\n}\n')), undef)))))))))));
+    return cons(id(listNewLine(0)), cons(id(boxString('function')), cons(id(boxString(' ')), cons(id(boxString(stringify(second($node)))), cons(id(boxString('(3')), cons(id(node2FunctionArgs(third($node))), cons(id(boxString(') {')), cons(id(listNewLine(1)), cons(id(node2eclarations(cdr(fourth($node)), 1)), cons(id(node2Body(cdr(fifth($node)), 1, stringify($name))), cons(id(boxString('\n}\n')), undef)))))))))));
 
   };
 
@@ -790,7 +476,7 @@ sub node2TypeMap {
   my ($aSym) = @_;
   my $symMap = undef;
 
-  $symMap = alistCons(boxSymbol('stringArray\'stringArray'), boxSymbol('char**\'char**'), alistCons(boxSymbol('string\'string'), boxSymbol('char*\'char*'), undef));
+  $symMap = alistCons(boxSymbol('stringArray'), boxSymbol('char**'), alistCons(boxSymbol('string'), boxSymbol('char*'), undef));
 
   if ( truthy(assoc(stringify($aSym), $symMap)) ) {
     return cdr(assoc(stringify($aSym), $symMap));
@@ -809,8 +495,8 @@ sub node2FuncMap {
   my ($aSym) = @_;
   my $symMap = undef;
 
-  if ( equalString('symbol\'symbol', boxType($aSym)) ) {
-    $symMap = alistCons(boxSymbol('=\'='), boxSymbol('equal\'equal'), alistCons(boxSymbol('sub-string\'sub-string'), boxSymbol('sub_string\'sub_string'), alistCons(boxSymbol('read-file\'read-file'), boxSymbol('read_file\'read_file'), alistCons(boxSymbol('write-file\'write-file'), boxSymbol('write_file\'write_file'), alistCons(boxSymbol('>\'>'), boxSymbol('greaterthan\'greaterthan'), alistCons(boxSymbol('string-length\'string-length'), boxSymbol('string_length\'string_length'), alistCons(boxSymbol('nil\'nil'), boxSymbol('NULL\'NULL'), undef)))))));
+  if ( equalString('symbol', boxType($aSym)) ) {
+    $symMap = alistCons(boxSymbol('='), boxSymbol('equal'), alistCons(boxSymbol('sub-string'), boxSymbol('sub_string'), alistCons(boxSymbol('read-file'), boxSymbol('read_file'), alistCons(boxSymbol('write-file'), boxSymbol('write_file'), alistCons(boxSymbol('>'), boxSymbol('greaterthan'), alistCons(boxSymbol('string-length'), boxSymbol('string_length'), alistCons(boxSymbol('nil'), boxSymbol('NULL'), undef)))))));
 
     if ( truthy(assoc(stringify($aSym), $symMap)) ) {
       return cdr(assoc(stringify($aSym), $symMap));
@@ -861,39 +547,39 @@ sub node2Compile {
   my $tree = undef;
 my $replace = undef;
 
-  fprintf($stderr, '//Scanning file./\'//Scanning file...%s\n', $filename);
+  fprintf($stderr, '//Scanning file...%s\n', $filename);
 
   $tree = loadQuon($filename);
 
-  fprintf($stderr, '//Building sexpr/\'//Building sexpr\n');
+  fprintf($stderr, '//Building sexpr\n');
 
-  fprintf($stderr, 'Loading shim nodL\'Loading shim node2\n');
+  fprintf($stderr, 'Loading shim node2\n');
 
-  $tree = buildProg(cons(boxString('q/shims/node2.qoq\'q/shims/node2.qon'), getIncludes($tree)), getTypes($tree), getFunctions($tree));
+  $tree = buildProg(cons(boxString('q/shims/node2.qon'), getIncludes($tree)), getTypes($tree), getFunctions($tree));
 
-  fprintf($stderr, 'Loading all inclL\'Loading all includes\n');
+  fprintf($stderr, 'Loading all includes\n');
 
   $tree = loadIncludes($tree);
 
-  fprintf($stderr, 'Applying macros\A\'Applying macros\n');
+  fprintf($stderr, 'Applying macros\n');
 
   $tree = macrowalk($tree);
 
-  $replace = cons(boxSymbol('fprintf\'fprintf'), cons(boxSymbol('stderr\'stderr'), undef));
+  $replace = cons(boxSymbol('fprintf'), cons(boxSymbol('stderr'), undef));
 
-  $tree = macrolist($tree, stringConcatenate('q\'q', 'log\'log'), $replace);
+  $tree = macrolist($tree, stringConcatenate('q', 'log'), $replace);
 
-  fprintf($stderr, '//Printing progr/\'//Printing program\n');
+  fprintf($stderr, '//Printing program\n');
 
-  printf('%s\'%s', stringify(flatten(node2Includes(cdr(first($tree))))));
+  printf('%s', stringify(flatten(node2Includes(cdr(first($tree))))));
 
-  printf('%s\'%s', stringify(flatten(node2Types(cdr(second($tree))))));
+  printf('%s', stringify(flatten(node2Types(cdr(second($tree))))));
 
-  printf('%s\'%s', stringify(flatten(node2Functions(cdr(third($tree))))));
+  printf('%s', stringify(flatten(node2Functions(cdr(third($tree))))));
 
-  printf('\n\'\n');
+  printf('\n');
 
-  fprintf($stderr, '//Done printing /\'//Done printing program\n');
+  fprintf($stderr, '//Done printing program\n');
 
 }
 
@@ -903,19 +589,19 @@ my $replace = undef;
 sub test0 {
   my () = @_;
   
-  if ( equalString(stringify(boxString('hello\'hello')), stringify(boxString('hello\'hello'))) ) {
-    printf('0.  pass string 0\'0.  pass string compare works\n');
+  if ( equalString(stringify(boxString('hello')), stringify(boxString('hello'))) ) {
+    printf('0.  pass string compare works\n');
 
   } else {
-    printf('0.  pass string 0\'0.  pass string compare fails\n');
+    printf('0.  pass string compare fails\n');
 
   };
 
-  if ( equalString(stringify(boxString('hello\'hello')), stringify(boxSymbol('hello\'hello'))) ) {
-    printf('0.  pass string 0\'0.  pass string compare works\n');
+  if ( equalString(stringify(boxString('hello')), stringify(boxSymbol('hello'))) ) {
+    printf('0.  pass string compare works\n');
 
   } else {
-    printf('0.  pass string 0\'0.  pass string compare fails\n');
+    printf('0.  pass string compare fails\n');
 
   };
 
@@ -927,7 +613,7 @@ sub test0 {
 sub test1 {
   my () = @_;
   
-  printf('1.  pass Functio1\'1.  pass Function call and print work\n');
+  printf('1.  pass Function call and print work\n');
 
 }
 
@@ -937,7 +623,7 @@ sub test1 {
 sub test2_do {
   my ($message) = @_;
   
-  printf('2.  pass Functio2\'2.  pass Function call with arg works: %s\n', $message);
+  printf('2.  pass Function call with arg works: %s\n', $message);
 
 }
 
@@ -947,7 +633,7 @@ sub test2_do {
 sub test2 {
   my () = @_;
   
-  test2_do('This is the arguT\'This is the argument');
+  test2_do('This is the argument');
 
 }
 
@@ -957,9 +643,9 @@ sub test2 {
 sub test3_do {
   my ($b, $c) = @_;
   
-  printf('3.1 pass Two arg3\'3.1 pass Two arg call, first arg: %d\n', $b);
+  printf('3.1 pass Two arg call, first arg: %d\n', $b);
 
-  printf('3.2 pass Two arg3\'3.2 pass Two arg call, second arg: %s\n', $c);
+  printf('3.2 pass Two arg call, second arg: %s\n', $c);
 
 }
 
@@ -969,7 +655,7 @@ sub test3_do {
 sub test3 {
   my () = @_;
   
-  test3_do(42, 'Fourty-two\'Fourty-two');
+  test3_do(42, 'Fourty-two');
 
 }
 
@@ -979,7 +665,7 @@ sub test3 {
 sub test4_do {
   my () = @_;
   
-  return 'pass Return workp\'pass Return works';
+  return 'pass Return works';
 
 }
 
@@ -998,11 +684,11 @@ sub returnThis {
 
 sub test4 {
   my () = @_;
-  my $message = 'fail\'fail';
+  my $message = 'fail';
 
   $message = test4_do();
 
-  printf('4.  %s\n\'4.  %s\n', $message);
+  printf('4.  %s\n', $message);
 
 }
 
@@ -1011,11 +697,11 @@ sub test4 {
 
 sub test5 {
   my () = @_;
-  my $message = 'fail\'fail';
+  my $message = 'fail';
 
-  $message = returnThis('pass return passp\'pass return passthrough string');
+  $message = returnThis('pass return passthrough string');
 
-  printf('5.  %s\n\'5.  %s\n', $message);
+  printf('5.  %s\n', $message);
 
 }
 
@@ -1026,10 +712,10 @@ sub test6 {
   my () = @_;
   
   if ( $true ) {
-    printf('6.  pass If stat6\'6.  pass If statement works\n');
+    printf('6.  pass If statement works\n');
 
   } else {
-    printf('6.  fail If stat6\'6.  fail If statement works\n');
+    printf('6.  fail If statement works\n');
 
   };
 
@@ -1062,10 +748,10 @@ sub test7 {
   my () = @_;
   
   if ( equal(0, test7_do(10)) ) {
-    printf('7.  pass count w7\'7.  pass count works\n');
+    printf('7.  pass count works\n');
 
   } else {
-    printf('7.  fail count f7\'7.  fail count fails\n');
+    printf('7.  fail count fails\n');
 
   };
 
@@ -1077,7 +763,7 @@ sub test7 {
 sub beer {
   my () = @_;
   
-  printf('%d bottle of bee%\'%d bottle of beer on the wall, %d bottle of beer.  Take one down, pass it round, no bottles of beer on the wall\n', 1, 1);
+  printf('%d bottle of beer on the wall, %d bottle of beer.  Take one down, pass it round, no bottles of beer on the wall\n', 1, 1);
 
 }
 
@@ -1088,10 +774,10 @@ sub plural {
   my ($num) = @_;
   
   if ( equal($num, 1) ) {
-    return '\'';
+    return '';
 
   } else {
-    return 's\'s';
+    return 's';
 
   };
 
@@ -1106,7 +792,7 @@ sub beers {
 
   $newcount = subtract($count, 1);
 
-  printf('%d bottle%s of b%\'%d bottle%s of beer on the wall, %d bottle%s of beer.  Take one down, pass it round, %d bottle%s of beer on the wall\n', $count, plural($count), $count, plural($count), $newcount, plural($newcount));
+  printf('%d bottle%s of beer on the wall, %d bottle%s of beer.  Take one down, pass it round, %d bottle%s of beer on the wall\n', $count, plural($count), $count, plural($count), $newcount, plural($newcount));
 
   if ( greaterthan($count, 1) ) {
     $count = beers($newcount);
@@ -1127,7 +813,7 @@ sub test8 {
   my () = @_;
   
   if ( equal(subtract(subtract(2, 1), subtract(3, 1)), -1) ) {
-    printf('8.  pass Nested 8\'8.  pass Nested expressions work\n');
+    printf('8.  pass Nested expressions work\n');
 
   } else {
     printf('8.  fail Nested expressions don\'t work\n');
@@ -1148,118 +834,118 @@ my $b = 3;
   $answer = subtract(subtract(20, 1), subtract(3, 1));
 
   if ( equal($answer, 17) ) {
-    printf('9.1  pass sub wo9\'9.1  pass sub works\n');
+    printf('9.1  pass sub works\n');
 
   } else {
-    printf('9.1  fail sub\n\'9.1  fail sub\n');
+    printf('9.1  fail sub\n');
 
   };
 
   $answer = add(2, 3);
 
   if ( equal($answer, 5) ) {
-    printf('9.2  pass add wo9\'9.2  pass add works\n');
+    printf('9.2  pass add works\n');
 
   } else {
-    printf('9.2  fail add\n\'9.2  fail add\n');
+    printf('9.2  fail add\n');
 
   };
 
   $answer = mult($a, $b);
 
   if ( equal($answer, 6) ) {
-    printf('9.3  pass mult w9\'9.3  pass mult works\n');
+    printf('9.3  pass mult works\n');
 
   } else {
-    printf('9.3  fail mult\n9\'9.3  fail mult\n');
+    printf('9.3  fail mult\n');
 
   };
 
   if ( greaterthan(2, 1) ) {
-    printf('9.4  pass greate9\'9.4  pass greaterthan works\n');
+    printf('9.4  pass greaterthan works\n');
 
   } else {
-    printf('9.4  fail greate9\'9.4  fail greaterthan\n');
+    printf('9.4  fail greaterthan\n');
 
   };
 
   if ( equal(1, 1) ) {
-    printf('9.5  pass intege9\'9.5  pass integer equal works\n');
+    printf('9.5  pass integer equal works\n');
 
   } else {
-    printf('9.5  fail intege9\'9.5  fail integer equal\n');
+    printf('9.5  fail integer equal\n');
 
   };
 
-  if ( equalString('hello\'hello', 'hello\'hello') ) {
-    printf('9.6  pass string9\'9.6  pass string equal works\n');
+  if ( equalString('hello', 'hello') ) {
+    printf('9.6  pass string equal works\n');
 
   } else {
-    printf('9.6  fail string9\'9.6  fail string equal\n');
+    printf('9.6  fail string equal\n');
 
   };
 
-  if ( equalString('hello\'hello', 'world\'world') ) {
-    printf('9.7  fail string9\'9.7  fail string equal\n');
+  if ( equalString('hello', 'world') ) {
+    printf('9.7  fail string equal\n');
 
   } else {
-    printf('9.7  pass string9\'9.7  pass string equal\n');
+    printf('9.7  pass string equal\n');
 
   };
 
   if ( andBool($false, $false) ) {
-    printf('9.8  fail andBoo9\'9.8  fail andBool\n');
+    printf('9.8  fail andBool\n');
 
   } else {
-    printf('9.8  pass andBoo9\'9.8  pass andBool works\n');
+    printf('9.8  pass andBool works\n');
 
   };
 
   if ( andBool($true, $true) ) {
-    printf('9.9  pass andBoo9\'9.9  pass andBool works\n');
+    printf('9.9  pass andBool works\n');
 
   } else {
-    printf('9.9  fail andBoo9\'9.9  fail andBool\n');
+    printf('9.9  fail andBool\n');
 
   };
 
   if ( andBool($true, $false) ) {
-    printf('9.10  fail andBo9\'9.10  fail andBool\n');
+    printf('9.10  fail andBool\n');
 
   } else {
-    printf('9.10  pass andBo9\'9.10  pass andBool works\n');
+    printf('9.10  pass andBool works\n');
 
   };
 
-  if ( equalString('hello\'hello', 'hello\'hello') ) {
-    printf('9.11  pass strin9\'9.11  pass string equal\n');
+  if ( equalString('hello', 'hello') ) {
+    printf('9.11  pass string equal\n');
 
   } else {
-    printf('9.11  fail strin9\'9.11  fail string equal\n');
+    printf('9.11  fail string equal\n');
 
   };
 
-  if ( equalString('!\'!', character(33)) ) {
-    printf('9.12  pass chara9\'9.12  pass character\n');
+  if ( equalString('!', character(33)) ) {
+    printf('9.12  pass character\n');
 
   } else {
-    printf('9.12  fail chara9\'9.12  fail character\n');
+    printf('9.12  fail character\n');
 
   };
 
-  if ( equalString('33\'33', intToString(33)) ) {
-    printf('9.13  pass intTo9\'9.13  pass intToString\n');
+  if ( equalString('33', intToString(33)) ) {
+    printf('9.13  pass intToString\n');
 
   } else {
-    printf('9.13  fail intTo9\'9.13  fail intToString\n');
+    printf('9.13  fail intToString\n');
 
   };
 
-  if ( equalString('llo\'llo', substr('hello\'hello', $a, $b)) ) {
-    printf('9.14  pass sub-s9\'9.14  pass sub-string\n');
+  if ( equalString('llo', substr('hello', $a, $b)) ) {
+    printf('9.14  pass sub-string\n');
 
   } else {
-    printf('9.14  fail sub-s9\'9.14  fail sub-string: %s\n', substr('hello\'hello', $a, $b));
+    printf('9.14  fail sub-string: %s\n', substr('hello', $a, $b));
 
   };
 
@@ -1270,13 +956,13 @@ my $b = 3;
 
 sub test10 {
   my () = @_;
-  my $testString = 'This is a test sT\'This is a test string';
+  my $testString = 'This is a test string';
 
   if ( equalString($testString, unBoxString(car(cons(boxString($testString), undef)))) ) {
-    printf('10. pass cons an1\'10. pass cons and car work\n');
+    printf('10. pass cons and car work\n');
 
   } else {
-    printf('10. fail cons an1\'10. fail cons and car fail\n');
+    printf('10. fail cons and car fail\n');
 
   };
 
@@ -1291,9 +977,9 @@ sub test12 {
 
   $b = {};
 
-  $b->{str} = '12. pass structu1\'12. pass structure accessors\n';
+  $b->{str} = '12. pass structure accessors\n';
 
-  printf('%s\'%s', $b->{str});
+  printf('%s', $b->{str});
 
 }
 
@@ -1302,22 +988,22 @@ sub test12 {
 
 sub test13 {
   my () = @_;
-  my $testString = 'Hello from the fH\'Hello from the filesystem!';
-my $contents = '\'';
+  my $testString = 'Hello from the filesystem!';
+my $contents = '';
 
-  write_file('test.txt\'test.txt', $testString);
+  write_file('test.txt', $testString);
 
-  $contents = read_file('test.txt\'test.txt');
+  $contents = read_file('test.txt');
 
   if ( equalString($testString, $contents) ) {
-    printf('13. pass Read an1\'13. pass Read and write files\n');
+    printf('13. pass Read and write files\n');
 
   } else {
-    printf('13. fail Read an1\'13. fail Read and write files\n');
+    printf('13. fail Read and write files\n');
 
-    printf('Expected: %s\n\'Expected: %s\n', $testString);
+    printf('Expected: %s\n', $testString);
 
-    printf('Got: %s\n\'Got: %s\n', $contents);
+    printf('Got: %s\n', $contents);
 
   };
 
@@ -1328,17 +1014,17 @@ my $contents = '\'';
 
 sub test15 {
   my () = @_;
-  my $a = 'hello\'hello';
-my $b = ' world\' world';
-my $c = '\'';
+  my $a = 'hello';
+my $b = ' world';
+my $c = '';
 
   $c = stringConcatenate($a, $b);
 
-  if ( equalString($c, 'hello world\'hello world') ) {
-    printf('15. pass String 1\'15. pass String concatenate\n');
+  if ( equalString($c, 'hello world') ) {
+    printf('15. pass String concatenate\n');
 
   } else {
-    printf('15. fail String 1\'15. fail String concatenate\n');
+    printf('15. fail String concatenate\n');
 
   };
 
@@ -1354,11 +1040,11 @@ my $assList = undef;
 my $assocCell2 = undef;
 my $assocCell3 = undef;
 
-  $assocCell1 = cons(boxString('Hello\'Hello'), boxString('world\'world'));
+  $assocCell1 = cons(boxString('Hello'), boxString('world'));
 
-  $assocCell2 = cons(boxString('goodnight\'goodnight'), boxString('moon\'moon'));
+  $assocCell2 = cons(boxString('goodnight'), boxString('moon'));
 
-  $assocCell3 = cons(boxSymbol('ohio\'ohio'), boxString('gozaimasu\'gozaimasu'));
+  $assocCell3 = cons(boxSymbol('ohio'), boxString('gozaimasu'));
 
   $assList = cons($assocCell2, emptyList());
 
@@ -1366,19 +1052,19 @@ my $assocCell3 = undef;
 
   $assList = cons($assocCell3, $assList);
 
-  if ( equalBox(cdr(assoc('Hello\'Hello', $assList)), boxString('world\'world')) ) {
-    printf('16.1 pass Basic 1\'16.1 pass Basic assoc works\n');
+  if ( equalBox(cdr(assoc('Hello', $assList)), boxString('world')) ) {
+    printf('16.1 pass Basic assoc works\n');
 
   } else {
-    printf('16.1 fail Basic 1\'16.1 fail Basic assoc fails\n');
+    printf('16.1 fail Basic assoc fails\n');
 
   };
 
-  if ( andBool(andBool(equalBox(cdr(assoc('Hello\'Hello', $assList)), boxString('world\'world')), equalBox(cdr(assoc('goodnight\'goodnight', $assList)), boxString('moon\'moon'))), equalBox(cdr(assoc('ohio\'ohio', $assList)), boxString('gozaimasu\'gozaimasu'))) ) {
-    printf('16.2 pass assoc 1\'16.2 pass assoc list\n');
+  if ( andBool(andBool(equalBox(cdr(assoc('Hello', $assList)), boxString('world')), equalBox(cdr(assoc('goodnight', $assList)), boxString('moon'))), equalBox(cdr(assoc('ohio', $assList)), boxString('gozaimasu'))) ) {
+    printf('16.2 pass assoc list\n');
 
   } else {
-    printf('16.2 fail assoc 1\'16.2 fail assoc list\n');
+    printf('16.2 fail assoc list\n');
 
   };
 
@@ -1394,10 +1080,10 @@ sub test17 {
   $l = cons(boxInt(1), cons(boxInt(2), cons(boxInt(3), undef)));
 
   if ( equalBox(car($l), boxInt(1)) ) {
-    printf('17. pass list li1\'17. pass list literal works\n');
+    printf('17. pass list literal works\n');
 
   } else {
-    printf('17. fail list li1\'17. fail list literal failed\n');
+    printf('17. fail list literal failed\n');
 
   };
 
@@ -1408,17 +1094,17 @@ sub test17 {
 
 sub test18 {
   my () = @_;
-  my $val1 = 'a\'a';
-my $val2 = 'b\'b';
+  my $val1 = 'a';
+my $val2 = 'b';
 my $l = undef;
 
-  $l = cons(boxString($val1), cons(boxString($val2), cons(boxString('c\'c'), undef)));
+  $l = cons(boxString($val1), cons(boxString($val2), cons(boxString('c'), undef)));
 
-  if ( equalList($l, cons(boxString('a\'a'), cons(boxString('b\'b'), cons(boxString('c\'c'), undef)))) ) {
-    printf('18. pass string 1\'18. pass string list constructor works\n');
+  if ( equalList($l, cons(boxString('a'), cons(boxString('b'), cons(boxString('c'), undef)))) ) {
+    printf('18. pass string list constructor works\n');
 
   } else {
-    printf('18. fail string 1\'18. fail string list constructor failed\n');
+    printf('18. fail string list constructor failed\n');
 
   };
 
@@ -1429,23 +1115,23 @@ my $l = undef;
 
 sub test19 {
   my () = @_;
-  my $val1 = 'a\'a';
-my $val2 = 'b\'b';
+  my $val1 = 'a';
+my $val2 = 'b';
 my $l = undef;
 my $revlist = undef;
 my $answer = undef;
 
-  $l = cons(boxString($val1), cons(boxString($val2), cons(boxString('c\'c'), undef)));
+  $l = cons(boxString($val1), cons(boxString($val2), cons(boxString('c'), undef)));
 
-  $answer = cons(boxString('c\'c'), cons(boxString($val2), cons(boxString($val1), undef)));
+  $answer = cons(boxString('c'), cons(boxString($val2), cons(boxString($val1), undef)));
 
   $revlist = reverseList($l);
 
   if ( equalList($answer, $revlist) ) {
-    printf('19. pass reverse1\'19. pass reverseList\n');
+    printf('19. pass reverseList\n');
 
   } else {
-    printf('19. fail reverse1\'19. fail reverseList\n');
+    printf('19. fail reverseList\n');
 
   };
 
@@ -1466,27 +1152,27 @@ sub concatenateLists {
 
 sub test20 {
   my () = @_;
-  my $val1 = 'a\'a';
-my $val2 = 'b\'b';
-my $val3 = 'c\'c';
+  my $val1 = 'a';
+my $val2 = 'b';
+my $val3 = 'c';
 my $l = undef;
 my $l2 = undef;
 my $l3 = undef;
 my $combined = undef;
 
-  $l = cons(boxString($val1), cons(boxString($val2), cons(boxString('c\'c'), undef)));
+  $l = cons(boxString($val1), cons(boxString($val2), cons(boxString('c'), undef)));
 
-  $l2 = cons(boxString('d\'d'), cons(boxString('e\'e'), cons(boxString('f\'f'), undef)));
+  $l2 = cons(boxString('d'), cons(boxString('e'), cons(boxString('f'), undef)));
 
-  $l3 = cons(boxString($val1), cons(boxString($val2), cons(boxString($val3), cons(boxString('d\'d'), cons(boxString('e\'e'), cons(boxString('f\'f'), undef))))));
+  $l3 = cons(boxString($val1), cons(boxString($val2), cons(boxString($val3), cons(boxString('d'), cons(boxString('e'), cons(boxString('f'), undef))))));
 
   $combined = concatenateLists($l, $l2);
 
   if ( equalList($l3, $combined) ) {
-    printf('21. pass concate2\'21. pass concatenateLists\n');
+    printf('21. pass concatenateLists\n');
 
   } else {
-    printf('21. fail concate2\'21. fail concatenateLists\n');
+    printf('21. fail concatenateLists\n');
 
   };
 
@@ -1497,21 +1183,21 @@ my $combined = undef;
 
 sub test21 {
   my () = @_;
-  my $val1 = 'a\'a';
-my $val2 = 'b\'b';
-my $val3 = 'c\'c';
+  my $val1 = 'a';
+my $val2 = 'b';
+my $val3 = 'c';
 my $l = undef;
 my $l2 = undef;
 
   $l = cons(boxString($val1), cons(boxString($val2), cons(boxString($val3), undef)));
 
-  $l2 = cons(boxString('a\'a'), cons(boxString('b\'b'), cons(boxString('c\'c'), undef)));
+  $l2 = cons(boxString('a'), cons(boxString('b'), cons(boxString('c'), undef)));
 
   if ( equalList($l, $l2) ) {
-    printf('21. pass equalLi2\'21. pass equalList\n');
+    printf('21. pass equalList\n');
 
   } else {
-    printf('21. fail equalLi2\'21. fail equalList\n');
+    printf('21. fail equalList\n');
 
   };
 
@@ -1527,29 +1213,29 @@ my $out = undef;
 my $replace = undef;
 my $correct = undef;
 
-  $original = cons(boxString(stringConcatenate('q\'q', 'log\'log')), cons(boxString('%s\'%s'), cons(boxString('hello\'hello'), undef)));
+  $original = cons(boxString(stringConcatenate('q', 'log')), cons(boxString('%s'), cons(boxString('hello'), undef)));
 
-  $replace = cons(boxString('fprintf\'fprintf'), cons(boxString('stderr\'stderr'), undef));
+  $replace = cons(boxString('fprintf'), cons(boxString('stderr'), undef));
 
-  $out = macrolist($original, stringConcatenate('q\'q', 'log\'log'), $replace);
+  $out = macrolist($original, stringConcatenate('q', 'log'), $replace);
 
-  $correct = cons(boxString('fprintf\'fprintf'), cons(boxString('stderr\'stderr'), cons(boxString('%s\'%s'), cons(boxString('hello\'hello'), undef))));
+  $correct = cons(boxString('fprintf'), cons(boxString('stderr'), cons(boxString('%s'), cons(boxString('hello'), undef))));
 
   if ( equalList($out, $correct) ) {
-    printf('22. pass macroLi2\'22. pass macroList\n');
+    printf('22. pass macroList\n');
 
   } else {
-    printf('22. fail macroLi2\'22. fail macroList\n');
+    printf('22. fail macroList\n');
 
-    printf('In: \'In: ');
+    printf('In: ');
 
     displayList($original, 0, $true);
 
-    printf('\nOut: \'\nOut: ');
+    printf('\nOut: ');
 
     displayList($out, 0, $true);
 
-    printf('\n\'\n');
+    printf('\n');
 
   };
 
@@ -1565,25 +1251,25 @@ my $out = undef;
 my $replace = undef;
 my $correct = undef;
 
-  $original = cons(boxString(stringConcatenate('q\'q', 'log\'log')), cons(boxString('%s\'%s'), cons(boxString('hello\'hello'), undef)));
+  $original = cons(boxString(stringConcatenate('q', 'log')), cons(boxString('%s'), cons(boxString('hello'), undef)));
 
-  $replace = cons(boxString('fprintf\'fprintf'), cons(boxString('stderr\'stderr'), undef));
+  $replace = cons(boxString('fprintf'), cons(boxString('stderr'), undef));
 
   $out = concatLists($original, $replace);
 
-  $correct = cons(boxString(stringConcatenate('q\'q', 'log\'log')), cons(boxString('%s\'%s'), cons(boxString('hello\'hello'), cons(boxString('fprintf\'fprintf'), cons(boxString('stderr\'stderr'), undef)))));
+  $correct = cons(boxString(stringConcatenate('q', 'log')), cons(boxString('%s'), cons(boxString('hello'), cons(boxString('fprintf'), cons(boxString('stderr'), undef)))));
 
   if ( equalList($out, $correct) ) {
-    printf('23. pass concatL2\'23. pass concatLists\n');
+    printf('23. pass concatLists\n');
 
   } else {
-    printf('23. fail concatL2\'23. fail concatLists\n');
+    printf('23. fail concatLists\n');
 
-    printf('In: \'In: ');
+    printf('In: ');
 
     displayList($original, 0, $true);
 
-    printf('\nOut: \'\nOut: ');
+    printf('\nOut: ');
 
     displayList($out, 0, $true);
 
@@ -1596,16 +1282,16 @@ my $correct = undef;
 
 sub test24 {
   my () = @_;
-  my $expected = 'a b c\'a b c';
-my $res = '\'';
+  my $expected = 'a b c';
+my $res = '';
 
-  $res = StringListJoin(cons(boxString('a\'a'), cons(boxString('b\'b'), cons(boxString('c\'c'), undef))), ' \' ');
+  $res = StringListJoin(cons(boxString('a'), cons(boxString('b'), cons(boxString('c'), undef))), ' ');
 
   if ( equalString($expected, $res) ) {
-    printf('24. pass StringL2\'24. pass StringListJoin\n');
+    printf('24. pass StringListJoin\n');
 
   } else {
-    printf('24. fail StringListJoin.  expected \'%s', got '%s'\n', $expected, $res);
+    printf('24. fail StringListJoin.  expected %s, got %s\n', $expected, $res);
 
   };
 
@@ -1616,22 +1302,22 @@ my $res = '\'';
 
 sub test25 {
   my () = @_;
-  my $expected = '( a b ) c d e\'( a b ) c d e';
-my $res = '\'';
-my $testsubstr = cons(boxString('c \'c '), cons(boxString('d \'d '), cons(boxString('e\'e'), undef)));
+  my $expected = '( a b ) c d e';
+my $res = '';
+my $testsubstr = cons(boxString('c '), cons(boxString('d '), cons(boxString('e'), undef)));
 my $input = undef;
 
-  $input = cons(boxString('a \'a '), cons(boxString('b \'b '), undef));
+  $input = cons(boxString('a '), cons(boxString('b '), undef));
 
   $input = cons($input, $testsubstr);
 
   $res = ListToString($input, 0, $true, $false);
 
   if ( equalString($expected, $res) ) {
-    printf('25. pass ListToS2\'25. pass ListToString\n');
+    printf('25. pass ListToString\n');
 
   } else {
-    printf('25. fail ListToString.  expected \'%s', got '%s'\n', $expected, $res);
+    printf('25. fail ListToString.  expected %s, got %s\n', $expected, $res);
 
   };
 
@@ -1642,20 +1328,20 @@ my $input = undef;
 
 sub test27 {
   my () = @_;
-  my $expected = 'a b c d e\'a b c d e';
-my $res = '\'';
-my $variable = cons(boxString('c \'c '), cons(boxString('d \'d '), undef));
+  my $expected = 'a b c d e';
+my $res = '';
+my $variable = cons(boxString('c '), cons(boxString('d '), undef));
 my $input = undef;
 
-  $input = cons(boxString('a \'a '), cons(boxString('b \'b '), cons(id($variable), cons(boxString('e\'e'), undef))));
+  $input = cons(boxString('a '), cons(boxString('b '), cons(id($variable), cons(boxString('e'), undef))));
 
   $res = ListToString(flatten($input), 0, $true, $false);
 
   if ( equalString($expected, $res) ) {
-    printf('27. pass Interpo2\'27. pass Interpolated List\n');
+    printf('27. pass Interpolated List\n');
 
   } else {
-    printf('27. fail Interpolated List.  expected \'%s', got '%s'\n', $expected, $res);
+    printf('27. fail Interpolated List.  expected %s, got %s\n', $expected, $res);
 
   };
 
@@ -1667,7 +1353,7 @@ my $input = undef;
 sub ansi3displays {
   my ($s) = @_;
   
-  printf('%s\'%s', $s);
+  printf('%s', $s);
 
 }
 
@@ -1681,13 +1367,13 @@ sub ansi3FunctionArgs {
     return;
 
   } else {
-    if ( equalString(stringify(first($tree)), '...\'...') ) {
-      printf('...\'...');
+    if ( equalString(stringify(first($tree)), '...') ) {
+      printf('...');
 
     } else {
       display(ansi3TypeMap(first($tree)));
 
-      ansi3displays(' \' ');
+      ansi3displays(' ');
 
       display(second($tree));
 
@@ -1695,7 +1381,7 @@ sub ansi3FunctionArgs {
 
     if ( isNil(cddr($tree)) ) {
     } else {
-      ansi3displays(', \', ');
+      ansi3displays(', ');
 
     };
 
@@ -1716,44 +1402,44 @@ sub ansi3Expression {
     if ( equal(1, listLength($tree)) ) {
       display(car($tree));
 
-      if ( equalBox(boxString('return\'return'), car($tree)) ) {
+      if ( equalBox(boxString('return'), car($tree)) ) {
       } else {
-        ansi3displays('()\'()');
+        ansi3displays('()');
 
       };
 
     } else {
       $thing = first($tree);
 
-      if ( equalBox(boxSymbol('get-struct\'get-struct'), $thing) ) {
-        printf('%s->%s\'%s->%s', stringify(second($tree)), stringify(third($tree)));
+      if ( equalBox(boxSymbol('get-struct'), $thing) ) {
+        printf('%s->%s', stringify(second($tree)), stringify(third($tree)));
 
       } else {
-        if ( equalBox(boxSymbol('new\'new'), $thing) ) {
-          printf('malloc(sizeof(%sm\'malloc(sizeof(%s))', stringify(third($tree)));
+        if ( equalBox(boxSymbol('new'), $thing) ) {
+          printf('malloc(sizeof(%s))', stringify(third($tree)));
 
         } else {
-          if ( equalBox(boxSymbol('passthrough\'passthrough'), $thing) ) {
-            printf('%s\'%s', stringify(second($tree)));
+          if ( equalBox(boxSymbol('passthrough'), $thing) ) {
+            printf('%s', stringify(second($tree)));
 
           } else {
-            if ( equalBox(boxSymbol('binop\'binop'), $thing) ) {
-              printf('(\'(');
+            if ( equalBox(boxSymbol('binop'), $thing) ) {
+              printf('(');
 
               ansi3Expression(third($tree), $indent);
 
-              printf(' %s \' %s ', stringify(second($tree)));
+              printf(' %s ', stringify(second($tree)));
 
               ansi3Expression(fourth($tree), $indent);
 
-              printf(')\')');
+              printf(')');
 
             } else {
-              printf('%s(\'%s(', stringify(ansi3FuncMap(car($tree))));
+              printf('%s(', stringify(ansi3FuncMap(car($tree))));
 
               ansi3RecurList(cdr($tree), $indent);
 
-              printf(')\')');
+              printf(')');
 
             };
 
@@ -1785,10 +1471,10 @@ sub ansi3RecurList {
     ansi3Expression(car($expr), $indent);
 
     if ( isNil(cdr($expr)) ) {
-      ansi3displays('\'');
+      ansi3displays('');
 
     } else {
-      ansi3displays(', \', ');
+      ansi3displays(', ');
 
       ansi3RecurList(cdr($expr), $indent);
 
@@ -1806,23 +1492,23 @@ sub ansi3If {
   
   newLine($indent);
 
-  ansi3displays('if ( \'if ( ');
+  ansi3displays('if ( ');
 
   ansi3Expression(second($node), 0);
 
-  ansi3displays(') {\') {');
+  ansi3displays(') {');
 
   ansi3Body(cdr(third($node)), add1($indent), $functionName);
 
   newLine($indent);
 
-  ansi3displays('} else {\'} else {');
+  ansi3displays('} else {');
 
   ansi3Body(cdr(fourth($node)), add1($indent), $functionName);
 
   newLine($indent);
 
-  ansi3displays('}\'}');
+  ansi3displays('}');
 
 }
 
@@ -1834,7 +1520,7 @@ sub ansi3SetStruct {
   
   newLine($indent);
 
-  printf('%s->%s = \'%s->%s = ', stringify(second($node)), stringify(third($node)));
+  printf('%s->%s = ', stringify(second($node)), stringify(third($node)));
 
   ansi3Expression(fourth($node), $indent);
 
@@ -1848,7 +1534,7 @@ sub ansi3GetStruct {
   
   newLine($indent);
 
-  printf('%s->%s\'%s->%s', stringify(first($node)), stringify(second($node)));
+  printf('%s->%s', stringify(first($node)), stringify(second($node)));
 
 }
 
@@ -1862,7 +1548,7 @@ sub ansi3Set {
 
   ansi3Expression(first(cdr($node)), $indent);
 
-  printf(' = \' = ');
+  printf(' = ');
 
   ansi3Expression(third($node), $indent);
 
@@ -1877,14 +1563,14 @@ sub ansi3Return {
   newLine($indent);
 
   if ( equal(listLength($node), 1) ) {
-    ansi3displays('return;\'return;');
+    ansi3displays('return;');
 
   } else {
-    ansi3displays('return \'return ');
+    ansi3displays('return ');
 
     ansi3Expression(cadr($node), $indent);
 
-    ansi3displays(';\';');
+    ansi3displays(';');
 
   };
 
@@ -1896,26 +1582,26 @@ sub ansi3Return {
 sub ansi3Statement {
   my ($node, $indent, $functionname) = @_;
   
-  if ( equalBox(boxString('set\'set'), first($node)) ) {
+  if ( equalBox(boxString('set'), first($node)) ) {
     ansi3Set($node, $indent);
 
   } else {
-    if ( equalBox(boxString('set-struct\'set-struct'), first($node)) ) {
+    if ( equalBox(boxString('set-struct'), first($node)) ) {
       ansi3SetStruct($node, $indent);
 
     } else {
-      if ( equalBox(boxString('if\'if'), first($node)) ) {
+      if ( equalBox(boxString('if'), first($node)) ) {
         ansi3If($node, $indent, $functionname);
 
       } else {
-        if ( equalBox(boxString('return\'return'), first($node)) ) {
+        if ( equalBox(boxString('return'), first($node)) ) {
           if ( inList(boxString($functionname), NoStackTrace_list()) ) {
           } else {
-            printf('\n\'\n');
+            printf('\n');
 
             printIndent($indent);
 
-            printf('%s\'%s', 'StackTraceMove(\S\'StackTraceMove(\"out\", \"\", \"\", \"\");\n');
+            printf('%s', 'StackTraceMove(\"out\", \"\", \"\", \"\");\n');
 
           };
 
@@ -1934,7 +1620,7 @@ sub ansi3Statement {
 
   };
 
-  ansi3displays(';\n\';\n');
+  ansi3displays(';\n');
 
 }
 
@@ -1957,10 +1643,10 @@ sub ansi3Body {
 
       if ( notBool($releaseMode) ) {
         if ( inList(boxString($functionName), NoTrace_list()) ) {
-          printf('//Function %s om/\'//Function %s omitted due to the no trace list\n', $functionName);
+          printf('//Function %s omitted due to the no trace list\n', $functionName);
 
         } else {
-          printf('\nif (globalTrac\\'\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n', stringify(getTagFail(car($code), boxString('filename\'filename'), boxString('Unknown file (noU\'Unknown file (not provided by parser)'))), stringify(getTagFail(car($code), boxString('line\'line'), boxString('Line missing\'Line missing'))));
+          printf('\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n', stringify(getTagFail(car($code), boxString('filename'), boxString('Unknown file (not provided by parser)'))), stringify(getTagFail(car($code), boxString('line'), boxString('Line missing'))));
 
         };
 
@@ -1972,7 +1658,7 @@ sub ansi3Body {
     if ( notBool($releaseMode) ) {
       printIndent($indent);
 
-      printf('%s\'%s', 'if (globalStepTri\'if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n');
+      printf('%s', 'if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n');
 
     } else {
     };
@@ -1998,11 +1684,11 @@ sub ansi3Declarations {
   } else {
     $decl = car($decls);
 
-    printf('%s %s = \'%s %s = ', stringify(ansi3TypeMap(first($decl))), stringify(second($decl)));
+    printf('%s %s = ', stringify(ansi3TypeMap(first($decl))), stringify(second($decl)));
 
     ansi3Expression(third($decl), $indent);
 
-    printf(';\n\';\n');
+    printf(';\n');
 
     ansi3Declarations(cdr($decls), $indent);
 
@@ -2027,35 +1713,35 @@ sub ansi3Function {
   } else {
     newLine(0);
 
-    printf('%s %s(\'%s %s(', stringify(ansi3TypeMap(first($node))), stringify(second($node)));
+    printf('%s %s(', stringify(ansi3TypeMap(first($node))), stringify(second($node)));
 
     ansi3FunctionArgs(third($node));
 
-    printf(') {\') {');
+    printf(') {');
 
     newLine(1);
 
     ansi3Declarations(cdr(fourth($node)), 1);
 
     if ( $releaseMode ) {
-      printf('\'');
+      printf('');
 
     } else {
       if ( inList($name, NoTrace_list()) ) {
       } else {
-        printf('\nif (globalTrac\\'\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n', stringify($name), stringify(getTag($name, boxString('filename\'filename'))), stringify(getTag($name, boxString('line\'line'))));
+        printf('\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n', stringify($name), stringify(getTag($name, boxString('filename'))), stringify(getTag($name, boxString('line'))));
 
       };
 
     };
 
     if ( $releaseMode ) {
-      printf('\'');
+      printf('');
 
     } else {
       if ( inList($name, NoStackTrace_list()) ) {
       } else {
-        printf('\n  StackTraceMo\\'\n  StackTraceMove(\"in\", \"%s\", \"%s\", \"%s\" );\n', stringify(getTag($name, boxString('filename\'filename'))), stringify($name), stringify(getTag($name, boxString('line\'line'))));
+        printf('\n  StackTraceMove(\"in\", \"%s\", \"%s\", \"%s\" );\n', stringify(getTag($name, boxString('filename'))), stringify($name), stringify(getTag($name, boxString('line'))));
 
       };
 
@@ -2063,7 +1749,7 @@ sub ansi3Function {
 
     ansi3Body(cdr(fifth($node)), 1, stringify($name));
 
-    printf('\n}\n\'\n}\n');
+    printf('\n}\n');
 
   };
 
@@ -2079,11 +1765,11 @@ sub ansi3ForwardDeclaration {
     return;
 
   } else {
-    printf('\n%s %s(\'\n%s %s(', stringify(ansi3TypeMap(first($node))), stringify(second($node)));
+    printf('\n%s %s(', stringify(ansi3TypeMap(first($node))), stringify(second($node)));
 
     ansi3FunctionArgs(third($node));
 
-    ansi3displays(');\');');
+    ansi3displays(');');
 
   };
 
@@ -2131,9 +1817,9 @@ sub ansi3Functions {
 sub ansi3Includes {
   my ($nodes) = @_;
   
-  printf('%s\'%s', '\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#include <unistd.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user\'s main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n');
+  printf('%s', '\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#include <unistd.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user\'s main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n');
 
-  printf('%s\'%s', 'void qlog(const v\'void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n');
+  printf('%s', 'void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n');
 
 }
 
@@ -2146,12 +1832,12 @@ sub ansi3TypeDecl {
   if ( greaterthan(listLength($l), 2) ) {
     printIndent(1);
 
-    printf('%s %s %s;\n\'%s %s %s;\n', stringify(second($l)), stringify(ansi3TypeMap(listLast($l))), stringify(first($l)));
+    printf('%s %s %s;\n', stringify(second($l)), stringify(ansi3TypeMap(listLast($l))), stringify(first($l)));
 
   } else {
     printIndent(1);
 
-    printf('%s %s;\n\'%s %s;\n', stringify(ansi3TypeMap(listLast($l))), stringify(car($l)));
+    printf('%s %s;\n', stringify(ansi3TypeMap(listLast($l))), stringify(car($l)));
 
   };
 
@@ -2192,7 +1878,7 @@ sub ansi3TypeMap {
   my ($aSym) = @_;
   my $symMap = undef;
 
-  $symMap = alistCons(boxSymbol('stringArray\'stringArray'), boxSymbol('char**\'char**'), alistCons(boxSymbol('string\'string'), boxSymbol('char*\'char*'), undef));
+  $symMap = alistCons(boxSymbol('stringArray'), boxSymbol('char**'), alistCons(boxSymbol('string'), boxSymbol('char*'), undef));
 
   if ( truthy(assoc(stringify($aSym), $symMap)) ) {
     return cdr(assoc(stringify($aSym), $symMap));
@@ -2211,8 +1897,8 @@ sub ansi3FuncMap {
   my ($aSym) = @_;
   my $symMap = undef;
 
-  if ( equalString('symbol\'symbol', boxType($aSym)) ) {
-    $symMap = alistCons(boxSymbol('=\'='), boxSymbol('equal\'equal'), alistCons(boxSymbol('sub-string\'sub-string'), boxSymbol('sub_string\'sub_string'), alistCons(boxSymbol('read-file\'read-file'), boxSymbol('read_file\'read_file'), alistCons(boxSymbol('write-file\'write-file'), boxSymbol('write_file\'write_file'), alistCons(boxSymbol('>\'>'), boxSymbol('greaterthan\'greaterthan'), alistCons(boxSymbol('string-length\'string-length'), boxSymbol('string_length\'string_length'), alistCons(boxSymbol('nil\'nil'), boxSymbol('NULL\'NULL'), undef)))))));
+  if ( equalString('symbol', boxType($aSym)) ) {
+    $symMap = alistCons(boxSymbol('='), boxSymbol('equal'), alistCons(boxSymbol('sub-string'), boxSymbol('sub_string'), alistCons(boxSymbol('read-file'), boxSymbol('read_file'), alistCons(boxSymbol('write-file'), boxSymbol('write_file'), alistCons(boxSymbol('>'), boxSymbol('greaterthan'), alistCons(boxSymbol('string-length'), boxSymbol('string_length'), alistCons(boxSymbol('nil'), boxSymbol('NULL'), undef)))))));
 
     if ( truthy(assoc(stringify($aSym), $symMap)) ) {
       return cdr(assoc(stringify($aSym), $symMap));
@@ -2236,14 +1922,14 @@ sub ansi3Type {
   my ($node) = @_;
   
   if ( isList(second($node)) ) {
-    printf('\ntypedef struct\\'\ntypedef struct %s {\n', stringify(first($node)));
+    printf('\ntypedef struct %s {\n', stringify(first($node)));
 
     ansi3Struct(second($node));
 
-    printf('\n} %s;\n\'\n} %s;\n', stringify(first($node)));
+    printf('\n} %s;\n', stringify(first($node)));
 
   } else {
-    ansi3displays('typedef \'typedef ');
+    ansi3displays('typedef ');
 
     ansi3TypeDecl($node);
 
@@ -2277,47 +1963,47 @@ sub ansi3Compile {
   my $tree = undef;
 my $replace = undef;
 
-  fprintf($stderr, '//Scanning file./\'//Scanning file...%s\n', $filename);
+  fprintf($stderr, '//Scanning file...%s\n', $filename);
 
   $tree = loadQuon($filename);
 
-  fprintf($stderr, '//Building sexpr/\'//Building sexpr\n');
+  fprintf($stderr, '//Building sexpr\n');
 
-  fprintf($stderr, 'Loading shim ansL\'Loading shim ansi3\n');
+  fprintf($stderr, 'Loading shim ansi3\n');
 
-  $tree = buildProg(cons(boxString('q/shims/ansi3.qoq\'q/shims/ansi3.qon'), getIncludes($tree)), getTypes($tree), getFunctions($tree));
+  $tree = buildProg(cons(boxString('q/shims/ansi3.qon'), getIncludes($tree)), getTypes($tree), getFunctions($tree));
 
-  fprintf($stderr, 'Loading all inclL\'Loading all includes\n');
+  fprintf($stderr, 'Loading all includes\n');
 
   $tree = loadIncludes($tree);
 
-  fprintf($stderr, 'Applying macros\A\'Applying macros\n');
+  fprintf($stderr, 'Applying macros\n');
 
   $tree = macrowalk($tree);
 
-  $replace = cons(boxSymbol('fprintf\'fprintf'), cons(boxSymbol('stderr\'stderr'), undef));
+  $replace = cons(boxSymbol('fprintf'), cons(boxSymbol('stderr'), undef));
 
-  $tree = macrolist($tree, stringConcatenate('q\'q', 'log\'log'), $replace);
+  $tree = macrolist($tree, stringConcatenate('q', 'log'), $replace);
 
-  fprintf($stderr, '//Printing progr/\'//Printing program\n');
+  fprintf($stderr, '//Printing program\n');
 
   ansi3Includes(cdr(first($tree)));
 
   ansi3Types(cdr(second($tree)));
 
-  ansi3displays('Box* globalStackB\'Box* globalStackTrace = NULL;\n');
+  ansi3displays('Box* globalStackTrace = NULL;\n');
 
-  ansi3displays('\nbool isNil(lis\\'\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n');
+  ansi3displays('\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n');
 
   ansi3ForwardDeclarations(cdr(third($tree)));
 
-  ansi3displays('\n\n//End forwar\\'\n\n//End forward declarations\n\n');
+  ansi3displays('\n\n//End forward declarations\n\n');
 
   ansi3Functions(cdr(third($tree)));
 
-  ansi3displays('\n\'\n');
+  ansi3displays('\n');
 
-  fprintf($stderr, '//Done printing /\'//Done printing program\n');
+  fprintf($stderr, '//Done printing program\n');
 
 }
 
@@ -2327,32 +2013,52 @@ my $replace = undef;
 sub dollar {
   my () = @_;
   
-  return '$\'$';
+  return '$';
 
 }
 
 
-# Function escapeSingleQuotes from line 8
+# Function singleQuote from line 8
+
+sub singleQuote {
+  my () = @_;
+  
+  return '\'';
+
+}
+
+
+# Function escapedSingleQuote from line 12
+
+sub escapedSingleQuote {
+  my () = @_;
+  
+  return '\\\'';
+
+}
+
+
+# Function escapeSingleQuotes from line 16
 
 sub escapeSingleQuotes {
   my ($s) = @_;
   
-  return stringReplace('\'', '\\\'', $s);
+  return stringReplace(singleQuote(), escapedSingleQuote(), $s);
 
 }
 
 
-# Function getGlobalVariables from line 12
+# Function getGlobalVariables from line 20
 
 sub getGlobalVariables {
   my () = @_;
   
-  return cons(id(boxSymbol('stderr\'stderr')), cons(id(boxSymbol('true\'true')), cons(id(boxSymbol('false\'false')), cons(id(boxSymbol('releaseMode\'releaseMode')), cons(id(boxSymbol('caller\'caller')), cons(id(boxSymbol('globalTrace\'globalTrace')), cons(id(boxSymbol('globalArgsCount\'globalArgsCount')), cons(id(boxSymbol('globalArgs\'globalArgs')), cons(id(boxSymbol('quonGlobalArgs\'quonGlobalArgs')), undef)))))))));
+  return cons(id(boxSymbol('stderr')), cons(id(boxSymbol('true')), cons(id(boxSymbol('false')), cons(id(boxSymbol('releaseMode')), cons(id(boxSymbol('caller')), cons(id(boxSymbol('globalTrace')), cons(id(boxSymbol('globalStepTrace')), cons(id(boxSymbol('globalStackTrace')), cons(id(boxSymbol('globalArgsCount')), cons(id(boxSymbol('globalArgs')), cons(id(boxSymbol('quonGlobalArgs')), undef)))))))))));
 
 }
 
 
-# Function collectVariables from line 16
+# Function collectVariables from line 24
 
 sub collectVariables {
   my ($args, $decls) = @_;
@@ -2370,63 +2076,67 @@ my $decl = undef;
 }
 
 
-# Function perlGlobalVariables from line 23
+# Function perlGlobalVariables from line 31
 
 sub perlGlobalVariables {
   my () = @_;
   
-  printf('our $globalArgsCo\'our $globalArgsCount;\n');
+  printf('our $globalArgsCount;\n');
 
-  printf('our $globalArgs;o\'our $globalArgs;\n');
+  printf('our $globalArgs;\n');
 
-  printf('our $releaseModeo\'our $releaseMode;\n');
+  printf('our $releaseMode;\n');
 
-  printf('our $globalTraceo\'our $globalTrace;\n');
+  printf('our $globalTrace;\n');
 
-  printf('our $caller;\n\'our $caller;\n');
+  printf('our $globalStepTrace;\n');
 
-  printf('our $false = 0;\o\'our $false = 0;\n');
+  printf('our $globalStackTrace;\n');
 
-  printf('our $true = 1;\no\'our $true = 1;\n');
+  printf('our $caller;\n');
 
-  printf('my $stderr = \\*m\'my $stderr = \\*STDERR;\n');
+  printf('our $false = 0;\n');
 
-  printf('our $quonGlobalAo\'our $quonGlobalArgs;\n');
+  printf('our $true = 1;\n');
+
+  printf('my $stderr = \\*STDERR;\n');
+
+  printf('our $quonGlobalArgs;\n');
 
 }
 
 
-# Function perlMainEntry from line 35
+# Function perlMainEntry from line 45
 
 sub perlMainEntry {
   my () = @_;
   
-  printf('\n# Main entry p\\'\n# Main entry point\n');
+  printf('\n# Main entry point\n');
 
-  printf('$globalArgsCount$\'$globalArgsCount = scalar(@ARGV);\n');
+  printf('$globalArgsCount = scalar(@ARGV);\n');
 
-  printf('$globalArgs = \\$\'$globalArgs = \\@ARGV;\n');
+  printf('$globalArgs = \\@ARGV;\n');
 
-  printf('$quonGlobalArgs $\'$quonGlobalArgs = [];\n');
+  printf('$quonGlobalArgs = [];\n');
 
-  printf('for my $arg (@$gf\'for my $arg (@$globalArgs) {\n');
+  printf('for my $arg (@$globalArgs) {\n');
 
-  printf('    push @$quonG \'    push @$quonGlobalArgs, {car => $arg, cdr => undef};\n');
+  printf('    push @$quonGlobalArgs, {car => $arg, cdr => undef};\n');
 
-  printf('}\n\'}\n');
+  printf('}\n');
 
-  printf('for (my $i = $#$f\'for (my $i = $#$quonGlobalArgs - 1; $i >= 0; $i--) {\n');
+  printf('for (my $i = $#$quonGlobalArgs - 1; $i >= 0; $i--) {\n');
 
-  printf('    $quonGlobalA \'    $quonGlobalArgs->[$i]->{cdr} = $quonGlobalArgs->[$i + 1];\n');
+  printf('    $quonGlobalArgs->[$i]->{cdr} = $quonGlobalArgs->[$i + 1];\n');
 
-  printf('}\n\'}\n');
+  printf('}\n');
 
-  printf('start();\n\'start();\n');
+  printf('start();\n');
 
 }
 
 
-# Function collectVariablesFromArgs from line 49
+# Function collectVariablesFromArgs from line 59
 
 sub collectVariablesFromArgs {
   my ($args) = @_;
@@ -2436,7 +2146,7 @@ sub collectVariablesFromArgs {
     return $variables;
 
   } else {
-    if ( equalString(stringify(first($args)), 'list\'list') ) {
+    if ( equalString(stringify(first($args)), 'list') ) {
       $variables = cons(second($args), $variables);
 
       return appendVariables($variables, collectVariablesFromArgs(cddr($args)));
@@ -2453,7 +2163,7 @@ sub collectVariablesFromArgs {
 }
 
 
-# Function collectVariablesFromDecls from line 62
+# Function collectVariablesFromDecls from line 72
 
 sub collectVariablesFromDecls {
   my ($decls) = @_;
@@ -2475,7 +2185,7 @@ my $decl = undef;
 }
 
 
-# Function appendVariables from line 71
+# Function appendVariables from line 81
 
 sub appendVariables {
   my ($vars1, $vars2) = @_;
@@ -2493,7 +2203,7 @@ sub appendVariables {
 }
 
 
-# Function perlFunctionArgs from line 80
+# Function perlFunctionArgs from line 90
 
 sub perlFunctionArgs {
   my ($tree) = @_;
@@ -2507,10 +2217,10 @@ sub perlFunctionArgs {
     display(second($tree));
 
     if ( isNil(cddr($tree)) ) {
-      printf('\'');
+      printf('');
 
     } else {
-      printf(', \', ');
+      printf(', ');
 
     };
 
@@ -2521,7 +2231,7 @@ sub perlFunctionArgs {
 }
 
 
-# Function perlExpression from line 90
+# Function perlExpression from line 100
 
 sub perlExpression {
   my ($tree, $indent, $variables) = @_;
@@ -2531,44 +2241,44 @@ sub perlExpression {
     if ( equal(1, listLength($tree)) ) {
       display(perlFuncMap(car($tree), $variables));
 
-      if ( equalBox(boxString('return\'return'), car($tree)) ) {
+      if ( equalBox(boxString('return'), car($tree)) ) {
       } else {
-        printf('()\'()');
+        printf('()');
 
       };
 
     } else {
       $thing = first($tree);
 
-      if ( equalBox(boxSymbol('get-struct\'get-struct'), $thing) ) {
-        printf('$%s->{%s}\'$%s->{%s}', stringify(second($tree)), stringify(third($tree)));
+      if ( equalBox(boxSymbol('get-struct'), $thing) ) {
+        printf('$%s->{%s}', stringify(second($tree)), stringify(third($tree)));
 
       } else {
-        if ( equalBox(boxSymbol('new\'new'), $thing) ) {
-          printf('{}\'{}');
+        if ( equalBox(boxSymbol('new'), $thing) ) {
+          printf('{}');
 
         } else {
-          if ( equalBox(boxSymbol('passthrough\'passthrough'), $thing) ) {
-            printf('%s\'%s', stringify(second($tree)));
+          if ( equalBox(boxSymbol('passthrough'), $thing) ) {
+            printf('%s', stringify(second($tree)));
 
           } else {
-            if ( equalBox(boxSymbol('binop\'binop'), $thing) ) {
-              printf('(\'(');
+            if ( equalBox(boxSymbol('binop'), $thing) ) {
+              printf('(');
 
               perlExpression(third($tree), $indent, $variables);
 
-              printf(' %s \' %s ', stringify(second($tree)));
+              printf(' %s ', stringify(second($tree)));
 
               perlExpression(fourth($tree), $indent, $variables);
 
-              printf(')\')');
+              printf(')');
 
             } else {
-              printf('%s(\'%s(', stringify(perlFuncMap(car($tree), $variables)));
+              printf('%s(', stringify(perlFuncMap(car($tree), $variables)));
 
               perlRecurList(cdr($tree), $indent, $variables);
 
-              printf(')\')');
+              printf(')');
 
             };
 
@@ -2581,8 +2291,8 @@ sub perlExpression {
     };
 
   } else {
-    if ( equalString('string\'string', boxType($tree)) ) {
-      printf('\'%s'', escapeSingleQuotes(stringify($tree)));
+    if ( equalString('string', boxType($tree)) ) {
+      printf('\'%s\'', escapeSingleQuotes(stringify($tree)));
 
     } else {
       display(perlFuncMap($tree, $variables));
@@ -2594,7 +2304,7 @@ sub perlExpression {
 }
 
 
-# Function perlRecurList from line 135
+# Function perlRecurList from line 145
 
 sub perlRecurList {
   my ($expr, $indent, $variables) = @_;
@@ -2606,10 +2316,10 @@ sub perlRecurList {
     perlExpression(car($expr), $indent, $variables);
 
     if ( isNil(cdr($expr)) ) {
-      printf('\'');
+      printf('');
 
     } else {
-      printf(', \', ');
+      printf(', ');
 
       perlRecurList(cdr($expr), $indent, $variables);
 
@@ -2620,35 +2330,35 @@ sub perlRecurList {
 }
 
 
-# Function perlStatement from line 145
+# Function perlStatement from line 155
 
 sub perlStatement {
   my ($node, $indent, $variables) = @_;
   
-  if ( equalBox(boxString('set\'set'), first($node)) ) {
+  if ( equalBox(boxString('set'), first($node)) ) {
     perlSet($node, $indent, $variables);
 
   } else {
-    if ( equalBox(boxString('set-struct\'set-struct'), first($node)) ) {
+    if ( equalBox(boxString('set-struct'), first($node)) ) {
       perlSetStruct($node, $indent, $variables);
 
     } else {
-      if ( equalBox(boxString('if\'if'), first($node)) ) {
+      if ( equalBox(boxString('if'), first($node)) ) {
         perlIf($node, $indent, $variables);
 
       } else {
-        if ( equalBox(boxString('return\'return'), first($node)) ) {
+        if ( equalBox(boxString('return'), first($node)) ) {
           newLine($indent);
 
-          printf('return\'return');
+          printf('return');
 
           if ( greaterthan(listLength($node), 1) ) {
-            printf(' \' ');
+            printf(' ');
 
             perlExpression(cadr($node), $indent, $variables);
 
           } else {
-            printf('\'');
+            printf('');
 
           };
 
@@ -2665,12 +2375,12 @@ sub perlStatement {
 
   };
 
-  printf(';\n\';\n');
+  printf(';\n');
 
 }
 
 
-# Function perlBody from line 170
+# Function perlBody from line 180
 
 sub perlBody {
   my ($tree, $indent, $variables) = @_;
@@ -2691,75 +2401,75 @@ sub perlBody {
 }
 
 
-# Function perlSet from line 179
+# Function perlSet from line 189
 
 sub perlSet {
   my ($node, $indent, $variables) = @_;
   
   newLine($indent);
 
-  printf('%s = \'%s = ', stringify(perlFuncMap(first(cdr($node)), $variables)));
+  printf('%s = ', stringify(perlFuncMap(first(cdr($node)), $variables)));
 
   perlExpression(third($node), $indent, $variables);
 
 }
 
 
-# Function perlSetStruct from line 185
+# Function perlSetStruct from line 195
 
 sub perlSetStruct {
   my ($node, $indent, $variables) = @_;
   
   newLine($indent);
 
-  printf('%s->{%s} = \'%s->{%s} = ', stringify(perlFuncMap(second($node), $variables)), stringify(third($node)));
+  printf('%s->{%s} = ', stringify(perlFuncMap(second($node), $variables)), stringify(third($node)));
 
   perlExpression(fourth($node), $indent, $variables);
 
 }
 
 
-# Function perlIf from line 193
+# Function perlIf from line 203
 
 sub perlIf {
   my ($node, $indent, $variables) = @_;
   
   newLine($indent);
 
-  printf('if ( \'if ( ');
+  printf('if ( ');
 
   perlExpression(second($node), 0, $variables);
 
-  printf(' ) {\' ) {');
+  printf(' ) {');
 
   perlBody(cdr(third($node)), add1($indent), $variables);
 
   newLine($indent);
 
-  printf('} else {\'} else {');
+  printf('} else {');
 
   perlBody(cdr(fourth($node)), add1($indent), $variables);
 
   newLine($indent);
 
-  printf('}\'}');
+  printf('}');
 
 }
 
 
-# Function perlGetStruct from line 208
+# Function perlGetStruct from line 218
 
 sub perlGetStruct {
   my ($node, $indent) = @_;
   
   newLine($indent);
 
-  printf('$%s->{%s}\'$%s->{%s}', stringify(first($node)), stringify(second($node)));
+  printf('$%s->{%s}', stringify(first($node)), stringify(second($node)));
 
 }
 
 
-# Function perlDeclarations from line 218
+# Function perlDeclarations from line 228
 
 sub perlDeclarations {
   my ($decls, $indent, $variables) = @_;
@@ -2771,11 +2481,11 @@ sub perlDeclarations {
   } else {
     $decl = car($decls);
 
-    printf('my $%s = \'my $%s = ', stringify(second($decl)));
+    printf('my $%s = ', stringify(second($decl)));
 
     perlExpression(third($decl), $indent, $variables);
 
-    printf(';\n\';\n');
+    printf(';\n');
 
     perlDeclarations(cdr($decls), $indent, $variables);
 
@@ -2784,7 +2494,7 @@ sub perlDeclarations {
 }
 
 
-# Function perlFunction from line 229
+# Function perlFunction from line 239
 
 sub perlFunction {
   my ($node) = @_;
@@ -2795,7 +2505,7 @@ my $decls = undef;
 
   $name = second($node);
 
-  printf('\n\n# Function %\\'\n\n# Function %s from line %s', stringify($name), stringify(getTag($name, boxString('line\'line'))));
+  printf('\n\n# Function %s from line %s', stringify($name), stringify(getTag($name, boxString('line'))));
 
   newLine(0);
 
@@ -2805,15 +2515,15 @@ my $decls = undef;
   } else {
     newLine(0);
 
-    printf('sub %s {\'sub %s {', stringify(second($node)));
+    printf('sub %s {', stringify(second($node)));
 
     newLine(1);
 
-    printf('my (\'my (');
+    printf('my (');
 
     perlFunctionArgs(third($node));
 
-    printf(') = @_;\') = @_;');
+    printf(') = @_;');
 
     newLine(1);
 
@@ -2827,14 +2537,14 @@ my $decls = undef;
 
     perlBody(cdr(fifth($node)), 1, $variables);
 
-    printf('\n}\n\'\n}\n');
+    printf('\n}\n');
 
   };
 
 }
 
 
-# Function perlForwardDeclaration from line 252
+# Function perlForwardDeclaration from line 262
 
 sub perlForwardDeclaration {
   my ($node) = @_;
@@ -2843,14 +2553,14 @@ sub perlForwardDeclaration {
     return;
 
   } else {
-    printf('sub %s;\'sub %s;', stringify(second($node)));
+    printf('sub %s;', stringify(second($node)));
 
   };
 
 }
 
 
-# Function perlForwardDeclarations from line 259
+# Function perlForwardDeclarations from line 269
 
 sub perlForwardDeclarations {
   my ($tree) = @_;
@@ -2868,7 +2578,7 @@ sub perlForwardDeclarations {
 }
 
 
-# Function perlFunctions from line 267
+# Function perlFunctions from line 277
 
 sub perlFunctions {
   my ($tree) = @_;
@@ -2886,27 +2596,27 @@ sub perlFunctions {
 }
 
 
-# Function perlIncludes from line 275
+# Function perlIncludes from line 285
 
 sub perlIncludes {
   my ($nodes) = @_;
   
-  printf('use strict;\n\'use strict;\n');
+  printf('use strict;\n');
 
-  printf('use warnings;\n\'use warnings;\n');
+  printf('use warnings;\n');
 
-  printf('use v5.10;\n\n\'use v5.10;\n\n');
+  printf('use v5.10;\n\n');
 
 }
 
 
-# Function perlTypeMap from line 282
+# Function perlTypeMap from line 292
 
 sub perlTypeMap {
   my ($aSym) = @_;
   my $symMap = undef;
 
-  $symMap = alistCons(boxSymbol('stringArray\'stringArray'), boxSymbol('array\'array'), alistCons(boxSymbol('string\'string'), boxSymbol('string\'string'), undef));
+  $symMap = alistCons(boxSymbol('stringArray'), boxSymbol('array'), alistCons(boxSymbol('string'), boxSymbol('string'), undef));
 
   if ( truthy(assoc(stringify($aSym), $symMap)) ) {
     return cdr(assoc(stringify($aSym), $symMap));
@@ -2919,18 +2629,18 @@ sub perlTypeMap {
 }
 
 
-# Function perlFuncMap from line 291
+# Function perlFuncMap from line 301
 
 sub perlFuncMap {
   my ($aSym, $variables) = @_;
   my $symMap = undef;
 
-  if ( equalString('symbol\'symbol', boxType($aSym)) ) {
+  if ( equalString('symbol', boxType($aSym)) ) {
     if ( inList($aSym, $variables) ) {
       return boxSymbol(stringConcatenate(dollar(), stringify($aSym)));
 
     } else {
-      $symMap = alistCons(boxSymbol('sub\'sub'), boxSymbol('subtract\'subtract'), alistCons(boxSymbol('=\'='), boxSymbol('equal\'equal'), alistCons(boxSymbol('sub-string\'sub-string'), boxSymbol('substr\'substr'), alistCons(boxSymbol('read-file\'read-file'), boxSymbol('read_file\'read_file'), alistCons(boxSymbol('write-file\'write-file'), boxSymbol('write_file\'write_file'), alistCons(boxSymbol('>\'>'), boxSymbol('greaterthan\'greaterthan'), alistCons(boxSymbol('string-length\'string-length'), boxSymbol('length\'length'), alistCons(boxSymbol('nil\'nil'), boxSymbol('undef\'undef'), undef))))))));
+      $symMap = alistCons(boxSymbol('sub'), boxSymbol('subtract'), alistCons(boxSymbol('='), boxSymbol('equal'), alistCons(boxSymbol('sub-string'), boxSymbol('substr'), alistCons(boxSymbol('read-file'), boxSymbol('read_file'), alistCons(boxSymbol('write-file'), boxSymbol('write_file'), alistCons(boxSymbol('>'), boxSymbol('greaterthan'), alistCons(boxSymbol('string-length'), boxSymbol('length'), alistCons(boxSymbol('nil'), boxSymbol('undef'), undef))))))));
 
       if ( truthy(assoc(stringify($aSym), $symMap)) ) {
         return cdr(assoc(stringify($aSym), $symMap));
@@ -2950,28 +2660,28 @@ sub perlFuncMap {
 }
 
 
-# Function perlCompile from line 312
+# Function perlCompile from line 322
 
 sub perlCompile {
   my ($filename) = @_;
   my $tree = undef;
 my $replace = undef;
 
-  fprintf($stderr, 'Scanning file...S\'Scanning file...%s\n', $filename);
+  fprintf($stderr, 'Scanning file...%s\n', $filename);
 
   $tree = loadQuon($filename);
 
-  fprintf($stderr, 'Building sexpr\nB\'Building sexpr\n');
+  fprintf($stderr, 'Building sexpr\n');
 
   $tree = loadIncludes($tree);
 
   $tree = macrowalk($tree);
 
-  $replace = cons(boxSymbol('fprintf\'fprintf'), cons(boxSymbol('stderr\'stderr'), undef));
+  $replace = cons(boxSymbol('fprintf'), cons(boxSymbol('stderr'), undef));
 
-  $tree = macrolist($tree, stringConcatenate('q\'q', 'log\'log'), $replace);
+  $tree = macrolist($tree, stringConcatenate('q', 'log'), $replace);
 
-  fprintf($stderr, 'Printing programP\'Printing program\n');
+  fprintf($stderr, 'Printing program\n');
 
   perlIncludes(cdr(first($tree)));
 
@@ -2981,7 +2691,7 @@ my $replace = undef;
 
   perlMainEntry();
 
-  printf('\n\'\n');
+  printf('\n');
 
 }
 
@@ -3024,7 +2734,7 @@ sub sexprTree {
         return emptyList();
 
       } else {
-        return setTag(boxString('line\'line'), getTagFail($b, boxString('line\'line'), boxInt(-1)), cons($b, sexprTree(cdr($l))));
+        return setTag(boxString('line'), getTagFail($b, boxString('line'), boxInt(-1)), cons($b, sexprTree(cdr($l))));
 
       };
 
@@ -3039,7 +2749,7 @@ sub sexprTree {
 
 sub loadQuon {
   my ($filename) = @_;
-  my $programStr = '\'';
+  my $programStr = '';
 my $tree = undef;
 
   $programStr = read_file($filename);
@@ -3081,28 +2791,85 @@ sub getFunctions {
 }
 
 
-# Function loadIncludes from line 51
+# Function insertInclude from line 50
+
+sub insertInclude {
+  my ($tree, $extra) = @_;
+  my $newProg = undef;
+my $includes = undef;
+my $types = undef;
+my $functions = undef;
+my $boxedExtra = undef;
+my $newIncludes = undef;
+
+  if ( isNil($tree) ) {
+    return undef;
+
+  } else {
+    $includes = getIncludes($tree);
+
+    $types = getTypes($tree);
+
+    $functions = getFunctions($tree);
+
+    $boxedExtra = cons(boxSymbol($extra), undef);
+
+    $newIncludes = cons($boxedExtra, $includes);
+
+    $newProg = buildProg($newIncludes, $types, $functions);
+
+    return $newProg;
+
+  };
+
+}
+
+
+# Function loadIncludes from line 72
 
 sub loadIncludes {
   my ($tree) = @_;
   my $newProg = undef;
-my $includeFile = '\'';
+my $includeFile = '';
 my $functionsCombined = undef;
 my $typesCombined = undef;
 my $includeTree = undef;
+my $contents = '';
 
   if ( greaterthan(listLength(getIncludes($tree)), 0) ) {
     $includeFile = stringify(first(getIncludes($tree)));
 
-    $includeTree = loadQuon($includeFile);
+    $contents = read_file($includeFile);
 
-    $functionsCombined = concatLists(getFunctions($includeTree), getFunctions($tree));
+    if ( equalString($contents, '') ) {
+      fprintf($stderr, 'Could not read include file: ');
 
-    $typesCombined = concatLists(getTypes($includeTree), getTypes($tree));
+      fprintf($stderr, $includeFile);
 
-    $newProg = buildProg(cdr(getIncludes($tree)), $typesCombined, $functionsCombined);
+      return undef;
 
-    return loadIncludes($newProg);
+    } else {
+      $includeTree = readSexpr($contents, $includeFile);
+
+      if ( isNil($includeTree) ) {
+        fprintf($stderr, 'Could not parse include file: ');
+
+        fprintf($stderr, $includeFile);
+
+        return undef;
+
+      } else {
+        $functionsCombined = concatLists(getFunctions($includeTree), getFunctions($tree));
+
+        $typesCombined = concatLists(getTypes($includeTree), getTypes($tree));
+
+        $newProg = buildProg(cdr(getIncludes($tree)), $typesCombined, $functionsCombined);
+
+        return loadIncludes($newProg);
+
+      };
+
+    };
 
   } else {
     return $tree;
@@ -3112,17 +2879,17 @@ my $includeTree = undef;
 }
 
 
-# Function buildProg from line 74
+# Function buildProg from line 104
 
 sub buildProg {
   my ($includes, $types, $functions) = @_;
   my $program = undef;
 
-  $includes = cons(boxSymbol('includes\'includes'), $includes);
+  $includes = cons(boxSymbol('includes'), $includes);
 
-  $types = cons(boxSymbol('types\'types'), $types);
+  $types = cons(boxSymbol('types'), $types);
 
-  $functions = cons(boxSymbol('functions\'functions'), $functions);
+  $functions = cons(boxSymbol('functions'), $functions);
 
   $program = cons($includes, cons($types, cons($functions, undef)));
 
@@ -3137,14 +2904,14 @@ sub car {
   my ($l) = @_;
   
   if ( isNil($l) ) {
-    printf('Cannot call car C\'Cannot call car on empty list!\n');
+    printf('Cannot call car on empty list!\n');
 
-    panic('Cannot call car C\'Cannot call car on empty list!\n');
+    panic('Cannot call car on empty list!\n');
 
     return undef;
 
   } else {
-    assertType('list\'list', $l, 18, 'q/lists.qon\'q/lists.qon');
+    assertType('list', $l, 18, 'q/lists.qon');
 
     if ( isNil($l->{car}) ) {
       return undef;
@@ -3165,9 +2932,9 @@ sub cdr {
   my ($l) = @_;
   
   if ( isEmpty($l) ) {
-    printf('Attempt to cdr aA\'Attempt to cdr an empty list!!!!\n');
+    printf('Attempt to cdr an empty list!!!!\n');
 
-    panic('Attempt to cdr aA\'Attempt to cdr an empty list!!!!\n');
+    panic('Attempt to cdr an empty list!!!!\n');
 
     return undef;
 
@@ -3191,7 +2958,7 @@ sub cons {
 
   $p->{car} = $data;
 
-  $p->{typ} = 'list\'list';
+  $p->{typ} = 'list';
 
   return $p;
 
@@ -3397,7 +3164,7 @@ sub isList {
     return $true;
 
   } else {
-    return equalString('list\'list', $b->{typ});
+    return equalString('list', $b->{typ});
 
   };
 
@@ -3462,7 +3229,7 @@ sub assoc {
   my ($searchTerm, $l) = @_;
   my $elem = undef;
 
-  assertType('list\'list', $l, 96, 'q/lists.qon\'q/lists.qon');
+  assertType('list', $l, 96, 'q/lists.qon');
 
   if ( isEmpty($l) ) {
     return boxBool($false);
@@ -3470,17 +3237,17 @@ sub assoc {
   } else {
     $elem = car($l);
 
-    assertType('list\'list', $elem, 102, 'q/lists.qon\'q/lists.qon');
+    assertType('list', $elem, 102, 'q/lists.qon');
 
     if ( isEmpty($elem) ) {
       return assoc($searchTerm, cdr($l));
 
     } else {
       if ( $false ) {
-        printf('Comparing %s andC\'Comparing %s and %s\n', $searchTerm, stringify(car($elem)));
+        printf('Comparing %s and %s\n', $searchTerm, stringify(car($elem)));
 
       } else {
-        printf('\'');
+        printf('');
 
       };
 
@@ -3504,27 +3271,27 @@ sub assoc {
 sub chooseBox {
   my ($aType) = @_;
   
-  if ( equalString('string\'string', $aType) ) {
-    return 'boxString\'boxString';
+  if ( equalString('string', $aType) ) {
+    return 'boxString';
 
   } else {
-    if ( equalString('symbol\'symbol', $aType) ) {
-      return 'boxSymbol\'boxSymbol';
+    if ( equalString('symbol', $aType) ) {
+      return 'boxSymbol';
 
     } else {
-      if ( equalString('bool\'bool', $aType) ) {
-        return 'boxBool\'boxBool';
+      if ( equalString('bool', $aType) ) {
+        return 'boxBool';
 
       } else {
-        if ( equalString('int\'int', $aType) ) {
-          return 'boxInt\'boxInt';
+        if ( equalString('int', $aType) ) {
+          return 'boxInt';
 
         } else {
-          if ( equalString('float\'float', $aType) ) {
-            return 'boxFloat\'boxFloat';
+          if ( equalString('float', $aType) ) {
+            return 'boxFloat';
 
           } else {
-            panic('Invalid type\'Invalid type');
+            panic('Invalid type');
 
           };
 
@@ -3536,7 +3303,7 @@ sub chooseBox {
 
   };
 
-  return '\'';
+  return '';
 
 }
 
@@ -3550,23 +3317,23 @@ sub mlistLiteral {
     return undef;
 
   } else {
-    if ( equalString('string\'string', boxType($b)) ) {
+    if ( equalString('string', boxType($b)) ) {
       return $b;
 
     } else {
-      if ( equalString('bool\'bool', boxType($b)) ) {
+      if ( equalString('bool', boxType($b)) ) {
         return $b;
 
       } else {
-        if ( equalString('int\'int', boxType($b)) ) {
+        if ( equalString('int', boxType($b)) ) {
           return $b;
 
         } else {
-          if ( equalString('symbol\'symbol', boxType($b)) ) {
+          if ( equalString('symbol', boxType($b)) ) {
             return boxString(unBoxSymbol($b));
 
           } else {
-            return boxString(stringConcatenate('Unsupported typeU\'Unsupported type in mlistLiteral: ', boxType($b)));
+            return boxString(stringConcatenate('Unsupported type in mlistLiteral: ', boxType($b)));
 
           };
 
@@ -3590,7 +3357,7 @@ my $ret = undef;
 my $elem = undef;
 
   if ( isNil($l) ) {
-    return cons(boxSymbol('nil\'nil'), undef);
+    return cons(boxSymbol('nil'), undef);
 
   } else {
     if ( isEmpty($l) ) {
@@ -3601,7 +3368,7 @@ my $elem = undef;
 
       $newlist = cons(boxString(chooseBox($elem->{typ})), cons(mlistLiteral(first($l)), $newlist));
 
-      $ret = cons(cons(boxSymbol('cons\'cons'), cons($newlist, doMultiList(cdr($l)))), undef);
+      $ret = cons(cons(boxSymbol('cons'), cons($newlist, doMultiList(cdr($l)))), undef);
 
       return $ret;
 
@@ -3618,47 +3385,47 @@ sub isInt {
   my ($val) = @_;
   my $firstLetter = substr($val, 0, 1);
 
-  if ( equalString('-\'-', $firstLetter) ) {
+  if ( equalString('-', $firstLetter) ) {
     return $true;
 
   } else {
-    if ( equalString('0\'0', $firstLetter) ) {
+    if ( equalString('0', $firstLetter) ) {
       return $true;
 
     } else {
-      if ( equalString('1\'1', $firstLetter) ) {
+      if ( equalString('1', $firstLetter) ) {
         return $true;
 
       } else {
-        if ( equalString('2\'2', $firstLetter) ) {
+        if ( equalString('2', $firstLetter) ) {
           return $true;
 
         } else {
-          if ( equalString('3\'3', $firstLetter) ) {
+          if ( equalString('3', $firstLetter) ) {
             return $true;
 
           } else {
-            if ( equalString('4\'4', $firstLetter) ) {
+            if ( equalString('4', $firstLetter) ) {
               return $true;
 
             } else {
-              if ( equalString('5\'5', $firstLetter) ) {
+              if ( equalString('5', $firstLetter) ) {
                 return $true;
 
               } else {
-                if ( equalString('6\'6', $firstLetter) ) {
+                if ( equalString('6', $firstLetter) ) {
                   return $true;
 
                 } else {
-                  if ( equalString('7\'7', $firstLetter) ) {
+                  if ( equalString('7', $firstLetter) ) {
                     return $true;
 
                   } else {
-                    if ( equalString('8\'8', $firstLetter) ) {
+                    if ( equalString('8', $firstLetter) ) {
                       return $true;
 
                     } else {
-                      if ( equalString('9\'9', $firstLetter) ) {
+                      if ( equalString('9', $firstLetter) ) {
                         return $true;
 
                       } else {
@@ -3706,31 +3473,31 @@ sub chooseBoxInterp {
   my $val = stringify($b);
 my $firstLetter = substr($val, 0, 1);
 
-  if ( equalString('string\'string', boxType($b)) ) {
-    return 'boxString\'boxString';
+  if ( equalString('string', boxType($b)) ) {
+    return 'boxString';
 
   } else {
-    if ( equalString('\"\'\"', $firstLetter) ) {
-      return 'boxString\'boxString';
+    if ( equalString('\"', $firstLetter) ) {
+      return 'boxString';
 
     } else {
-      if ( equalString('true\'true', $val) ) {
-        return 'boxBool\'boxBool';
+      if ( equalString('true', $val) ) {
+        return 'boxBool';
 
       } else {
-        if ( equalString('false\'false', $val) ) {
-          return 'boxBool\'boxBool';
+        if ( equalString('false', $val) ) {
+          return 'boxBool';
 
         } else {
           if ( isInt($val) ) {
-            return 'boxInt\'boxInt';
+            return 'boxInt';
 
           } else {
             if ( isInt($val) ) {
-              return 'boxFloat\'boxFloat';
+              return 'boxFloat';
 
             } else {
-              return 'id\'id';
+              return 'id';
 
             };
 
@@ -3756,7 +3523,7 @@ my $ret = undef;
 my $elem = undef;
 
   if ( isNil($l) ) {
-    return cons(boxSymbol('nil\'nil'), undef);
+    return cons(boxSymbol('nil'), undef);
 
   } else {
     if ( isEmpty($l) ) {
@@ -3767,7 +3534,7 @@ my $elem = undef;
 
       $newlist = cons(boxString(chooseBoxInterp($elem)), cons(first($l), $newlist));
 
-      $ret = cons(cons(boxSymbol('cons\'cons'), cons($newlist, doInterpolatedList(cdr($l)))), undef);
+      $ret = cons(cons(boxSymbol('cons'), cons($newlist, doInterpolatedList(cdr($l)))), undef);
 
       return $ret;
 
@@ -3786,12 +3553,12 @@ sub doStringList {
 my $ret = undef;
 
   if ( isNil($l) ) {
-    return cons(boxSymbol('nil\'nil'), undef);
+    return cons(boxSymbol('nil'), undef);
 
   } else {
-    $newlist = cons(boxSymbol('boxString\'boxString'), cons(first($l), $newlist));
+    $newlist = cons(boxSymbol('boxString'), cons(first($l), $newlist));
 
-    $ret = cons(cons(boxSymbol('cons\'cons'), cons($newlist, doStringList(cdr($l)))), undef);
+    $ret = cons(cons(boxSymbol('cons'), cons($newlist, doStringList(cdr($l)))), undef);
 
     return $ret;
 
@@ -3808,12 +3575,12 @@ sub doSymbolList {
 my $ret = undef;
 
   if ( isNil($l) ) {
-    return cons(boxSymbol('nil\'nil'), undef);
+    return cons(boxSymbol('nil'), undef);
 
   } else {
-    $newlist = cons(boxSymbol('boxSymbol\'boxSymbol'), cons(first($l), $newlist));
+    $newlist = cons(boxSymbol('boxSymbol'), cons(first($l), $newlist));
 
-    $ret = cons(cons(boxSymbol('cons\'cons'), cons($newlist, doSymbolList(cdr($l)))), undef);
+    $ret = cons(cons(boxSymbol('cons'), cons($newlist, doSymbolList(cdr($l)))), undef);
 
     return $ret;
 
@@ -3828,10 +3595,10 @@ sub doBoxList {
   my ($l) = @_;
   
   if ( isNil($l) ) {
-    return cons(boxSymbol('nil\'nil'), undef);
+    return cons(boxSymbol('nil'), undef);
 
   } else {
-    return cons(cons(boxSymbol('cons\'cons'), cons(first($l), doBoxList(cdr($l)))), undef);
+    return cons(cons(boxSymbol('cons'), cons(first($l), doBoxList(cdr($l)))), undef);
 
   };
 
@@ -3876,17 +3643,17 @@ sub display {
   my ($l) = @_;
   
   if ( isEmpty($l) ) {
-    printf('nil \'nil ');
+    printf('nil ');
 
     return;
 
   } else {
     if ( isList($l) ) {
-      printf('[\'[');
+      printf('[');
 
       displayList($l, 0, $true);
 
-      printf(']\']');
+      printf(']');
 
     } else {
       displayList($l, 0, $true);
@@ -3915,7 +3682,7 @@ sub displayList {
       } else {
         if ( $first ) {
         } else {
-          printf(' \' ');
+          printf(' ');
 
         };
 
@@ -3924,20 +3691,20 @@ sub displayList {
         if ( isList($val) ) {
           newLine($indent);
 
-          printf('%s\'%s', openBrace());
+          printf('%s', openBrace());
 
           displayList(car($l), add1($indent), $true);
 
-          printf('%s\'%s', closeBrace());
+          printf('%s', closeBrace());
 
           displayList(cdr($l), $indent, $false);
 
         } else {
-          if ( equalString('string\'string', $val->{typ}) ) {
-            printf('\"%s\"\'\"%s\"', unBoxString($val));
+          if ( equalString('string', $val->{typ}) ) {
+            printf('\"%s\"', unBoxString($val));
 
           } else {
-            printf('%s\'%s', stringify($val));
+            printf('%s', stringify($val));
 
           };
 
@@ -3948,11 +3715,11 @@ sub displayList {
       };
 
     } else {
-      if ( equalString('string\'string', $l->{typ}) ) {
-        printf('\"%s\"\'\"%s\"', unBoxString($l));
+      if ( equalString('string', $l->{typ}) ) {
+        printf('\"%s\"', unBoxString($l));
 
       } else {
-        printf('%s\'%s', stringify($l));
+        printf('%s', stringify($l));
 
       };
 
@@ -3970,12 +3737,12 @@ sub StringListJoinRec {
   my $val = undef;
 
   if ( isEmpty($l) ) {
-    return '\'';
+    return '';
 
   } else {
     if ( isList($l) ) {
       if ( isEmpty($l) ) {
-        return '\'';
+        return '';
 
       } else {
         if ( equal(listLength($l), 1) ) {
@@ -3989,7 +3756,7 @@ sub StringListJoinRec {
       };
 
     } else {
-      return '\'';
+      return '';
 
     };
 
@@ -4032,18 +3799,18 @@ sub ListToString {
   my $val = undef;
 
   if ( isEmpty($l) ) {
-    return '\'';
+    return '';
 
   } else {
     if ( isList($l) ) {
       if ( isEmpty($l) ) {
-        return '\'';
+        return '';
 
       } else {
         $val = car($l);
 
         if ( isList($val) ) {
-          return StringListJoin(cons(boxString(stringify(tern($withNewLines, boxString('\n\'\n'), boxString(stringIndent($indent))))), cons(boxString(openBrace()), cons(boxString(' \' '), cons(boxString(ListToString(car($l), add1($indent), $true, $withNewLines)), cons(boxString(closeBrace()), cons(boxString(' \' '), cons(boxString(ListToString(cdr($l), $indent, $false, $withNewLines)), undef))))))), '\'');
+          return StringListJoin(cons(boxString(stringify(tern($withNewLines, boxString('\n'), boxString(stringIndent($indent))))), cons(boxString(openBrace()), cons(boxString(' '), cons(boxString(ListToString(car($l), add1($indent), $true, $withNewLines)), cons(boxString(closeBrace()), cons(boxString(' '), cons(boxString(ListToString(cdr($l), $indent, $false, $withNewLines)), undef))))))), '');
 
         } else {
           return stringConcatenate(stringify($val), ListToString(cdr($l), $indent, $false, $withNewLines));
@@ -4198,31 +3965,31 @@ sub macrowalk {
 
   } else {
     if ( isList($l) ) {
-      if ( equalString(stringConcatenate('box\'box', 'List\'List'), stringify(car($l))) ) {
+      if ( equalString(stringConcatenate('box', 'List'), stringify(car($l))) ) {
         return car(doBoxList(cdr($l)));
 
       } else {
       };
 
-      if ( equalString(stringConcatenate('string\'string', 'List\'List'), stringify(car($l))) ) {
+      if ( equalString(stringConcatenate('string', 'List'), stringify(car($l))) ) {
         return car(doStringList(cdr($l)));
 
       } else {
       };
 
-      if ( equalString(stringConcatenate('symbol\'symbol', 'List\'List'), stringify(car($l))) ) {
+      if ( equalString(stringConcatenate('symbol', 'List'), stringify(car($l))) ) {
         return car(doSymbolList(cdr($l)));
 
       } else {
       };
 
-      if ( equalString(stringConcatenate('multi\'multi', 'List\'List'), stringify(car($l))) ) {
+      if ( equalString(stringConcatenate('multi', 'List'), stringify(car($l))) ) {
         return car(doMultiList(cdr($l)));
 
       } else {
       };
 
-      if ( equalString(stringConcatenate('makeL\'makeL', 'ist\'ist'), stringify(car($l))) ) {
+      if ( equalString(stringConcatenate('makeL', 'ist'), stringify(car($l))) ) {
         return car(doInterpolatedList(cdr($l)));
 
       } else {
@@ -4314,7 +4081,7 @@ sub filterVoid {
   } else {
     $token = car($l);
 
-    if ( equalString('void\'void', $token->{typ}) ) {
+    if ( equalString('void', $token->{typ}) ) {
       return filterVoid(cdr($l));
 
     } else {
@@ -4339,17 +4106,17 @@ sub filterTokens {
   } else {
     $token = car($l);
 
-    if ( equalString(boxType($token), 'symbol\'symbol') ) {
-      if ( equalString('__LINE__\'__LINE__', stringify($token)) ) {
-        return cons(getTagFail($token, boxString('line\'line'), boxInt(-1)), filterTokens(cdr($l)));
+    if ( equalString(boxType($token), 'symbol') ) {
+      if ( equalString('__LINE__', stringify($token)) ) {
+        return cons(getTagFail($token, boxString('line'), boxInt(-1)), filterTokens(cdr($l)));
 
       } else {
-        if ( equalString('__COLUMN__\'__COLUMN__', stringify($token)) ) {
-          return cons(getTagFail($token, boxString('column\'column'), boxInt(-1)), filterTokens(cdr($l)));
+        if ( equalString('__COLUMN__', stringify($token)) ) {
+          return cons(getTagFail($token, boxString('column'), boxInt(-1)), filterTokens(cdr($l)));
 
         } else {
-          if ( equalString('__FILE__\'__FILE__', stringify($token)) ) {
-            return cons(getTagFail($token, boxString('filename\'filename'), boxString('Unknown file\'Unknown file')), filterTokens(cdr($l)));
+          if ( equalString('__FILE__', stringify($token)) ) {
+            return cons(getTagFail($token, boxString('filename'), boxString('Unknown file')), filterTokens(cdr($l)));
 
           } else {
             return cons($token, filterTokens(cdr($l)));
@@ -4379,7 +4146,7 @@ sub finish_token {
   if ( greaterthan($len, 0) ) {
     $token = boxSymbol(substr($prog, $start, $len));
 
-    $token->{tag} = alistCons(boxString('filename\'filename'), boxString($filename), alistCons(boxString('column\'column'), boxInt($column), alistCons(boxString('line\'line'), boxInt($line), alistCons(boxString('totalCharPos\'totalCharPos'), boxInt($start), undef))));
+    $token->{tag} = alistCons(boxString('filename'), boxString($filename), alistCons(boxString('column'), boxInt($column), alistCons(boxString('line'), boxInt($line), alistCons(boxString('totalCharPos'), boxInt($start), undef))));
 
     return $token;
 
@@ -4395,15 +4162,15 @@ sub finish_token {
 
 sub readString {
   my ($prog, $start, $len) = @_;
-  my $token = '\'';
+  my $token = '';
 
   $token = substr($prog, sub1(add($start, $len)), 1);
 
-  if ( equalString('\"\'\"', $token) ) {
+  if ( equalString('\"', $token) ) {
     return substr($prog, $start, sub1($len));
 
   } else {
-    if ( equalString('\\\'\\', $token) ) {
+    if ( equalString('\\', $token) ) {
       return readString($prog, $start, add(2, $len));
 
     } else {
@@ -4420,10 +4187,10 @@ sub readString {
 
 sub readComment {
   my ($prog, $start, $len) = @_;
-  my $token = '\'';
+  my $token = '';
 
   if ( greaterthan(add($start, $len), length($prog)) ) {
-    return '\'';
+    return '';
 
   } else {
     $token = substr($prog, sub1(add($start, $len)), 1);
@@ -4446,19 +4213,19 @@ sub readComment {
 sub isWhiteSpace {
   my ($s) = @_;
   
-  if ( equalString(' \' ', $s) ) {
+  if ( equalString(' ', $s) ) {
     return $true;
 
   } else {
-    if ( equalString('\t\'\t', $s) ) {
+    if ( equalString('\t', $s) ) {
       return $true;
 
     } else {
-      if ( equalString('\n\'\n', $s) ) {
+      if ( equalString('\n', $s) ) {
         return $true;
 
       } else {
-        if ( equalString('\r\'\r', $s) ) {
+        if ( equalString('\r', $s) ) {
           return $true;
 
         } else {
@@ -4480,11 +4247,11 @@ sub isWhiteSpace {
 sub isLineBreak {
   my ($s) = @_;
   
-  if ( equalString('\n\'\n', $s) ) {
+  if ( equalString('\n', $s) ) {
     return $true;
 
   } else {
-    if ( equalString('\r\'\r', $s) ) {
+    if ( equalString('\r', $s) ) {
       return $true;
 
     } else {
@@ -4502,7 +4269,7 @@ sub isLineBreak {
 sub incForNewLine {
   my ($token, $val) = @_;
   
-  if ( equalString('\n\'\n', stringify($token)) ) {
+  if ( equalString('\n', stringify($token)) ) {
     return add1($val);
 
   } else {
@@ -4518,7 +4285,7 @@ sub incForNewLine {
 sub annotateReadPosition {
   my ($filename, $linecount, $column, $start, $newBox) = @_;
   
-  return setTag(boxString('filename\'filename'), boxString($filename), setTag(boxString('column\'column'), boxInt($column), setTag(boxString('line\'line'), boxInt($linecount), setTag(boxString('totalCharPos\'totalCharPos'), boxInt($start), $newBox))));
+  return setTag(boxString('filename'), boxString($filename), setTag(boxString('column'), boxInt($column), setTag(boxString('line'), boxInt($linecount), setTag(boxString('totalCharPos'), boxInt($start), $newBox))));
 
 }
 
@@ -4528,13 +4295,13 @@ sub annotateReadPosition {
 sub scan {
   my ($prog, $start, $len, $linecount, $column, $filename) = @_;
   my $token = undef;
-my $newString = '\'';
+my $newString = '';
 my $newBox = undef;
 
   if ( greaterthan(length($prog), subtract($start, subtract(0, $len))) ) {
     $token = boxSymbol(substr($prog, sub1(add($start, $len)), 1));
 
-    $token->{tag} = alistCons(boxString('totalCharPos\'totalCharPos'), boxInt($start), undef);
+    $token->{tag} = alistCons(boxString('totalCharPos'), boxInt($start), undef);
 
     if ( isOpenBrace($token) ) {
       return cons(finish_token($prog, $start, sub1($len), $linecount, $column, $filename), cons(boxSymbol(openBrace()), scan($prog, add1($start), 1, $linecount, add1($column), $filename)));
@@ -4548,11 +4315,11 @@ my $newBox = undef;
           return cons(finish_token($prog, $start, sub1($len), $linecount, $column, $filename), scan($prog, add($start, $len), 1, incForNewLine($token, $linecount), 0, $filename));
 
         } else {
-          if ( equalBox(boxSymbol(';\';'), $token) ) {
+          if ( equalBox(boxSymbol(';'), $token) ) {
             return scan($prog, add($start, add1(add1(length(readComment($prog, add1($start), $len))))), 1, add1($linecount), 0, $filename);
 
           } else {
-            if ( equalBox(boxSymbol('\"\'\"'), $token) ) {
+            if ( equalBox(boxSymbol('\"'), $token) ) {
               $newString = readString($prog, add1($start), $len);
 
               $newBox = annotateReadPosition($filename, $linecount, $column, $start, boxString($newString));
@@ -4589,7 +4356,7 @@ sub isOpenBrace {
     return $true;
 
   } else {
-    if ( equalBox(boxSymbol('[\'['), $b) ) {
+    if ( equalBox(boxSymbol('['), $b) ) {
       return $true;
 
     } else {
@@ -4611,7 +4378,7 @@ sub isCloseBrace {
     return $true;
 
   } else {
-    if ( equalBox(boxSymbol(']\']'), $b) ) {
+    if ( equalBox(boxSymbol(']'), $b) ) {
       return $true;
 
     } else {
@@ -4660,7 +4427,7 @@ sub skipList {
 sub makeNode {
   my ($name, $subname, $code, $children) = @_;
   
-  return cons(boxSymbol('node\'node'), alistCons(boxSymbol('line\'line'), getTagFail($code, boxString('line\'line'), boxInt(-1)), cons(cons(boxSymbol('name\'name'), boxString($name)), cons(cons(boxSymbol('subname\'subname'), boxString($subname)), cons(cons(boxSymbol('code\'code'), $code), alistCons(boxSymbol('children\'children'), $children, emptyList()))))));
+  return cons(boxSymbol('node'), alistCons(boxSymbol('line'), getTagFail($code, boxString('line'), boxInt(-1)), cons(cons(boxSymbol('name'), boxString($name)), cons(cons(boxSymbol('subname'), boxString($subname)), cons(cons(boxSymbol('code'), $code), alistCons(boxSymbol('children'), $children, emptyList()))))));
 
 }
 
@@ -4670,7 +4437,7 @@ sub makeNode {
 sub addToNode {
   my ($key, $val, $node) = @_;
   
-  return cons(boxSymbol('node\'node'), alistCons($key, $val, cdr($node)));
+  return cons(boxSymbol('node'), alistCons($key, $val, cdr($node)));
 
 }
 
@@ -4680,7 +4447,7 @@ sub addToNode {
 sub makeStatementNode {
   my ($name, $subname, $code, $children, $functionName) = @_;
   
-  return addToNode(boxSymbol('functionName\'functionName'), $functionName, makeNode($name, $subname, $code, $children));
+  return addToNode(boxSymbol('functionName'), $functionName, makeNode($name, $subname, $code, $children));
 
 }
 
@@ -4690,7 +4457,7 @@ sub makeStatementNode {
 sub declarationsof {
   my ($ass) = @_;
   
-  return cdr(assocPanic('declarations\'declarations', cdr($ass), 'Cons list has noC\'Cons list has no declarations key'));
+  return cdr(assocPanic('declarations', cdr($ass), 'Cons list has no declarations key'));
 
 }
 
@@ -4700,7 +4467,7 @@ sub declarationsof {
 sub codeof {
   my ($ass) = @_;
   
-  return cdr(assocPanic('code\'code', cdr($ass), 'Given cons list G\'Given cons list does not contain a code key'));
+  return cdr(assocPanic('code', cdr($ass), 'Given cons list does not contain a code key'));
 
 }
 
@@ -4710,7 +4477,7 @@ sub codeof {
 sub functionNameof {
   my ($ass) = @_;
   
-  return cdr(assoc('functionName\'functionName', cdr($ass)));
+  return cdr(assoc('functionName', cdr($ass)));
 
 }
 
@@ -4720,13 +4487,13 @@ sub functionNameof {
 sub nodeof {
   my ($ass) = @_;
   
-  if ( equalBox(boxBool($false), assoc('node\'node', cdr($ass))) ) {
-    printf('Given list does G\'Given list does not contain nodes');
+  if ( equalBox(boxBool($false), assoc('node', cdr($ass))) ) {
+    printf('Given list does not contain nodes');
 
     return boxBool($false);
 
   } else {
-    return cdr(assoc('node\'node', cdr($ass)));
+    return cdr(assoc('node', cdr($ass)));
 
   };
 
@@ -4738,7 +4505,7 @@ sub nodeof {
 sub lineof {
   my ($ass) = @_;
   
-  return cdr(assocFail('line\'line', cdr($ass), boxInt(-1)));
+  return cdr(assocFail('line', cdr($ass), boxInt(-1)));
 
 }
 
@@ -4748,7 +4515,7 @@ sub lineof {
 sub subnameof {
   my ($ass) = @_;
   
-  return cdr(assoc('subname\'subname', cdr($ass)));
+  return cdr(assoc('subname', cdr($ass)));
 
 }
 
@@ -4758,7 +4525,7 @@ sub subnameof {
 sub nameof {
   my ($ass) = @_;
   
-  return cdr(assoc('name\'name', cdr($ass)));
+  return cdr(assoc('name', cdr($ass)));
 
 }
 
@@ -4768,7 +4535,7 @@ sub nameof {
 sub childrenof {
   my ($ass) = @_;
   
-  return cdr(assoc('children\'children', cdr($ass)));
+  return cdr(assoc('children', cdr($ass)));
 
 }
 
@@ -4783,7 +4550,7 @@ sub isNode {
 
   } else {
     if ( isList($val) ) {
-      if ( equalBox(boxSymbol('node\'node'), car($val)) ) {
+      if ( equalBox(boxSymbol('node'), car($val)) ) {
         return $true;
 
       } else {
@@ -4806,7 +4573,7 @@ sub isNode {
 sub isLeaf {
   my ($n) = @_;
   
-  return equalBox(boxString('leaf\'leaf'), subnameof($n));
+  return equalBox(boxString('leaf'), subnameof($n));
 
 }
 
@@ -4816,7 +4583,7 @@ sub isLeaf {
 sub noStackTrace {
   my () = @_;
   
-  return cons(boxString('boxType\'boxType'), cons(boxString('stringify\'stringify'), cons(boxString('isEmpty\'isEmpty'), cons(boxString('unBoxString\'unBoxString'), cons(boxString('isList\'isList'), cons(boxString('unBoxBool\'unBoxBool'), cons(boxString('unBoxSymbol\'unBoxSymbol'), cons(boxString('equalBox\'equalBox'), cons(boxString('assoc\'assoc'), cons(boxString('inList\'inList'), cons(boxString('unBoxInt\'unBoxInt'), cons(boxString('listLength\'listLength'), cons(boxString('stroff\'stroff'), cons(boxString('troff\'troff'), cons(boxString('tron\'tron'), cons(boxString('stron\'stron'), cons(boxString('car\'car'), cons(boxString('cdr\'cdr'), cons(boxString('cons\'cons'), cons(boxString('stackTracePush\'stackTracePush'), cons(boxString('stackTracePop\'stackTracePop'), cons(boxString('assertType\'assertType'), cons(boxString('boxString\'boxString'), cons(boxString('boxSymbol\'boxSymbol'), cons(boxString('boxInt\'boxInt'), undef)))))))))))))))))))))))));
+  return cons(boxString('boxType'), cons(boxString('stringify'), cons(boxString('isEmpty'), cons(boxString('unBoxString'), cons(boxString('isList'), cons(boxString('unBoxBool'), cons(boxString('unBoxSymbol'), cons(boxString('equalBox'), cons(boxString('assoc'), cons(boxString('inList'), cons(boxString('unBoxInt'), cons(boxString('listLength'), cons(boxString('stroff'), cons(boxString('troff'), cons(boxString('tron'), cons(boxString('stron'), cons(boxString('car'), cons(boxString('cdr'), cons(boxString('cons'), cons(boxString('stackTracePush'), cons(boxString('stackTracePop'), cons(boxString('assertType'), cons(boxString('boxString'), cons(boxString('boxSymbol'), cons(boxString('boxInt'), undef)))))))))))))))))))))))));
 
 }
 
@@ -4825,29 +4592,37 @@ sub noStackTrace {
 
 sub treeCompile {
   my ($filename) = @_;
-  my $programStr = '\'';
+  my $programStr = '';
 my $tree = undef;
 
   $programStr = read_file($filename);
 
-  $tree = readSexpr($programStr, $filename);
+  if ( equalString($programStr, '') ) {
+    printf('Error: Could not read file \'%s\'\n', $filename);
 
-  return $tree;
+    return undef;
+
+  } else {
+    $tree = readSexpr($programStr, $filename);
+
+    return $tree;
+
+  };
 
 }
 
 
-# Function mergeIncludes from line 339
+# Function mergeIncludes from line 346
 
 sub mergeIncludes {
   my ($program) = @_;
   
-  return merge_recur(childrenof(cdr(cdr(assocPanic('includes\'includes', $program, 'Program lacks inP\'Program lacks include section')))), $program);
+  return merge_recur(childrenof(cdr(cdr(assocPanic('includes', $program, 'Program lacks include section')))), $program);
 
 }
 
 
-# Function merge_recur from line 346
+# Function merge_recur from line 353
 
 sub merge_recur {
   my ($incs, $program) = @_;
@@ -4863,7 +4638,7 @@ sub merge_recur {
 }
 
 
-# Function mergeInclude from line 354
+# Function mergeInclude from line 361
 
 sub mergeInclude {
   my ($inc, $program) = @_;
@@ -4883,27 +4658,27 @@ my $types = undef;
     return $program;
 
   } else {
-    $functions = childrenof(cdr(assocPanic('functions\'functions', $inc, 'Included file haI\'Included file has no functions section')));
+    $functions = childrenof(cdr(assocPanic('functions', $inc, 'Included file has no functions section')));
 
-    $oldfunctionsnode = cdr(assocPanic('functions\'functions', $program, 'Current module hC\'Current module has no functions section'));
+    $oldfunctionsnode = cdr(assocPanic('functions', $program, 'Current module has no functions section'));
 
     $oldfunctions = childrenof($oldfunctionsnode);
 
     $newfunctions = concatLists($functions, $oldfunctions);
 
-    $newFunctionNode = cons(boxSymbol('node\'node'), alistCons(boxSymbol('children\'children'), $newfunctions, cdr($oldfunctionsnode)));
+    $newFunctionNode = cons(boxSymbol('node'), alistCons(boxSymbol('children'), $newfunctions, cdr($oldfunctionsnode)));
 
-    $types = childrenof(cdr(assocPanic('types\'types', $inc, 'Included file haI\'Included file has no types section')));
+    $types = childrenof(cdr(assocPanic('types', $inc, 'Included file has no types section')));
 
-    $oldtypesnode = cdr(assocPanic('types\'types', $program, 'Current module hC\'Current module has no types section'));
+    $oldtypesnode = cdr(assocPanic('types', $program, 'Current module has no types section'));
 
     $oldtypes = childrenof($oldtypesnode);
 
     $newtypes = concatLists($types, $oldtypes);
 
-    $newTypeNode = cons(boxSymbol('node\'node'), alistCons(boxSymbol('children\'children'), $newtypes, cdr($oldtypesnode)));
+    $newTypeNode = cons(boxSymbol('node'), alistCons(boxSymbol('children'), $newtypes, cdr($oldtypesnode)));
 
-    $newProgram = alistCons(boxString('functions\'functions'), $newFunctionNode, alistCons(boxString('types\'types'), $newTypeNode, alistCons(boxString('includes\'includes'), cons(boxSymbol('includes\'includes'), undef), $newProgram)));
+    $newProgram = alistCons(boxString('functions'), $newFunctionNode, alistCons(boxString('types'), $newTypeNode, alistCons(boxString('includes'), cons(boxSymbol('includes'), undef), $newProgram)));
 
     return $newProgram;
 
@@ -4961,9 +4736,9 @@ sub clone {
   $newb = makeBox();
 
   if ( isNil($newb) ) {
-    printf('clone: newb is nc\'clone: newb is nil\n');
+    printf('clone: newb is nil\n');
 
-    panic('clone: newb is nc\'clone: newb is nil');
+    panic('clone: newb is nil');
 
     return $newb;
 
@@ -5045,7 +4820,7 @@ sub newVoid {
 
   $newb->{voi} = $true;
 
-  $newb->{typ} = 'void\'void';
+  $newb->{typ} = 'void';
 
   return $newb;
 
@@ -5057,7 +4832,7 @@ sub newVoid {
 sub stackDump {
   my () = @_;
   
-  printf('\'');
+  printf('');
 
 }
 
@@ -5067,7 +4842,7 @@ sub stackDump {
 sub nop {
   my () = @_;
   
-  printf('\'');
+  printf('');
 
 }
 
@@ -5081,16 +4856,16 @@ sub equalBox {
     return $false;
 
   } else {
-    if ( equalString('string\'string', boxType($a)) ) {
+    if ( equalString('string', boxType($a)) ) {
       return equalString(unBoxString($a), stringify($b));
 
     } else {
-      if ( equalString('bool\'bool', boxType($a)) ) {
+      if ( equalString('bool', boxType($a)) ) {
         return andBool(unBoxBool($a), unBoxBool($b));
 
       } else {
-        if ( equalString('symbol\'symbol', boxType($a)) ) {
-          if ( equalString('symbol\'symbol', boxType($b)) ) {
+        if ( equalString('symbol', boxType($a)) ) {
+          if ( equalString('symbol', boxType($b)) ) {
             return equalString(unBoxSymbol($a), unBoxSymbol($b));
 
           } else {
@@ -5099,7 +4874,7 @@ sub equalBox {
           };
 
         } else {
-          if ( equalString('int\'int', boxType($a)) ) {
+          if ( equalString('int', boxType($a)) ) {
             return equal(unBoxInt($a), unBoxInt($b));
 
           } else {
@@ -5123,7 +4898,7 @@ sub equalBox {
 sub openBrace {
   my () = @_;
   
-  return '(\'(';
+  return '(';
 
 }
 
@@ -5133,7 +4908,7 @@ sub openBrace {
 sub closeBrace {
   my () = @_;
   
-  return ')\')';
+  return ')';
 
 }
 
@@ -5157,7 +4932,7 @@ sub makeBox {
   $b = {};
 
   if ( isNil($b) ) {
-    panic('failed to createf\'failed to create box!');
+    panic('failed to create box!');
 
   } else {
   };
@@ -5170,7 +4945,7 @@ sub makeBox {
 
   $b->{lis} = undef;
 
-  $b->{typ} = 'None - error!\'None - error!';
+  $b->{typ} = 'None - error!';
 
   return $b;
 
@@ -5199,7 +4974,7 @@ sub boxString {
 
   $b->{lengt} = length($s);
 
-  $b->{typ} = 'string\'string';
+  $b->{typ} = 'string';
 
   return $b;
 
@@ -5214,7 +4989,7 @@ sub boxSymbol {
 
   $b = boxString($s);
 
-  $b->{typ} = 'symbol\'symbol';
+  $b->{typ} = 'symbol';
 
   return $b;
 
@@ -5231,7 +5006,7 @@ sub boxBool {
 
   $b->{boo} = $boo;
 
-  $b->{typ} = 'bool\'bool';
+  $b->{typ} = 'bool';
 
   return $b;
 
@@ -5248,7 +5023,7 @@ sub boxInt {
 
   $b->{i} = $val;
 
-  $b->{typ} = 'int\'int';
+  $b->{typ} = 'int';
 
   return $b;
 
@@ -5261,7 +5036,7 @@ sub assertType {
   my ($atype, $abox, $line, $file) = @_;
   
   if ( isNil($abox) ) {
-    if ( equalString($atype, 'nil\'nil') ) {
+    if ( equalString($atype, 'nil') ) {
       return;
 
     } else {
@@ -5274,17 +5049,17 @@ sub assertType {
       return;
 
     } else {
-      printf('Assertion failure at line %d, in file %s: provided value is not a \'%s'!  It was actually '%s'. Contents:', $line, $file, $atype, boxType($abox));
+      printf('Assertion failure at line %d, in file %s: provided value is not a \'%s\'!  It was actually \'%s\'. Contents:', $line, $file, $atype, boxType($abox));
 
       display($abox);
 
-      printf('\n\'\n');
+      printf('\n');
 
-      display(cons(boxString('Token may have bT\'Token may have been read from '), cons(boxString(stringify(getTagFail($abox, boxString('filename\'filename'), boxString('source file not s\'source file not found')))), cons(boxString(':\':'), cons(boxString(stringify(getTagFail($abox, boxString('line\'line'), boxString('source line not s\'source line not found')))), undef)))));
+      display(cons(boxString('Token may have been read from '), cons(boxString(stringify(getTagFail($abox, boxString('filename'), boxString('source file not found')))), cons(boxString(':'), cons(boxString(stringify(getTagFail($abox, boxString('line'), boxString('source line not found')))), undef)))));
 
       StackTracePrint();
 
-      panic('Invalid type!\'Invalid type!');
+      panic('Invalid type!');
 
     };
 
@@ -5298,7 +5073,7 @@ sub assertType {
 sub unBoxString {
   my ($b) = @_;
   
-  assertType('string\'string', $b, 177, 'q/base.qon\'q/base.qon');
+  assertType('string', $b, 177, 'q/base.qon');
 
   return $b->{str};
 
@@ -5341,10 +5116,10 @@ sub stringify_rec {
   my ($b) = @_;
   
   if ( isNil($b) ) {
-    return '\'';
+    return '';
 
   } else {
-    return stringConcatenate(stringify(car($b)), stringConcatenate(' \' ', stringify_rec(cdr($b))));
+    return stringConcatenate(stringify(car($b)), stringConcatenate(' ', stringify_rec(cdr($b))));
 
   };
 
@@ -5357,36 +5132,36 @@ sub stringify {
   my ($b) = @_;
   
   if ( isNil($b) ) {
-    return '()\'()';
+    return '()';
 
   } else {
-    if ( equalString('string\'string', boxType($b)) ) {
+    if ( equalString('string', boxType($b)) ) {
       return unBoxString($b);
 
     } else {
-      if ( equalString('bool\'bool', boxType($b)) ) {
+      if ( equalString('bool', boxType($b)) ) {
         if ( unBoxBool($b) ) {
-          return 'true\'true';
+          return 'true';
 
         } else {
-          return 'false\'false';
+          return 'false';
 
         };
 
       } else {
-        if ( equalString('int\'int', boxType($b)) ) {
+        if ( equalString('int', boxType($b)) ) {
           return intToString(unBoxInt($b));
 
         } else {
-          if ( equalString('symbol\'symbol', boxType($b)) ) {
+          if ( equalString('symbol', boxType($b)) ) {
             return unBoxSymbol($b);
 
           } else {
-            if ( equalString('list\'list', boxType($b)) ) {
-              return stringConcatenate('(\'(', stringConcatenate(stringify(car($b)), stringConcatenate(' \' ', stringConcatenate(stringify_rec(cdr($b)), ')\')'))));
+            if ( equalString('list', boxType($b)) ) {
+              return stringConcatenate('(', stringConcatenate(stringify(car($b)), stringConcatenate(' ', stringConcatenate(stringify_rec(cdr($b)), ')'))));
 
             } else {
-              return stringConcatenate('Unsupported typeU\'Unsupported type in stringify: ', boxType($b));
+              return stringConcatenate('Unsupported type in stringify: ', boxType($b));
 
             };
 
@@ -5425,14 +5200,14 @@ sub getTag {
   my ($aBox, $key) = @_;
   
   if ( $false ) {
-    printf('Getting %s from:G\'Getting %s from: ', stringify($key));
+    printf('Getting %s from: ', stringify($key));
 
     display(alistKeys($aBox->{tag}));
 
-    printf('\n\'\n');
+    printf('\n');
 
   } else {
-    printf('\'');
+    printf('');
 
   };
 
@@ -5502,7 +5277,7 @@ sub assocPanic {
 
   };
 
-  panic('Inconceivable\'Inconceivable');
+  panic('Inconceivable');
 
   return undef;
 
@@ -5526,7 +5301,7 @@ sub setTag {
 sub locPanic {
   my ($file, $line, $message) = @_;
   
-  printf('%s %s:%s\n\'%s %s:%s\n', $file, $line, $message);
+  printf('%s %s:%s\n', $file, $line, $message);
 
   panic($message);
 
@@ -5548,7 +5323,7 @@ sub truthy {
 sub isNotFalse {
   my ($aVal) = @_;
   
-  if ( equalString(boxType($aVal), 'bool\'bool') ) {
+  if ( equalString(boxType($aVal), 'bool') ) {
     if ( unBoxBool($aVal) ) {
       return $true;
 
@@ -5596,7 +5371,7 @@ sub listLast {
 sub newLine {
   my ($indent) = @_;
   
-  printf('\n\'\n');
+  printf('\n');
 
   printIndent($indent);
 
@@ -5609,7 +5384,7 @@ sub printIndent {
   my ($ii) = @_;
   
   if ( greaterthan($ii, 0) ) {
-    printf('  \'  ');
+    printf('  ');
 
     printIndent(sub1($ii));
 
@@ -5627,10 +5402,10 @@ sub stringIndent {
   my ($ii) = @_;
   
   if ( greaterthan($ii, 0) ) {
-    return stringConcatenate('  \'  ', stringIndent(sub1($ii)));
+    return stringConcatenate('  ', stringIndent(sub1($ii)));
 
   } else {
-    return '\'';
+    return '';
 
   };
 
@@ -5652,7 +5427,7 @@ sub listIndent {
 sub listNewLine {
   my ($ii) = @_;
   
-  return cons(id(boxString(stringConcatenate('\n\'\n', stringIndent($ii)))), undef);
+  return cons(id(boxString(stringConcatenate('\n', stringIndent($ii)))), undef);
 
 }
 
@@ -5698,7 +5473,7 @@ sub troff {
 sub stron {
   my () = @_;
   
-  globalStepTrace = $true;
+  $globalStepTrace = $true;
 
 }
 
@@ -5708,7 +5483,7 @@ sub stron {
 sub stroff {
   my () = @_;
   
-  globalStepTrace = $false;
+  $globalStepTrace = $false;
 
 }
 
@@ -5718,11 +5493,11 @@ sub stroff {
 sub StackTraceMove {
   my ($direction, $filename, $fname, $line) = @_;
   
-  if ( equalString($direction, 'in\'in') ) {
-    globalStackTrace = cons(cons(boxString($filename), cons(boxString($line), cons(boxString($fname), undef))), globalStackTrace);
+  if ( equalString($direction, 'in') ) {
+    $globalStackTrace = cons(cons(boxString($filename), cons(boxString($line), cons(boxString($fname), undef))), $globalStackTrace);
 
   } else {
-    globalStackTrace = cdr(globalStackTrace);
+    $globalStackTrace = cdr($globalStackTrace);
 
   };
 
@@ -5734,13 +5509,13 @@ sub StackTraceMove {
 sub StackTracePrint {
   my () = @_;
   
-  printf('Stack trace:\n\'Stack trace:\n');
+  printf('Stack trace:\n');
 
-  if ( isNil(globalStackTrace) ) {
-    printf('  <empty>\n\'  <empty>\n');
+  if ( isNil($globalStackTrace) ) {
+    printf('  <empty>\n');
 
   } else {
-    StackTracePrintHelper(globalStackTrace);
+    StackTracePrintHelper($globalStackTrace);
 
   };
 
@@ -5752,11 +5527,11 @@ sub StackTracePrint {
 sub StackTracePrintHelper {
   my ($stack) = @_;
   my $file = stringify(first(car($stack)));
-my $line = '\'';
-my $func = '\'';
+my $line = '';
+my $func = '';
 
   if ( isNil($stack) ) {
-    printf('  <end>\n\'  <end>\n');
+    printf('  <end>\n');
 
     return;
 
@@ -5767,7 +5542,7 @@ my $func = '\'';
 
     $func = stringify(third(first($stack)));
 
-    printf('  %s:%s %s\n\'  %s:%s %s\n', $file, $line, $func);
+    printf('  %s:%s %s\n', $file, $line, $func);
 
     StackTracePrintHelper(cdr($stack));
 
@@ -5781,7 +5556,7 @@ my $func = '\'';
 sub NoStackTrace_list {
   my () = @_;
   
-  return cons(boxString('StackTraceMove\'StackTraceMove'), cons(boxString('StackTracePrint\'StackTracePrint'), cons(boxString('StackTracePrintHS\'StackTracePrintHelper'), cons(boxString('NoStackTrace_lisN\'NoStackTrace_list'), cons(boxString('car\'car'), cons(boxString('cdr\'cdr'), cons(boxString('cons\'cons'), cons(boxString('set\'set'), cons(boxString('boxString\'boxString'), cons(boxString('makePair\'makePair'), cons(boxString('set-struct\'set-struct'), cons(boxString('display\'display'), cons(boxString('list\'list'), cons(boxString('assertType\'assertType'), cons(boxString('isEmpty\'isEmpty'), cons(boxString('isNil\'isNil'), cons(boxString('get-struct\'get-struct'), cons(boxString('equalString\'equalString'), cons(boxString('binop\'binop'), cons(boxString('strcmp\'strcmp'), cons(boxString('main\'main'), cons(boxString('makeBox\'makeBox'), cons(boxString('string_length\'string_length'), cons(boxString('boxType\'boxType'), cons(boxString('displayList\'displayList'), cons(boxString('newLine\'newLine'), cons(boxString('panic\'panic'), undef)))))))))))))))))))))))))));
+  return cons(boxString('StackTraceMove'), cons(boxString('StackTracePrint'), cons(boxString('StackTracePrintHelper'), cons(boxString('NoStackTrace_list'), cons(boxString('car'), cons(boxString('cdr'), cons(boxString('cons'), cons(boxString('set'), cons(boxString('boxString'), cons(boxString('makePair'), cons(boxString('set-struct'), cons(boxString('display'), cons(boxString('list'), cons(boxString('assertType'), cons(boxString('isEmpty'), cons(boxString('isNil'), cons(boxString('get-struct'), cons(boxString('equalString'), cons(boxString('binop'), cons(boxString('strcmp'), cons(boxString('main'), cons(boxString('makeBox'), cons(boxString('string_length'), cons(boxString('boxType'), cons(boxString('displayList'), cons(boxString('newLine'), cons(boxString('panic'), undef)))))))))))))))))))))))))));
 
 }
 
@@ -5791,7 +5566,7 @@ sub NoStackTrace_list {
 sub NoTrace_list {
   my () = @_;
   
-  return cons(boxString('StackTraceMove\'StackTraceMove'), cons(boxString('StackTracePrint\'StackTracePrint'), cons(boxString('StackTracePrintHS\'StackTracePrintHelper'), cons(boxString('NoStackTrace_lisN\'NoStackTrace_list'), cons(boxString('car\'car'), cons(boxString('cdr\'cdr'), cons(boxString('cons\'cons'), cons(boxString('set\'set'), cons(boxString('boxString\'boxString'), cons(boxString('makePair\'makePair'), cons(boxString('set-struct\'set-struct'), cons(boxString('display\'display'), cons(boxString('list\'list'), cons(boxString('assertType\'assertType'), cons(boxString('isEmpty\'isEmpty'), cons(boxString('isNil\'isNil'), cons(boxString('get-struct\'get-struct'), cons(boxString('equalString\'equalString'), cons(boxString('binop\'binop'), cons(boxString('strcmp\'strcmp'), cons(boxString('main\'main'), cons(boxString('makeBox\'makeBox'), cons(boxString('string_length\'string_length'), cons(boxString('boxType\'boxType'), cons(boxString('displayList\'displayList'), cons(boxString('newLine\'newLine'), cons(boxString('panic\'panic'), cons(boxString('boxString\'boxString'), cons(boxString('boxSymbol\'boxSymbol'), cons(boxString('boxType\'boxType'), cons(boxString('equalString\'equalString'), cons(boxString('unBoxSymbol\'unBoxSymbol'), cons(boxString('isList\'isList'), cons(boxString('makeBox\'makeBox'), cons(boxString('equalBox\'equalBox'), cons(boxString('sub\'sub'), cons(boxString('sub1\'sub1'), cons(boxString('stringify\'stringify'), cons(boxString('add\'add'), cons(boxString('greaterthan\'greaterthan'), undef))))))))))))))))))))))))))))))))))))))));
+  return cons(boxString('StackTraceMove'), cons(boxString('StackTracePrint'), cons(boxString('StackTracePrintHelper'), cons(boxString('NoStackTrace_list'), cons(boxString('car'), cons(boxString('cdr'), cons(boxString('cons'), cons(boxString('set'), cons(boxString('boxString'), cons(boxString('makePair'), cons(boxString('set-struct'), cons(boxString('display'), cons(boxString('list'), cons(boxString('assertType'), cons(boxString('isEmpty'), cons(boxString('isNil'), cons(boxString('get-struct'), cons(boxString('equalString'), cons(boxString('binop'), cons(boxString('strcmp'), cons(boxString('main'), cons(boxString('makeBox'), cons(boxString('string_length'), cons(boxString('boxType'), cons(boxString('displayList'), cons(boxString('newLine'), cons(boxString('panic'), cons(boxString('boxString'), cons(boxString('boxSymbol'), cons(boxString('boxType'), cons(boxString('equalString'), cons(boxString('unBoxSymbol'), cons(boxString('isList'), cons(boxString('makeBox'), cons(boxString('equalBox'), cons(boxString('sub'), cons(boxString('sub1'), cons(boxString('stringify'), cons(boxString('add'), cons(boxString('greaterthan'), undef))))))))))))))))))))))))))))))))))))))));
 
 }
 
@@ -5838,13 +5613,22 @@ sub indexOf {
 
 sub stringReplace {
   my ($old, $new, $s) = @_;
-  
-  return stringConcatenate(substr($s, 0, indexOf($s, $old, 0)), stringConcatenate($new, substr($s, add(indexOf($s, $old, 0), length($old)), subtract(length($s), add(indexOf($s, $old, 0), length($old))))));
+  my $pos = 0;
+
+  $pos = indexOf($s, $old, 0);
+
+  if ( equal($pos, -1) ) {
+    return $s;
+
+  } else {
+    return stringConcatenate(substr($s, 0, $pos), stringConcatenate($new, stringReplace($old, $new, substr($s, add($pos, length($old)), length($s)))));
+
+  };
 
 }
 
 
-# Function stringContains from line 445
+# Function stringContains from line 448
 
 sub stringContains {
   my ($haystack, $needle) = @_;
@@ -5866,7 +5650,7 @@ my $needleLength = 0;
 }
 
 
-# Function stringContainsHelper from line 460
+# Function stringContainsHelper from line 463
 
 sub stringContainsHelper {
   my ($haystack, $needle, $startIndex) = @_;
@@ -5894,13 +5678,13 @@ my $needleLength = 0;
 }
 
 
-# Function stringTrim from line 481
+# Function stringTrim from line 484
 
 sub stringTrim {
   my ($s) = @_;
   
   if ( equal(length($s), 0) ) {
-    return '\'';
+    return '';
 
   } else {
     if ( isWhiteSpace(substr($s, 0, 1)) ) {
@@ -5922,26 +5706,26 @@ sub stringTrim {
 }
 
 
-# Function stringSplit from line 497
+# Function stringSplit from line 500
 
 sub stringSplit {
   my ($s, $delimiter) = @_;
   my $end = 0;
 my $delimiterLength = 0;
 
-  printf('Entering stringSE\'Entering stringSplit with s: %.20s..., delimiter: %s\n', $s, $delimiter);
+  printf('Entering stringSplit with s: %.20s..., delimiter: %s\n', $s, $delimiter);
 
   $delimiterLength = length($delimiter);
 
   $end = indexOf($s, $delimiter, 0);
 
   if ( equal($end, -1) ) {
-    printf('No delimiter fouN\'No delimiter found in stringSplit\n');
+    printf('No delimiter found in stringSplit\n');
 
     return cons(boxString($s), undef);
 
   } else {
-    printf('Splitting stringS\'Splitting string in stringSplit\n');
+    printf('Splitting string in stringSplit\n');
 
     return cons(boxString(substr($s, 0, $end)), stringSplit(substr($s, add($end, $delimiterLength), length($s)), $delimiter));
 
@@ -5957,13 +5741,12 @@ sub start {
   my $runTests = $false;
 my $cmdLine = undef;
 my $filenameBox = undef;
-my $filename = '\'';
+my $filename = '';
 my $runPerl = $false;
 my $runJava = $false;
 my $runAst = $false;
 my $runNode = $false;
 my $runNode2 = $false;
-my $runLua = $false;
 my $runIma = $false;
 my $runAnsi3 = $false;
 my $runBash = $false;
@@ -5975,76 +5758,72 @@ my $runTree = $false;
     $filenameBox = second($cmdLine);
 
   } else {
-    $filenameBox = boxString('compiler.qon\'compiler.qon');
+    $filenameBox = boxString('compiler.qon');
 
   };
 
   $filename = unBoxString($filenameBox);
 
-  $releaseMode = inList(boxString('--release\'--release'), $cmdLine);
+  $releaseMode = inList(boxString('--release'), $cmdLine);
 
-  $runTests = inList(boxString('--test\'--test'), $cmdLine);
+  $runTests = inList(boxString('--test'), $cmdLine);
 
-  $runJava = inList(boxString('--java\'--java'), $cmdLine);
+  $runJava = inList(boxString('--java'), $cmdLine);
 
-  $runPerl = inList(boxString('--perl\'--perl'), $cmdLine);
+  $runPerl = inList(boxString('--perl'), $cmdLine);
 
-  $runAst = inList(boxString('--ast\'--ast'), $cmdLine);
+  $runAst = inList(boxString('--ast'), $cmdLine);
 
-  $runTree = inList(boxString('--tree\'--tree'), $cmdLine);
+  $runTree = inList(boxString('--tree'), $cmdLine);
 
-  $runNode = inList(boxString('--node\'--node'), $cmdLine);
+  $runNode = inList(boxString('--node'), $cmdLine);
 
-  $runNode2 = inList(boxString('--node2\'--node2'), $cmdLine);
+  $runNode2 = inList(boxString('--node2'), $cmdLine);
 
-  $runLua = inList(boxString('--lua\'--lua'), $cmdLine);
+  $runIma = inList(boxString('--ima'), $cmdLine);
 
-  $runIma = inList(boxString('--ima\'--ima'), $cmdLine);
+  $runAnsi3 = inList(boxString('--ansi3'), $cmdLine);
 
-  $runAnsi3 = inList(boxString('--ansi3\'--ansi3'), $cmdLine);
+  $runBash = inList(boxString('--bash'), $cmdLine);
 
-  $runBash = inList(boxString('--bash\'--bash'), $cmdLine);
+  $globalTrace = inList(boxString('--trace'), $cmdLine);
 
-  $globalTrace = inList(boxString('--trace\'--trace'), $cmdLine);
+  $globalStepTrace = inList(boxString('--steptrace'), $cmdLine);
 
-  globalStepTrace = inList(boxString('--steptrace\'--steptrace'), $cmdLine);
+  if ( inList(boxString('--help'), $cmdLine) ) {
+    printf('Usage: quon file [options]\n\nNote the options go after the file name\n');
 
-  if ( inList(boxString('--help\'--help'), $cmdLine) ) {
-    printf('Usage: quon fileU\'Usage: quon file [options]\n\nNote the options go after the file name\n');
+    printf('Options:\n');
 
-    printf('Options:\n\'Options:\n');
+    printf('  --help      Display this help\n');
 
-    printf('  --help      Di \'  --help      Display this help\n');
+    printf('  --release   Compile in release mode\n');
 
-    printf('  --release   Co \'  --release   Compile in release mode\n');
+    printf('  --test      Run the test suite\n');
 
-    printf('  --test      Ru \'  --test      Run the test suite\n');
+    printf('  --java      Compile to Java\n');
 
-    printf('  --java      Co \'  --java      Compile to Java\n');
+    printf('  --perl      Compile to Perl\n');
 
-    printf('  --perl      Co \'  --perl      Compile to Perl\n');
+    printf('  --ast       Compile to the Abstract Syntax Tree\n');
 
-    printf('  --ast       Co \'  --ast       Compile to the Abstract Syntax Tree\n');
+    printf('  --tree      Compile to an s-expression tree\n');
 
-    printf('  --tree      Co \'  --tree      Compile to an s-expression tree\n');
+    printf('  --node      Compile to Node.js\n');
 
-    printf('  --node      Co \'  --node      Compile to Node.js\n');
+    printf('  --node2      Compile to Node.js, new outputter\n');
 
-    printf('  --node2      C \'  --node2      Compile to Node.js, new outputter\n');
+    printf('  --ima       Compile to Imaginary, the human-friendly language\n');
 
-    printf('  --lua       Co \'  --lua       Compile to Lua\n');
+    printf('  --ansi3     Compile to ANSI C (quon version 3)\n');
 
-    printf('  --ima       Co \'  --ima       Compile to Imaginary, the human-friendly language\n');
+    printf('  --bash      Compile to Bash\n');
 
-    printf('  --ansi3     Co \'  --ansi3     Compile to ANSI C (quon version 3)\n');
+    printf('  --trace     Trace execution\n');
 
-    printf('  --bash      Co \'  --bash      Compile to Bash\n');
+    printf('  --steptrace Step trace execution\n');
 
-    printf('  --trace     Tr \'  --trace     Trace execution\n');
-
-    printf('  --steptrace St \'  --steptrace Step trace execution\n');
-
-    printf('  --help      Di \'  --help      Display this help\n');
+    printf('  --help      Display this help\n');
 
     exit(0);
 
@@ -6102,7 +5881,7 @@ my $runTree = $false;
 
     test27();
 
-    printf('\n\nAfter all th\\'\n\nAfter all that hard work, I need a beer...\n');
+    printf('\n\nAfter all that hard work, I need a beer...\n');
 
     beers(9);
 
@@ -6114,24 +5893,24 @@ my $runTree = $false;
       if ( $runNode2 ) {
         node2Compile($filename);
 
-        printf('\n\'\n');
+        printf('\n');
 
       } else {
         if ( $runPerl ) {
           perlCompile($filename);
 
-          printf('\n\'\n');
+          printf('\n');
 
         } else {
           if ( $runAnsi3 ) {
             ansi3Compile($filename);
 
-            printf('\n\'\n');
+            printf('\n');
 
           } else {
             ansi3Compile($filename);
 
-            printf('\n\'\n');
+            printf('\n');
 
           };
 

@@ -48,6 +48,27 @@
   (body
     (return  (cdr (third program)))))
 
+(list insertInclude (list tree string extra) (declare
+  (list newProg nil)
+  (list includes nil)
+  (list types nil)
+  (list functions nil)
+  (list boxedExtra nil)
+  (list newIncludes nil))
+(body
+
+  (if (isNil tree)
+    (then
+      (return nil))
+    (else
+      (set includes (getIncludes tree))
+      (set types (getTypes tree))
+      (set functions (getFunctions tree))
+      (set boxedExtra (cons (boxSymbol extra) nil))
+      (set newIncludes (cons boxedExtra includes))
+      (set newProg (buildProg newIncludes types functions))
+      (return newProg))))
+)
 
 (list loadIncludes (list tree) (declare
   (list newProg nil)
