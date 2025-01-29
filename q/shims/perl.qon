@@ -1,0 +1,173 @@
+((includes)
+ (types)
+ (functions
+
+(bool perlIsNil (string a) (declare)
+  (body
+    (if (binop eq a undef)
+      (then (return true))
+      (else (return false)))
+))
+
+(string getEnv (string key) (declare)
+  (body
+    (return ($ENV{key}))))
+
+(void panic (string s) (declare)
+  (body
+          (printf "Panic: %s\n" s)
+          (die)))
+
+(int subtract (int a int b) (declare)
+  (body
+    (return (binop - a b))))
+
+(int mult (int a int b) (declare)
+  (body
+    (return (binop * a b))))
+
+(bool greaterthan (int a int b) (declare)
+  (body
+    (return (binop > a b))))
+
+(float subf (float a float b) (declare)
+  (body
+    (return (binop - a b))))
+
+(float multf (float a float b) (declare)
+  (body
+    (return (binop * a b))))
+
+(bool greaterthanf (float a float b) (declare)
+  (body
+    (return (binop > a b))))
+
+(bool equal (int a int b) (declare)
+  (body
+    (return (binop == a b))))
+
+(bool equalString (string a string b) (declare)
+  (body
+    (return (binop eq a b))))
+
+(int string_length (string s) (declare)
+  (body
+    (return (length s))))
+
+(string setSubString (string target int start string source)(declare)
+  (body
+    (substr target start 1 source)
+    (return target)))
+
+(string sub_string (string s int start int length) (declare (string substr ""))
+  (body
+    (return (substr s start length))))
+
+(string stringConcatenate (string a string b) (declare)
+  (body
+    (return (binop . a b))))
+  
+(string intToString (int a) (declare)
+  (body
+         (return (sprintf "%d" a))))
+
+(string read_file (string filename) (declare (string contents ""))
+  (body
+         (open my $fh, '<', filename or die "Cannot open file: $!")
+         (local $/= undef)
+         (set contents (<$fh>))
+         (close $fh)
+         (return contents)))
+
+(void write_file (string filename string data) (declare)
+      (body
+         (open my $fh, '>', filename or die "Cannot open file: $!")
+         (print $fh data)
+         (close $fh)))
+  
+(string getStringArray (int index array strs) (declare)
+       (body
+        (return ("$strs[index]"))))
+
+(array programArgs () (declare)
+        (body
+         (return @ARGV)))
+
+(int programArgsCount () (declare)
+     (body
+      (return (scalar @ARGV))))
+
+(string character (int num) (declare)
+      (body
+         (return (chr num))))
+
+(void display (string s) (declare)
+      (body
+       (printf "%s" s)))
+
+(bool notBool  (bool a) (declare)
+      (body
+       (return (! a))))
+
+(int add (int a int b) (declare)
+      (body
+       (return (binop + a b))))
+
+(float addf (float a float b) (declare)
+      (body
+       (return (binop + a b))))
+
+(bool andBool (bool a bool b) (declare)
+      (body
+       (return (binop && a b))))
+
+(int remainder (int a int b) (declare)
+      (body
+       (return (binop % a b))))
+
+(bool or (bool a bool b) (declare)
+      (body
+       (return (binop || a b))))
+
+(int max (int a int b) (declare)
+      (body
+       (if (greaterthan a b)
+           (then (return a))
+           (else (return b)))))
+
+(int min (int a int b) (declare)
+      (body
+       (if (greaterthan a b)
+           (then (return b))
+           (else (return a)))))
+
+(hashmap makeHash () (declare)
+      (body
+       (return {})))
+
+(void setHash (hashmap hash string key string value) (declare)
+      (body
+       (set $hash->{key} value)))
+
+(string getHash (hashmap hash string key) (declare)
+      (body
+       (return ($hash->{key}))))
+
+(bool inHash (hashmap hash string key) (declare)
+      (body
+       (return (exists $hash->{key}))))
+
+(list makeArray (int length) (declare)
+      (body
+       (return "[]")))
+
+(void setArray (list array int index string value) (declare)
+      (body
+       (set "$array->[index]" value)))
+
+(string getArray (list array int index) (declare)
+      (body
+       (return "$array->[index]")))
+
+))
+
