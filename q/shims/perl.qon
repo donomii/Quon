@@ -59,7 +59,7 @@
     (substr target start 1 source)
     (return target)))
 
-(string sub_string (string s int start int length) (declare (string substr ""))
+(string sub_string (string s int start int length) (declare)
   (body
     (return (substr s start length))))
 
@@ -73,21 +73,21 @@
 
 (string read_file (string filename) (declare (string contents ""))
   (body
-         (open my $fh, '<', filename or die "Cannot open file: $!")
-         (local $/= undef)
-         (set contents (<$fh>))
+         (passthrough "open my $fh, '<', $filename or die 'Cannot open file: ' . $!")
+         (passthrough "local $/= undef")
+         (set contents <$fh>)
          (close $fh)
          (return contents)))
 
 (void write_file (string filename string data) (declare)
       (body
-         (open my $fh, '>', filename or die "Cannot open file: $!")
+         (passthrough "open my $fh, '>', $filename or die 'Cannot open file: ' . $!")
          (print $fh data)
          (close $fh)))
   
 (string getStringArray (int index array strs) (declare)
        (body
-        (return ("$strs[index]"))))
+        (return $strs->[$index])))
 
 (array programArgs () (declare)
         (body
@@ -101,25 +101,9 @@
       (body
          (return (chr num))))
 
-(void display (string s) (declare)
+(void displays (string s) (declare)
       (body
        (printf "%s" s)))
-
-(bool notBool  (bool a) (declare)
-      (body
-       (return (! a))))
-
-(int add (int a int b) (declare)
-      (body
-       (return (binop + a b))))
-
-(float addf (float a float b) (declare)
-      (body
-       (return (binop + a b))))
-
-(bool andBool (bool a bool b) (declare)
-      (body
-       (return (binop && a b))))
 
 (int remainder (int a int b) (declare)
       (body
@@ -159,15 +143,19 @@
 
 (list makeArray (int length) (declare)
       (body
-       (return "[]")))
+       (return [])))
 
 (void setArray (list array int index string value) (declare)
       (body
-       (set "$array->[index]" value)))
+       (set $array->[$index] value)))
 
 (string getArray (list array int index) (declare)
       (body
-       (return "$array->[index]")))
+       (return $array->[$index])))
+
+(bool isNil (list a) (declare)
+      (body
+       (passthrough "return !defined $a")))
 
 ))
 

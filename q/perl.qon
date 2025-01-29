@@ -55,6 +55,8 @@
     (printf "for (my $i = $#$quonGlobalArgs - 1; $i >= 0; $i--) {\n")
     (printf "    $quonGlobalArgs->[$i]->{cdr} = $quonGlobalArgs->[$i + 1];\n")
     (printf "}\n")
+    (printf "*stderr = *STDERR;\n")
+    (printf "sub fprintf { my $f = shift; printf $f @_ }\n")
     (printf "start();\n")))
 
 (list collectVariablesFromArgs (list args) (declare (list variables nil))
@@ -288,6 +290,8 @@
     (printf "use strict;\n")
     (printf "use warnings;\n")
     (printf "use v5.10;\n\n")
+    (printf "no warnings 'recursion';\n")
+    (printf "$^M = 10_000;\n")
     ))
 
 (box perlTypeMap (box aSym) (declare (list symMap nil))
@@ -324,11 +328,13 @@
     (body
      (qlog "Scanning file...%s\n" filename)
      (set tree (loadQuon filename))
-     ;(qlog "Adding shim functions\n")
-     ;(set tree insertInclude tree "shims/perl.qon")
-     (qlog "Building sexpr\n")
+     (qlog "Adding shim functions\n")
+     (set tree (insertInclude tree "q/shims/perl.qon"))
+     (qlog "Loading includes\n")
      (set tree (loadIncludes tree))
+     (qlog "Walking tree\n")
      (set tree (macrowalk tree))
+    (qlog "Replacing q log\n")
      (set replace (symbolList "fprintf" "stderr"))
      (set tree (macrolist tree (stringConcatenate "q" "log") replace))
      (qlog "Printing program\n")
@@ -339,3 +345,4 @@
      (printf "\n")))
 
 ))
+

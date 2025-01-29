@@ -59,14 +59,21 @@
 
   (if (isNil tree)
     (then
+      (printf "insertInlcude: tree is nil")
       (return nil))
     (else
+      ;(printf "insertInclude: tree is not nil")(display tree)
       (set includes (getIncludes tree))
+      ;(printf "includes: ")(display includes)
       (set types (getTypes tree))
+      ;(printf "types: ")(display types)
       (set functions (getFunctions tree))
-      (set boxedExtra (cons (boxSymbol extra) nil))
+      ;(printf "functions: ")(display functions)
+      (set boxedExtra (boxSymbol extra))
       (set newIncludes (cons boxedExtra includes))
+      ;(printf "newIncludes: ")(display newIncludes)
       (set newProg (buildProg newIncludes types functions))
+      ;(printf "newProg: ")(display newProg)
       (return newProg))))
 )
 

@@ -177,10 +177,8 @@
    (body
     (if (equalBox (boxSymbol (openBrace)) b)
       (then (return true))
-      (else
-       (if (equalBox (boxSymbol "[") b)
-         (then (return true))
-         (else (return false)))))))
+      (else (return false)))))
+
   (bool
    isCloseBrace
    (box b)
@@ -188,10 +186,7 @@
    (body
     (if (equalBox (boxSymbol (closeBrace)) b)
       (then (return true))
-      (else
-       (if (equalBox (boxSymbol "]") b)
-         (then (return true))
-         (else (return false)))))))
+      (else (return false)))))
 
 
 
