@@ -2,7 +2,7 @@
  (types)
 
  (functions
-  (list node2FunctionArgs (list tree) 
+  (list node2FunctionArgs (list tree)
   (declare (list out nil))
    (body
     (set out (makeList))

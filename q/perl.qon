@@ -4,7 +4,11 @@
 
  (string dollar () (declare)
       (body
-       (return "$")))
+       (return (character 36))))
+
+(string atsymbol () (declare)
+      (body
+       (return (character 64))))
 
 (string singleQuote () (declare)
       (body
@@ -29,35 +33,35 @@
     (set variables (appendVariables variables (getGlobalVariables)))
     (return variables)))
 
-    (void perlGlobalVariables () (declare)
+(void perlGlobalVariables () (declare)
    (body
-    (printf "our $globalArgsCount;\n")
-    (printf "our $globalArgs;\n")
-    (printf "our $releaseMode;\n")
-    (printf "our $globalTrace;\n")
-    (printf "our $globalStepTrace;\n")
-    (printf "our $globalStackTrace;\n")
-    (printf "our $caller;\n")
-    (printf "our $false = 0;\n")
-    (printf "our $true = 1;\n")
-    (printf "my $stderr = \\*STDERR;\n")
-    (printf "our $quonGlobalArgs;\n")))
+    (printf (StringListJoin (stringList "our " (dollar) "globalArgsCount;\n") ""))
+    (printf (StringListJoin (stringList "our " (dollar) "globalArgs;\n") ""))
+    (printf (StringListJoin (stringList "our " (dollar) "releaseMode;\n") ""))
+    (printf (StringListJoin (stringList "our " (dollar) "globalTrace;\n") ""))
+    (printf (StringListJoin (stringList "our " (dollar) "globalStepTrace;\n") ""))
+    (printf (StringListJoin (stringList "our " (dollar) "globalStackTrace;\n") ""))
+    (printf (StringListJoin (stringList "our " (dollar) "caller;\n") ""))
+    (printf (StringListJoin (stringList "our " (dollar) "false = 0;\n") ""))
+    (printf (StringListJoin (stringList "our " (dollar) "true = 1;\n") ""))
+    (printf (StringListJoin (stringList "my " (dollar) "stderr = \\*STDERR;\n") ""))
+    (printf (StringListJoin (stringList "our " (dollar) "quonGlobalArgs;\n") ""))))
 
 (void perlMainEntry () (declare)
    (body
     (printf "\n# Main entry point\n")
-    (printf "$globalArgsCount = scalar(@ARGV);\n")
-    (printf "$globalArgs = \\@ARGV;\n")
-    (printf "$quonGlobalArgs = [];\n")
-    (printf "for my $arg (@$globalArgs) {\n")
-    (printf "    push @$quonGlobalArgs, {car => $arg, cdr => undef};\n")
-    (printf "}\n")
-    (printf "for (my $i = $#$quonGlobalArgs - 1; $i >= 0; $i--) {\n")
-    (printf "    $quonGlobalArgs->[$i]->{cdr} = $quonGlobalArgs->[$i + 1];\n")
-    (printf "}\n")
-    (printf "*stderr = *STDERR;\n")
-    (printf "sub fprintf { my $f = shift; printf $f @_ }\n")
-    (printf "start();\n")))
+    (printf (StringListJoin (stringList (dollar) "globalArgsCount = scalar(" (atsymbol) "ARGV);\n") ""))
+    (printf (StringListJoin (stringList (dollar) "globalArgs = \\" (atsymbol) "ARGV;\n") ""))
+    (printf (StringListJoin (stringList (dollar) "quonGlobalArgs = [];\n") ""))
+    (printf (StringListJoin (stringList "for my " (dollar) "arg (" (atsymbol)  (dollar) "globalArgs) {\n") ""))
+    (printf (StringListJoin (stringList "    push " (atsymbol)  (dollar) "quonGlobalArgs, {car => " (dollar) "arg, cdr => undef};\n") ""))
+    (printf (StringListJoin (stringList "}\n") ""))
+    (printf (StringListJoin (stringList "for (my " (dollar) "i = scalar(" (atsymbol)  (dollar) "quonGlobalArgs) - 1; " (dollar) "i >= 0; " (dollar) "i--) {\n") ""))
+    (printf (StringListJoin (stringList "    " (dollar) "quonGlobalArgs->[" (dollar) "i]->{cdr} = " (dollar) "quonGlobalArgs->[" (dollar) "i + 1];\n") ""))
+    (printf (StringListJoin (stringList "}\n") ""))
+    (printf (StringListJoin (stringList "*stderr = *STDERR;\n") ""))
+    (printf (StringListJoin (stringList "sub fprintf { my " (dollar) "f = shift; printf " (dollar) "f " (atsymbol) "_ }\n") ""))
+    (printf (StringListJoin (stringList "start();\n") ""))))
 
 (list collectVariablesFromArgs (list args) (declare (list variables nil))
    (body
@@ -114,7 +118,7 @@
           (set thing (first tree))
           (if (equalBox (boxSymbol "get-struct") thing)
             (then
-             (printf "$%s->{%s}"
+             (printf (StringListJoin (stringList (dollar)  "%s->{%s}") "")
               (stringify (second tree))
               (stringify (third tree))))
             (else
@@ -142,7 +146,7 @@
       (else
        (if (equalString "string" (boxType tree))
          (then
-           (printf "'%s'" (escapeSingleQuotes (stringify tree))))
+           (printf "\"\%s\"" (escapeSingleQuotes (stringify tree))))
          (else (display (perlFuncMap tree variables))))))))
 
 (void perlRecurList (list expr int indent list variables) (declare)
@@ -221,7 +225,7 @@
 (void perlGetStruct (list node int indent) (declare)
    (body
     (newLine indent)
-    (printf "$%s->{%s}"
+    (printf (StringListJoin (stringList (dollar) "%s->{%s}") "")
      (stringify (first node))
      (stringify (second node)))))
 
@@ -234,7 +238,7 @@
       (then (return))
       (else
        (set decl (car decls))
-       (printf "my $%s = " (stringify (second decl)))
+       (printf (StringListJoin (stringList "my "(dollar) "%s = ") "") (stringify (second decl)))
        (perlExpression (third decl) indent variables)
        (printf ";\n")
        (perlDeclarations (cdr decls) indent variables)))))
@@ -252,7 +256,7 @@
        (newLine 1)
        (printf "my (")
        (perlFunctionArgs (third node))
-       (printf ") = @_;")
+       (printf (StringListJoin (stringList ") = " (atsymbol) "_;") ""))
        (newLine 1)
        ; Collect all variables (arguments and declarations)
        (set args (third node))
@@ -291,7 +295,7 @@
     (printf "use warnings;\n")
     (printf "use v5.10;\n\n")
     (printf "no warnings 'recursion';\n")
-    (printf "$^M = 10_000;\n")
+    (printf  (StringListJoin (stringList "our " (dollar) "^M = 10_000;\n") ""))
     ))
 
 (box perlTypeMap (box aSym) (declare (list symMap nil))

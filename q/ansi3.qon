@@ -205,7 +205,8 @@
        
         (if  (inList (boxString functionName) (NoTrace_list))
 	      (then
-        (printf "//Function %s omitted due to the no trace list\n" functionName ))
+        ;(printf "//Function %s omitted due to the no trace list\n" functionName )
+        )
         (else  (printf "\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n"  (stringify (getTagFail (car code)  (boxString "filename")  (boxString "Unknown file (not provided by parser)"))) (stringify (getTagFail (car code) (boxString "line") (boxString "Line missing") ))))
         )
         )
