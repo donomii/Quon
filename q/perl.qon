@@ -50,8 +50,9 @@
 (void perlMainEntry () (declare)
    (body
     (printf "\n# Main entry point\n")
-    (printf (StringListJoin (stringList (dollar) "globalArgsCount = scalar(" (atsymbol) "ARGV);\n") ""))
+    (printf (StringListJoin (stringList (dollar) "globalArgsCount = scalar(" (atsymbol) "ARGV) + 1;\n") ""))
     (printf (StringListJoin (stringList (dollar) "globalArgs = \\" (atsymbol) "ARGV;\n") ""))
+    (printf (StringListJoin (stringList "unshift " (atsymbol) (dollar) "globalArgs, 'fixmeprogname' ;\n") ""))
     (printf (StringListJoin (stringList (dollar) "quonGlobalArgs = [];\n") ""))
     (printf (StringListJoin (stringList "for my " (dollar) "arg (" (atsymbol)  (dollar) "globalArgs) {\n") ""))
     (printf (StringListJoin (stringList "    push " (atsymbol)  (dollar) "quonGlobalArgs, {car => " (dollar) "arg, cdr => undef};\n") ""))
