@@ -39,47 +39,49 @@
     (return (stringReplace (atsymbol) (escapedAtSign)
       (stringReplace (dollar) (escapedDollar) s)))))
 
-  (list getGlobalVariables () (declare)
+(list getGlobalVariables () (declare)
    (body
     (return (makeList (boxSymbol "stderr") (boxSymbol "true") (boxSymbol "false") (boxSymbol "releaseMode") (boxSymbol "caller") (boxSymbol "globalTrace") (boxSymbol "globalStepTrace")(boxSymbol "globalStackTrace")(boxSymbol "globalArgsCount") (boxSymbol "globalArgs") (boxSymbol "quonGlobalArgs")))))
 
-  (list collectVariables (list args list decls) (declare (list variables nil) (box decl nil))
+(list collectVariables (list args list decls) (declare (list variables nil) (box decl nil))
    (body
     (set variables (collectVariablesFromArgs args))
     (set variables (appendVariables variables (collectVariablesFromDecls decls)))
     (set variables (appendVariables variables (getGlobalVariables)))
     (return variables)))
 
-(void perlGlobalVariables () (declare)
+(list perlGlobalVariables () (declare)
    (body
-    (printf (StringListJoin (stringList "our " (dollar) "globalArgsCount;\n") ""))
-    (printf (StringListJoin (stringList "our " (dollar) "globalArgs;\n") ""))
-    (printf (StringListJoin (stringList "our " (dollar) "releaseMode;\n") ""))
-    (printf (StringListJoin (stringList "our " (dollar) "globalTrace;\n") ""))
-    (printf (StringListJoin (stringList "our " (dollar) "globalStepTrace;\n") ""))
-    (printf (StringListJoin (stringList "our " (dollar) "globalStackTrace;\n") ""))
-    (printf (StringListJoin (stringList "our " (dollar) "caller;\n") ""))
-    (printf (StringListJoin (stringList "our " (dollar) "false = 0;\n") ""))
-    (printf (StringListJoin (stringList "our " (dollar) "true = 1;\n") ""))
-    (printf (StringListJoin (stringList "my " (dollar) "stderr = \\*STDERR;\n") ""))
-    (printf (StringListJoin (stringList "our " (dollar) "quonGlobalArgs;\n") ""))))
+    (return (stringList
+     "our " (dollar) "globalArgsCount;\n"
+     "our " (dollar) "globalArgs;\n"
+     "our " (dollar) "releaseMode;\n"
+     "our " (dollar) "globalTrace;\n"
+     "our " (dollar) "globalStepTrace;\n"
+     "our " (dollar) "globalStackTrace;\n"
+     "our " (dollar) "caller;\n"
+     "our " (dollar) "false = 0;\n"
+     "our " (dollar) "true = 1;\n"
+     "my " (dollar) "stderr = \\*STDERR;\n"
+     "our " (dollar) "quonGlobalArgs;\n"))))
 
-(void perlMainEntry () (declare)
+(list perlMainEntry () (declare)
    (body
-    (printf "\n# Main entry point\n")
-    (printf (StringListJoin (stringList (dollar) "globalArgsCount = scalar(" (atsymbol) "ARGV) + 1;\n") ""))
-    (printf (StringListJoin (stringList (dollar) "globalArgs = \\" (atsymbol) "ARGV;\n") ""))
-    (printf (StringListJoin (stringList "unshift " (atsymbol) (dollar) "globalArgs, 'fixmeprogname' ;\n") ""))
-    (printf (StringListJoin (stringList (dollar) "quonGlobalArgs = [];\n") ""))
-    (printf (StringListJoin (stringList "for my " (dollar) "arg (" (atsymbol)  (dollar) "globalArgs) {\n") ""))
-    (printf (StringListJoin (stringList "    push " (atsymbol)  (dollar) "quonGlobalArgs, {car => " (dollar) "arg, cdr => undef};\n") ""))
-    (printf (StringListJoin (stringList "}\n") ""))
-    (printf (StringListJoin (stringList "for (my " (dollar) "i = scalar(" (atsymbol)  (dollar) "quonGlobalArgs) - 1; " (dollar) "i >= 0; " (dollar) "i--) {\n") ""))
-    (printf (StringListJoin (stringList "    " (dollar) "quonGlobalArgs->[" (dollar) "i]->{cdr} = " (dollar) "quonGlobalArgs->[" (dollar) "i + 1];\n") ""))
-    (printf (StringListJoin (stringList "}\n") ""))
-    (printf (StringListJoin (stringList "*stderr = *STDERR;\n") ""))
-    (printf (StringListJoin (stringList "sub fprintf { my " (dollar) "f = shift; printf " (dollar) "f " (atsymbol) "_ }\n") ""))
-    (printf (StringListJoin (stringList "start();\n") ""))))
+    (return (stringList
+     "\n# Main entry point\n"
+     (dollar) "globalArgsCount = scalar(" (atsymbol) "ARGV) + 1;\n"
+     (dollar) "globalArgs = \\" (atsymbol) "ARGV;\n"
+     "unshift " (atsymbol) (dollar) "globalArgs, 'fixmeprogname' ;\n"
+     (dollar) "quonGlobalArgs = [];\n"
+     "for my " (dollar) "arg (" (atsymbol) (dollar) "globalArgs) {\n"
+     "    push " (atsymbol) (dollar) "quonGlobalArgs, {car => " (dollar) "arg, cdr => undef};\n"
+     "}\n"
+     "for (my " (dollar) "i = scalar(" (atsymbol) (dollar) "quonGlobalArgs) - 1; " (dollar) "i >= 0; " (dollar) "i--) {\n"
+     "    " (dollar) "quonGlobalArgs->[" (dollar) "i]->{cdr} = " (dollar) "quonGlobalArgs->[" (dollar) "i + 1];\n"
+     "}\n"
+     "*stderr = *STDERR;\n"
+     "sub fprintf { my " (dollar) "f = shift; printf " (dollar) "f " (atsymbol) "_ }\n"
+     "start();\n"))))
 
 (list collectVariablesFromArgs (list args) (declare (list variables nil))
    (body
@@ -108,219 +110,247 @@
     (if (isNil vars2)
       (then
         (return vars1))
-      (else 
+      (else
         (set vars1 (cons (car vars2) vars1))
         (return (appendVariables vars1 (cdr vars2)))))))
 
-(void perlFunctionArgs (list tree) (declare)
+(list perlFunctionArgs (list tree) (declare)
    (body
     (if (isEmpty tree)
-      (then (return))
+      (then (return (emptyList)))
       (else
-       (printf (dollar))
-       (display (second tree))
-       (if (isNil (cddr tree)) (then (printf "")) (else (printf ", ")))
-       (perlFunctionArgs (cddr tree))))))
+       (if (isNil (cddr tree))
+         (then (return (makeList (boxString (dollar)) (second tree))))
+         (else (return (makeList
+          (boxString (dollar))
+          (second tree)
+          ", "
+          (perlFunctionArgs (cddr tree))))))))))
 
-(void perlExpression (list tree int indent list variables) (declare (list thing nil))
+(list perlAtom (box tree list variables) (declare)
    (body
-    (if (isList tree)
-      (then
+    (if (equalString "string" (boxType tree))
+      (then (return (makeList "\"" (boxString (escapePerlString (stringify tree))) "\"")))
+      (else (return (makeList (perlFuncMap tree variables)))))))
+
+(list perlExpression (list tree int indent list variables) (declare (list thing nil))
+   (body
+    (if (notBool (isList tree))
+      (then (return (perlAtom tree variables)))
+      (else
        (if (equal 1 (listLength tree))
          (then
-          (display (perlFuncMap (car tree) variables))
           (if (equalBox (boxString "return") (car tree))
-            (then )
-            (else (printf "()"))))
+            (then (return (makeList (perlFuncMap (car tree) variables))))
+            (else (return (makeList (perlFuncMap (car tree) variables) "()")))))
          (else
           (set thing (first tree))
           (if (equalBox (boxSymbol "get-struct") thing)
             (then
-             (printf (StringListJoin (stringList (dollar)  "%s->{%s}") "")
-              (stringify (second tree))
-              (stringify (third tree))))
+             (return (makeList
+              (boxString (dollar))
+              (second tree)
+              "->{"
+              (third tree)
+              "}")))
             (else
              (if (equalBox (boxSymbol "new") thing)
-               (then
-                (printf "{}")
-               )
+               (then (return (makeList "{}")))
                (else
                 (if (equalBox (boxSymbol "passthrough") thing)
-                  (then
-                   (printf "%s" (stringify (second tree))))
+                  (then (return (makeList (second tree))))
                   (else
                    (if (equalBox (boxSymbol "binop") thing)
                      (then
-                      (printf "(")
-                      (perlExpression (third tree) indent variables)
-                      (printf " %s " (stringify (second tree)))
-                      (perlExpression (fourth tree) indent variables)
-                      (printf ")"))
+                      (return (makeList
+                       "("
+                       (perlExpression (third tree) indent variables)
+                       " "
+                       (second tree)
+                       " "
+                       (perlExpression (fourth tree) indent variables)
+                       ")")))
                      (else
-                      (printf "%s(" (stringify (perlFuncMap (car tree) variables)))
-                      (perlRecurList (cdr tree) indent variables)
-                      (printf ")")))))))))))
-      )
-      (else
-       (if (equalString "string" (boxType tree))
-         (then
-           (printf "\"\%s\"" (escapePerlString (stringify tree))))
-         (else (display (perlFuncMap tree variables))))))))
+                      (return (makeList
+                       (perlFuncMap (car tree) variables)
+                       "("
+                       (perlRecurList (cdr tree) indent variables)
+                       ")"))))))))))))))))
 
-(void perlRecurList (list expr int indent list variables) (declare)
+(list perlRecurList (list expr int indent list variables) (declare)
    (body
     (if (isEmpty expr)
-      (then (return))
+      (then (return (emptyList)))
       (else
-       (perlExpression (car expr) indent variables)
        (if (isNil (cdr expr))
-         (then (printf ""))
-         (else (printf ", ") (perlRecurList (cdr expr) indent variables)))))))
+         (then (return (perlExpression (car expr) indent variables)))
+         (else (return (makeList
+          (perlExpression (car expr) indent variables)
+          ", "
+          (perlRecurList (cdr expr) indent variables)))))))))
 
-(void perlStatement (list node int indent list variables) (declare)
+(list perlSet (list node int indent list variables) (declare)
+   (body
+    (return (makeList
+     (listNewLine indent)
+     (perlFuncMap (second node) variables)
+     " = "
+     (perlExpression (third node) indent variables)))))
+
+(list perlSetStruct (list node int indent list variables) (declare)
+   (body
+    (return (makeList
+     (listNewLine indent)
+     (perlFuncMap (second node) variables)
+     "->{"
+     (third node)
+     "} = "
+     (perlExpression (fourth node) indent variables)))))
+
+(list perlReturn (list node int indent list variables) (declare)
+   (body
+    (if (greaterthan (listLength node) 1)
+      (then (return (makeList
+       (listNewLine indent)
+       "return "
+       (perlExpression (cadr node) indent variables))))
+      (else (return (makeList (listNewLine indent) "return"))))))
+
+(list perlIf (list node int indent list variables) (declare)
+   (body
+    (return (makeList
+     (listNewLine indent)
+     "if ( "
+     (perlExpression (second node) 0 variables)
+     " ) {"
+     (perlBody (cdr (third node)) (add1 indent) variables)
+     (listNewLine indent)
+     "} else {"
+     (perlBody (cdr (fourth node)) (add1 indent) variables)
+     (listNewLine indent)
+     "}"))))
+
+(list perlStatement (list node int indent list variables) (declare)
    (body
     (if (equalBox (boxString "set") (first node))
-      (then (perlSet node indent variables))
+      (then (return (makeList (perlSet node indent variables) ";\n")))
       (else
        (if (equalBox (boxString "set-struct") (first node))
-         (then (perlSetStruct node indent variables))
+         (then (return (makeList (perlSetStruct node indent variables) ";\n")))
          (else
           (if (equalBox (boxString "if") (first node))
-            (then (perlIf node indent variables))
+            (then (return (makeList (perlIf node indent variables) ";\n")))
             (else
              (if (equalBox (boxString "return") (first node))
-               (then 
-                (newLine indent)
-                (printf "return")
-                (if (greaterthan (listLength node) 1)
-                  (then 
-                    (printf " ")
-                    (perlExpression (cadr node) indent variables))
-                  (else (printf ""))))
+               (then (return (makeList (perlReturn node indent variables) ";\n")))
                (else
-                (newLine indent)
-                (perlExpression node indent variables)))))))))
-    (printf ";\n")))
+                (return (makeList
+                 (listNewLine indent)
+                 (perlExpression node indent variables)
+                 ";\n"))))))))))))
 
-(void perlBody (list tree int indent list variables) (declare (list code nil))
+(list perlBody (list tree int indent list variables) (declare (list code nil))
    (body
     (if (isEmpty tree)
-      (then (return))
+      (then (return (emptyList)))
       (else
        (set code (car tree))
-       (perlStatement code indent variables)
-       (perlBody (cdr tree) indent variables)))))
+       (return (makeList
+        (perlStatement code indent variables)
+        (perlBody (cdr tree) indent variables)))))))
 
-(void perlSet (list node int indent list variables) (declare)
+(list perlGetStruct (list node int indent) (declare)
    (body
-    (newLine indent)
-    (printf "%s = " (stringify (perlFuncMap (first (cdr node)) variables)))
-    (perlExpression (third node) indent variables)))
+    (return (makeList
+     (listNewLine indent)
+     (boxString (dollar))
+     (first node)
+     "->{"
+     (second node)
+     "}"))))
 
-(void perlSetStruct (list node int indent list variables) (declare)
-   (body
-    (newLine indent)
-    (printf "%s->{%s} = "
-     (stringify (perlFuncMap (second node) variables))
-     (stringify (third node)))
-    (perlExpression (fourth node) indent variables)))
-
-(void perlIf (list node int indent list variables) (declare)
-   (body
-    (newLine indent)
-    (printf "if ( ")
-    (perlExpression (second node) 0 variables)
-    (printf " ) {")
-    (perlBody (cdr (third node)) (add1 indent) variables)
-    (newLine indent)
-    (printf "} else {")
-    (perlBody (cdr (fourth node)) (add1 indent) variables)
-    (newLine indent)
-    (printf "}")))
-
-
-
-(void perlGetStruct (list node int indent) (declare)
-   (body
-    (newLine indent)
-    (printf (StringListJoin (stringList (dollar) "%s->{%s}") "")
-     (stringify (first node))
-     (stringify (second node)))))
-
-
-
-
-(void perlDeclarations (list decls int indent list variables) (declare (box decl nil))
+(list perlDeclarations (list decls int indent list variables) (declare (box decl nil))
    (body
     (if (isEmpty decls)
-      (then (return))
+      (then (return (emptyList)))
       (else
        (set decl (car decls))
-       (printf (StringListJoin (stringList "my "(dollar) "%s = ") "") (stringify (second decl)))
-       (perlExpression (third decl) indent variables)
-       (printf ";\n")
-       (perlDeclarations (cdr decls) indent variables)))))
+       (return (makeList
+        "my "
+        (boxString (dollar))
+        (second decl)
+        " = "
+        (perlExpression (third decl) indent variables)
+        ";\n"
+        (perlDeclarations (cdr decls) indent variables)))))))
 
-(void perlFunction (list node) (declare (box name nil) (list variables nil) (list args nil) (list decls nil))
+(list perlFunction (list node) (declare (box name nil) (list variables nil) (list args nil) (list decls nil))
    (body
     (set name (second node))
-    (printf "\n\n# Function %s from line %s" (stringify name) (stringify (getTag name (boxString "line"))))
-    (newLine 0)
     (if (isNil node)
-      (then (return))
+      (then (return (emptyList)))
       (else
-       (newLine 0)
-       (printf "sub %s {" (stringify (second node)))
-       (newLine 1)
-       (printf "my (")
-       (perlFunctionArgs (third node))
-       (printf (StringListJoin (stringList ") = " (atsymbol) "_;") ""))
-       (newLine 1)
-       ; Collect all variables (arguments and declarations)
        (set args (third node))
        (set decls (cdr (fourth node)))
        (set variables (collectVariables args decls))
-       (perlDeclarations decls 1 variables)
-       (perlBody (cdr (fifth node)) 1 variables)
-       (printf "\n}\n")))))
+       (return (makeList
+        "\n\n# Function "
+        name
+        " from line "
+        (getTag name (boxString "line"))
+        (listNewLine 0)
+        (listNewLine 0)
+        "sub "
+        (second node)
+        " {"
+        (listNewLine 1)
+        "my ("
+        (perlFunctionArgs args)
+        ") = "
+        (boxString (atsymbol))
+        "_;"
+        (listNewLine 1)
+        (perlDeclarations decls 1 variables)
+        (perlBody (cdr (fifth node)) 1 variables)
+        "\n}\n"))))))
 
-(void perlForwardDeclaration (list node) (declare)
+(list perlForwardDeclaration (list node) (declare)
    (body
     (if (isNil node)
-      (then (return))
+      (then (return (emptyList)))
       (else
-       (printf "sub %s;\n" (stringify (second node)))))))
+       (return (makeList "sub " (second node) ";\n"))))))
 
-(void perlForwardDeclarations (list tree) (declare)
+(list perlForwardDeclarations (list tree) (declare)
    (body
     (if (isEmpty tree)
-      (then (return))
+      (then (return (emptyList)))
       (else
-       (perlForwardDeclaration (car tree))
-       (perlForwardDeclarations (cdr tree))))))
+       (return (makeList
+        (perlForwardDeclaration (car tree))
+        (perlForwardDeclarations (cdr tree))))))))
 
-(void perlFunctions (list tree) (declare)
+(list perlFunctions (list tree) (declare)
    (body
     (if (isEmpty tree)
-      (then (return))
+      (then (return (emptyList)))
       (else
-       (perlFunction (car tree))
-       (perlFunctions (cdr tree))))))
+       (return (makeList
+        (perlFunction (car tree))
+        (perlFunctions (cdr tree))))))))
 
-(void perlIncludes (list nodes) (declare)
+(list perlIncludes (list nodes) (declare)
    (body
-    (printf "use strict;\n")
-    (printf "use warnings;\n")
-    (printf "use v5.10;\n\n")
-    (printf "no warnings 'recursion';\n")
-    (printf  (StringListJoin (stringList "our " (dollar) "^M = 10_000;\n") ""))
-    ))
+    (return (stringList
+     "use strict;\n"
+     "use warnings;\n"
+     "use v5.10;\n\n"
+     "no warnings 'recursion';\n"
+     "our " (dollar) "^M = 10_000;\n"))))
 
-(void perlTypes (list nodes) (declare)
+(list perlTypes (list nodes) (declare)
    (body
-    (if (isEmpty nodes)
-      (then (return))
-      (else (perlTypes (cdr nodes))))))
+    (return (emptyList))))
 
 (box perlTypeMap (box aSym) (declare (list symMap nil))
    (body
@@ -352,6 +382,38 @@
             (then (return (cdr (assoc (stringify aSym) symMap))))
             (else (return aSym))))))
       (else (return aSym)))))
+
+(list perlLoadProgram (string filename) (declare (list tree nil)(list replace nil))
+   (body
+    (set tree (loadQuon filename))
+    (set tree (insertInclude tree "q/shims/perl.qon"))
+    (set tree (loadIncludes tree))
+    (set tree (macrowalk tree))
+    (set replace (symbolList "fprintf" "stderr"))
+    (set tree (macrolist tree (stringConcatenate "q" "log") replace))
+    (return tree)))
+
+(list perlProgramTree (list tree) (declare)
+   (body
+    (return (makeList
+     (perlIncludes (cdr (first tree)))
+     (perlTypes (cdr (second tree)))
+     (perlGlobalVariables)
+     "\n# Forward declarations\n"
+     (perlForwardDeclarations (cdr (third tree)))
+     "\n# End forward declarations\n"
+     (perlFunctions (cdr (third tree)))
+     (perlMainEntry)
+     "\n"))))
+
+(string perlProgram (list tree) (declare)
+   (body
+    (return (ListToString (flatten (perlProgramTree tree)) 0 true false))))
+
+(string perlCompileString (string filename) (declare)
+   (body
+    (return (perlProgram (perlLoadProgram filename)))))
+
 (void perlCompile (string filename) (declare (list tree nil)(list replace nil))
     (body
      (qlog "Scanning file...%s\n" filename)
@@ -362,18 +424,10 @@
      (set tree (loadIncludes tree))
      (qlog "Walking tree\n")
      (set tree (macrowalk tree))
-    (qlog "Replacing q log\n")
+     (qlog "Replacing q log\n")
      (set replace (symbolList "fprintf" "stderr"))
      (set tree (macrolist tree (stringConcatenate "q" "log") replace))
      (qlog "Printing program\n")
-     (perlIncludes (cdr (first tree)))
-     (perlTypes (cdr (second tree)))
-     (perlGlobalVariables)
-     (printf "\n# Forward declarations\n")
-     (perlForwardDeclarations (cdr (third tree)))
-     (printf "\n# End forward declarations\n")
-     (perlFunctions (cdr (third tree)))
-     (perlMainEntry)
-     (printf "\n")))
+     (printf "%s" (perlProgram tree))))
 
 ))
