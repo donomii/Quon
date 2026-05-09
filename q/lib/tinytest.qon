@@ -1,0 +1,37 @@
+((includes)
+ (types)
+ (functions
+
+  (void tinyPass (string name) (declare)
+   (body
+    (printf "pass %s\n" name)))
+
+  (void tinyFail (string name string expected string got) (declare)
+   (body
+    (printf "FAIL %s\n" name)
+    (printf "  expected: %s\n" expected)
+    (printf "       got: %s\n" got)))
+
+  (void tinyExpectString (string name string expected string got) (declare)
+   (body
+    (if (equalString expected got)
+      (then (tinyPass name))
+      (else (tinyFail name expected got)))))
+
+  (void tinyExpectInt (string name int expected int got) (declare)
+   (body
+    (tinyExpectString name (intToString expected) (intToString got))))
+
+  (void tinyExpectBool (string name bool expected bool got) (declare)
+   (body
+    (if expected
+      (then
+       (if got
+         (then (tinyPass name))
+         (else (tinyFail name "true" "false"))))
+      (else
+       (if got
+         (then (tinyFail name "false" "true"))
+         (else (tinyPass name)))))))
+
+ ))

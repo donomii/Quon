@@ -1,0 +1,144 @@
+((includes)
+ (types)
+ (functions
+
+  (string base64Alphabet () (declare)
+   (body
+    (return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/")))
+
+  (string base64CharAt (int index) (declare)
+   (body
+    (return (sub-string (base64Alphabet) index 1))))
+
+  (int base64Value (string ch) (declare)
+   (body
+    (return (asciiIndexIn (base64Alphabet) ch 0))))
+
+  (int base64ByteAt (string s int pos) (declare (int code -1))
+   (body
+    (set code (asciiCode (sub-string s pos 1)))
+    (if (equal code -1)
+      (then
+       (panic "base64 only supports ASCII input")
+       (return 0))
+      (else (return code)))))
+
+  (string base64EncodeQuartet (int b1 int b2 int b3 bool has2 bool has3) (declare (int c1 0) (int c2 0) (int c3 0) (int c4 0))
+   (body
+    (set c1 (intDiv b1 4))
+    (if has2
+      (then (set c2 (add (mult (intMod b1 4) 16) (intDiv b2 16))))
+      (else (set c2 (mult (intMod b1 4) 16))))
+    (if has2
+      (then
+       (if has3
+         (then
+          (set c3 (add (mult (intMod b2 16) 4) (intDiv b3 64)))
+          (set c4 (intMod b3 64))
+          (return
+           (stringConcatenate
+            (base64CharAt c1)
+            (stringConcatenate
+             (base64CharAt c2)
+             (stringConcatenate (base64CharAt c3) (base64CharAt c4))))))
+         (else
+          (set c3 (mult (intMod b2 16) 4))
+          (return
+           (stringConcatenate
+            (base64CharAt c1)
+            (stringConcatenate
+             (base64CharAt c2)
+             (stringConcatenate (base64CharAt c3) "=")))))))
+      (else
+       (return
+        (stringConcatenate
+         (base64CharAt c1)
+         (stringConcatenate (base64CharAt c2) "==")))))))
+
+  (string base64EncodeRec (string s int pos) (declare (int len 0) (int b1 0) (int b2 0) (int b3 0) (bool has2 false) (bool has3 false))
+   (body
+    (set len (string-length s))
+    (if (greaterthan len pos)
+      (then
+       (set b1 (base64ByteAt s pos))
+       (set has2 (greaterthan len (add1 pos)))
+       (set has3 (greaterthan len (add pos 2)))
+       (if has2
+         (then (set b2 (base64ByteAt s (add1 pos))))
+         (else))
+       (if has3
+         (then (set b3 (base64ByteAt s (add pos 2))))
+         (else))
+       (return
+        (stringConcatenate
+         (base64EncodeQuartet b1 b2 b3 has2 has3)
+         (base64EncodeRec s (add pos 3)))))
+      (else (return "")))))
+
+  (string base64Encode (string s) (declare)
+   (body
+    (return (base64EncodeRec s 0))))
+
+  (string base64DecodeQuartet (string c1 string c2 string c3 string c4) (declare (int v1 0) (int v2 0) (int v3 0) (int v4 0) (int b1 0) (int b2 0) (int b3 0) (string out ""))
+   (body
+    (set v1 (base64Value c1))
+    (set v2 (base64Value c2))
+    (if (equal v1 -1)
+      (then
+       (panic "invalid base64 character")
+       (return ""))
+      (else))
+    (if (equal v2 -1)
+      (then
+       (panic "invalid base64 character")
+       (return ""))
+      (else))
+    (set b1 (add (mult v1 4) (intDiv v2 16)))
+    (set out (asciiChar b1))
+    (if (equalString c3 "=")
+      (then (return out))
+      (else))
+    (set v3 (base64Value c3))
+    (if (equal v3 -1)
+      (then
+       (panic "invalid base64 character")
+       (return ""))
+      (else))
+    (set b2 (add (mult (intMod v2 16) 16) (intDiv v3 4)))
+    (set out (stringConcatenate out (asciiChar b2)))
+    (if (equalString c4 "=")
+      (then (return out))
+      (else))
+    (set v4 (base64Value c4))
+    (if (equal v4 -1)
+      (then
+       (panic "invalid base64 character")
+       (return ""))
+      (else))
+    (set b3 (add (mult (intMod v3 4) 64) v4))
+    (return (stringConcatenate out (asciiChar b3)))))
+
+  (string base64DecodeRec (string s int pos) (declare)
+   (body
+    (if (greaterthan (string-length s) pos)
+      (then
+       (if (greaterthan (string-length s) (add pos 3))
+         (then
+          (return
+           (stringConcatenate
+            (base64DecodeQuartet
+             (sub-string s pos 1)
+             (sub-string s (add1 pos) 1)
+             (sub-string s (add pos 2) 1)
+             (sub-string s (add pos 3) 1))
+            (base64DecodeRec s (add pos 4)))))
+         (else
+          (panic "base64 length must be a multiple of four")
+          (return ""))))
+      (else (return "")))))
+
+  (string base64Decode (string s) (declare)
+   (body
+    (return (base64DecodeRec s 0))))
+
+ ))

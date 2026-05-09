@@ -1,0 +1,60 @@
+(
+ (includes
+  q/base.qon
+  q/lists.qon
+  q/boolean.qon
+  q/lib/portable.qon
+  q/lib/tinytest.qon
+  q/lib/json.qon
+  q/lib/url.qon
+  q/lib/base64.qon)
+ (types)
+ (functions
+
+  (void testPortableHelpers () (declare)
+   (body
+    (tinyExpectInt "intDiv" 2 (intDiv 7 3))
+    (tinyExpectInt "intMod" 1 (intMod 7 3))
+    (tinyExpectInt "asciiCode" 65 (asciiCode "A"))
+    (tinyExpectString "byteToHex" "20" (byteToHex 32))))
+
+  (void testJsonLibrary () (declare (list values nil) (list object nil) (jsonResult parsed nil) (list parsedObject nil))
+   (body
+    (set values (boxList (boxString "hi") (boxInt 42) (boxBool true)))
+    (tinyExpectString "jsonEncodeBox array" "[\"hi\",42,true]" (jsonEncodeBox values))
+
+    (set object
+     (cons
+      (cons (boxString "name") (boxString "Quon"))
+      (cons
+       (cons (boxString "count") (boxInt 3))
+       nil)))
+    (tinyExpectString "jsonEncodeObject" "{\"name\":\"Quon\",\"count\":3}" (jsonEncodeObject object))
+
+    (set parsed (jsonParse "{\"name\":\"Quon\",\"count\":3}"))
+    (tinyExpectBool "jsonParse object ok" true (get-struct parsed ok))
+    (set parsedObject (get-struct parsed value))
+    (tinyExpectString "jsonParse object string" "Quon" (unBoxString (cdr (assoc "name" parsedObject))))
+    (tinyExpectInt "jsonParse object int" 3 (unBoxInt (cdr (assoc "count" parsedObject))))))
+
+  (void testUrlLibrary () (declare)
+   (body
+    (tinyExpectString "urlEncode" "hello%20world%21" (urlEncode "hello world!"))
+    (tinyExpectString "urlDecode" "hello world!" (urlDecode "hello%20world%21"))
+    (tinyExpectString "urlFormDecode" "a b+c" (urlFormDecode "a+b%2Bc"))))
+
+  (void testBase64Library () (declare)
+   (body
+    (tinyExpectString "base64Encode hello" "aGVsbG8=" (base64Encode "hello"))
+    (tinyExpectString "base64Encode Quon" "UXVvbg==" (base64Encode "Quon"))
+    (tinyExpectString "base64Decode hello" "hello" (base64Decode "aGVsbG8="))))
+
+  (int start () (declare)
+   (body
+    (testPortableHelpers)
+    (testJsonLibrary)
+    (testUrlLibrary)
+    (testBase64Library)
+    (return 0)))
+
+ ))

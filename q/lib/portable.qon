@@ -1,0 +1,200 @@
+((includes)
+ (types)
+ (functions
+
+  (bool intIsNonNegative (int n) (declare)
+   (body
+    (return (greaterthan (add1 n) 0))))
+
+  (bool isWhiteSpace (string ch) (declare)
+   (body
+    (if (equalString ch " ") (then (return true)) (else))
+    (if (equalString ch (character 9)) (then (return true)) (else))
+    (if (equalString ch (character 10)) (then (return true)) (else))
+    (if (equalString ch (character 13)) (then (return true)) (else))
+    (return false)))
+
+  (int intDivPositive (int a int b int count) (declare)
+   (body
+    (if (greaterthan b 0)
+      (then
+       (if (lessThan a b)
+         (then (return count))
+         (else (return (intDivPositive (sub a b) b (add1 count))))))
+      (else
+       (panic "intDivPositive divisor must be greater than zero")
+       (return 0)))))
+
+  (int intDiv (int a int b) (declare)
+   (body
+    (if (lessThan a 0)
+      (then
+       (if (lessThan b 0)
+         (then (return (intDivPositive (sub 0 a) (sub 0 b) 0)))
+         (else (return (sub 0 (intDivPositive (sub 0 a) b 0))))))
+      (else
+       (if (lessThan b 0)
+         (then (return (sub 0 (intDivPositive a (sub 0 b) 0))))
+         (else (return (intDivPositive a b 0))))))))
+
+  (int intModPositive (int a int b) (declare)
+   (body
+    (if (greaterthan b 0)
+      (then
+       (if (lessThan a b)
+         (then (return a))
+         (else (return (intModPositive (sub a b) b)))))
+      (else
+       (panic "intModPositive divisor must be greater than zero")
+       (return 0)))))
+
+  (int intMod (int a int b) (declare)
+   (body
+    (if (lessThan a 0)
+      (then (return (sub 0 (intModPositive (sub 0 a) b))))
+      (else (return (intModPositive a b))))))
+
+  (string stringCharAt (string s int pos) (declare)
+   (body
+    (if (greaterthan (string-length s) pos)
+      (then (return (sub-string s pos 1)))
+      (else (return "")))))
+
+  (string stringSliceFrom (string s int pos) (declare)
+   (body
+    (if (greaterthan (string-length s) pos)
+      (then (return (sub-string s pos (sub (string-length s) pos))))
+      (else (return "")))))
+
+  (string stringRepeat (string s int count) (declare)
+   (body
+    (if (greaterthan count 0)
+      (then (return (stringConcatenate s (stringRepeat s (sub1 count)))))
+      (else (return "")))))
+
+  (bool stringStartsWith (string s string prefix) (declare)
+   (body
+    (if (greaterthan (string-length prefix) (string-length s))
+      (then (return false))
+      (else (return (equalString (sub-string s 0 (string-length prefix)) prefix))))))
+
+  (bool stringEndsWith (string s string suffix) (declare (int start 0))
+   (body
+    (if (greaterthan (string-length suffix) (string-length s))
+      (then (return false))
+      (else
+       (set start (sub (string-length s) (string-length suffix)))
+       (return (equalString (sub-string s start (string-length suffix)) suffix))))))
+
+  (int asciiIndexIn (string chars string ch int pos) (declare)
+   (body
+    (if (greaterthan (string-length chars) pos)
+      (then
+       (if (equalString (sub-string chars pos 1) ch)
+         (then (return pos))
+         (else (return (asciiIndexIn chars ch (add1 pos))))))
+      (else (return -1)))))
+
+  (int asciiCode (string ch) (declare (int index -1))
+   (body
+    (if (equalString ch (character 9))
+      (then (return 9))
+      (else))
+    (if (equalString ch (character 10))
+      (then (return 10))
+      (else))
+    (if (equalString ch (character 13))
+      (then (return 13))
+      (else))
+    (if (equalString ch (character 34))
+      (then (return 34))
+      (else))
+    (if (equalString ch (character 92))
+      (then (return 92))
+      (else))
+    (set index (asciiIndexIn " !" ch 0))
+    (if (equal index -1)
+      (then)
+      (else (return (add 32 index))))
+    (set index (asciiIndexIn "#$%&'()*+,-./" ch 0))
+    (if (equal index -1)
+      (then)
+      (else (return (add 35 index))))
+    (set index (asciiIndexIn "0123456789" ch 0))
+    (if (equal index -1)
+      (then)
+      (else (return (add 48 index))))
+    (set index (asciiIndexIn ":;<=>?@" ch 0))
+    (if (equal index -1)
+      (then)
+      (else (return (add 58 index))))
+    (set index (asciiIndexIn "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ch 0))
+    (if (equal index -1)
+      (then)
+      (else (return (add 65 index))))
+    (set index (asciiIndexIn "[" ch 0))
+    (if (equal index -1)
+      (then)
+      (else (return 91)))
+    (set index (asciiIndexIn "]^_`" ch 0))
+    (if (equal index -1)
+      (then)
+      (else (return (add 93 index))))
+    (set index (asciiIndexIn "abcdefghijklmnopqrstuvwxyz" ch 0))
+    (if (equal index -1)
+      (then)
+      (else (return (add 97 index))))
+    (set index (asciiIndexIn "{|}~" ch 0))
+    (if (equal index -1)
+      (then (return -1))
+      (else (return (add 123 index))))))
+
+  (string asciiChar (int code) (declare)
+   (body
+    (return (character code))))
+
+  (int digitValue (string ch) (declare (int index -1))
+   (body
+    (set index (asciiIndexIn "0123456789" ch 0))
+    (if (equal index -1)
+      (then (return -1))
+      (else (return index)))))
+
+  (int hexValue (string ch) (declare (int index -1))
+   (body
+    (set index (asciiIndexIn "0123456789" ch 0))
+    (if (equal index -1)
+      (then)
+      (else (return index)))
+    (set index (asciiIndexIn "ABCDEF" ch 0))
+    (if (equal index -1)
+      (then)
+      (else (return (add 10 index))))
+    (set index (asciiIndexIn "abcdef" ch 0))
+    (if (equal index -1)
+      (then (return -1))
+      (else (return (add 10 index))))))
+
+  (string hexDigitUpper (int n) (declare)
+   (body
+    (return (sub-string "0123456789ABCDEF" n 1))))
+
+  (string byteToHex (int n) (declare)
+   (body
+    (return
+     (stringConcatenate
+      (hexDigitUpper (intDiv n 16))
+      (hexDigitUpper (intMod n 16))))))
+
+  (int hexPairValue (string high string low) (declare (int hi -1) (int lo -1))
+   (body
+    (set hi (hexValue high))
+    (set lo (hexValue low))
+    (if (equal hi -1)
+      (then (return -1))
+      (else
+       (if (equal lo -1)
+         (then (return -1))
+         (else (return (add (mult hi 16) lo))))))))
+
+ ))

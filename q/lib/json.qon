@@ -1,0 +1,338 @@
+((includes)
+ (types
+  (JsonResult
+   (struct
+    (value struct Box*)
+    (pos int)
+    (ok bool)
+    (message string)))
+  (jsonResult JsonResult*))
+ (functions
+
+  (jsonResult jsonMakeResult (box value int pos bool ok string message) (declare (jsonResult result nil))
+   (body
+    (set result (new jsonResult JsonResult))
+    (set-struct result value value)
+    (set-struct result pos pos)
+    (set-struct result ok ok)
+    (set-struct result message message)
+    (return result)))
+
+  (string jsonQuoteChar () (declare)
+   (body (return (character 34))))
+
+  (string jsonBackslash () (declare)
+   (body (return (character 92))))
+
+  (bool jsonIsWhitespace (string ch) (declare)
+   (body
+    (if (equalString ch " ") (then (return true)) (else))
+    (if (equalString ch (character 9)) (then (return true)) (else))
+    (if (equalString ch (character 10)) (then (return true)) (else))
+    (if (equalString ch (character 13)) (then (return true)) (else))
+    (return false)))
+
+  (string jsonEscapeChar (string ch) (declare)
+   (body
+    (if (equalString ch (jsonQuoteChar))
+      (then (return (stringConcatenate (jsonBackslash) (jsonQuoteChar))))
+      (else))
+    (if (equalString ch (jsonBackslash))
+      (then (return (stringConcatenate (jsonBackslash) (jsonBackslash))))
+      (else))
+    (if (equalString ch (character 10))
+      (then (return (stringConcatenate (jsonBackslash) "n")))
+      (else))
+    (if (equalString ch (character 13))
+      (then (return (stringConcatenate (jsonBackslash) "r")))
+      (else))
+    (if (equalString ch (character 9))
+      (then (return (stringConcatenate (jsonBackslash) "t")))
+      (else))
+    (return ch)))
+
+  (string jsonEscapeStringRec (string s int pos) (declare)
+   (body
+    (if (greaterthan (string-length s) pos)
+      (then
+       (return
+        (stringConcatenate
+         (jsonEscapeChar (sub-string s pos 1))
+         (jsonEscapeStringRec s (add1 pos)))))
+      (else (return "")))))
+
+  (string jsonQuoteString (string s) (declare)
+   (body
+    (return
+     (stringConcatenate
+      (jsonQuoteChar)
+      (stringConcatenate (jsonEscapeStringRec s 0) (jsonQuoteChar))))))
+
+  (string jsonEncodeArrayRec (list values) (declare)
+   (body
+    (if (isNil values)
+      (then (return ""))
+      (else))
+    (if (isNil (cdr values))
+      (then (return (jsonEncodeBox (car values))))
+      (else))
+    (return
+     (stringConcatenate
+      (jsonEncodeBox (car values))
+      (stringConcatenate "," (jsonEncodeArrayRec (cdr values)))))))
+
+  (string jsonEncodeArray (list values) (declare)
+   (body
+    (return
+     (stringConcatenate
+      "["
+      (stringConcatenate (jsonEncodeArrayRec values) "]")))))
+
+  (string jsonEncodeObjectPair (box pair) (declare)
+   (body
+    (return
+     (stringConcatenate
+      (jsonQuoteString (stringify (car pair)))
+      (stringConcatenate ":" (jsonEncodeBox (cdr pair)))))))
+
+  (string jsonEncodeObjectRec (list pairs) (declare)
+   (body
+    (if (isNil pairs)
+      (then (return ""))
+      (else))
+    (if (isNil (cdr pairs))
+      (then (return (jsonEncodeObjectPair (car pairs))))
+      (else))
+    (return
+     (stringConcatenate
+      (jsonEncodeObjectPair (car pairs))
+      (stringConcatenate "," (jsonEncodeObjectRec (cdr pairs)))))))
+
+  (string jsonEncodeObject (list pairs) (declare)
+   (body
+    (return
+     (stringConcatenate
+      "{"
+      (stringConcatenate (jsonEncodeObjectRec pairs) "}")))))
+
+  (string jsonEncodeBox (box value) (declare)
+   (body
+    (if (isNil value)
+      (then (return "null"))
+      (else))
+    (if (equalString (boxType value) "string")
+      (then (return (jsonQuoteString (unBoxString value))))
+      (else))
+    (if (equalString (boxType value) "int")
+      (then (return (intToString (unBoxInt value))))
+      (else))
+    (if (equalString (boxType value) "bool")
+      (then
+       (if (unBoxBool value)
+         (then (return "true"))
+         (else (return "false"))))
+      (else))
+    (if (isList value)
+      (then (return (jsonEncodeArray value)))
+      (else))
+    (return (jsonQuoteString (stringify value)))))
+
+  (int jsonSkipWhitespace (string s int pos) (declare (string ch ""))
+   (body
+    (if (greaterthan (string-length s) pos)
+      (then
+       (set ch (sub-string s pos 1))
+       (if (jsonIsWhitespace ch)
+         (then (return (jsonSkipWhitespace s (add1 pos))))
+         (else (return pos))))
+      (else (return pos)))))
+
+  (jsonResult jsonParseStringEscape (string s int pos string acc) (declare (string ch ""))
+   (body
+    (if (greaterthan (string-length s) pos)
+      (then)
+      (else (return (jsonMakeResult nil pos false "unterminated JSON escape"))))
+    (set ch (sub-string s pos 1))
+    (if (equalString ch (jsonQuoteChar))
+      (then (return (jsonParseStringRec s (add1 pos) (stringConcatenate acc (jsonQuoteChar)))))
+      (else))
+    (if (equalString ch (jsonBackslash))
+      (then (return (jsonParseStringRec s (add1 pos) (stringConcatenate acc (jsonBackslash)))))
+      (else))
+    (if (equalString ch "/")
+      (then (return (jsonParseStringRec s (add1 pos) (stringConcatenate acc "/"))))
+      (else))
+    (if (equalString ch "n")
+      (then (return (jsonParseStringRec s (add1 pos) (stringConcatenate acc (character 10)))))
+      (else))
+    (if (equalString ch "r")
+      (then (return (jsonParseStringRec s (add1 pos) (stringConcatenate acc (character 13)))))
+      (else))
+    (if (equalString ch "t")
+      (then (return (jsonParseStringRec s (add1 pos) (stringConcatenate acc (character 9)))))
+      (else))
+    (if (equalString ch "b")
+      (then (return (jsonParseStringRec s (add1 pos) (stringConcatenate acc (character 8)))))
+      (else))
+    (if (equalString ch "f")
+      (then (return (jsonParseStringRec s (add1 pos) (stringConcatenate acc (character 12)))))
+      (else))
+    (return (jsonMakeResult nil pos false "unsupported JSON string escape"))))
+
+  (jsonResult jsonParseStringRec (string s int pos string acc) (declare (string ch ""))
+   (body
+    (if (greaterthan (string-length s) pos)
+      (then)
+      (else (return (jsonMakeResult nil pos false "unterminated JSON string"))))
+    (set ch (sub-string s pos 1))
+    (if (equalString ch (jsonQuoteChar))
+      (then (return (jsonMakeResult (boxString acc) (add1 pos) true "")))
+      (else))
+    (if (equalString ch (jsonBackslash))
+      (then (return (jsonParseStringEscape s (add1 pos) acc)))
+      (else))
+    (return (jsonParseStringRec s (add1 pos) (stringConcatenate acc ch)))))
+
+  (jsonResult jsonParseString (string s int pos) (declare)
+   (body
+    (if (equalString (sub-string s pos 1) (jsonQuoteChar))
+      (then (return (jsonParseStringRec s (add1 pos) "")))
+      (else (return (jsonMakeResult nil pos false "expected JSON string"))))))
+
+  (jsonResult jsonParseDigits (string s int pos int value bool sawDigit) (declare (int digit -1))
+   (body
+    (if (greaterthan (string-length s) pos)
+      (then)
+      (else
+       (if sawDigit
+         (then (return (jsonMakeResult (boxInt value) pos true "")))
+         (else (return (jsonMakeResult nil pos false "expected JSON number"))))))
+    (set digit (digitValue (sub-string s pos 1)))
+    (if (equal digit -1)
+      (then
+       (if sawDigit
+         (then (return (jsonMakeResult (boxInt value) pos true "")))
+         (else (return (jsonMakeResult nil pos false "expected JSON number")))))
+      (else))
+    (return (jsonParseDigits s (add1 pos) (add (mult value 10) digit) true))))
+
+  (jsonResult jsonParseNumber (string s int pos) (declare (jsonResult result nil) (bool negative false))
+   (body
+    (if (equalString (sub-string s pos 1) "-")
+      (then
+       (set negative true)
+       (set pos (add1 pos)))
+      (else))
+    (set result (jsonParseDigits s pos 0 false))
+    (if (get-struct result ok)
+      (then)
+      (else (return result)))
+    (if negative
+      (then (set-struct result value (boxInt (sub 0 (unBoxInt (get-struct result value))))))
+      (else))
+    (return result)))
+
+  (jsonResult jsonParseArrayItems (string s int pos list values) (declare (jsonResult item nil) (int next 0) (string ch ""))
+   (body
+    (set item (jsonParseValue s pos))
+    (if (get-struct item ok)
+      (then)
+      (else (return item)))
+    (set values (cons (get-struct item value) values))
+    (set next (jsonSkipWhitespace s (get-struct item pos)))
+    (set ch (sub-string s next 1))
+    (if (equalString ch ",")
+      (then (return (jsonParseArrayItems s (jsonSkipWhitespace s (add1 next)) values)))
+      (else))
+    (if (equalString ch "]")
+      (then (return (jsonMakeResult (reverseList values) (add1 next) true "")))
+      (else))
+    (return (jsonMakeResult nil next false "expected comma or closing bracket"))))
+
+  (jsonResult jsonParseArray (string s int pos) (declare (int next 0))
+   (body
+    (set next (jsonSkipWhitespace s (add1 pos)))
+    (if (equalString (sub-string s next 1) "]")
+      (then (return (jsonMakeResult nil (add1 next) true "")))
+      (else (return (jsonParseArrayItems s next nil))))))
+
+  (jsonResult jsonParseObjectItems (string s int pos list pairs) (declare (jsonResult key nil) (jsonResult value nil) (int next 0) (string ch ""))
+   (body
+    (set key (jsonParseString s pos))
+    (if (get-struct key ok)
+      (then)
+      (else (return key)))
+    (set next (jsonSkipWhitespace s (get-struct key pos)))
+    (if (equalString (sub-string s next 1) ":")
+      (then)
+      (else (return (jsonMakeResult nil next false "expected colon"))))
+    (set value (jsonParseValue s (jsonSkipWhitespace s (add1 next))))
+    (if (get-struct value ok)
+      (then)
+      (else (return value)))
+    (set pairs (cons (cons (get-struct key value) (get-struct value value)) pairs))
+    (set next (jsonSkipWhitespace s (get-struct value pos)))
+    (set ch (sub-string s next 1))
+    (if (equalString ch ",")
+      (then (return (jsonParseObjectItems s (jsonSkipWhitespace s (add1 next)) pairs)))
+      (else))
+    (if (equalString ch "}")
+      (then (return (jsonMakeResult (reverseList pairs) (add1 next) true "")))
+      (else))
+    (return (jsonMakeResult nil next false "expected comma or closing brace"))))
+
+  (jsonResult jsonParseObject (string s int pos) (declare (int next 0))
+   (body
+    (set next (jsonSkipWhitespace s (add1 pos)))
+    (if (equalString (sub-string s next 1) "}")
+      (then (return (jsonMakeResult nil (add1 next) true "")))
+      (else (return (jsonParseObjectItems s next nil))))))
+
+  (jsonResult jsonParseValue (string s int pos) (declare (string ch "") (int next 0))
+   (body
+    (set next (jsonSkipWhitespace s pos))
+    (if (greaterthan (string-length s) next)
+      (then)
+      (else (return (jsonMakeResult nil next false "expected JSON value"))))
+    (set ch (sub-string s next 1))
+    (if (equalString ch (jsonQuoteChar))
+      (then (return (jsonParseString s next)))
+      (else))
+    (if (equalString ch "[")
+      (then (return (jsonParseArray s next)))
+      (else))
+    (if (equalString ch "{")
+      (then (return (jsonParseObject s next)))
+      (else))
+    (if (stringStartsWith (stringSliceFrom s next) "true")
+      (then (return (jsonMakeResult (boxBool true) (add next 4) true "")))
+      (else))
+    (if (stringStartsWith (stringSliceFrom s next) "false")
+      (then (return (jsonMakeResult (boxBool false) (add next 5) true "")))
+      (else))
+    (if (stringStartsWith (stringSliceFrom s next) "null")
+      (then (return (jsonMakeResult nil (add next 4) true "")))
+      (else))
+    (return (jsonParseNumber s next))))
+
+  (jsonResult jsonParse (string s) (declare (jsonResult result nil) (int end 0))
+   (body
+    (set result (jsonParseValue s 0))
+    (if (get-struct result ok)
+      (then)
+      (else (return result)))
+    (set end (jsonSkipWhitespace s (get-struct result pos)))
+    (if (equal end (string-length s))
+      (then (return result))
+      (else (return (jsonMakeResult nil end false "trailing data after JSON value"))))))
+
+  (box jsonDecode (string s) (declare (jsonResult result nil))
+   (body
+    (set result (jsonParse s))
+    (if (get-struct result ok)
+      (then (return (get-struct result value)))
+      (else
+       (panic (get-struct result message))
+       (return nil)))))
+
+ ))

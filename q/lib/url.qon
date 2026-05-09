@@ -1,0 +1,92 @@
+((includes)
+ (types)
+ (functions
+
+  (bool urlIsAlphaNum (string ch) (declare (int code -1))
+   (body
+    (set code (asciiCode ch))
+    (if (andBool (greaterthan code 47) (lessThan code 58))
+      (then (return true))
+      (else))
+    (if (andBool (greaterthan code 64) (lessThan code 91))
+      (then (return true))
+      (else))
+    (if (andBool (greaterthan code 96) (lessThan code 123))
+      (then (return true))
+      (else))
+    (return false)))
+
+  (bool urlIsSafeChar (string ch) (declare)
+   (body
+    (if (urlIsAlphaNum ch) (then (return true)) (else))
+    (if (equalString ch "-") (then (return true)) (else))
+    (if (equalString ch "_") (then (return true)) (else))
+    (if (equalString ch ".") (then (return true)) (else))
+    (if (equalString ch "~") (then (return true)) (else))
+    (return false)))
+
+  (string urlEncodeChar (string ch) (declare (int code -1))
+   (body
+    (if (urlIsSafeChar ch)
+      (then (return ch))
+      (else))
+    (set code (asciiCode ch))
+    (if (equal code -1)
+      (then (return ch))
+      (else))
+    (return (stringConcatenate "%" (byteToHex code)))))
+
+  (string urlEncodeRec (string s int pos) (declare)
+   (body
+    (if (greaterthan (string-length s) pos)
+      (then
+       (return
+        (stringConcatenate
+         (urlEncodeChar (sub-string s pos 1))
+         (urlEncodeRec s (add1 pos)))))
+      (else (return "")))))
+
+  (string urlEncode (string s) (declare)
+   (body
+    (return (urlEncodeRec s 0))))
+
+  (string urlDecodePercent (string s int pos bool plusAsSpace) (declare (int code -1))
+   (body
+    (set code (hexPairValue (sub-string s (add1 pos) 1) (sub-string s (add pos 2) 1)))
+    (if (equal code -1)
+      (then
+       (return
+        (stringConcatenate
+         (sub-string s pos 1)
+         (urlDecodeRec s (add1 pos) plusAsSpace))))
+      (else))
+    (return
+     (stringConcatenate
+      (asciiChar code)
+      (urlDecodeRec s (add pos 3) plusAsSpace)))))
+
+  (string urlDecodeRec (string s int pos bool plusAsSpace) (declare (string ch ""))
+   (body
+    (if (greaterthan (string-length s) pos)
+      (then)
+      (else (return "")))
+    (set ch (sub-string s pos 1))
+    (if (andBool
+         (equalString ch "%")
+         (greaterthan (string-length s) (add pos 2)))
+      (then (return (urlDecodePercent s pos plusAsSpace)))
+      (else))
+    (if (andBool plusAsSpace (equalString ch "+"))
+      (then (return (stringConcatenate " " (urlDecodeRec s (add1 pos) plusAsSpace))))
+      (else))
+    (return (stringConcatenate ch (urlDecodeRec s (add1 pos) plusAsSpace)))))
+
+  (string urlDecode (string s) (declare)
+   (body
+    (return (urlDecodeRec s 0 false))))
+
+  (string urlFormDecode (string s) (declare)
+   (body
+    (return (urlDecodeRec s 0 true))))
+
+ ))
