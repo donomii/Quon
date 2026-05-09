@@ -4,14 +4,14 @@
 
 (bool perlIsNil (string a) (declare)
   (body
-    (if (binop eq a undef)
+    (if (passthrough "!defined $a")
       (then (return true))
       (else (return false)))
 ))
 
 (string getEnv (string key) (declare)
   (body
-    (return ($ENV{key}))))
+    (return (passthrough "$ENV{$key}"))))
 
 (void panic (string s) (declare)
   (body
@@ -82,7 +82,7 @@
 (void write_file (string filename string data) (declare)
       (body
          (passthrough "open my $fh, '>', $filename or die 'Cannot open file: ' . $!")
-         (print $fh data)
+         (passthrough "print $fh $data")
          (close $fh)))
   
 (string getStringArray (int index array strs) (declare)
@@ -91,11 +91,11 @@
 
 (array programArgs () (declare)
         (body
-         (return @ARGV)))
+         (return (passthrough "\@ARGV"))))
 
 (int programArgsCount () (declare)
      (body
-      (return (scalar @ARGV))))
+      (return (passthrough "scalar @ARGV"))))
 
 (string character (int num) (declare)
       (body
@@ -131,15 +131,15 @@
 
 (void setHash (hashmap hash string key string value) (declare)
       (body
-       (set $hash->{key} value)))
+       (passthrough "$hash->{$key} = $value")))
 
 (string getHash (hashmap hash string key) (declare)
       (body
-       (return ($hash->{key}))))
+       (return (passthrough "$hash->{$key}"))))
 
 (bool inHash (hashmap hash string key) (declare)
       (body
-       (return (exists $hash->{key}))))
+       (return (passthrough "exists $hash->{$key}"))))
 
 (list makeArray (int length) (declare)
       (body
@@ -158,4 +158,3 @@
        (passthrough "return !defined $a")))
 
 ))
-

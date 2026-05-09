@@ -18,9 +18,26 @@
       (body
        (return "\\'")))
 
+(string backslash () (declare)
+      (body
+       (return (character 92))))
+
+(string escapedDollar () (declare)
+      (body
+       (return (StringListJoin (stringList (backslash) (dollar)) ""))))
+
+(string escapedAtSign () (declare)
+      (body
+       (return (StringListJoin (stringList (backslash) (atsymbol)) ""))))
+
 (string escapeSingleQuotes (string s) (declare)
    (body
     (return (stringReplace (singleQuote) (escapedSingleQuote) s))))
+
+(string escapePerlString (string s) (declare)
+   (body
+    (return (stringReplace (atsymbol) (escapedAtSign)
+      (stringReplace (dollar) (escapedDollar) s)))))
 
   (list getGlobalVariables () (declare)
    (body
@@ -147,7 +164,7 @@
       (else
        (if (equalString "string" (boxType tree))
          (then
-           (printf "\"\%s\"" (escapeSingleQuotes (stringify tree))))
+           (printf "\"\%s\"" (escapePerlString (stringify tree))))
          (else (display (perlFuncMap tree variables))))))))
 
 (void perlRecurList (list expr int indent list variables) (declare)
@@ -272,7 +289,7 @@
     (if (isNil node)
       (then (return))
       (else
-       (printf "sub %s;" (stringify (second node)))))))
+       (printf "sub %s;\n" (stringify (second node)))))))
 
 (void perlForwardDeclarations (list tree) (declare)
    (body
@@ -298,6 +315,12 @@
     (printf "no warnings 'recursion';\n")
     (printf  (StringListJoin (stringList "our " (dollar) "^M = 10_000;\n") ""))
     ))
+
+(void perlTypes (list nodes) (declare)
+   (body
+    (if (isEmpty nodes)
+      (then (return))
+      (else (perlTypes (cdr nodes))))))
 
 (box perlTypeMap (box aSym) (declare (list symMap nil))
    (body
@@ -344,10 +367,13 @@
      (set tree (macrolist tree (stringConcatenate "q" "log") replace))
      (qlog "Printing program\n")
      (perlIncludes (cdr (first tree)))
+     (perlTypes (cdr (second tree)))
      (perlGlobalVariables)
+     (printf "\n# Forward declarations\n")
+     (perlForwardDeclarations (cdr (third tree)))
+     (printf "\n# End forward declarations\n")
      (perlFunctions (cdr (third tree)))
      (perlMainEntry)
      (printf "\n")))
 
 ))
-
