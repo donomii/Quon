@@ -1802,60 +1802,14 @@ function collectVariables(args, decls) {
 
 function perlGlobalVariables() {
   
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalArgsCount;\n"), null))), ""));
-
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalArgs;\n"), null))), ""));
-
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("releaseMode;\n"), null))), ""));
-
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalTrace;\n"), null))), ""));
-
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalStepTrace;\n"), null))), ""));
-
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalStackTrace;\n"), null))), ""));
-
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("caller;\n"), null))), ""));
-
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("false = 0;\n"), null))), ""));
-
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("true = 1;\n"), null))), ""));
-
-  printf(StringListJoin(cons(boxString("my "), cons(boxString(dollar()), cons(boxString("stderr = \\*STDERR;\n"), null))), ""));
-
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("quonGlobalArgs;\n"), null))), ""));
+  return cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalArgsCount;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalArgs;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("releaseMode;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalTrace;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalStepTrace;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalStackTrace;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("caller;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("false = 0;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("true = 1;\n"), cons(boxString("my "), cons(boxString(dollar()), cons(boxString("stderr = \\*STDERR;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("quonGlobalArgs;\n"), null)))))))))))))))))))))))))))))))));
 
 }
 
 
 function perlMainEntry() {
   
-  printf("\n# Main entry point\n");
-
-  printf(StringListJoin(cons(boxString(dollar()), cons(boxString("globalArgsCount = scalar("), cons(boxString(atsymbol()), cons(boxString("ARGV) + 1;\n"), null)))), ""));
-
-  printf(StringListJoin(cons(boxString(dollar()), cons(boxString("globalArgs = \\"), cons(boxString(atsymbol()), cons(boxString("ARGV;\n"), null)))), ""));
-
-  printf(StringListJoin(cons(boxString("unshift "), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("globalArgs, 'fixmeprogname' ;\n"), null)))), ""));
-
-  printf(StringListJoin(cons(boxString(dollar()), cons(boxString("quonGlobalArgs = [];\n"), null)), ""));
-
-  printf(StringListJoin(cons(boxString("for my "), cons(boxString(dollar()), cons(boxString("arg ("), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("globalArgs) {\n"), null)))))), ""));
-
-  printf(StringListJoin(cons(boxString("    push "), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("quonGlobalArgs, {car => "), cons(boxString(dollar()), cons(boxString("arg, cdr => undef};\n"), null)))))), ""));
-
-  printf(StringListJoin(cons(boxString("}\n"), null), ""));
-
-  printf(StringListJoin(cons(boxString("for (my "), cons(boxString(dollar()), cons(boxString("i = scalar("), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("quonGlobalArgs) - 1; "), cons(boxString(dollar()), cons(boxString("i >= 0; "), cons(boxString(dollar()), cons(boxString("i--) {\n"), null)))))))))), ""));
-
-  printf(StringListJoin(cons(boxString("    "), cons(boxString(dollar()), cons(boxString("quonGlobalArgs->["), cons(boxString(dollar()), cons(boxString("i]->{cdr} = "), cons(boxString(dollar()), cons(boxString("quonGlobalArgs->["), cons(boxString(dollar()), cons(boxString("i + 1];\n"), null))))))))), ""));
-
-  printf(StringListJoin(cons(boxString("}\n"), null), ""));
-
-  printf(StringListJoin(cons(boxString("*stderr = *STDERR;\n"), null), ""));
-
-  printf(StringListJoin(cons(boxString("sub fprintf { my "), cons(boxString(dollar()), cons(boxString("f = shift; printf "), cons(boxString(dollar()), cons(boxString("f "), cons(boxString(atsymbol()), cons(boxString("_ }\n"), null))))))), ""));
-
-  printf(StringListJoin(cons(boxString("start();\n"), null), ""));
+  return cons(boxString("\n# Main entry point\n"), cons(boxString(dollar()), cons(boxString("globalArgsCount = scalar("), cons(boxString(atsymbol()), cons(boxString("ARGV) + 1;\n"), cons(boxString(dollar()), cons(boxString("globalArgs = \\"), cons(boxString(atsymbol()), cons(boxString("ARGV;\n"), cons(boxString("unshift "), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("globalArgs, 'fixmeprogname' ;\n"), cons(boxString(dollar()), cons(boxString("quonGlobalArgs = [];\n"), cons(boxString("for my "), cons(boxString(dollar()), cons(boxString("arg ("), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("globalArgs) {\n"), cons(boxString("    push "), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("quonGlobalArgs, {car => "), cons(boxString(dollar()), cons(boxString("arg, cdr => undef};\n"), cons(boxString("}\n"), cons(boxString("for (my "), cons(boxString(dollar()), cons(boxString("i = scalar("), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("quonGlobalArgs) - 1; "), cons(boxString(dollar()), cons(boxString("i >= 0; "), cons(boxString(dollar()), cons(boxString("i--) {\n"), cons(boxString("    "), cons(boxString(dollar()), cons(boxString("quonGlobalArgs->["), cons(boxString(dollar()), cons(boxString("i]->{cdr} = "), cons(boxString(dollar()), cons(boxString("quonGlobalArgs->["), cons(boxString(dollar()), cons(boxString("i + 1];\n"), cons(boxString("}\n"), cons(boxString("*stderr = *STDERR;\n"), cons(boxString("sub fprintf { my "), cons(boxString(dollar()), cons(boxString("f = shift; printf "), cons(boxString(dollar()), cons(boxString("f "), cons(boxString(atsymbol()), cons(boxString("_ }\n"), cons(boxString("start();\n"), null)))))))))))))))))))))))))))))))))))))))))))))))))))))))));
 
 }
 
@@ -1921,22 +1875,29 @@ function appendVariables(vars1, vars2) {
 function perlFunctionArgs(tree) {
   
   if (isEmpty(tree)) {
-    return;
+    return emptyList();
 
   } else {
-    printf(dollar());
-
-    display(second(tree));
-
     if (isNil(cddr(tree))) {
-      printf("");
+      return cons(id(boxString(dollar())), cons(id(second(tree)), null));
 
     } else {
-      printf(", ");
+      return cons(id(boxString(dollar())), cons(id(second(tree)), cons(boxString(", "), cons(id(perlFunctionArgs(cddr(tree))), null))));
 
     };
 
-    perlFunctionArgs(cddr(tree));
+  };
+
+}
+
+
+function perlAtom(tree, variables) {
+  
+  if (equalString("string", boxType(tree))) {
+    return cons(boxString("\""), cons(id(boxString(escapePerlString(stringify(tree)))), cons(boxString("\""), null)));
+
+  } else {
+    return cons(id(perlFuncMap(tree, variables)), null);
 
   };
 
@@ -1946,13 +1907,16 @@ function perlFunctionArgs(tree) {
 function perlExpression(tree, indent, variables) {
     let thing = null;
 
-  if (isList(tree)) {
-    if (equal(1, listLength(tree))) {
-      display(perlFuncMap(car(tree), variables));
+  if (notBool(isList(tree))) {
+    return perlAtom(tree, variables);
 
+  } else {
+    if (equal(1, listLength(tree))) {
       if (equalBox(boxString("return"), car(tree))) {
+        return cons(id(perlFuncMap(car(tree), variables)), null);
+
       } else {
-        printf("()");
+        return cons(id(perlFuncMap(car(tree), variables)), cons(boxString("()"), null));
 
       };
 
@@ -1960,34 +1924,22 @@ function perlExpression(tree, indent, variables) {
       thing = first(tree);
 
       if (equalBox(boxSymbol("get-struct"), thing)) {
-        printf(StringListJoin(cons(boxString(dollar()), cons(boxString("%s->{%s}"), null)), ""), stringify(second(tree)), stringify(third(tree)));
+        return cons(id(boxString(dollar())), cons(id(second(tree)), cons(boxString("->{"), cons(id(third(tree)), cons(boxString("}"), null)))));
 
       } else {
         if (equalBox(boxSymbol("new"), thing)) {
-          printf("{}");
+          return cons(boxString("{}"), null);
 
         } else {
           if (equalBox(boxSymbol("passthrough"), thing)) {
-            printf("%s", stringify(second(tree)));
+            return cons(id(second(tree)), null);
 
           } else {
             if (equalBox(boxSymbol("binop"), thing)) {
-              printf("(");
-
-              perlExpression(third(tree), indent, variables);
-
-              printf(" %s ", stringify(second(tree)));
-
-              perlExpression(fourth(tree), indent, variables);
-
-              printf(")");
+              return cons(boxString("("), cons(id(perlExpression(third(tree), indent, variables)), cons(boxString(" "), cons(id(second(tree)), cons(boxString(" "), cons(id(perlExpression(fourth(tree), indent, variables)), cons(boxString(")"), null)))))));
 
             } else {
-              printf("%s(", stringify(perlFuncMap(car(tree), variables)));
-
-              perlRecurList(cdr(tree), indent, variables);
-
-              printf(")");
+              return cons(id(perlFuncMap(car(tree), variables)), cons(boxString("("), cons(id(perlRecurList(cdr(tree), indent, variables)), cons(boxString(")"), null))));
 
             };
 
@@ -1999,15 +1951,6 @@ function perlExpression(tree, indent, variables) {
 
     };
 
-  } else {
-    if (equalString("string", boxType(tree))) {
-      printf("\"\%s\"", escapePerlString(stringify(tree)));
-
-    } else {
-      display(perlFuncMap(tree, variables));
-
-    };
-
   };
 
 }
@@ -2016,18 +1959,14 @@ function perlExpression(tree, indent, variables) {
 function perlRecurList(expr, indent, variables) {
   
   if (isEmpty(expr)) {
-    return;
+    return emptyList();
 
   } else {
-    perlExpression(car(expr), indent, variables);
-
     if (isNil(cdr(expr))) {
-      printf("");
+      return perlExpression(car(expr), indent, variables);
 
     } else {
-      printf(", ");
-
-      perlRecurList(cdr(expr), indent, variables);
+      return cons(id(perlExpression(car(expr), indent, variables)), cons(boxString(", "), cons(id(perlRecurList(cdr(expr), indent, variables)), null)));
 
     };
 
@@ -2036,39 +1975,59 @@ function perlRecurList(expr, indent, variables) {
 }
 
 
+function perlSet(node, indent, variables) {
+  
+  return cons(id(listNewLine(indent)), cons(id(perlFuncMap(second(node), variables)), cons(boxString(" = "), cons(id(perlExpression(third(node), indent, variables)), null))));
+
+}
+
+
+function perlSetStruct(node, indent, variables) {
+  
+  return cons(id(listNewLine(indent)), cons(id(perlFuncMap(second(node), variables)), cons(boxString("->{"), cons(id(third(node)), cons(boxString("} = "), cons(id(perlExpression(fourth(node), indent, variables)), null))))));
+
+}
+
+
+function perlReturn(node, indent, variables) {
+  
+  if (greaterthan(listLength(node), 1)) {
+    return cons(id(listNewLine(indent)), cons(boxString("return "), cons(id(perlExpression(cadr(node), indent, variables)), null)));
+
+  } else {
+    return cons(id(listNewLine(indent)), cons(boxString("return"), null));
+
+  };
+
+}
+
+
+function perlIf(node, indent, variables) {
+  
+  return cons(id(listNewLine(indent)), cons(boxString("if ( "), cons(id(perlExpression(second(node), 0, variables)), cons(boxString(" ) {"), cons(id(perlBody(cdr(third(node)), add1(indent), variables)), cons(id(listNewLine(indent)), cons(boxString("} else {"), cons(id(perlBody(cdr(fourth(node)), add1(indent), variables)), cons(id(listNewLine(indent)), cons(boxString("}"), null))))))))));
+
+}
+
+
 function perlStatement(node, indent, variables) {
   
   if (equalBox(boxString("set"), first(node))) {
-    perlSet(node, indent, variables);
+    return cons(id(perlSet(node, indent, variables)), cons(boxString(";\n"), null));
 
   } else {
     if (equalBox(boxString("set-struct"), first(node))) {
-      perlSetStruct(node, indent, variables);
+      return cons(id(perlSetStruct(node, indent, variables)), cons(boxString(";\n"), null));
 
     } else {
       if (equalBox(boxString("if"), first(node))) {
-        perlIf(node, indent, variables);
+        return cons(id(perlIf(node, indent, variables)), cons(boxString(";\n"), null));
 
       } else {
         if (equalBox(boxString("return"), first(node))) {
-          newLine(indent);
-
-          printf("return");
-
-          if (greaterthan(listLength(node), 1)) {
-            printf(" ");
-
-            perlExpression(cadr(node), indent, variables);
-
-          } else {
-            printf("");
-
-          };
+          return cons(id(perlReturn(node, indent, variables)), cons(boxString(";\n"), null));
 
         } else {
-          newLine(indent);
-
-          perlExpression(node, indent, variables);
+          return cons(id(listNewLine(indent)), cons(id(perlExpression(node, indent, variables)), cons(boxString(";\n"), null)));
 
         };
 
@@ -2078,8 +2037,6 @@ function perlStatement(node, indent, variables) {
 
   };
 
-  printf(";\n");
-
 }
 
 
@@ -2087,72 +2044,21 @@ function perlBody(tree, indent, variables) {
     let code = null;
 
   if (isEmpty(tree)) {
-    return;
+    return emptyList();
 
   } else {
     code = car(tree);
 
-    perlStatement(code, indent, variables);
-
-    perlBody(cdr(tree), indent, variables);
+    return cons(id(perlStatement(code, indent, variables)), cons(id(perlBody(cdr(tree), indent, variables)), null));
 
   };
 
 }
 
 
-function perlSet(node, indent, variables) {
-  
-  newLine(indent);
-
-  printf("%s = ", stringify(perlFuncMap(first(cdr(node)), variables)));
-
-  perlExpression(third(node), indent, variables);
-
-}
-
-
-function perlSetStruct(node, indent, variables) {
-  
-  newLine(indent);
-
-  printf("%s->{%s} = ", stringify(perlFuncMap(second(node), variables)), stringify(third(node)));
-
-  perlExpression(fourth(node), indent, variables);
-
-}
-
-
-function perlIf(node, indent, variables) {
-  
-  newLine(indent);
-
-  printf("if ( ");
-
-  perlExpression(second(node), 0, variables);
-
-  printf(" ) {");
-
-  perlBody(cdr(third(node)), add1(indent), variables);
-
-  newLine(indent);
-
-  printf("} else {");
-
-  perlBody(cdr(fourth(node)), add1(indent), variables);
-
-  newLine(indent);
-
-  printf("}");
-
-}
-
-
 function perlGetStruct(node, indent) {
   
-  newLine(indent);
-
-  printf(StringListJoin(cons(boxString(dollar()), cons(boxString("%s->{%s}"), null)), ""), stringify(first(node)), stringify(second(node)));
+  return cons(id(listNewLine(indent)), cons(id(boxString(dollar())), cons(id(first(node)), cons(boxString("->{"), cons(id(second(node)), cons(boxString("}"), null))))));
 
 }
 
@@ -2161,18 +2067,12 @@ function perlDeclarations(decls, indent, variables) {
     let decl = null;
 
   if (isEmpty(decls)) {
-    return;
+    return emptyList();
 
   } else {
     decl = car(decls);
 
-    printf(StringListJoin(cons(boxString("my "), cons(boxString(dollar()), cons(boxString("%s = "), null))), ""), stringify(second(decl)));
-
-    perlExpression(third(decl), indent, variables);
-
-    printf(";\n");
-
-    perlDeclarations(cdr(decls), indent, variables);
+    return cons(boxString("my "), cons(id(boxString(dollar())), cons(id(second(decl)), cons(boxString(" = "), cons(id(perlExpression(third(decl), indent, variables)), cons(boxString(";\n"), cons(id(perlDeclarations(cdr(decls), indent, variables)), null)))))));
 
   };
 
@@ -2187,39 +2087,17 @@ function perlFunction(node) {
 
   name = second(node);
 
-  printf("\n\n# Function %s from line %s", stringify(name), stringify(getTag(name, boxString("line"))));
-
-  newLine(0);
-
   if (isNil(node)) {
-    return;
+    return emptyList();
 
   } else {
-    newLine(0);
-
-    printf("sub %s {", stringify(second(node)));
-
-    newLine(1);
-
-    printf("my (");
-
-    perlFunctionArgs(third(node));
-
-    printf(StringListJoin(cons(boxString(") = "), cons(boxString(atsymbol()), cons(boxString("_;"), null))), ""));
-
-    newLine(1);
-
     args = third(node);
 
     decls = cdr(fourth(node));
 
     variables = collectVariables(args, decls);
 
-    perlDeclarations(decls, 1, variables);
-
-    perlBody(cdr(fifth(node)), 1, variables);
-
-    printf("\n}\n");
+    return cons(boxString("\n\n# Function "), cons(id(name), cons(boxString(" from line "), cons(id(getTag(name, boxString("line"))), cons(id(listNewLine(0)), cons(id(listNewLine(0)), cons(boxString("sub "), cons(id(second(node)), cons(boxString(" {"), cons(id(listNewLine(1)), cons(boxString("my ("), cons(id(perlFunctionArgs(args)), cons(boxString(") = "), cons(id(boxString(atsymbol())), cons(boxString("_;"), cons(id(listNewLine(1)), cons(id(perlDeclarations(decls, 1, variables)), cons(id(perlBody(cdr(fifth(node)), 1, variables)), cons(boxString("\n}\n"), null)))))))))))))))))));
 
   };
 
@@ -2229,10 +2107,10 @@ function perlFunction(node) {
 function perlForwardDeclaration(node) {
   
   if (isNil(node)) {
-    return;
+    return emptyList();
 
   } else {
-    printf("sub %s;\n", stringify(second(node)));
+    return cons(boxString("sub "), cons(id(second(node)), cons(boxString(";\n"), null)));
 
   };
 
@@ -2242,12 +2120,10 @@ function perlForwardDeclaration(node) {
 function perlForwardDeclarations(tree) {
   
   if (isEmpty(tree)) {
-    return;
+    return emptyList();
 
   } else {
-    perlForwardDeclaration(car(tree));
-
-    perlForwardDeclarations(cdr(tree));
+    return cons(id(perlForwardDeclaration(car(tree))), cons(id(perlForwardDeclarations(cdr(tree))), null));
 
   };
 
@@ -2257,12 +2133,10 @@ function perlForwardDeclarations(tree) {
 function perlFunctions(tree) {
   
   if (isEmpty(tree)) {
-    return;
+    return emptyList();
 
   } else {
-    perlFunction(car(tree));
-
-    perlFunctions(cdr(tree));
+    return cons(id(perlFunction(car(tree))), cons(id(perlFunctions(cdr(tree))), null));
 
   };
 
@@ -2271,28 +2145,14 @@ function perlFunctions(tree) {
 
 function perlIncludes(nodes) {
   
-  printf("use strict;\n");
-
-  printf("use warnings;\n");
-
-  printf("use v5.10;\n\n");
-
-  printf("no warnings 'recursion';\n");
-
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("^M = 10_000;\n"), null))), ""));
+  return cons(boxString("use strict;\n"), cons(boxString("use warnings;\n"), cons(boxString("use v5.10;\n\n"), cons(boxString("no warnings 'recursion';\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("^M = 10_000;\n"), null)))))));
 
 }
 
 
 function perlTypes(nodes) {
   
-  if (isEmpty(nodes)) {
-    return;
-
-  } else {
-    perlTypes(cdr(nodes));
-
-  };
+  return emptyList();
 
 }
 
@@ -2341,6 +2201,48 @@ function perlFuncMap(aSym, variables) {
 }
 
 
+function perlLoadProgram(filename) {
+    let tree = null;
+  let replace = null;
+
+  tree = loadQuon(filename);
+
+  tree = insertInclude(tree, "q/shims/perl.qon");
+
+  tree = loadIncludes(tree);
+
+  tree = macrowalk(tree);
+
+  replace = cons(boxSymbol("fprintf"), cons(boxSymbol("stderr"), null));
+
+  tree = macrolist(tree, stringConcatenate("q", "log"), replace);
+
+  return tree;
+
+}
+
+
+function perlProgramTree(tree) {
+  
+  return cons(id(perlIncludes(cdr(first(tree)))), cons(id(perlTypes(cdr(second(tree)))), cons(id(perlGlobalVariables()), cons(boxString("\n# Forward declarations\n"), cons(id(perlForwardDeclarations(cdr(third(tree)))), cons(boxString("\n# End forward declarations\n"), cons(id(perlFunctions(cdr(third(tree)))), cons(id(perlMainEntry()), cons(boxString("\n"), null)))))))));
+
+}
+
+
+function perlProgram(tree) {
+  
+  return ListToString(flatten(perlProgramTree(tree)), 0, true, false);
+
+}
+
+
+function perlCompileString(filename) {
+  
+  return perlProgram(perlLoadProgram(filename));
+
+}
+
+
 function perlCompile(filename) {
     let tree = null;
   let replace = null;
@@ -2369,23 +2271,7 @@ function perlCompile(filename) {
 
   fprintf(stderr, "Printing program\n");
 
-  perlIncludes(cdr(first(tree)));
-
-  perlTypes(cdr(second(tree)));
-
-  perlGlobalVariables();
-
-  printf("\n# Forward declarations\n");
-
-  perlForwardDeclarations(cdr(third(tree)));
-
-  printf("\n# End forward declarations\n");
-
-  perlFunctions(cdr(third(tree)));
-
-  perlMainEntry();
-
-  printf("\n");
+  printf("%s", perlProgram(tree));
 
 }
 

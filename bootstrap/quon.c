@@ -152,29 +152,35 @@ char* escapeSingleQuotes(char* s);
 char* escapePerlString(char* s);
 list getGlobalVariables();
 list collectVariables(list args, list decls);
-void perlGlobalVariables();
-void perlMainEntry();
+list perlGlobalVariables();
+list perlMainEntry();
 list collectVariablesFromArgs(list args);
 list collectVariablesFromDecls(list decls);
 list appendVariables(list vars1, list vars2);
-void perlFunctionArgs(list tree);
-void perlExpression(list tree, int indent, list variables);
-void perlRecurList(list expr, int indent, list variables);
-void perlStatement(list node, int indent, list variables);
-void perlBody(list tree, int indent, list variables);
-void perlSet(list node, int indent, list variables);
-void perlSetStruct(list node, int indent, list variables);
-void perlIf(list node, int indent, list variables);
-void perlGetStruct(list node, int indent);
-void perlDeclarations(list decls, int indent, list variables);
-void perlFunction(list node);
-void perlForwardDeclaration(list node);
-void perlForwardDeclarations(list tree);
-void perlFunctions(list tree);
-void perlIncludes(list nodes);
-void perlTypes(list nodes);
+list perlFunctionArgs(list tree);
+list perlAtom(box tree, list variables);
+list perlExpression(list tree, int indent, list variables);
+list perlRecurList(list expr, int indent, list variables);
+list perlSet(list node, int indent, list variables);
+list perlSetStruct(list node, int indent, list variables);
+list perlReturn(list node, int indent, list variables);
+list perlIf(list node, int indent, list variables);
+list perlStatement(list node, int indent, list variables);
+list perlBody(list tree, int indent, list variables);
+list perlGetStruct(list node, int indent);
+list perlDeclarations(list decls, int indent, list variables);
+list perlFunction(list node);
+list perlForwardDeclaration(list node);
+list perlForwardDeclarations(list tree);
+list perlFunctions(list tree);
+list perlIncludes(list nodes);
+list perlTypes(list nodes);
 box perlTypeMap(box aSym);
 box perlFuncMap(box aSym, list variables);
+list perlLoadProgram(char* filename);
+list perlProgramTree(list tree);
+char* perlProgram(list tree);
+char* perlCompileString(char* filename);
 void perlCompile(char* filename);
 list readSexpr(char* aStr, char* filename);
 list sexprTree(list l);
@@ -4772,7 +4778,7 @@ if (globalTrace)
 }
 
 
-void perlGlobalVariables() {
+list perlGlobalVariables() {
   
 if (globalTrace)
     printf("perlGlobalVariables at q/perl.qon:52 (%s)\n", caller);
@@ -4783,161 +4789,27 @@ if (globalTrace)
     snprintf(caller, 1024, "from q/perl.qon:54");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalArgsCount;\n"), NULL))), ""));
+  StackTraceMove("out", "", "", "");
 
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:55");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalArgs;\n"), NULL))), ""));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:56");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("releaseMode;\n"), NULL))), ""));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:57");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalTrace;\n"), NULL))), ""));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:58");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalStepTrace;\n"), NULL))), ""));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:59");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalStackTrace;\n"), NULL))), ""));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:60");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("caller;\n"), NULL))), ""));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:61");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("false = 0;\n"), NULL))), ""));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:62");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("true = 1;\n"), NULL))), ""));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:63");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString("my "), cons(boxString(dollar()), cons(boxString("stderr = \\*STDERR;\n"), NULL))), ""));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:64");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("quonGlobalArgs;\n"), NULL))), ""));
+  return cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalArgsCount;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalArgs;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("releaseMode;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalTrace;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalStepTrace;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalStackTrace;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("caller;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("false = 0;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("true = 1;\n"), cons(boxString("my "), cons(boxString(dollar()), cons(boxString("stderr = \\*STDERR;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("quonGlobalArgs;\n"), NULL)))))))))))))))))))))))))))))))));;
 
 }
 
 
-void perlMainEntry() {
+list perlMainEntry() {
   
 if (globalTrace)
-    printf("perlMainEntry at q/perl.qon:66 (%s)\n", caller);
+    printf("perlMainEntry at q/perl.qon:67 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlMainEntry", "66" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:68");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("\n# Main entry point\n");
+  StackTraceMove("in", "q/perl.qon", "perlMainEntry", "67" );
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/perl.qon:69");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  printf(StringListJoin(cons(boxString(dollar()), cons(boxString("globalArgsCount = scalar("), cons(boxString(atsymbol()), cons(boxString("ARGV) + 1;\n"), NULL)))), ""));
+  StackTraceMove("out", "", "", "");
 
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:70");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString(dollar()), cons(boxString("globalArgs = \\"), cons(boxString(atsymbol()), cons(boxString("ARGV;\n"), NULL)))), ""));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:71");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString("unshift "), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("globalArgs, 'fixmeprogname' ;\n"), NULL)))), ""));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:72");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString(dollar()), cons(boxString("quonGlobalArgs = [];\n"), NULL)), ""));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:73");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString("for my "), cons(boxString(dollar()), cons(boxString("arg ("), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("globalArgs) {\n"), NULL)))))), ""));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:74");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString("    push "), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("quonGlobalArgs, {car => "), cons(boxString(dollar()), cons(boxString("arg, cdr => undef};\n"), NULL)))))), ""));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:75");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString("}\n"), NULL), ""));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:76");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString("for (my "), cons(boxString(dollar()), cons(boxString("i = scalar("), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("quonGlobalArgs) - 1; "), cons(boxString(dollar()), cons(boxString("i >= 0; "), cons(boxString(dollar()), cons(boxString("i--) {\n"), NULL)))))))))), ""));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:77");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString("    "), cons(boxString(dollar()), cons(boxString("quonGlobalArgs->["), cons(boxString(dollar()), cons(boxString("i]->{cdr} = "), cons(boxString(dollar()), cons(boxString("quonGlobalArgs->["), cons(boxString(dollar()), cons(boxString("i + 1];\n"), NULL))))))))), ""));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:78");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString("}\n"), NULL), ""));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:79");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString("*stderr = *STDERR;\n"), NULL), ""));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:80");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString("sub fprintf { my "), cons(boxString(dollar()), cons(boxString("f = shift; printf "), cons(boxString(dollar()), cons(boxString("f "), cons(boxString(atsymbol()), cons(boxString("_ }\n"), NULL))))))), ""));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:81");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString("start();\n"), NULL), ""));
+  return cons(boxString("\n# Main entry point\n"), cons(boxString(dollar()), cons(boxString("globalArgsCount = scalar("), cons(boxString(atsymbol()), cons(boxString("ARGV) + 1;\n"), cons(boxString(dollar()), cons(boxString("globalArgs = \\"), cons(boxString(atsymbol()), cons(boxString("ARGV;\n"), cons(boxString("unshift "), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("globalArgs, 'fixmeprogname' ;\n"), cons(boxString(dollar()), cons(boxString("quonGlobalArgs = [];\n"), cons(boxString("for my "), cons(boxString(dollar()), cons(boxString("arg ("), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("globalArgs) {\n"), cons(boxString("    push "), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("quonGlobalArgs, {car => "), cons(boxString(dollar()), cons(boxString("arg, cdr => undef};\n"), cons(boxString("}\n"), cons(boxString("for (my "), cons(boxString(dollar()), cons(boxString("i = scalar("), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("quonGlobalArgs) - 1; "), cons(boxString(dollar()), cons(boxString("i >= 0; "), cons(boxString(dollar()), cons(boxString("i--) {\n"), cons(boxString("    "), cons(boxString(dollar()), cons(boxString("quonGlobalArgs->["), cons(boxString(dollar()), cons(boxString("i]->{cdr} = "), cons(boxString(dollar()), cons(boxString("quonGlobalArgs->["), cons(boxString(dollar()), cons(boxString("i + 1];\n"), cons(boxString("}\n"), cons(boxString("*stderr = *STDERR;\n"), cons(boxString("sub fprintf { my "), cons(boxString(dollar()), cons(boxString("f = shift; printf "), cons(boxString(dollar()), cons(boxString("f "), cons(boxString(atsymbol()), cons(boxString("_ }\n"), cons(boxString("start();\n"), NULL)))))))))))))))))))))))))))))))))))))))))))))))))))))))));;
 
 }
 
@@ -4946,17 +4818,17 @@ list collectVariablesFromArgs(list args) {
   list variables = NULL;
 
 if (globalTrace)
-    printf("collectVariablesFromArgs at q/perl.qon:83 (%s)\n", caller);
+    printf("collectVariablesFromArgs at q/perl.qon:85 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "collectVariablesFromArgs", "83" );
+  StackTraceMove("in", "q/perl.qon", "collectVariablesFromArgs", "85" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:85");
+    snprintf(caller, 1024, "from q/perl.qon:87");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isNil(args)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:86");
+    snprintf(caller, 1024, "from q/perl.qon:88");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -4965,18 +4837,18 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:88");
+    snprintf(caller, 1024, "from q/perl.qon:90");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( equalString(stringify(first(args)), "list")) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:90");
+    snprintf(caller, 1024, "from q/perl.qon:92");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       variables = cons(second(args), variables);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:91");
+    snprintf(caller, 1024, "from q/perl.qon:93");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       StackTraceMove("out", "", "", "");
@@ -4985,13 +4857,13 @@ if (globalTrace)
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:93");
+    snprintf(caller, 1024, "from q/perl.qon:95");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       variables = cons(second(args), variables);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:94");
+    snprintf(caller, 1024, "from q/perl.qon:96");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       StackTraceMove("out", "", "", "");
@@ -5010,17 +4882,17 @@ list collectVariablesFromDecls(list decls) {
 box decl = NULL;
 
 if (globalTrace)
-    printf("collectVariablesFromDecls at q/perl.qon:96 (%s)\n", caller);
+    printf("collectVariablesFromDecls at q/perl.qon:98 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "collectVariablesFromDecls", "96" );
+  StackTraceMove("in", "q/perl.qon", "collectVariablesFromDecls", "98" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:98");
+    snprintf(caller, 1024, "from q/perl.qon:100");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isNil(decls)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:99");
+    snprintf(caller, 1024, "from q/perl.qon:101");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -5029,19 +4901,19 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:101");
+    snprintf(caller, 1024, "from q/perl.qon:103");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     decl = car(decls);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:102");
+    snprintf(caller, 1024, "from q/perl.qon:104");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     variables = cons(second(decl), variables);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:103");
+    snprintf(caller, 1024, "from q/perl.qon:105");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -5056,17 +4928,17 @@ if (globalTrace)
 list appendVariables(list vars1, list vars2) {
   
 if (globalTrace)
-    printf("appendVariables at q/perl.qon:105 (%s)\n", caller);
+    printf("appendVariables at q/perl.qon:107 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "appendVariables", "105" );
+  StackTraceMove("in", "q/perl.qon", "appendVariables", "107" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:107");
+    snprintf(caller, 1024, "from q/perl.qon:109");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isNil(vars2)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:109");
+    snprintf(caller, 1024, "from q/perl.qon:111");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -5075,13 +4947,13 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:111");
+    snprintf(caller, 1024, "from q/perl.qon:113");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     vars1 = cons(car(vars2), vars1);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:112");
+    snprintf(caller, 1024, "from q/perl.qon:114");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -5093,204 +4965,211 @@ if (globalTrace)
 }
 
 
-void perlFunctionArgs(list tree) {
+list perlFunctionArgs(list tree) {
   
 if (globalTrace)
-    printf("perlFunctionArgs at q/perl.qon:114 (%s)\n", caller);
+    printf("perlFunctionArgs at q/perl.qon:116 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlFunctionArgs", "114" );
+  StackTraceMove("in", "q/perl.qon", "perlFunctionArgs", "116" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:116");
+    snprintf(caller, 1024, "from q/perl.qon:118");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isEmpty(tree)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:117");
+    snprintf(caller, 1024, "from q/perl.qon:119");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
 
-    return;;
+    return emptyList();;
 
   } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:119");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    printf(dollar());
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:120");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    display(second(tree));
-
 if (globalTrace)
     snprintf(caller, 1024, "from q/perl.qon:121");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( isNil(cddr(tree))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:121");
+    snprintf(caller, 1024, "from q/perl.qon:122");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-      printf("");
+      StackTraceMove("out", "", "", "");
+
+      return cons(id(boxString(dollar())), cons(id(second(tree)), NULL));;
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:121");
+    snprintf(caller, 1024, "from q/perl.qon:123");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-      printf(", ");
+      StackTraceMove("out", "", "", "");
+
+      return cons(id(boxString(dollar())), cons(id(second(tree)), cons(boxString(", "), cons(id(perlFunctionArgs(cddr(tree))), NULL))));;
 
     };
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:122");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    perlFunctionArgs(cddr(tree));
 
   };
 
 }
 
 
-void perlExpression(list tree, int indent, list variables) {
+list perlAtom(box tree, list variables) {
+  
+if (globalTrace)
+    printf("perlAtom at q/perl.qon:129 (%s)\n", caller);
+
+  StackTraceMove("in", "q/perl.qon", "perlAtom", "129" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:131");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString("string", boxType(tree))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:132");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(boxString("\""), cons(id(boxString(escapePerlString(stringify(tree)))), cons(boxString("\""), NULL)));;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:133");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(id(perlFuncMap(tree, variables)), NULL);;
+
+  };
+
+}
+
+
+list perlExpression(list tree, int indent, list variables) {
   list thing = NULL;
 
 if (globalTrace)
-    printf("perlExpression at q/perl.qon:124 (%s)\n", caller);
+    printf("perlExpression at q/perl.qon:135 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlExpression", "124" );
+  StackTraceMove("in", "q/perl.qon", "perlExpression", "135" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:126");
+    snprintf(caller, 1024, "from q/perl.qon:137");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  if ( isList(tree)) {
+  if ( notBool(isList(tree))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:128");
+    snprintf(caller, 1024, "from q/perl.qon:138");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return perlAtom(tree, variables);;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:140");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( equal(1, listLength(tree))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:130");
-      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-      display(perlFuncMap(car(tree), variables));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:131");
+    snprintf(caller, 1024, "from q/perl.qon:142");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       if ( equalBox(boxString("return"), car(tree))) {
-      } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:133");
+    snprintf(caller, 1024, "from q/perl.qon:143");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-        printf("()");
+        StackTraceMove("out", "", "", "");
+
+        return cons(id(perlFuncMap(car(tree), variables)), NULL);;
+
+      } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:144");
+        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+        StackTraceMove("out", "", "", "");
+
+        return cons(id(perlFuncMap(car(tree), variables)), cons(boxString("()"), NULL));;
 
       };
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:135");
+    snprintf(caller, 1024, "from q/perl.qon:146");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       thing = first(tree);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:136");
+    snprintf(caller, 1024, "from q/perl.qon:147");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       if ( equalBox(boxSymbol("get-struct"), thing)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:138");
+    snprintf(caller, 1024, "from q/perl.qon:149");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-        printf(StringListJoin(cons(boxString(dollar()), cons(boxString("%s->{%s}"), NULL)), ""), stringify(second(tree)), stringify(third(tree)));
+        StackTraceMove("out", "", "", "");
+
+        return cons(id(boxString(dollar())), cons(id(second(tree)), cons(boxString("->{"), cons(id(third(tree)), cons(boxString("}"), NULL)))));;
 
       } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:142");
+    snprintf(caller, 1024, "from q/perl.qon:156");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         if ( equalBox(boxSymbol("new"), thing)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:144");
+    snprintf(caller, 1024, "from q/perl.qon:157");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-          printf("{}");
+          StackTraceMove("out", "", "", "");
+
+          return cons(boxString("{}"), NULL);;
 
         } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:147");
+    snprintf(caller, 1024, "from q/perl.qon:159");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
           if ( equalBox(boxSymbol("passthrough"), thing)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:149");
+    snprintf(caller, 1024, "from q/perl.qon:160");
             if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-            printf("%s", stringify(second(tree)));
+            StackTraceMove("out", "", "", "");
+
+            return cons(id(second(tree)), NULL);;
 
           } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:151");
+    snprintf(caller, 1024, "from q/perl.qon:162");
             if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
             if ( equalBox(boxSymbol("binop"), thing)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:153");
+    snprintf(caller, 1024, "from q/perl.qon:164");
               if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-              printf("(");
+              StackTraceMove("out", "", "", "");
 
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:154");
-              if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-              perlExpression(third(tree), indent, variables);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:155");
-              if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-              printf(" %s ", stringify(second(tree)));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:156");
-              if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-              perlExpression(fourth(tree), indent, variables);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:157");
-              if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-              printf(")");
+              return cons(boxString("("), cons(id(perlExpression(third(tree), indent, variables)), cons(boxString(" "), cons(id(second(tree)), cons(boxString(" "), cons(id(perlExpression(fourth(tree), indent, variables)), cons(boxString(")"), NULL)))))));;
 
             } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:159");
+    snprintf(caller, 1024, "from q/perl.qon:173");
               if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-              printf("%s(", stringify(perlFuncMap(car(tree), variables)));
+              StackTraceMove("out", "", "", "");
 
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:160");
-              if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-              perlRecurList(cdr(tree), indent, variables);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:161");
-              if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-              printf(")");
+              return cons(id(perlFuncMap(car(tree), variables)), cons(boxString("("), cons(id(perlRecurList(cdr(tree), indent, variables)), cons(boxString(")"), NULL))));;
 
             };
 
@@ -5302,188 +5181,219 @@ if (globalTrace)
 
     };
 
-  } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:164");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    if ( equalString("string", boxType(tree))) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:166");
-      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-      printf("\"\%s\"", escapePerlString(stringify(tree)));
-
-    } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:167");
-      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-      display(perlFuncMap(tree, variables));
-
-    };
-
   };
 
 }
 
 
-void perlRecurList(list expr, int indent, list variables) {
+list perlRecurList(list expr, int indent, list variables) {
   
 if (globalTrace)
-    printf("perlRecurList at q/perl.qon:169 (%s)\n", caller);
+    printf("perlRecurList at q/perl.qon:179 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlRecurList", "169" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:171");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  if ( isEmpty(expr)) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:172");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    StackTraceMove("out", "", "", "");
-
-    return;;
-
-  } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:174");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    perlExpression(car(expr), indent, variables);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:175");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    if ( isNil(cdr(expr))) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:176");
-      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-      printf("");
-
-    } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:177");
-      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-      printf(", ");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:177");
-      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-      perlRecurList(cdr(expr), indent, variables);
-
-    };
-
-  };
-
-}
-
-
-void perlStatement(list node, int indent, list variables) {
-  
-if (globalTrace)
-    printf("perlStatement at q/perl.qon:179 (%s)\n", caller);
-
-  StackTraceMove("in", "q/perl.qon", "perlStatement", "179" );
+  StackTraceMove("in", "q/perl.qon", "perlRecurList", "179" );
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/perl.qon:181");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  if ( equalBox(boxString("set"), first(node))) {
+  if ( isEmpty(expr)) {
 if (globalTrace)
     snprintf(caller, 1024, "from q/perl.qon:182");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-    perlSet(node, indent, variables);
+    StackTraceMove("out", "", "", "");
+
+    return emptyList();;
 
   } else {
 if (globalTrace)
     snprintf(caller, 1024, "from q/perl.qon:184");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-    if ( equalBox(boxString("set-struct"), first(node))) {
+    if ( isNil(cdr(expr))) {
 if (globalTrace)
     snprintf(caller, 1024, "from q/perl.qon:185");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-      perlSetStruct(node, indent, variables);
+      StackTraceMove("out", "", "", "");
+
+      return perlExpression(car(expr), indent, variables);;
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:187");
+    snprintf(caller, 1024, "from q/perl.qon:186");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      StackTraceMove("out", "", "", "");
+
+      return cons(id(perlExpression(car(expr), indent, variables)), cons(boxString(", "), cons(id(perlRecurList(cdr(expr), indent, variables)), NULL)));;
+
+    };
+
+  };
+
+}
+
+
+list perlSet(list node, int indent, list variables) {
+  
+if (globalTrace)
+    printf("perlSet at q/perl.qon:191 (%s)\n", caller);
+
+  StackTraceMove("in", "q/perl.qon", "perlSet", "191" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:193");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return cons(id(listNewLine(indent)), cons(id(perlFuncMap(second(node), variables)), cons(boxString(" = "), cons(id(perlExpression(third(node), indent, variables)), NULL))));;
+
+}
+
+
+list perlSetStruct(list node, int indent, list variables) {
+  
+if (globalTrace)
+    printf("perlSetStruct at q/perl.qon:199 (%s)\n", caller);
+
+  StackTraceMove("in", "q/perl.qon", "perlSetStruct", "199" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:201");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return cons(id(listNewLine(indent)), cons(id(perlFuncMap(second(node), variables)), cons(boxString("->{"), cons(id(third(node)), cons(boxString("} = "), cons(id(perlExpression(fourth(node), indent, variables)), NULL))))));;
+
+}
+
+
+list perlReturn(list node, int indent, list variables) {
+  
+if (globalTrace)
+    printf("perlReturn at q/perl.qon:209 (%s)\n", caller);
+
+  StackTraceMove("in", "q/perl.qon", "perlReturn", "209" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:211");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( greaterthan(listLength(node), 1)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:212");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(id(listNewLine(indent)), cons(boxString("return "), cons(id(perlExpression(cadr(node), indent, variables)), NULL)));;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:216");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(id(listNewLine(indent)), cons(boxString("return"), NULL));;
+
+  };
+
+}
+
+
+list perlIf(list node, int indent, list variables) {
+  
+if (globalTrace)
+    printf("perlIf at q/perl.qon:218 (%s)\n", caller);
+
+  StackTraceMove("in", "q/perl.qon", "perlIf", "218" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:220");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return cons(id(listNewLine(indent)), cons(boxString("if ( "), cons(id(perlExpression(second(node), 0, variables)), cons(boxString(" ) {"), cons(id(perlBody(cdr(third(node)), add1(indent), variables)), cons(id(listNewLine(indent)), cons(boxString("} else {"), cons(id(perlBody(cdr(fourth(node)), add1(indent), variables)), cons(id(listNewLine(indent)), cons(boxString("}"), NULL))))))))));;
+
+}
+
+
+list perlStatement(list node, int indent, list variables) {
+  
+if (globalTrace)
+    printf("perlStatement at q/perl.qon:232 (%s)\n", caller);
+
+  StackTraceMove("in", "q/perl.qon", "perlStatement", "232" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:234");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalBox(boxString("set"), first(node))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:235");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(id(perlSet(node, indent, variables)), cons(boxString(";\n"), NULL));;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:237");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    if ( equalBox(boxString("set-struct"), first(node))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:238");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      StackTraceMove("out", "", "", "");
+
+      return cons(id(perlSetStruct(node, indent, variables)), cons(boxString(";\n"), NULL));;
+
+    } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:240");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       if ( equalBox(boxString("if"), first(node))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:188");
+    snprintf(caller, 1024, "from q/perl.qon:241");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-        perlIf(node, indent, variables);
+        StackTraceMove("out", "", "", "");
+
+        return cons(id(perlIf(node, indent, variables)), cons(boxString(";\n"), NULL));;
 
       } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:190");
+    snprintf(caller, 1024, "from q/perl.qon:243");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         if ( equalBox(boxString("return"), first(node))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:192");
+    snprintf(caller, 1024, "from q/perl.qon:244");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-          newLine(indent);
+          StackTraceMove("out", "", "", "");
 
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:193");
-          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-          printf("return");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:194");
-          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-          if ( greaterthan(listLength(node), 1)) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:196");
-            if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-            printf(" ");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:197");
-            if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-            perlExpression(cadr(node), indent, variables);
-
-          } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:198");
-            if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-            printf("");
-
-          };
+          return cons(id(perlReturn(node, indent, variables)), cons(boxString(";\n"), NULL));;
 
         } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:200");
+    snprintf(caller, 1024, "from q/perl.qon:246");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-          newLine(indent);
+          StackTraceMove("out", "", "", "");
 
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:201");
-          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-          perlExpression(node, indent, variables);
+          return cons(id(listNewLine(indent)), cons(id(perlExpression(node, indent, variables)), cons(boxString(";\n"), NULL)));;
 
         };
 
@@ -5493,567 +5403,305 @@ if (globalTrace)
 
   };
 
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:202");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(";\n");
-
 }
 
 
-void perlBody(list tree, int indent, list variables) {
+list perlBody(list tree, int indent, list variables) {
   list code = NULL;
 
 if (globalTrace)
-    printf("perlBody at q/perl.qon:204 (%s)\n", caller);
+    printf("perlBody at q/perl.qon:251 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlBody", "204" );
+  StackTraceMove("in", "q/perl.qon", "perlBody", "251" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:206");
+    snprintf(caller, 1024, "from q/perl.qon:253");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isEmpty(tree)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:207");
+    snprintf(caller, 1024, "from q/perl.qon:254");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
 
-    return;;
+    return emptyList();;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:209");
+    snprintf(caller, 1024, "from q/perl.qon:256");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     code = car(tree);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:210");
+    snprintf(caller, 1024, "from q/perl.qon:257");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-    perlStatement(code, indent, variables);
+    StackTraceMove("out", "", "", "");
 
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:211");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    perlBody(cdr(tree), indent, variables);
+    return cons(id(perlStatement(code, indent, variables)), cons(id(perlBody(cdr(tree), indent, variables)), NULL));;
 
   };
 
 }
 
 
-void perlSet(list node, int indent, list variables) {
+list perlGetStruct(list node, int indent) {
   
 if (globalTrace)
-    printf("perlSet at q/perl.qon:213 (%s)\n", caller);
+    printf("perlGetStruct at q/perl.qon:261 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlSet", "213" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:215");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  newLine(indent);
+  StackTraceMove("in", "q/perl.qon", "perlGetStruct", "261" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:216");
+    snprintf(caller, 1024, "from q/perl.qon:263");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  printf("%s = ", stringify(perlFuncMap(first(cdr(node)), variables)));
+  StackTraceMove("out", "", "", "");
 
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:217");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  perlExpression(third(node), indent, variables);
+  return cons(id(listNewLine(indent)), cons(id(boxString(dollar())), cons(id(first(node)), cons(boxString("->{"), cons(id(second(node)), cons(boxString("}"), NULL))))));;
 
 }
 
 
-void perlSetStruct(list node, int indent, list variables) {
-  
-if (globalTrace)
-    printf("perlSetStruct at q/perl.qon:219 (%s)\n", caller);
-
-  StackTraceMove("in", "q/perl.qon", "perlSetStruct", "219" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:221");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  newLine(indent);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:222");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("%s->{%s} = ", stringify(perlFuncMap(second(node), variables)), stringify(third(node)));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:225");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  perlExpression(fourth(node), indent, variables);
-
-}
-
-
-void perlIf(list node, int indent, list variables) {
-  
-if (globalTrace)
-    printf("perlIf at q/perl.qon:227 (%s)\n", caller);
-
-  StackTraceMove("in", "q/perl.qon", "perlIf", "227" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:229");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  newLine(indent);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:230");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("if ( ");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:231");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  perlExpression(second(node), 0, variables);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:232");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(" ) {");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:233");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  perlBody(cdr(third(node)), add1(indent), variables);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:234");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  newLine(indent);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:235");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("} else {");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:236");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  perlBody(cdr(fourth(node)), add1(indent), variables);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:237");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  newLine(indent);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:238");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("}");
-
-}
-
-
-void perlGetStruct(list node, int indent) {
-  
-if (globalTrace)
-    printf("perlGetStruct at q/perl.qon:242 (%s)\n", caller);
-
-  StackTraceMove("in", "q/perl.qon", "perlGetStruct", "242" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:244");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  newLine(indent);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:245");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString(dollar()), cons(boxString("%s->{%s}"), NULL)), ""), stringify(first(node)), stringify(second(node)));
-
-}
-
-
-void perlDeclarations(list decls, int indent, list variables) {
+list perlDeclarations(list decls, int indent, list variables) {
   box decl = NULL;
 
 if (globalTrace)
-    printf("perlDeclarations at q/perl.qon:252 (%s)\n", caller);
+    printf("perlDeclarations at q/perl.qon:271 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlDeclarations", "252" );
+  StackTraceMove("in", "q/perl.qon", "perlDeclarations", "271" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:254");
+    snprintf(caller, 1024, "from q/perl.qon:273");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isEmpty(decls)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:255");
+    snprintf(caller, 1024, "from q/perl.qon:274");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
 
-    return;;
+    return emptyList();;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:257");
+    snprintf(caller, 1024, "from q/perl.qon:276");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     decl = car(decls);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:258");
+    snprintf(caller, 1024, "from q/perl.qon:277");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-    printf(StringListJoin(cons(boxString("my "), cons(boxString(dollar()), cons(boxString("%s = "), NULL))), ""), stringify(second(decl)));
+    StackTraceMove("out", "", "", "");
 
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:259");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    perlExpression(third(decl), indent, variables);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:260");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    printf(";\n");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:261");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    perlDeclarations(cdr(decls), indent, variables);
+    return cons(boxString("my "), cons(id(boxString(dollar())), cons(id(second(decl)), cons(boxString(" = "), cons(id(perlExpression(third(decl), indent, variables)), cons(boxString(";\n"), cons(id(perlDeclarations(cdr(decls), indent, variables)), NULL)))))));;
 
   };
 
 }
 
 
-void perlFunction(list node) {
+list perlFunction(list node) {
   box name = NULL;
 list variables = NULL;
 list args = NULL;
 list decls = NULL;
 
 if (globalTrace)
-    printf("perlFunction at q/perl.qon:263 (%s)\n", caller);
+    printf("perlFunction at q/perl.qon:286 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlFunction", "263" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:265");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  name = second(node);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:266");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("\n\n# Function %s from line %s", stringify(name), stringify(getTag(name, boxString("line"))));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:267");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  newLine(0);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:268");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  if ( isNil(node)) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:269");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    StackTraceMove("out", "", "", "");
-
-    return;;
-
-  } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:271");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    newLine(0);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:272");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    printf("sub %s {", stringify(second(node)));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:273");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    newLine(1);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:274");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    printf("my (");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:275");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    perlFunctionArgs(third(node));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:276");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    printf(StringListJoin(cons(boxString(") = "), cons(boxString(atsymbol()), cons(boxString("_;"), NULL))), ""));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:277");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    newLine(1);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:279");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    args = third(node);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:280");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    decls = cdr(fourth(node));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:281");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    variables = collectVariables(args, decls);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:282");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    perlDeclarations(decls, 1, variables);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:283");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    perlBody(cdr(fifth(node)), 1, variables);
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:284");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    printf("\n}\n");
-
-  };
-
-}
-
-
-void perlForwardDeclaration(list node) {
-  
-if (globalTrace)
-    printf("perlForwardDeclaration at q/perl.qon:286 (%s)\n", caller);
-
-  StackTraceMove("in", "q/perl.qon", "perlForwardDeclaration", "286" );
+  StackTraceMove("in", "q/perl.qon", "perlFunction", "286" );
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/perl.qon:288");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  if ( isNil(node)) {
+  name = second(node);
+
 if (globalTrace)
     snprintf(caller, 1024, "from q/perl.qon:289");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isNil(node)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:290");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
 
-    return;;
+    return emptyList();;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:291");
+    snprintf(caller, 1024, "from q/perl.qon:292");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-    printf("sub %s;\n", stringify(second(node)));
+    args = third(node);
 
-  };
-
-}
-
-
-void perlForwardDeclarations(list tree) {
-  
 if (globalTrace)
-    printf("perlForwardDeclarations at q/perl.qon:293 (%s)\n", caller);
+    snprintf(caller, 1024, "from q/perl.qon:293");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  StackTraceMove("in", "q/perl.qon", "perlForwardDeclarations", "293" );
+    decls = cdr(fourth(node));
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:294");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    variables = collectVariables(args, decls);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/perl.qon:295");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  if ( isEmpty(tree)) {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:296");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
 
-    return;;
-
-  } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:298");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    perlForwardDeclaration(car(tree));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:299");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    perlForwardDeclarations(cdr(tree));
+    return cons(boxString("\n\n# Function "), cons(id(name), cons(boxString(" from line "), cons(id(getTag(name, boxString("line"))), cons(id(listNewLine(0)), cons(id(listNewLine(0)), cons(boxString("sub "), cons(id(second(node)), cons(boxString(" {"), cons(id(listNewLine(1)), cons(boxString("my ("), cons(id(perlFunctionArgs(args)), cons(boxString(") = "), cons(id(boxString(atsymbol())), cons(boxString("_;"), cons(id(listNewLine(1)), cons(id(perlDeclarations(decls, 1, variables)), cons(id(perlBody(cdr(fifth(node)), 1, variables)), cons(boxString("\n}\n"), NULL)))))))))))))))))));;
 
   };
 
 }
 
 
-void perlFunctions(list tree) {
+list perlForwardDeclaration(list node) {
   
 if (globalTrace)
-    printf("perlFunctions at q/perl.qon:301 (%s)\n", caller);
+    printf("perlForwardDeclaration at q/perl.qon:316 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlFunctions", "301" );
+  StackTraceMove("in", "q/perl.qon", "perlForwardDeclaration", "316" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:303");
+    snprintf(caller, 1024, "from q/perl.qon:318");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  if ( isEmpty(tree)) {
+  if ( isNil(node)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:304");
+    snprintf(caller, 1024, "from q/perl.qon:319");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
 
-    return;;
+    return emptyList();;
 
   } else {
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:306");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    perlFunction(car(tree));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:307");
-    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-    perlFunctions(cdr(tree));
-
-  };
-
-}
-
-
-void perlIncludes(list nodes) {
-  
-if (globalTrace)
-    printf("perlIncludes at q/perl.qon:309 (%s)\n", caller);
-
-  StackTraceMove("in", "q/perl.qon", "perlIncludes", "309" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:311");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("use strict;\n");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:312");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("use warnings;\n");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:313");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("use v5.10;\n\n");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:314");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("no warnings 'recursion';\n");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:315");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf(StringListJoin(cons(boxString("our "), cons(boxString(dollar()), cons(boxString("^M = 10_000;\n"), NULL))), ""));
-
-}
-
-
-void perlTypes(list nodes) {
-  
-if (globalTrace)
-    printf("perlTypes at q/perl.qon:318 (%s)\n", caller);
-
-  StackTraceMove("in", "q/perl.qon", "perlTypes", "318" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:320");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  if ( isEmpty(nodes)) {
 if (globalTrace)
     snprintf(caller, 1024, "from q/perl.qon:321");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
 
-    return;;
+    return cons(boxString("sub "), cons(id(second(node)), cons(boxString(";\n"), NULL)));;
+
+  };
+
+}
+
+
+list perlForwardDeclarations(list tree) {
+  
+if (globalTrace)
+    printf("perlForwardDeclarations at q/perl.qon:323 (%s)\n", caller);
+
+  StackTraceMove("in", "q/perl.qon", "perlForwardDeclarations", "323" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:325");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isEmpty(tree)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:326");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return emptyList();;
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:322");
+    snprintf(caller, 1024, "from q/perl.qon:328");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-    perlTypes(cdr(nodes));
+    StackTraceMove("out", "", "", "");
+
+    return cons(id(perlForwardDeclaration(car(tree))), cons(id(perlForwardDeclarations(cdr(tree))), NULL));;
 
   };
+
+}
+
+
+list perlFunctions(list tree) {
+  
+if (globalTrace)
+    printf("perlFunctions at q/perl.qon:332 (%s)\n", caller);
+
+  StackTraceMove("in", "q/perl.qon", "perlFunctions", "332" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:334");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isEmpty(tree)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:335");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return emptyList();;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:337");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(id(perlFunction(car(tree))), cons(id(perlFunctions(cdr(tree))), NULL));;
+
+  };
+
+}
+
+
+list perlIncludes(list nodes) {
+  
+if (globalTrace)
+    printf("perlIncludes at q/perl.qon:341 (%s)\n", caller);
+
+  StackTraceMove("in", "q/perl.qon", "perlIncludes", "341" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:343");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return cons(boxString("use strict;\n"), cons(boxString("use warnings;\n"), cons(boxString("use v5.10;\n\n"), cons(boxString("no warnings 'recursion';\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("^M = 10_000;\n"), NULL)))))));;
+
+}
+
+
+list perlTypes(list nodes) {
+  
+if (globalTrace)
+    printf("perlTypes at q/perl.qon:350 (%s)\n", caller);
+
+  StackTraceMove("in", "q/perl.qon", "perlTypes", "350" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:352");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return emptyList();;
 
 }
 
@@ -6062,23 +5710,23 @@ box perlTypeMap(box aSym) {
   list symMap = NULL;
 
 if (globalTrace)
-    printf("perlTypeMap at q/perl.qon:324 (%s)\n", caller);
+    printf("perlTypeMap at q/perl.qon:354 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlTypeMap", "324" );
+  StackTraceMove("in", "q/perl.qon", "perlTypeMap", "354" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:326");
+    snprintf(caller, 1024, "from q/perl.qon:356");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   symMap = alistCons(boxSymbol("stringArray"), boxSymbol("array"), alistCons(boxSymbol("string"), boxSymbol("string"), NULL));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:329");
+    snprintf(caller, 1024, "from q/perl.qon:359");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( truthy(assoc(stringify(aSym), symMap))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:330");
+    snprintf(caller, 1024, "from q/perl.qon:360");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -6087,7 +5735,7 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:331");
+    snprintf(caller, 1024, "from q/perl.qon:361");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -6103,22 +5751,22 @@ box perlFuncMap(box aSym, list variables) {
   list symMap = NULL;
 
 if (globalTrace)
-    printf("perlFuncMap at q/perl.qon:333 (%s)\n", caller);
+    printf("perlFuncMap at q/perl.qon:363 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlFuncMap", "333" );
+  StackTraceMove("in", "q/perl.qon", "perlFuncMap", "363" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:335");
+    snprintf(caller, 1024, "from q/perl.qon:365");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( equalString("symbol", boxType(aSym))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:338");
+    snprintf(caller, 1024, "from q/perl.qon:368");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( inList(aSym, variables)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:339");
+    snprintf(caller, 1024, "from q/perl.qon:369");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       StackTraceMove("out", "", "", "");
@@ -6127,18 +5775,18 @@ if (globalTrace)
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:341");
+    snprintf(caller, 1024, "from q/perl.qon:371");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       symMap = alistCons(boxSymbol("sub"), boxSymbol("subtract"), alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("substr"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("length"), alistCons(boxSymbol("nil"), boxSymbol("undef"), NULL))))))));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:350");
+    snprintf(caller, 1024, "from q/perl.qon:380");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       if ( truthy(assoc(stringify(aSym), symMap))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:351");
+    snprintf(caller, 1024, "from q/perl.qon:381");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         StackTraceMove("out", "", "", "");
@@ -6147,7 +5795,7 @@ if (globalTrace)
 
       } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:352");
+    snprintf(caller, 1024, "from q/perl.qon:382");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         StackTraceMove("out", "", "", "");
@@ -6160,7 +5808,7 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:353");
+    snprintf(caller, 1024, "from q/perl.qon:383");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -6172,14 +5820,124 @@ if (globalTrace)
 }
 
 
+list perlLoadProgram(char* filename) {
+  list tree = NULL;
+list replace = NULL;
+
+if (globalTrace)
+    printf("perlLoadProgram at q/perl.qon:385 (%s)\n", caller);
+
+  StackTraceMove("in", "q/perl.qon", "perlLoadProgram", "385" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:387");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  tree = loadQuon(filename);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:388");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  tree = insertInclude(tree, "q/shims/perl.qon");
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:389");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  tree = loadIncludes(tree);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:390");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  tree = macrowalk(tree);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:391");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  replace = cons(boxSymbol("fprintf"), cons(boxSymbol("stderr"), NULL));
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:392");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  tree = macrolist(tree, stringConcatenate("q", "log"), replace);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:393");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return tree;;
+
+}
+
+
+list perlProgramTree(list tree) {
+  
+if (globalTrace)
+    printf("perlProgramTree at q/perl.qon:395 (%s)\n", caller);
+
+  StackTraceMove("in", "q/perl.qon", "perlProgramTree", "395" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:397");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return cons(id(perlIncludes(cdr(first(tree)))), cons(id(perlTypes(cdr(second(tree)))), cons(id(perlGlobalVariables()), cons(boxString("\n# Forward declarations\n"), cons(id(perlForwardDeclarations(cdr(third(tree)))), cons(boxString("\n# End forward declarations\n"), cons(id(perlFunctions(cdr(third(tree)))), cons(id(perlMainEntry()), cons(boxString("\n"), NULL)))))))));;
+
+}
+
+
+char* perlProgram(list tree) {
+  
+if (globalTrace)
+    printf("perlProgram at q/perl.qon:408 (%s)\n", caller);
+
+  StackTraceMove("in", "q/perl.qon", "perlProgram", "408" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:410");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return ListToString(flatten(perlProgramTree(tree)), 0, true, false);;
+
+}
+
+
+char* perlCompileString(char* filename) {
+  
+if (globalTrace)
+    printf("perlCompileString at q/perl.qon:412 (%s)\n", caller);
+
+  StackTraceMove("in", "q/perl.qon", "perlCompileString", "412" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/perl.qon:414");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return perlProgram(perlLoadProgram(filename));;
+
+}
+
+
 void perlCompile(char* filename) {
   list tree = NULL;
 list replace = NULL;
 
 if (globalTrace)
-    printf("perlCompile at q/perl.qon:354 (%s)\n", caller);
+    printf("perlCompile at q/perl.qon:416 (%s)\n", caller);
 
-  StackTraceMove("in", "q/perl.qon", "perlCompile", "354" );
+  StackTraceMove("in", "q/perl.qon", "perlCompile", "416" );
 
 if (globalTrace)
     snprintf(caller, 1024, "from Unknown file (not provided by parser):Line missing");
@@ -6188,7 +5946,7 @@ if (globalTrace)
   fprintf(stderr, "Scanning file...%s\n", filename);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:357");
+    snprintf(caller, 1024, "from q/perl.qon:419");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   tree = loadQuon(filename);
@@ -6200,7 +5958,7 @@ if (globalTrace)
   fprintf(stderr, "Adding shim functions\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:359");
+    snprintf(caller, 1024, "from q/perl.qon:421");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   tree = insertInclude(tree, "q/shims/perl.qon");
@@ -6212,7 +5970,7 @@ if (globalTrace)
   fprintf(stderr, "Loading includes\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:361");
+    snprintf(caller, 1024, "from q/perl.qon:423");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   tree = loadIncludes(tree);
@@ -6224,7 +5982,7 @@ if (globalTrace)
   fprintf(stderr, "Walking tree\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:363");
+    snprintf(caller, 1024, "from q/perl.qon:425");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   tree = macrowalk(tree);
@@ -6236,13 +5994,13 @@ if (globalTrace)
   fprintf(stderr, "Replacing q log\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:365");
+    snprintf(caller, 1024, "from q/perl.qon:427");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   replace = cons(boxSymbol("fprintf"), cons(boxSymbol("stderr"), NULL));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:366");
+    snprintf(caller, 1024, "from q/perl.qon:428");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   tree = macrolist(tree, stringConcatenate("q", "log"), replace);
@@ -6254,58 +6012,10 @@ if (globalTrace)
   fprintf(stderr, "Printing program\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:368");
+    snprintf(caller, 1024, "from q/perl.qon:430");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  perlIncludes(cdr(first(tree)));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:369");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  perlTypes(cdr(second(tree)));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:370");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  perlGlobalVariables();
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:371");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("\n# Forward declarations\n");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:372");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  perlForwardDeclarations(cdr(third(tree)));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:373");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("\n# End forward declarations\n");
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:374");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  perlFunctions(cdr(third(tree)));
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:375");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  perlMainEntry();
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/perl.qon:376");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("\n");
+  printf("%s", perlProgram(tree));
 
 }
 
