@@ -28,22 +28,17 @@ sub node2Expression;
 sub node2RecurList;
 sub node2If;
 sub node2SetStruct;
-sub node2GetStruct;
 sub node2Set;
 sub node2Return;
 sub node2Statement;
 sub node2Body;
-sub node2eclarations;
+sub node2Declarations;
 sub node2Function;
 sub node2Functions;
 sub node2Includes;
-sub node2TypeDecl;
-sub node2StructComponents;
-sub node2Struct;
-sub node2TypeMap;
-sub node2FuncMap;
-sub node2Type;
 sub node2Types;
+sub node2FuncMap;
+sub node2MainEntry;
 sub node2Compile;
 sub test0;
 sub test1;
@@ -426,40 +421,39 @@ sub lessThan {
 }
 
 
-# Function node2FunctionArgs from line 4
+# Function node2FunctionArgs from line 5
 
 sub node2FunctionArgs {
   my ($tree) = @_;
-  my $out = undef;
-
-  $out = undef;
-
+  
   if ( isEmpty($tree) ) {
-    return undef;
+    return;
 
   } else {
     if ( equalString(stringify(first($tree)), "...") ) {
-      $out = cons(id($out), cons(boxString("..."), undef));
+      printf("...");
 
     } else {
-      $out = cons(boxString(" "), cons(id(second($tree)), undef));
+      display(node2FuncMap(second($tree)));
 
     };
 
     if ( isNil(cddr($tree)) ) {
+      printf("");
+
     } else {
-      $out = cons(id($out), cons(boxString(", "), undef));
+      printf(", ");
 
     };
 
-    return cons(id($out), cons(id(node2FunctionArgs(cddr($tree))), undef));
+    node2FunctionArgs(cddr($tree));
 
   };
 
 }
 
 
-# Function node2Expression from line 21
+# Function node2Expression from line 16
 
 sub node2Expression {
   my ($tree, $indent) = @_;
@@ -467,11 +461,11 @@ sub node2Expression {
 
   if ( isList($tree) ) {
     if ( equal(1, listLength($tree)) ) {
-      if ( equalBox(boxString("return"), car($tree)) ) {
-        return boxString("return");
+      display(node2FuncMap(car($tree)));
 
+      if ( equalBox(boxString("return"), car($tree)) ) {
       } else {
-        return cons(id(car($tree)), cons(boxString("()"), undef));
+        printf("()");
 
       };
 
@@ -479,22 +473,36 @@ sub node2Expression {
       $thing = first($tree);
 
       if ( equalBox(boxSymbol("get-struct"), $thing) ) {
-        return cons(id(second($tree)), cons(id(boxString(".")), cons(id(third($tree)), undef)));
+        node2Expression(second($tree), $indent);
+
+        printf(".%s", stringify(third($tree)));
 
       } else {
         if ( equalBox(boxSymbol("new"), $thing) ) {
-          return cons(id(boxString("new")), cons(id(third($tree)), undef));
+          printf("{}");
 
         } else {
           if ( equalBox(boxSymbol("passthrough"), $thing) ) {
-            return second($tree);
+            printf("%s", stringify(second($tree)));
 
           } else {
             if ( equalBox(boxSymbol("binop"), $thing) ) {
-              return cons(id(boxString("(1")), cons(id(node2Expression(third($tree), $indent)), cons(id(boxString(" ")), cons(id(second($tree)), cons(id(boxString(" ")), cons(id(node2Expression(fourth($tree), $indent)), cons(id(boxString(")")), undef)))))));
+              printf("(");
+
+              node2Expression(third($tree), $indent);
+
+              printf(" %s ", stringify(second($tree)));
+
+              node2Expression(fourth($tree), $indent);
+
+              printf(")");
 
             } else {
-              return cons(id(node2FuncMap(car($tree))), cons(id(boxString("(2")), cons(id(node2RecurList(cdr($tree), $indent)), cons(id(boxString(")")), undef))));
+              printf("%s(", stringify(node2FuncMap(car($tree))));
+
+              node2RecurList(cdr($tree), $indent);
+
+              printf(")");
 
             };
 
@@ -507,29 +515,37 @@ sub node2Expression {
     };
 
   } else {
-    return node2FuncMap($tree);
+    if ( equalString("string", boxType($tree)) ) {
+      printf("\"%s\"", stringify($tree));
+
+    } else {
+      display(node2FuncMap($tree));
+
+    };
 
   };
 
 }
 
 
-# Function node2RecurList from line 85
+# Function node2RecurList from line 56
 
 sub node2RecurList {
   my ($expr, $indent) = @_;
   
   if ( isEmpty($expr) ) {
-    return boxString("");
+    return;
 
   } else {
-    return node2Expression(car($expr), $indent);
+    node2Expression(car($expr), $indent);
 
     if ( isNil(cdr($expr)) ) {
-      boxString("");
+      printf("");
 
     } else {
-      return cons(id(boxString(", ")), cons(id(node2RecurList(cdr($expr), $indent)), undef));
+      printf(", ");
+
+      node2RecurList(cdr($expr), $indent);
 
     };
 
@@ -538,93 +554,110 @@ sub node2RecurList {
 }
 
 
-# Function node2If from line 103
+# Function node2If from line 66
 
 sub node2If {
   my ($node, $indent, $functionName) = @_;
   
-  return cons(id(listNewLine($indent)), cons(id(boxString("if (4 ")), cons(id(boxString(stringify(node2Expression(second($node), 0)))), cons(id(boxString(") {")), cons(id(node2Body(cdr(third($node)), add1($indent), $functionName)), cons(id(listNewLine($indent)), cons(id(boxString("} else {")), cons(id(node2Body(cdr(fourth($node)), add1($indent), $functionName)), cons(id(listNewLine($indent)), cons(id(boxString("}")), undef))))))))));
+  newLine($indent);
+
+  printf("if (");
+
+  node2Expression(second($node), 0);
+
+  printf(") {");
+
+  node2Body(cdr(third($node)), add1($indent), $functionName);
+
+  newLine($indent);
+
+  printf("} else {");
+
+  node2Body(cdr(fourth($node)), add1($indent), $functionName);
+
+  newLine($indent);
+
+  printf("}");
 
 }
 
 
-# Function node2SetStruct from line 117
+# Function node2SetStruct from line 79
 
 sub node2SetStruct {
   my ($node, $indent) = @_;
   
-  return cons(id(listNewLine($indent)), cons(id(boxString(stringify(second($node)))), cons(id(boxString(".")), cons(id(boxString(stringify(third($node)))), cons(id(boxString(" = ")), cons(id(boxString(stringify(node2Expression(fourth($node), $indent)))), undef))))));
+  newLine($indent);
+
+  node2Expression(second($node), $indent);
+
+  printf(".%s = ", stringify(third($node)));
+
+  node2Expression(fourth($node), $indent);
 
 }
 
 
-# Function node2GetStruct from line 127
-
-sub node2GetStruct {
-  my ($node, $indent) = @_;
-  
-  return cons(id(listNewLine($indent)), cons(id(boxString(stringify(first($node)))), cons(id(boxString(".")), cons(id(boxString(stringify(second($node)))), undef))));
-
-}
-
-
-# Function node2Set from line 135
+# Function node2Set from line 86
 
 sub node2Set {
   my ($node, $indent) = @_;
   
-  return cons(id(listNewLine($indent)), cons(id(boxString(stringify(node2Expression(first(cdr($node)), $indent)))), cons(id(boxString(" = ")), cons(id(boxString(stringify(node2Expression(third($node), $indent)))), undef))));
+  newLine($indent);
+
+  node2Expression(second($node), $indent);
+
+  printf(" = ");
+
+  node2Expression(third($node), $indent);
 
 }
 
 
-# Function node2Return from line 143
+# Function node2Return from line 93
 
 sub node2Return {
   my ($node, $indent) = @_;
   
+  newLine($indent);
+
   if ( equal(listLength($node), 1) ) {
-    return cons(id(listNewLine($indent)), cons(id(boxString("return;")), undef));
+    printf("return");
 
   } else {
-    return cons(id(listNewLine($indent)), cons(id(boxString("return ")), cons(id(node2Expression(cadr($node), $indent)), cons(id(boxString(";")), undef))));
+    printf("return ");
+
+    node2Expression(cadr($node), $indent);
 
   };
 
 }
 
 
-# Function node2Statement from line 153
+# Function node2Statement from line 102
 
 sub node2Statement {
-  my ($node, $indent, $functionname) = @_;
-  my $out = undef;
-
-  $out = undef;
-
+  my ($node, $indent, $functionName) = @_;
+  
   if ( equalBox(boxString("set"), first($node)) ) {
-    $out = node2Set($node, $indent);
+    node2Set($node, $indent);
 
   } else {
     if ( equalBox(boxString("set-struct"), first($node)) ) {
-      $out = node2SetStruct($node, $indent);
+      node2SetStruct($node, $indent);
 
     } else {
       if ( equalBox(boxString("if"), first($node)) ) {
-        $out = node2If($node, $indent, $functionname);
+        node2If($node, $indent, $functionName);
 
       } else {
         if ( equalBox(boxString("return"), first($node)) ) {
-          if ( inList(boxString($functionname), NoStackTrace_list()) ) {
-          } else {
-            $out = cons(id(boxString("\n")), cons(id(listIndent($indent)), cons(id(boxString("StackTraceMove(\"out\", \"\", \"\", \"\");\n")), undef)));
-
-          };
-
-          $out = cons(id($out), cons(id(node2Return($node, $indent)), undef));
+          node2Return($node, $indent);
 
         } else {
-          $out = cons(id(listNewLine($indent)), cons(id(boxString(stringify(node2Expression($node, $indent)))), undef));
+          newLine($indent);
+
+          node2Expression($node, $indent);
 
         };
 
@@ -634,81 +667,60 @@ sub node2Statement {
 
   };
 
-  $out = cons(id($out), cons(id(boxString(";\n")), undef));
-
-  return $out;
+  printf(";\n");
 
 }
 
 
-# Function node2Body from line 182
+# Function node2Body from line 120
 
 sub node2Body {
   my ($tree, $indent, $functionName) = @_;
   my $code = undef;
-my $out = undef;
-
-  $out = undef;
 
   if ( isEmpty($tree) ) {
-    return undef;
+    return;
 
   } else {
-    $code = $tree;
+    $code = car($tree);
 
-    if ( isNil($code) ) {
-      return undef;
+    node2Statement($code, $indent, $functionName);
 
-    } else {
-      $code = car($tree);
-
-      if ( notBool($releaseMode) ) {
-        if ( inList(boxString($functionName), NoTrace_list()) ) {
-          $out = cons(id($out), cons(id(boxString("//Function ")), cons(id(boxString($functionName)), cons(id(boxString(" omitted due to the no trace list\n")), undef))));
-
-        } else {
-          $out = cons(id($out), cons(id(boxString("\nif (globalTrace)\n    snprintf(caller, 1024, \"from:%s:%s\", ")), cons(id(boxString(stringify(getTagFail(car($code), boxString("filename"), boxString("Unknown file (not provided by parser)"))))), cons(id(boxString(stringify(getTagFail(car($code), boxString("line"), boxString("Line missing"))))), undef))));
-
-        };
-
-      } else {
-      };
-
-    };
-
-    if ( notBool($releaseMode) ) {
-      $out = cons(id($out), cons(id(listIndent($indent)), cons(id(boxString("if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n")), undef)));
-
-    } else {
-    };
-
-    return cons(id($out), cons(id(node2Statement($code, $indent, $functionName)), cons(id(node2Body(cdr($tree), $indent, $functionName)), undef)));
+    node2Body(cdr($tree), $indent, $functionName);
 
   };
 
 }
 
 
-# Function node2eclarations from line 219
+# Function node2Declarations from line 129
 
-sub node2eclarations {
+sub node2Declarations {
   my ($decls, $indent) = @_;
   my $decl = undef;
 
   if ( isEmpty($decls) ) {
-    return undef;
+    return;
 
   } else {
     $decl = car($decls);
 
-    return cons(id(boxString("var ")), cons(id(boxString(stringify(node2TypeMap(first($decl))))), cons(id(boxString(" ")), cons(id(boxString(stringify(second($decl)))), cons(id(boxString(" = ")), cons(id(node2Expression(third($decl), $indent)), cons(id(boxString(";\n")), cons(id(node2eclarations(cdr($decls), $indent)), undef))))))));
+    printIndent($indent);
+
+    printf("let %s = ", stringify(node2FuncMap(second($decl))));
+
+    node2Expression(third($decl), $indent);
+
+    printf(";\n");
+
+    node2Declarations(cdr($decls), $indent);
 
   };
 
 }
 
 
-# Function node2Function from line 235
+# Function node2Function from line 141
 
 sub node2Function {
   my ($node) = @_;
@@ -719,105 +731,158 @@ sub node2Function {
   newLine(0);
 
   if ( isNil($node) ) {
-    return undef;
+    return;
 
   } else {
-    return cons(id(listNewLine(0)), cons(id(boxString("function")), cons(id(boxString(" ")), cons(id(boxString(stringify(second($node)))), cons(id(boxString("(3")), cons(id(node2FunctionArgs(third($node))), cons(id(boxString(") {")), cons(id(listNewLine(1)), cons(id(node2eclarations(cdr(fourth($node)), 1)), cons(id(node2Body(cdr(fifth($node)), 1, stringify($name))), cons(id(boxString("\n}\n")), undef)))))))))));
+    newLine(0);
+
+    printf("function %s(", stringify(node2FuncMap(second($node))));
+
+    node2FunctionArgs(third($node));
+
+    printf(") {");
+
+    newLine(1);
+
+    node2Declarations(cdr(fourth($node)), 1);
+
+    node2Body(cdr(fifth($node)), 1, stringify($name));
+
+    printf("\n}\n");
 
   };
 
 }
 
 
-# Function node2Functions from line 264
+# Function node2Functions from line 157
 
 sub node2Functions {
   my ($tree) = @_;
   
   if ( isEmpty($tree) ) {
-    return undef;
+    return;
 
   } else {
-    return cons(id(node2Function(car($tree))), cons(id(node2Functions(cdr($tree))), undef));
+    node2Function(car($tree));
+
+    node2Functions(cdr($tree));
 
   };
 
 }
 
 
-# Function node2Includes from line 274
+# Function node2Includes from line 165
 
 sub node2Includes {
   my ($nodes) = @_;
   
-  return undef;
+  printf("\"use strict\";\n");
+
+  printf("const fs = require(\"fs\");\n");
+
+  printf("let globalArgsCount = 0;\n");
+
+  printf("let globalArgs = [];\n");
+
+  printf("let releaseMode = false;\n");
+
+  printf("let globalTrace = false;\n");
+
+  printf("let globalStepTrace = false;\n");
+
+  printf("let globalStackTrace = null;\n");
+
+  printf("let caller = \"\";\n");
+
+  printf("let stderr = process.stderr;\n");
+
+  printf("function cformat(fmt, ...args) {\n");
+
+  printf("  fmt = String(fmt);\n");
+
+  printf("  let out = '';\n");
+
+  printf("  let argi = 0;\n");
+
+  printf("  for (let pos = 0; pos < fmt.length; pos++) {\n");
+
+  printf("    let ch = fmt[pos];\n");
+
+  printf("    if (ch !== '%%') { out += ch; continue; }\n");
+
+  printf("    if (fmt[pos + 1] === '%%') { out += '%%'; pos++; continue; }\n");
+
+  printf("    let precision = null;\n");
+
+  printf("    if (fmt[pos + 1] === '.') {\n");
+
+  printf("      let end = pos + 2;\n");
+
+  printf("      while (end < fmt.length && fmt[end] >= '0' && fmt[end] <= '9') end++;\n");
+
+  printf("      precision = Number(fmt.slice(pos + 2, end));\n");
+
+  printf("      pos = end - 1;\n");
+
+  printf("    }\n");
+
+  printf("    let spec = fmt[pos + 1];\n");
+
+  printf("    if (spec === 's' || spec === 'd') {\n");
+
+  printf("      let value = String(args[argi++]);\n");
+
+  printf("      if (precision !== null) value = value.slice(0, precision);\n");
+
+  printf("      out += value;\n");
+
+  printf("      pos++;\n");
+
+  printf("    } else {\n");
+
+  printf("      out += ch;\n");
+
+  printf("    }\n");
+
+  printf("  }\n");
+
+  printf("  return out;\n");
+
+  printf("}\n");
+
+  printf("function printf(fmt, ...args) { process.stdout.write(cformat(fmt, ...args)); }\n");
+
+  printf("function fprintf(stream, fmt, ...args) { stream.write(cformat(fmt, ...args)); }\n");
 
 }
 
 
-# Function node2TypeDecl from line 278
+# Function node2Types from line 207
 
-sub node2TypeDecl {
-  my ($l) = @_;
+sub node2Types {
+  my ($nodes) = @_;
   
-  return undef;
-
-}
-
-
-# Function node2StructComponents from line 282
-
-sub node2StructComponents {
-  my ($node) = @_;
-  
-  if ( isEmpty($node) ) {
-    return undef;
+  if ( isEmpty($nodes) ) {
+    return;
 
   } else {
-    return cons(id(node2TypeDecl(car($node))), cons(id(node2StructComponents(cdr($node))), undef));
+    node2Types(cdr($nodes));
 
   };
 
 }
 
 
-# Function node2Struct from line 288
-
-sub node2Struct {
-  my ($node) = @_;
-  
-  node2StructComponents(cdr($node));
-
-}
-
-
-# Function node2TypeMap from line 291
-
-sub node2TypeMap {
-  my ($aSym) = @_;
-  my $symMap = undef;
-
-  $symMap = alistCons(boxSymbol("stringArray"), boxSymbol("char**"), alistCons(boxSymbol("string"), boxSymbol("char*"), undef));
-
-  if ( truthy(assoc(stringify($aSym), $symMap)) ) {
-    return cdr(assoc(stringify($aSym), $symMap));
-
-  } else {
-    return $aSym;
-
-  };
-
-}
-
-
-# Function node2FuncMap from line 301
+# Function node2FuncMap from line 213
 
 sub node2FuncMap {
   my ($aSym) = @_;
   my $symMap = undef;
 
   if ( equalString("symbol", boxType($aSym)) ) {
-    $symMap = alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("sub_string"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("string_length"), alistCons(boxSymbol("nil"), boxSymbol("NULL"), undef)))))));
+    $symMap = alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("sub_string"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("string_length"), alistCons(boxSymbol("new"), boxSymbol("new_"), alistCons(boxSymbol("nil"), boxSymbol("null"), undef))))))));
 
     if ( truthy(assoc(stringify($aSym), $symMap)) ) {
       return cdr(assoc(stringify($aSym), $symMap));
@@ -835,33 +900,23 @@ sub node2FuncMap {
 }
 
 
-# Function node2Type from line 332
+# Function node2MainEntry from line 231
 
-sub node2Type {
-  my ($node) = @_;
+sub node2MainEntry {
+  my () = @_;
   
-  return undef;
+  printf("\n// Main entry point\n");
+
+  printf("globalArgs = [\"fixmeprogname\", ...process.argv.slice(2)];\n");
+
+  printf("globalArgsCount = globalArgs.length;\n");
+
+  printf("start();\n");
 
 }
 
 
-# Function node2Types from line 337
-
-sub node2Types {
-  my ($nodes) = @_;
-  
-  if ( isEmpty($nodes) ) {
-    return undef;
-
-  } else {
-    return cons(id(node2Type(car($nodes))), cons(id(node2Types(cdr($nodes))), undef));
-
-  };
-
-}
-
-
-# Function node2Compile from line 347
+# Function node2Compile from line 238
 
 sub node2Compile {
   my ($filename) = @_;
@@ -872,11 +927,9 @@ my $replace = undef;
 
   $tree = loadQuon($filename);
 
-  fprintf($stderr, "//Building sexpr\n");
-
   fprintf($stderr, "Loading shim node2\n");
 
-  $tree = buildProg(cons(boxString("q/shims/node2.qon"), getIncludes($tree)), getTypes($tree), getFunctions($tree));
+  $tree = insertInclude($tree, "q/shims/node2.qon");
 
   fprintf($stderr, "Loading all includes\n");
 
@@ -892,11 +945,13 @@ my $replace = undef;
 
   fprintf($stderr, "//Printing program\n");
 
-  printf("%s", stringify(flatten(node2Includes(cdr(first($tree))))));
+  node2Includes(cdr(first($tree)));
 
-  printf("%s", stringify(flatten(node2Types(cdr(second($tree))))));
+  node2Types(cdr(second($tree)));
 
-  printf("%s", stringify(flatten(node2Functions(cdr(third($tree))))));
+  node2Functions(cdr(third($tree)));
+
+  node2MainEntry();
 
   printf("\n");
 
@@ -6676,7 +6731,7 @@ my $runTree = $false;
       display(macrowalk(treeCompile($filename)));
 
     } else {
-      if ( $runNode2 ) {
+      if ( orBool($runNode, $runNode2) ) {
         node2Compile($filename);
 
         printf("\n");

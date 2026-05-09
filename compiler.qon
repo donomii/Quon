@@ -98,7 +98,7 @@
       (then (display (macrowalk (treeCompile  filename))))
       (else
 
-      (if runNode2
+      (if (orBool runNode runNode2)
       (then (node2Compile  filename)(printf "\n"))
       (else
       (if runPerl

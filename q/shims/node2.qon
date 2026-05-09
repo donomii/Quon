@@ -1,214 +1,145 @@
 ((includes)
- (types
-  (uint int unsigned)
-  (bool int)
-  (array int*)
-)
-
-
-
-
+ (types)
  (functions
 
+(bool isNil (list a) (declare)
+  (body
+    (return (passthrough "a == null"))))
 
-(bool node2IsNil (void* a) (declare)
-	(body
-		(if (binop == a null)
-			(then (return true))
-			(else (return false)))
-))
-(bool isNil (void* a)(declare)
-    (body
-        (return (node2IsNil a))))
+(string getEnv (string key) (declare)
+  (body
+    (return (passthrough "process.env[key]"))))
 
-(void* pointerAdd (void* a int b) (declare)
-	(body
-		(return (binop + a b))))
+(void panic (string s) (declare)
+  (body
+    (passthrough "throw new Error(s)")))
 
-(char* getEnv (char* key) (declare)
-	(body
-		(return (get-struct  process.env key))))
+(int sub (int a int b) (declare)
+  (body
+    (return (binop - a b))))
 
-(void panic (char* s) (declare)
-	(body
-		(abort)
-		(exit 1)))
+(int mult (int a int b) (declare)
+  (body
+    (return (binop * a b))))
 
-(int sub (int a  int b) (declare)
-	(body
-		(return (binop - a b))))
-
-(float mult (int a  int b) (declare)
-	(body
-		(return (binop * a b))))
-
-(int greaterthan (int a int b) (declare)
-	(body
-		(return (binop > a b))))
+(bool greaterthan (int a int b) (declare)
+  (body
+    (return (binop > a b))))
 
 (float subf (float a float b) (declare)
-	(body
-		(return (binop - a b))))
+  (body
+    (return (binop - a b))))
 
 (float multf (float a float b) (declare)
-	(body
-		(return (binop * a b))))
+  (body
+    (return (binop * a b))))
 
-(int greaterthanf (float a float b) (declare)
-	(body
-		(return (binop > a b))))
+(bool greaterthanf (float a float b) (declare)
+  (body
+    (return (binop > a b))))
 
-(int equal (int a int b) (declare)
-	(body
-		(return (binop  == a b))))
+(bool equal (int a int b) (declare)
+  (body
+    (return (binop == a b))))
 
-(int equalString (char* a char* b) (declare)
-	(body
-		(return (binop == 0 (strcmp a b)))))
+(bool equalString (string a string b) (declare)
+  (body
+    (return (binop == a b))))
 
-(int string_length (char* s) (declare)
-	(body
-		(return (strlen s))))
+(int string_length (string s) (declare)
+  (body
+    (return (passthrough "s.length"))))
 
-(char* setSubString (char* target int start char* source)(declare)
-	(body
-		(passthrough "target[start]=source[0]")
-		(return target)
-))
+(string setSubString (string target int start string source)(declare)
+  (body
+    (return (passthrough "target.substring(0, start) + source + target.substring(start + 1)"))))
 
-(char* sub_string (char* s int start int length) (declare (char* substr ""))
-	(body
-		(set substr  (calloc (add length 1) 1))
-		(strncpy substr  (binop + s start) length)
-		(return substr)
-))
+(string sub_string (string s int start int length) (declare)
+  (body
+    (return (passthrough "s.substring(start, start + length)"))))
 
-(char* stringConcatenate (char* a char* b) (declare (int len 0)(char* target nil))
-	(body
-		(set len (add (add (strlen a) (strlen b)) 1))
-		(set target (calloc len 1))
-		(strncat target  a  len)
-		(strncat target  b  len)
-		(return target)
-))
-	
-(char* intToString (int a) (declare (int len 0)(char* target nil))
-	(body
-         (set len  100)
-         (set target  (calloc len 1))
-         (snprintf target  99  "%d"  a)
-         (return target)
-))
+(string stringConcatenate (string a string b) (declare)
+  (body
+    (return (binop + a b))))
 
-(void* gc_malloc (uint size) (declare)
-	(body
-         (return (malloc size))
-))
+(string intToString (int a) (declare)
+  (body
+    (return (passthrough "String(a)"))))
 
-(int* makeArray (int length) (declare (int* array nil))
-	(body
-         (set array (gc_malloc (mult length (sizeof int))))
-         (return array)
-))
+(string read_file (string filename) (declare)
+  (body
+    (return (passthrough "fs.readFileSync(filename, 'utf8')"))))
 
-(int at (int* arr  int index) (declare)
-    	(body
-         (return (passthrough "arr[index]"))
-))
+(void write_file (string filename string data) (declare)
+  (body
+    (passthrough "fs.writeFileSync(filename, data)")))
 
-(void setAt (int* array int index int value) (declare)
-    	(body
-         (set (passthrough "array[index]") value)
-))
+(string getStringArray (int index array strs) (declare)
+  (body
+    (return (passthrough "strs[index]"))))
 
-(void setCharAt (char* array int index int value) (declare)
-    	(body
-         (set (passthrough "array[index]") value)
-))
-
-(char* read_file (char* filename) (declare (char* buffer nil) (long length 0) (FILE* f nil))
-    	(body
-         (set f (fopen filename "rb"))
-         (if (node2IsNil f)
-             (then (return nil))
-             (else
-              (fseek f 0 SEEK_END)
-              (set length (ftell f))
-              (fseek f 0 SEEK_SET)
-              (set buffer (calloc (add 1 length) 1))
-              
-              (if (node2IsNil buffer)
-                  (then (panic "Malloc failed!\n"))
-                  (else (fread buffer 1 length f)))
-              (fclose f)
-              ))
-             
-         (return buffer)
-))
-
-(void write_file (char* filename char* data)   (declare (char* buffer nil) (long length 0) (FILE* f nil))
-      (body
-              (set f (fopen filename "w"))
-              (if (node2IsNil f)
-                  (then (panic "Error opening file!"))
-                  (else 
-              (fprintf f  "%s" data)
-              (fclose f)
-		))
- ))
-	
-(string getStringArray (int index char** strs) (declare)
-       (body
-        (return (passthrough "strs[index]"))))
-
-(char** programArgs () (declare)
-        (body
-         (return globalArgs)
-))
+(array programArgs () (declare)
+  (body
+    (return globalArgs)))
 
 (int programArgsCount () (declare)
-     (body
-      (return globalArgsCount)
-))
+  (body
+    (return globalArgsCount)))
 
-
-(int main (int argc char** argv )  (declare)
-	(body
-         (set caller (calloc 1024 1))
-	 (set globalArgs argv)
-	 (set globalArgsCount argc)
-         (return (start))
-))
-
-(char* character (int num)  (declare (string buffer nil) (string str NULL))
-    	(body
-         (set str (malloc 2))
-         (if (node2IsNil str) 
-             (then (return 0))
-             (else
-         (setCharAt str 0 num)
-         (setCharAt str 1 0)
-         (return str)
-         ))
-))
-
-
-
+(string character (int num) (declare)
+  (body
+    (return (passthrough "String.fromCharCode(num)"))))
 
 (void displays (string s) (declare)
-      (body
-       (printf "%s" s)
+  (body
+    (printf "%s" s)))
+
+(int remainder (int a int b) (declare)
+  (body
+    (return (binop % a b))))
+
+(bool or (bool a bool b) (declare)
+  (body
+    (return (binop || a b))))
+
+(int max (int a int b) (declare)
+  (body
+    (if (greaterthan a b)
+      (then (return a))
+      (else (return b)))))
+
+(int min (int a int b) (declare)
+  (body
+    (if (greaterthan a b)
+      (then (return b))
+      (else (return a)))))
+
+(hashmap makeHash () (declare)
+  (body
+    (return {})))
+
+(void setHash (hashmap hash string key string value) (declare)
+  (body
+    (passthrough "hash[key] = value")))
+
+(string getHash (hashmap hash string key) (declare)
+  (body
+    (return (passthrough "hash[key]"))))
+
+(bool inHash (hashmap hash string key) (declare)
+  (body
+    (return (passthrough "Object.prototype.hasOwnProperty.call(hash, key)"))))
+
+(list makeArray (int length) (declare)
+  (body
+    (return (passthrough "new Array(length)"))))
+
+(void setArray (list array int index string value) (declare)
+  (body
+    (set (passthrough "array[index]") value)))
+
+(string getArray (list array int index) (declare)
+  (body
+    (return (passthrough "array[index]"))))
+
 ))
-)
-
-
- (globals
-  (char* caller nil)
-  (bool globalTrace  false)
-  (bool globalStepTrace false)
-  )
- )
-
-   
-
- 
