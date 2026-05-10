@@ -6,7 +6,7 @@
              (map list->string l)))
 (define $keywords (<any> (string "then")(string "else")(string "end")(string "in")(string "fu")(string "return")(string "if")))
 (define (unSep e) (if (empty? e) "\"" (list->string e)))
-(define (makeStr e) (if (string? e) e (list->string e))) 
+(define (makeStr e) (if (string? e) e (list->string e)))
 (define $string (parser-compose
                  (char #\")
                  (str <- (sepBy (many (noneOf "\\\"")) (string "\\\"")))
@@ -25,7 +25,7 @@
                     ))
 (define $expBody (parser-compose
                    (string "(")
-                   (body <- $expression) 
+                   (body <- $expression)
                   (extraBody <-  (<or> (try $extraBody) (return '())))
                   (string ")")
                   (return (cons body extraBody))))
@@ -64,13 +64,13 @@
                        $whitespace
                        (trueBranch <- (<or> (try $statements) (return '())))
                        $whitespace
-                   
+
                        (string "else")
                        $whitespace
                        (falseBranch <-  (<or> (try  $statements) (return '())))
                        $whitespace
                        (string "end")
-                   
+
                        (return (list "if"  condition (cons "then" trueBranch) (cons "else" falseBranch )))))
 (define $exp-statement (parser-compose
                         $whitespace
@@ -79,19 +79,19 @@
      (notFollowedBy (string "then"))
      (notFollowedBy (string "else"))
                         (exp <- $expression)
-                         
+
      (char #\;)
                         (return exp)
                         ))
 (define $statements
   (parser-compose
-    
+
      ;(notFollowedBy (string "end"))
      ;(notFollowedBy (string "then"))
      ;(notFollowedBy (string "else"))
-           
+
      (head <- (<any>     (try $if-statement)  (try $set-statement)  (try $return-statement)   (try $exp-statement )))
-     
+
      (more <- (<or> (try $statements) (return '())))
      (return (cons head more))
                                     ))
@@ -122,8 +122,8 @@
                    (many $space)
                    (returnType <-(manyTill $letter $whitespace))
                    (decl <- (manyTill (<or>  $decl $whitespace) (string "in") ))
-                   
-                   
+
+
                    (try $whitespace)
                    (s <-  $statements)
                    (try $whitespace)
@@ -151,7 +151,7 @@ runTests = inList(boxString(a), cmdLine);
 
 (parse-result
  $function
-  
+
  "
 
 fu start() -> int
@@ -160,10 +160,8 @@ fu start() -> int
   filename: *box* nil
   runPerl: *bool* false
   runJava: *bool* false
-  runAst: *bool* false
   runNode: *bool* false
-  runLua: *bool* false
-  runIma: *bool* false
+  runAnsi3: *bool* false
   runTree: *bool* false
 in
   cmdLine = listReverse(argList(globalArgsCount, 0, globalArgs))
@@ -174,7 +172,7 @@ in
   end
 
 runTests = inList(boxString(\"--test\"), cmdLine);
- 
+
   if runTests then
       test0();
       test1();
@@ -196,44 +194,29 @@ runTests = inList(boxString(\"--test\"), cmdLine);
       test19();
       test20();
       test21();
-     
+
       beers(9);
   else
       if runTree then
-          display(macrowalk(treeCompile(unBoxString(filename))));
+          display(macrowalk(loadQuon(unBoxString(filename))));
       else
-          if runAst then
-              astCompile(unBoxString(filename));
+          if runNode then
+              node2Compile(unBoxString(filename));
+
           else
-              if runNode then
-                  nodeCompile(unBoxString(filename));
-                 
+              if runPerl then
+                  perlCompile(unBoxString(filename));
+
               else
-                  if runPerl then
-                      perlCompile(unBoxString(filename));
-                    
+                  if runJava then
+                      javaCompile(unBoxString(filename));
+
                   else
-                      if runJava then
-                          javaCompile(unBoxString(filename));
-                        
-                      else
-                          if runLua then
-                              luaCompile(unBoxString(filename));
-                           
-                          else
-                              if runIma then
-                                  imaCompile(unBoxString(filename));
-                                
-                              else
-                                  ansiCompile(unBoxString(filename));
-                                 
-                              end
-                          end
+                      ansi3Compile(unBoxString(filename));
                       end
                   end
               end
           end
-      end
   end
   return 0
 end function

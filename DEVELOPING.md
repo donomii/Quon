@@ -32,7 +32,7 @@ This is technically a multi-pass compiler.  The entire source code, including al
 
 == Compiling
 
-Start with 
+Start with
 
 	bash bootstrap.bash
 
@@ -44,7 +44,7 @@ Next, make some changes and run
 
 This will build and test the compiler.
 
-Development usually involves running circular.bash.  circular will compile your code into the next version of the compiler, then compile your source code again, using the next version of the compiler. 
+Development usually involves running circular.bash.  circular will compile your code into the next version of the compiler, then compile your source code again, using the next version of the compiler.
 
 	bash circular.bash
 
@@ -61,8 +61,7 @@ lists the possible switches.  Most of them are for choosing the target platform,
 	--release		Compile without trace support
 	--test			Run some builtin tests
 
-	--ast			Dump the AST, don't generate a program
-	--tree			Dump the parsed s-expression tree (without transforms)
+	--tree			Dump the parsed s-expression tree
 
 
 
@@ -83,7 +82,7 @@ The AST is a direct reflection of the quon code.  Additional data for compilatio
         ("subname" "subtype")       node subtype, e.g. setter, getter
 
 
-Specialised nodes often have more keys.  
+Specialised nodes often have more keys.
 
 
 
@@ -97,9 +96,8 @@ Structs
 
 Structs are fully supported.  You can define structs made of structs, and access and set members.
 
-Native code generation.  
+Native code generation.
 
 Native code generators are provided in the q/ directory, with a file name related to the language target.  e.g. java.qon, node.qon, ansi.qon .  These files contain the code needed to walk the AST and generate code for the target system.  As part of this, each generator tends to include a preamble that sets up some global variables and parses the command line into them.  This is kept to a minimum because it is very diffcult to maintain and understand.  Where possible, target-specific code is kept in the q/shim directory.  These files are still in qon format, but the output is usually only valid for the target platform.  Examples of this are the math functions, binary operators, and functions to access structures (get-struct, set-struct).
 
 Shims are the only code that is optionally compiled into quon.  All the other code is always included in the compile, resulting in a compiler that can output multiple languages based on the command line switch.  However the shim files define the same function names with different implementations, so they can't all be compiled in at the same time.
-

@@ -15,12 +15,12 @@
             (else (return (makeList "Object... args, " (javaFunctionArgs (cddr tree)))))))
          (else
           (if (isNil (cddr tree))
-            (then (return (makeList (javaTypeMap (first tree)) " " (second tree))))
+            (then (return (makeList (javaTypeMap (first tree)) " " (javaFuncMap (second tree)))))
             (else
              (return (makeList
               (javaTypeMap (first tree))
               " "
-              (second tree)
+              (javaFuncMap (second tree))
               ", "
               (javaFunctionArgs (cddr tree))))))))))))
 
@@ -140,7 +140,7 @@
          (then (return (makeList (javaSetStruct node indent) ";\n")))
          (else
           (if (equalBox (boxString "if") (first node))
-            (then (return (makeList (javaIf node indent functionName) ";\n")))
+            (then (return (makeList (javaIf node indent functionName) "\n")))
             (else
              (if (equalBox (boxString "return") (first node))
                (then (return (makeList (javaReturn node indent) ";\n")))
@@ -169,7 +169,7 @@
        (return (makeList
         (javaTypeMap (first decl))
         " "
-        (second decl)
+        (javaFuncMap (second decl))
         " = "
         (javaExpression (third decl) indent)
         ";\n"
@@ -295,7 +295,13 @@
                (alistCons
                 (boxSymbol "string-length")
                 (boxSymbol "string_length")
-                (alistCons (boxSymbol "nil") (boxSymbol "null") nil))))))))))
+                (alistCons
+                 (boxSymbol "nil")
+                 (boxSymbol "null")
+                 (alistCons
+                  (boxSymbol "old")
+                  (boxSymbol "oldValue")
+                  (alistCons (boxSymbol "new") (boxSymbol "newValue") nil))))))))))))
        (if (truthy (assoc (stringify aSym) symMap))
          (then (return (cdr (assoc (stringify aSym) symMap))))
          (else (return aSym))))

@@ -14,6 +14,10 @@
   (body
     (passthrough "throw new Error(s)")))
 
+(void exit (int status) (declare)
+  (body
+    (passthrough "process.exit(status)")))
+
 (int sub (int a int b) (declare)
   (body
     (return (binop - a b))))

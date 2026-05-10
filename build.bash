@@ -27,7 +27,4 @@ build/quon_new --test
 #jar -cvfm mandelbrot.jar MANIFEST.MF quonverter/*.class
 #java -Xss100M -jar mandelbrot.jar --test
 
-#./build/quon_new compiler.qon --lua > test.lua
-#lua build/test.lua  compiler.qon --ast
-
 echo Compiled working/quon.c into build/quon_new

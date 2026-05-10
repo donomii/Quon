@@ -18,25 +18,13 @@ You can choose the output language on the command line.  The default is ANSI C, 
 
 Output perl code
 
-* --ast
-
-Output the complete abstract syntax tree, in s-expression form.
-
 * --tree
 
 Output the parsed program, in s-expression form.
 
-* --ansi
-
-The old C generator
-
-* --ansi2
-
-The less old C generator
-
 * --ansi3
 
-The new C generator
+The C generator
 
 * --java
 
