@@ -1,4 +1,4 @@
-((includes q/tests.qon q/macros.qon q/lists.qon)
+((includes q/base.qon q/tests.qon q/macros.qon q/lists.qon)
  (types )
  (functions
  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -87,24 +87,6 @@
     (if (isLineBreak token)
       (then (return (sub-string prog start (sub1 len))))
       (else (return (readComment prog start (add1 len)))))))))
-
-  (bool
-   isWhiteSpace
-   (string s)
-   (declare)
-   (body
-    (if (equalString " " s)
-      (then (return true))
-      (else
-      (if (equalString "\t" s)
-      (then (return true))
-      (else
-       (if (equalString "\n" s)
-         (then (return true))
-         (else
-          (if (equalString "\r" s)
-            (then (return true))
-            (else (return false)))))))))))
 
   (bool isLineBreak (string s) (declare)
    (body

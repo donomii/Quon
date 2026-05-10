@@ -2485,7 +2485,7 @@ function perlFunction(node) {
 
     variables = collectVariables(args, decls);
 
-    return cons(boxString("\n\n# Function "), cons(id(name), cons(boxString(" from line "), cons(id(getTag(name, boxString("line"))), cons(id(listNewLine(0)), cons(id(listNewLine(0)), cons(boxString("sub "), cons(id(second(node)), cons(boxString(" {"), cons(id(listNewLine(1)), cons(boxString("my ("), cons(id(perlFunctionArgs(args)), cons(boxString(") = "), cons(id(boxString(atsymbol())), cons(boxString("_;"), cons(id(listNewLine(1)), cons(id(perlDeclarations(decls, 1, variables)), cons(id(perlBody(cdr(fifth(node)), 1, variables)), cons(boxString("\n}\n"), null)))))))))))))))))));
+    return cons(boxString("\n\n# Function "), cons(id(name), cons(boxString(" from line "), cons(id(getTag(name, boxString("line"))), cons(id(listNewLine(0)), cons(id(listNewLine(0)), cons(boxString("sub "), cons(id(perlFuncMap(second(node), null)), cons(boxString(" {"), cons(id(listNewLine(1)), cons(boxString("my ("), cons(id(perlFunctionArgs(args)), cons(boxString(") = "), cons(id(boxString(atsymbol())), cons(boxString("_;"), cons(id(listNewLine(1)), cons(id(perlDeclarations(decls, 1, variables)), cons(id(perlBody(cdr(fifth(node)), 1, variables)), cons(boxString("\n}\n"), null)))))))))))))))))));
 
   };
 
@@ -2498,7 +2498,7 @@ function perlForwardDeclaration(node) {
     return emptyList();
 
   } else {
-    return cons(boxString("sub "), cons(id(second(node)), cons(boxString(";\n"), null)));
+    return cons(boxString("sub "), cons(id(perlFuncMap(second(node), null)), cons(boxString(";\n"), null)));
 
   };
 
@@ -2569,7 +2569,7 @@ function perlFuncMap(aSym, variables) {
       return boxSymbol(stringConcatenate(dollar(), stringify(aSym)));
 
     } else {
-      symMap = alistCons(boxSymbol("sub"), boxSymbol("subtract"), alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("substr"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("length"), alistCons(boxSymbol("nil"), boxSymbol("undef"), null))))))));
+      symMap = alistCons(boxSymbol("sub"), boxSymbol("subtract"), alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("substr"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("length"), alistCons(boxSymbol("say"), boxSymbol("say_"), alistCons(boxSymbol("nil"), boxSymbol("undef"), null)))))))));
 
       if (truthy(assoc(stringify(aSym), symMap))) {
         return cdr(assoc(stringify(aSym), symMap));
@@ -3431,16 +3431,80 @@ function insertInclude(tree, extra) {
 }
 
 
+function stringInList(item, l) {
+  
+  if (isNil(l)) {
+    return false;
+
+  } else {
+    if (equalString(item, stringify(car(l)))) {
+      return true;
+
+    } else {
+      return stringInList(item, cdr(l));
+
+    };
+
+  };
+
+}
+
+
+function appendMissingIncludes(candidates, pending, seen) {
+    let candidate = null;
+  let candidateFile = "";
+
+  if (isNil(candidates)) {
+    return pending;
+
+  } else {
+    candidate = car(candidates);
+
+    candidateFile = stringify(candidate);
+
+    if (orBool(stringInList(candidateFile, seen), stringInList(candidateFile, pending))) {
+      return appendMissingIncludes(cdr(candidates), pending, seen);
+
+    } else {
+      return cons(candidate, appendMissingIncludes(cdr(candidates), pending, seen));
+
+    };
+
+  };
+
+}
+
+
 function loadIncludes(tree) {
+  
+  return loadIncludesSeen(tree, null);
+
+}
+
+
+function loadIncludesSeen(tree, seen) {
     let newProg = null;
   let includeFile = "";
   let functionsCombined = null;
   let typesCombined = null;
   let includeTree = null;
+  let pendingIncludes = null;
+  let nextIncludes = null;
+  let nextSeen = null;
   let contents = "";
 
   if (greaterthan(listLength(getIncludes(tree)), 0)) {
     includeFile = stringify(first(getIncludes(tree)));
+
+    if (stringInList(includeFile, seen)) {
+      newProg = buildProg(cdr(getIncludes(tree)), getTypes(tree), getFunctions(tree));
+
+      return loadIncludesSeen(newProg, seen);
+
+    } else {
+    };
+
+    nextSeen = cons(boxString(includeFile), seen);
 
     contents = read_file(includeFile);
 
@@ -3466,9 +3530,13 @@ function loadIncludes(tree) {
 
         typesCombined = concatLists(getTypes(includeTree), getTypes(tree));
 
-        newProg = buildProg(cdr(getIncludes(tree)), typesCombined, functionsCombined);
+        pendingIncludes = cdr(getIncludes(tree));
 
-        return loadIncludes(newProg);
+        nextIncludes = appendMissingIncludes(getIncludes(includeTree), pendingIncludes, nextSeen);
+
+        newProg = buildProg(nextIncludes, typesCombined, functionsCombined);
+
+        return loadIncludesSeen(newProg, nextSeen);
 
       };
 
@@ -4628,37 +4696,6 @@ function readComment(prog, start, len) {
 }
 
 
-function isWhiteSpace(s) {
-  
-  if (equalString(" ", s)) {
-    return true;
-
-  } else {
-    if (equalString("\t", s)) {
-      return true;
-
-    } else {
-      if (equalString("\n", s)) {
-        return true;
-
-      } else {
-        if (equalString("\r", s)) {
-          return true;
-
-        } else {
-          return false;
-
-        };
-
-      };
-
-    };
-
-  };
-
-}
-
-
 function isLineBreak(s) {
   
   if (equalString("\n", s)) {
@@ -5609,6 +5646,37 @@ function stringContainsHelper(haystack, needle, startIndex) {
 
     } else {
       return stringContainsHelper(haystack, needle, add(startIndex, 1));
+
+    };
+
+  };
+
+}
+
+
+function isWhiteSpace(s) {
+  
+  if (equalString(" ", s)) {
+    return true;
+
+  } else {
+    if (equalString("\t", s)) {
+      return true;
+
+    } else {
+      if (equalString("\n", s)) {
+        return true;
+
+      } else {
+        if (equalString("\r", s)) {
+          return true;
+
+        } else {
+          return false;
+
+        };
+
+      };
 
     };
 

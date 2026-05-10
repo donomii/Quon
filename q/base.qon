@@ -482,6 +482,21 @@
 
             (return (stringContainsHelper haystack needle (add startIndex 1)))))))))
 
+(bool isWhiteSpace (string s) (declare)
+  (body
+    (if (equalString " " s)
+      (then (return true))
+      (else
+        (if (equalString "\t" s)
+          (then (return true))
+          (else
+            (if (equalString "\n" s)
+              (then (return true))
+              (else
+                (if (equalString "\r" s)
+                  (then (return true))
+                  (else (return false)))))))))))
+
 (string stringTrim (string s) (declare)
   (body
     (if (equal (string-length s) 0)

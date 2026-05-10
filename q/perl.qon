@@ -301,7 +301,7 @@
         (listNewLine 0)
         (listNewLine 0)
         "sub "
-        (second node)
+        (perlFuncMap (second node) nil)
         " {"
         (listNewLine 1)
         "my ("
@@ -319,7 +319,7 @@
     (if (isNil node)
       (then (return (emptyList)))
       (else
-       (return (makeList "sub " (second node) ";\n"))))))
+       (return (makeList "sub " (perlFuncMap (second node) nil) ";\n"))))))
 
 (list perlForwardDeclarations (list tree) (declare)
    (body
@@ -377,7 +377,8 @@
               (alistCons (boxSymbol "write-file") (boxSymbol "write_file")
                (alistCons (boxSymbol ">") (boxSymbol "greaterthan")
                 (alistCons (boxSymbol "string-length") (boxSymbol "length")
-                 (alistCons (boxSymbol "nil") (boxSymbol "undef") nil)))))))))
+                 (alistCons (boxSymbol "say") (boxSymbol "say_")
+                  (alistCons (boxSymbol "nil") (boxSymbol "undef") nil))))))))))
           (if (truthy (assoc (stringify aSym) symMap))
             (then (return (cdr (assoc (stringify aSym) symMap))))
             (else (return aSym))))))

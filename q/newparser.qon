@@ -385,17 +385,50 @@
       (return newProg))))
 )
 
-(list loadIncludes (list tree) (declare
+(bool stringInList (string item list l) (declare)
+  (body
+    (if (isNil l)
+      (then (return false))
+      (else
+        (if (equalString item (stringify (car l)))
+          (then (return true))
+          (else (return (stringInList item (cdr l)))))))))
+
+(list appendMissingIncludes (list candidates list pending list seen) (declare (box candidate nil)(string candidateFile ""))
+  (body
+    (if (isNil candidates)
+      (then (return pending))
+      (else
+        (set candidate (car candidates))
+        (set candidateFile (stringify candidate))
+        (if (orBool (stringInList candidateFile seen) (stringInList candidateFile pending))
+          (then (return (appendMissingIncludes (cdr candidates) pending seen)))
+          (else (return (cons candidate (appendMissingIncludes (cdr candidates) pending seen)))))))))
+
+(list loadIncludes (list tree) (declare)
+  (body
+    (return (loadIncludesSeen tree nil))))
+
+(list loadIncludesSeen (list tree list seen) (declare
   (list newProg nil)
   (string includeFile "") 
   (list functionsCombined nil)
   (list typesCombined nil)
   (list includeTree nil)
+  (list pendingIncludes nil)
+  (list nextIncludes nil)
+  (list nextSeen nil)
   (string contents ""))
 (body
   (if (greaterthan (listLength (getIncludes tree)) 0)
     (then
       (set includeFile (stringify (first (getIncludes tree))))
+      (if (stringInList includeFile seen)
+        (then
+          (set newProg (buildProg (cdr (getIncludes tree)) (getTypes tree) (getFunctions tree)))
+          (return (loadIncludesSeen newProg seen)))
+        (else))
+      (set nextSeen (cons (boxString includeFile) seen))
       (set contents (read-file includeFile))
       (if (equalString contents "")
         (then
@@ -412,8 +445,10 @@
             (else
               (set functionsCombined (concatLists (getFunctions includeTree) (getFunctions tree)))
               (set typesCombined (concatLists (getTypes includeTree) (getTypes tree)))
-              (set newProg (buildProg (cdr (getIncludes tree)) typesCombined functionsCombined))
-              (return (loadIncludes newProg)))))))
+              (set pendingIncludes (cdr (getIncludes tree)))
+              (set nextIncludes (appendMissingIncludes (getIncludes includeTree) pendingIncludes nextSeen))
+              (set newProg (buildProg nextIncludes typesCombined functionsCombined))
+              (return (loadIncludesSeen newProg nextSeen)))))))
     (else
       (return tree)))))
 

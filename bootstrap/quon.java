@@ -57,7 +57,7 @@ class Box {
 
 
 boolean notBool(boolean a) {
-
+  
   if ( a) {
     return false;
 
@@ -70,7 +70,7 @@ boolean notBool(boolean a) {
 
 
 boolean andBool(boolean a, boolean b) {
-
+  
   if ( a) {
     if ( b) {
       return true;
@@ -89,7 +89,7 @@ boolean andBool(boolean a, boolean b) {
 
 
 boolean orBool(boolean a, boolean b) {
-
+  
   if ( a) {
     return true;
 
@@ -108,28 +108,28 @@ boolean orBool(boolean a, boolean b) {
 
 
 boolean nand(boolean a, boolean b) {
-
+  
   return notBool(andBool(a, b));
 
 }
 
 
 boolean xor(boolean a, boolean b) {
-
+  
   return nand(nand(a, nand(a, b)), nand(b, nand(a, b)));
 
 }
 
 
 boolean lessThan(int a, int b) {
-
+  
   return andBool(notBool(equal(a, b)), notBool(greaterthan(a, b)));
 
 }
 
 
 Box node2FunctionArgs(Box tree) {
-
+  
   if ( isEmpty(tree)) {
     return emptyList();
 
@@ -160,7 +160,7 @@ Box node2FunctionArgs(Box tree) {
 
 
 Box node2Atom(Box tree) {
-
+  
   if ( equalString("string", boxType(tree))) {
     return cons(boxString("\""), cons(id(boxString(stringify(tree))), cons(boxString("\""), null)));
 
@@ -225,7 +225,7 @@ Box node2Expression(Box tree, int indent) {
 
 
 Box node2RecurList(Box expr, int indent) {
-
+  
   if ( isEmpty(expr)) {
     return emptyList();
 
@@ -244,28 +244,28 @@ Box node2RecurList(Box expr, int indent) {
 
 
 Box node2If(Box node, int indent, String functionName) {
-
+  
   return cons(id(listNewLine(indent)), cons(boxString("if ("), cons(id(node2Expression(second(node), 0)), cons(boxString(") {"), cons(id(node2Body(cdr(third(node)), add1(indent), functionName)), cons(id(listNewLine(indent)), cons(boxString("} else {"), cons(id(node2Body(cdr(fourth(node)), add1(indent), functionName)), cons(id(listNewLine(indent)), cons(boxString("}"), null))))))))));
 
 }
 
 
 Box node2SetStruct(Box node, int indent) {
-
+  
   return cons(id(listNewLine(indent)), cons(id(node2Expression(second(node), indent)), cons(boxString("."), cons(id(third(node)), cons(boxString(" = "), cons(id(node2Expression(fourth(node), indent)), null))))));
 
 }
 
 
 Box node2Set(Box node, int indent) {
-
+  
   return cons(id(listNewLine(indent)), cons(id(node2Expression(second(node), indent)), cons(boxString(" = "), cons(id(node2Expression(third(node), indent)), null))));
 
 }
 
 
 Box node2Return(Box node, int indent) {
-
+  
   if ( equal(listLength(node), 1)) {
     return cons(id(listNewLine(indent)), cons(boxString("return"), null));
 
@@ -278,7 +278,7 @@ Box node2Return(Box node, int indent) {
 
 
 Box node2Statement(Box node, int indent, String functionName) {
-
+  
   if ( equalBox(boxString("set"), first(node))) {
     return cons(id(node2Set(node, indent)), cons(boxString(";\n"), null));
 
@@ -357,7 +357,7 @@ Box node2Function(Box node) {
 
 
 Box node2Functions(Box tree) {
-
+  
   if ( isEmpty(tree)) {
     return emptyList();
 
@@ -370,14 +370,14 @@ Box node2Functions(Box tree) {
 
 
 Box node2Includes(Box nodes) {
-
+  
   return cons(boxString("\"use strict\";\n"), cons(boxString("const fs = require(\"fs\");\n"), cons(boxString("let globalArgsCount = 0;\n"), cons(boxString("let globalArgs = [];\n"), cons(boxString("let releaseMode = false;\n"), cons(boxString("let globalTrace = false;\n"), cons(boxString("let globalStepTrace = false;\n"), cons(boxString("let globalStackTrace = null;\n"), cons(boxString("let caller = \"\";\n"), cons(boxString("let stderr = process.stderr;\n"), cons(boxString("function cformat(fmt, ...args) {\n"), cons(boxString("  fmt = String(fmt);\n"), cons(boxString("  let out = '';\n"), cons(boxString("  let argi = 0;\n"), cons(boxString("  for (let pos = 0; pos < fmt.length; pos++) {\n"), cons(boxString("    let ch = fmt[pos];\n"), cons(boxString("    if (ch !== '%') { out += ch; continue; }\n"), cons(boxString("    if (fmt[pos + 1] === '%') { out += '%'; pos++; continue; }\n"), cons(boxString("    let precision = null;\n"), cons(boxString("    if (fmt[pos + 1] === '.') {\n"), cons(boxString("      let end = pos + 2;\n"), cons(boxString("      while (end < fmt.length && fmt[end] >= '0' && fmt[end] <= '9') end++;\n"), cons(boxString("      precision = Number(fmt.slice(pos + 2, end));\n"), cons(boxString("      pos = end - 1;\n"), cons(boxString("    }\n"), cons(boxString("    let spec = fmt[pos + 1];\n"), cons(boxString("    if (spec === 's' || spec === 'd') {\n"), cons(boxString("      let value = String(args[argi++]);\n"), cons(boxString("      if (precision !== null) value = value.slice(0, precision);\n"), cons(boxString("      out += value;\n"), cons(boxString("      pos++;\n"), cons(boxString("    } else {\n"), cons(boxString("      out += ch;\n"), cons(boxString("    }\n"), cons(boxString("  }\n"), cons(boxString("  return out;\n"), cons(boxString("}\n"), cons(boxString("function printf(fmt, ...args) { process.stdout.write(cformat(fmt, ...args)); }\n"), cons(boxString("function fprintf(stream, fmt, ...args) { stream.write(cformat(fmt, ...args)); }\n"), null)))))))))))))))))))))))))))))))))))))));
 
 }
 
 
 Box node2Types(Box nodes) {
-
+  
   return emptyList();
 
 }
@@ -406,7 +406,7 @@ Box node2FuncMap(Box aSym) {
 
 
 Box node2MainEntry() {
-
+  
   return cons(boxString("\n// Main entry point\n"), cons(boxString("globalArgs = [\"fixmeprogname\", ...process.argv.slice(2)];\n"), cons(boxString("globalArgsCount = globalArgs.length;\n"), cons(boxString("start();\n"), null))));
 
 }
@@ -434,21 +434,21 @@ Box replace = null;
 
 
 Box node2ProgramTree(Box tree) {
-
+  
   return cons(id(node2Includes(cdr(first(tree)))), cons(id(node2Types(cdr(second(tree)))), cons(id(node2Functions(cdr(third(tree)))), cons(id(node2MainEntry()), cons(boxString("\n"), null)))));
 
 }
 
 
 String node2Program(Box tree) {
-
+  
   return ListToString(flatten(node2ProgramTree(tree)), 0, true, false);
 
 }
 
 
 String node2CompileString(String filename) {
-
+  
   return node2Program(node2LoadProgram(filename));
 
 }
@@ -488,7 +488,7 @@ Box replace = null;
 
 
 void test0() {
-
+  
   if ( equalString(stringify(boxString("hello")), stringify(boxString("hello")))) {
     System.out.printf("0.  pass string compare works\n");
 
@@ -509,28 +509,28 @@ void test0() {
 
 
 void test1() {
-
+  
   System.out.printf("1.  pass Function call and print work\n");
 
 }
 
 
 void test2_do(String message) {
-
+  
   System.out.printf("2.  pass Function call with arg works: %s\n", message);
 
 }
 
 
 void test2() {
-
+  
   test2_do("This is the argument");
 
 }
 
 
 void test3_do(int b, String c) {
-
+  
   System.out.printf("3.1 pass Two arg call, first arg: %d\n", b);
 
   System.out.printf("3.2 pass Two arg call, second arg: %s\n", c);
@@ -539,21 +539,21 @@ void test3_do(int b, String c) {
 
 
 void test3() {
-
+  
   test3_do(42, "Fourty-two");
 
 }
 
 
 String test4_do() {
-
+  
   return "pass Return works";
 
 }
 
 
 String returnThis(String returnMessage) {
-
+  
   return returnMessage;
 
 }
@@ -580,7 +580,7 @@ void test5() {
 
 
 void test6() {
-
+  
   if ( true) {
     System.out.printf("6.  pass If statement works\n");
 
@@ -593,7 +593,7 @@ void test6() {
 
 
 int test7_do(int count) {
-
+  
   count = sub(count, 1);
 
   if ( greaterthan(count, 0)) {
@@ -610,7 +610,7 @@ int test7_do(int count) {
 
 
 void test7() {
-
+  
   if ( equal(0, test7_do(10))) {
     System.out.printf("7.  pass count works\n");
 
@@ -623,14 +623,14 @@ void test7() {
 
 
 void beer() {
-
+  
   System.out.printf("%d bottle of beer on the wall, %d bottle of beer.  Take one down, pass it round, no bottles of beer on the wall\n", 1, 1);
 
 }
 
 
 String plural(int num) {
-
+  
   if ( equal(num, 1)) {
     return "";
 
@@ -663,7 +663,7 @@ int beers(int count) {
 
 
 void test8() {
-
+  
   if ( equal(sub(sub(2, 1), sub(3, 1)), -1)) {
     System.out.printf("8.  pass Nested expressions work\n");
 
@@ -964,7 +964,7 @@ Box answer = null;
 
 
 Box concatenateLists(Box oldL, Box newL) {
-
+  
   return reverseRec(reverseList(oldL), newL);
 
 }
@@ -1150,7 +1150,7 @@ Box input = null;
 
 
 Box javaFunctionArgs(Box tree) {
-
+  
   if ( isEmpty(tree)) {
     return emptyList();
 
@@ -1181,7 +1181,7 @@ Box javaFunctionArgs(Box tree) {
 
 
 Box javaAtom(Box tree) {
-
+  
   if ( equalString("string", boxType(tree))) {
     return cons(boxString("\""), cons(id(boxString(stringify(tree))), cons(boxString("\""), null)));
 
@@ -1246,7 +1246,7 @@ Box javaExpression(Box tree, int indent) {
 
 
 Box javaRecurList(Box expr, int indent) {
-
+  
   if ( isEmpty(expr)) {
     return emptyList();
 
@@ -1265,28 +1265,28 @@ Box javaRecurList(Box expr, int indent) {
 
 
 Box javaIf(Box node, int indent, String functionName) {
-
+  
   return cons(id(listNewLine(indent)), cons(boxString("if ( "), cons(id(javaExpression(second(node), 0)), cons(boxString(") {"), cons(id(javaBody(cdr(third(node)), add1(indent), functionName)), cons(id(listNewLine(indent)), cons(boxString("} else {"), cons(id(javaBody(cdr(fourth(node)), add1(indent), functionName)), cons(id(listNewLine(indent)), cons(boxString("}"), null))))))))));
 
 }
 
 
 Box javaSetStruct(Box node, int indent) {
-
+  
   return cons(id(listNewLine(indent)), cons(id(javaExpression(second(node), indent)), cons(boxString("."), cons(id(third(node)), cons(boxString(" = "), cons(id(javaExpression(fourth(node), indent)), null))))));
 
 }
 
 
 Box javaSet(Box node, int indent) {
-
+  
   return cons(id(listNewLine(indent)), cons(id(javaExpression(second(node), indent)), cons(boxString(" = "), cons(id(javaExpression(third(node), indent)), null))));
 
 }
 
 
 Box javaReturn(Box node, int indent) {
-
+  
   if ( equal(listLength(node), 1)) {
     return cons(id(listNewLine(indent)), cons(boxString("return"), null));
 
@@ -1299,7 +1299,7 @@ Box javaReturn(Box node, int indent) {
 
 
 Box javaStatement(Box node, int indent, String functionName) {
-
+  
   if ( equalBox(boxString("set"), first(node))) {
     return cons(id(javaSet(node, indent)), cons(boxString(";\n"), null));
 
@@ -1378,7 +1378,7 @@ Box javaFunction(Box node) {
 
 
 Box javaFunctions(Box tree) {
-
+  
   if ( isEmpty(tree)) {
     return emptyList();
 
@@ -1391,7 +1391,7 @@ Box javaFunctions(Box tree) {
 
 
 Box javaIncludes(Box nodes) {
-
+  
   return cons(boxString("import java.nio.charset.StandardCharsets;\n"), cons(boxString("import java.nio.file.Files;\n"), cons(boxString("import java.nio.file.Paths;\n"), cons(boxString("import java.util.HashMap;\n\n"), cons(boxString("class QuonProgram {\n"), cons(boxString("  boolean globalTrace = false;\n"), cons(boxString("  boolean globalStepTrace = false;\n"), cons(boxString("  boolean releaseMode = false;\n"), cons(boxString("  Box globalStackTrace = null;\n"), cons(boxString("  String caller = \"\";\n"), cons(boxString("  String[] globalArgs = new String[0];\n"), cons(boxString("  int globalArgsCount = 0;\n\n"), cons(boxString("  Object stderr = new Object();\n\n"), cons(boxString("  void fprintf(Object stream, String format, Object... args) {\n"), cons(boxString("    if (args.length == 0) {\n"), cons(boxString("      System.err.print(format);\n"), cons(boxString("    } else {\n"), cons(boxString("      System.err.printf(format, args);\n"), cons(boxString("    }\n"), cons(boxString("  }\n\n"), cons(boxString("  void exit(int code) {\n"), cons(boxString("    System.exit(code);\n"), cons(boxString("  }\n\n"), cons(boxString("  String readFileUnchecked(String filename) {\n"), cons(boxString("    try {\n"), cons(boxString("      return Files.readString(Paths.get(filename));\n"), cons(boxString("    } catch (Exception e) {\n"), cons(boxString("      throw new RuntimeException(\"Could not read file: \" + filename, e);\n"), cons(boxString("    }\n"), cons(boxString("  }\n\n"), cons(boxString("  void writeFileUnchecked(String filename, String data) {\n"), cons(boxString("    try {\n"), cons(boxString("      Files.write(Paths.get(filename), data.getBytes(StandardCharsets.UTF_8));\n"), cons(boxString("    } catch (Exception e) {\n"), cons(boxString("      throw new RuntimeException(\"Could not write file: \" + filename, e);\n"), cons(boxString("    }\n"), cons(boxString("  }\n"), null)))))))))))))))))))))))))))))))))))));
 
 }
@@ -1436,7 +1436,7 @@ Box javaFuncMap(Box aSym) {
 
 
 Box javaTypeDecl(Box l) {
-
+  
   if ( greaterthan(listLength(l), 2)) {
     return cons(id(boxString(stringIndent(1))), cons(id(javaTypeMap(listLast(l))), cons(boxString(" "), cons(id(first(l)), cons(boxString(";\n"), null)))));
 
@@ -1449,7 +1449,7 @@ Box javaTypeDecl(Box l) {
 
 
 Box javaStructComponents(Box node) {
-
+  
   if ( isEmpty(node)) {
     return emptyList();
 
@@ -1462,14 +1462,14 @@ Box javaStructComponents(Box node) {
 
 
 Box javaStruct(Box node) {
-
+  
   return javaStructComponents(cdr(node));
 
 }
 
 
 Box javaType(Box node) {
-
+  
   if ( isList(second(node))) {
     return cons(boxString("\nclass "), cons(id(first(node)), cons(boxString(" {\n"), cons(id(javaStruct(second(node))), cons(boxString("}\n"), null)))));
 
@@ -1482,7 +1482,7 @@ Box javaType(Box node) {
 
 
 Box javaTypes(Box nodes) {
-
+  
   if ( isEmpty(nodes)) {
     return emptyList();
 
@@ -1495,7 +1495,7 @@ Box javaTypes(Box nodes) {
 
 
 Box javaMainEntry() {
-
+  
   return cons(boxString("\npublic static void main(String[] args) {\n"), cons(boxString("  QuonProgram program = new QuonProgram();\n"), cons(boxString("  program.globalArgs = new String[args.length + 1];\n"), cons(boxString("  program.globalArgs[0] = \"fixmeprogname\";\n"), cons(boxString("  System.arraycopy(args, 0, program.globalArgs, 1, args.length);\n"), cons(boxString("  program.globalArgsCount = program.globalArgs.length;\n"), cons(boxString("  program.start();\n"), cons(boxString("}\n"), cons(boxString("}\n"), null)))))))));
 
 }
@@ -1523,21 +1523,21 @@ Box replace = null;
 
 
 Box javaProgramTree(Box tree) {
-
+  
   return cons(id(javaIncludes(cdr(first(tree)))), cons(id(javaTypes(cdr(second(tree)))), cons(id(javaFunctions(cdr(third(tree)))), cons(id(javaMainEntry()), cons(boxString("\n"), null)))));
 
 }
 
 
 String javaProgram(Box tree) {
-
+  
   return ListToString(flatten(javaProgramTree(tree)), 0, true, false);
 
 }
 
 
 String javaCompileString(String filename) {
-
+  
   return javaProgram(javaLoadProgram(filename));
 
 }
@@ -1577,7 +1577,7 @@ Box replace = null;
 
 
 Box ansi3FunctionArgs(Box tree) {
-
+  
   if ( isEmpty(tree)) {
     return emptyList();
 
@@ -1608,7 +1608,7 @@ Box ansi3FunctionArgs(Box tree) {
 
 
 Box ansi3Atom(Box tree) {
-
+  
   if ( equalString("string", boxType(tree))) {
     return cons(boxString("\""), cons(id(boxString(stringify(tree))), cons(boxString("\""), null)));
 
@@ -1673,7 +1673,7 @@ Box ansi3Expression(Box tree, int indent) {
 
 
 Box ansi3RecurList(Box expr, int indent) {
-
+  
   if ( isEmpty(expr)) {
     return emptyList();
 
@@ -1692,35 +1692,35 @@ Box ansi3RecurList(Box expr, int indent) {
 
 
 Box ansi3If(Box node, int indent, String functionName) {
-
+  
   return cons(id(listNewLine(indent)), cons(boxString("if ( "), cons(id(ansi3Expression(second(node), 0)), cons(boxString(") {"), cons(id(ansi3Body(cdr(third(node)), add1(indent), functionName)), cons(id(listNewLine(indent)), cons(boxString("} else {"), cons(id(ansi3Body(cdr(fourth(node)), add1(indent), functionName)), cons(id(listNewLine(indent)), cons(boxString("}"), null))))))))));
 
 }
 
 
 Box ansi3SetStruct(Box node, int indent) {
-
+  
   return cons(id(listNewLine(indent)), cons(id(second(node)), cons(boxString("->"), cons(id(third(node)), cons(boxString(" = "), cons(id(ansi3Expression(fourth(node), indent)), null))))));
 
 }
 
 
 Box ansi3GetStruct(Box node, int indent) {
-
+  
   return cons(id(listNewLine(indent)), cons(id(first(node)), cons(boxString("->"), cons(id(second(node)), null))));
 
 }
 
 
 Box ansi3Set(Box node, int indent) {
-
+  
   return cons(id(listNewLine(indent)), cons(id(ansi3Expression(second(node), indent)), cons(boxString(" = "), cons(id(ansi3Expression(third(node), indent)), null))));
 
 }
 
 
 Box ansi3Return(Box node, int indent) {
-
+  
   if ( equal(listLength(node), 1)) {
     return cons(id(listNewLine(indent)), cons(boxString("return;"), null));
 
@@ -1733,7 +1733,7 @@ Box ansi3Return(Box node, int indent) {
 
 
 Box ansi3TraceReturn(Box node, int indent, String functionName) {
-
+  
   if ( releaseMode) {
     return ansi3Return(node, indent);
 
@@ -1752,7 +1752,7 @@ Box ansi3TraceReturn(Box node, int indent, String functionName) {
 
 
 Box ansi3Statement(Box node, int indent, String functionName) {
-
+  
   if ( equalBox(boxString("set"), first(node))) {
     return cons(id(ansi3Set(node, indent)), cons(boxString(";\n"), null));
 
@@ -1783,7 +1783,7 @@ Box ansi3Statement(Box node, int indent, String functionName) {
 
 
 Box ansi3StatementTrace(Box code, int indent, String functionName) {
-
+  
   if ( releaseMode) {
     return emptyList();
 
@@ -1802,7 +1802,7 @@ Box ansi3StatementTrace(Box code, int indent, String functionName) {
 
 
 Box ansi3StepTrace(int indent) {
-
+  
   if ( releaseMode) {
     return emptyList();
 
@@ -1847,7 +1847,7 @@ Box ansi3Declarations(Box decls, int indent) {
 
 
 Box ansi3FunctionTrace(Box name) {
-
+  
   if ( releaseMode) {
     return emptyList();
 
@@ -1866,7 +1866,7 @@ Box ansi3FunctionTrace(Box name) {
 
 
 Box ansi3FunctionStackTrace(Box name) {
-
+  
   if ( releaseMode) {
     return emptyList();
 
@@ -1901,7 +1901,7 @@ Box ansi3Function(Box node) {
 
 
 Box ansi3ForwardDeclaration(Box node) {
-
+  
   if ( isNil(node)) {
     return emptyList();
 
@@ -1914,7 +1914,7 @@ Box ansi3ForwardDeclaration(Box node) {
 
 
 Box ansi3ForwardDeclarations(Box tree) {
-
+  
   if ( isEmpty(tree)) {
     return emptyList();
 
@@ -1927,7 +1927,7 @@ Box ansi3ForwardDeclarations(Box tree) {
 
 
 Box ansi3Functions(Box tree) {
-
+  
   if ( isEmpty(tree)) {
     return emptyList();
 
@@ -1940,14 +1940,14 @@ Box ansi3Functions(Box tree) {
 
 
 Box ansi3Includes(Box nodes) {
-
+  
   return cons(boxString("\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#include <unistd.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n"), cons(boxString("void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n"), null));
 
 }
 
 
 Box ansi3TypeDecl(Box l) {
-
+  
   if ( greaterthan(listLength(l), 2)) {
     return cons(id(boxString(stringIndent(1))), cons(id(second(l)), cons(boxString(" "), cons(id(ansi3TypeMap(listLast(l))), cons(boxString(" "), cons(id(first(l)), cons(boxString(";\n"), null)))))));
 
@@ -1960,7 +1960,7 @@ Box ansi3TypeDecl(Box l) {
 
 
 Box ansi3StructComponents(Box node) {
-
+  
   if ( isEmpty(node)) {
     return emptyList();
 
@@ -1973,7 +1973,7 @@ Box ansi3StructComponents(Box node) {
 
 
 Box ansi3Struct(Box node) {
-
+  
   return ansi3StructComponents(cdr(node));
 
 }
@@ -2018,7 +2018,7 @@ Box ansi3FuncMap(Box aSym) {
 
 
 Box ansi3Type(Box node) {
-
+  
   if ( isList(second(node))) {
     return cons(boxString("\ntypedef struct "), cons(id(first(node)), cons(boxString(" {\n"), cons(id(ansi3Struct(second(node))), cons(boxString("\n} "), cons(id(first(node)), cons(boxString(";\n"), null)))))));
 
@@ -2031,7 +2031,7 @@ Box ansi3Type(Box node) {
 
 
 Box ansi3Types(Box nodes) {
-
+  
   if ( isEmpty(nodes)) {
     return emptyList();
 
@@ -2065,21 +2065,21 @@ Box replace = null;
 
 
 Box ansi3ProgramTree(Box tree) {
-
+  
   return cons(id(ansi3Includes(cdr(first(tree)))), cons(id(ansi3Types(cdr(second(tree)))), cons(boxString("Box* globalStackTrace = NULL;\n"), cons(boxString("\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n"), cons(id(ansi3ForwardDeclarations(cdr(third(tree)))), cons(boxString("\n\n//End forward declarations\n\n"), cons(id(ansi3Functions(cdr(third(tree)))), cons(boxString("\n"), null))))))));
 
 }
 
 
 String ansi3Program(Box tree) {
-
+  
   return ListToString(flatten(ansi3ProgramTree(tree)), 0, true, false);
 
 }
 
 
 String ansi3CompileString(String filename) {
-
+  
   return ansi3Program(ansi3LoadProgram(filename));
 
 }
@@ -2121,70 +2121,70 @@ Box replace = null;
 
 
 String dollar() {
-
+  
   return character(36);
 
 }
 
 
 String atsymbol() {
-
+  
   return character(64);
 
 }
 
 
 String singleQuote() {
-
+  
   return "'";
 
 }
 
 
 String escapedSingleQuote() {
-
+  
   return "\\'";
 
 }
 
 
 String backslash() {
-
+  
   return character(92);
 
 }
 
 
 String escapedDollar() {
-
+  
   return StringListJoin(cons(boxString(backslash()), cons(boxString(dollar()), null)), "");
 
 }
 
 
 String escapedAtSign() {
-
+  
   return StringListJoin(cons(boxString(backslash()), cons(boxString(atsymbol()), null)), "");
 
 }
 
 
 String escapeSingleQuotes(String s) {
-
+  
   return stringReplace(singleQuote(), escapedSingleQuote(), s);
 
 }
 
 
 String escapePerlString(String s) {
-
+  
   return stringReplace(atsymbol(), escapedAtSign(), stringReplace(dollar(), escapedDollar(), s));
 
 }
 
 
 Box getGlobalVariables() {
-
+  
   return cons(id(boxSymbol("stderr")), cons(id(boxSymbol("true")), cons(id(boxSymbol("false")), cons(id(boxSymbol("releaseMode")), cons(id(boxSymbol("caller")), cons(id(boxSymbol("globalTrace")), cons(id(boxSymbol("globalStepTrace")), cons(id(boxSymbol("globalStackTrace")), cons(id(boxSymbol("globalArgsCount")), cons(id(boxSymbol("globalArgs")), cons(id(boxSymbol("quonGlobalArgs")), null)))))))))));
 
 }
@@ -2206,14 +2206,14 @@ Box decl = null;
 
 
 Box perlGlobalVariables() {
-
+  
   return cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalArgsCount;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalArgs;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("releaseMode;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalTrace;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalStepTrace;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalStackTrace;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("caller;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("false = 0;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("true = 1;\n"), cons(boxString("my "), cons(boxString(dollar()), cons(boxString("stderr = \\*STDERR;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("quonGlobalArgs;\n"), null)))))))))))))))))))))))))))))))));
 
 }
 
 
 Box perlMainEntry() {
-
+  
   return cons(boxString("\n# Main entry point\n"), cons(boxString(dollar()), cons(boxString("globalArgsCount = scalar("), cons(boxString(atsymbol()), cons(boxString("ARGV) + 1;\n"), cons(boxString(dollar()), cons(boxString("globalArgs = \\"), cons(boxString(atsymbol()), cons(boxString("ARGV;\n"), cons(boxString("unshift "), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("globalArgs, 'fixmeprogname' ;\n"), cons(boxString(dollar()), cons(boxString("quonGlobalArgs = [];\n"), cons(boxString("for my "), cons(boxString(dollar()), cons(boxString("arg ("), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("globalArgs) {\n"), cons(boxString("    push "), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("quonGlobalArgs, {car => "), cons(boxString(dollar()), cons(boxString("arg, cdr => undef};\n"), cons(boxString("}\n"), cons(boxString("for (my "), cons(boxString(dollar()), cons(boxString("i = scalar("), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("quonGlobalArgs) - 1; "), cons(boxString(dollar()), cons(boxString("i >= 0; "), cons(boxString(dollar()), cons(boxString("i--) {\n"), cons(boxString("    "), cons(boxString(dollar()), cons(boxString("quonGlobalArgs->["), cons(boxString(dollar()), cons(boxString("i]->{cdr} = "), cons(boxString(dollar()), cons(boxString("quonGlobalArgs->["), cons(boxString(dollar()), cons(boxString("i + 1];\n"), cons(boxString("}\n"), cons(boxString("*stderr = *STDERR;\n"), cons(boxString("sub fprintf { my "), cons(boxString(dollar()), cons(boxString("f = shift; printf "), cons(boxString(dollar()), cons(boxString("f "), cons(boxString(atsymbol()), cons(boxString("_ }\n"), cons(boxString("start();\n"), null)))))))))))))))))))))))))))))))))))))))))))))))))))))))));
 
 }
@@ -2263,7 +2263,7 @@ Box decl = null;
 
 
 Box appendVariables(Box vars1, Box vars2) {
-
+  
   if ( isNil(vars2)) {
     return vars1;
 
@@ -2278,7 +2278,7 @@ Box appendVariables(Box vars1, Box vars2) {
 
 
 Box perlFunctionArgs(Box tree) {
-
+  
   if ( isEmpty(tree)) {
     return emptyList();
 
@@ -2297,7 +2297,7 @@ Box perlFunctionArgs(Box tree) {
 
 
 Box perlAtom(Box tree, Box variables) {
-
+  
   if ( equalString("string", boxType(tree))) {
     return cons(boxString("\""), cons(id(boxString(escapePerlString(stringify(tree)))), cons(boxString("\""), null)));
 
@@ -2362,7 +2362,7 @@ Box perlExpression(Box tree, int indent, Box variables) {
 
 
 Box perlRecurList(Box expr, int indent, Box variables) {
-
+  
   if ( isEmpty(expr)) {
     return emptyList();
 
@@ -2381,21 +2381,21 @@ Box perlRecurList(Box expr, int indent, Box variables) {
 
 
 Box perlSet(Box node, int indent, Box variables) {
-
+  
   return cons(id(listNewLine(indent)), cons(id(perlFuncMap(second(node), variables)), cons(boxString(" = "), cons(id(perlExpression(third(node), indent, variables)), null))));
 
 }
 
 
 Box perlSetStruct(Box node, int indent, Box variables) {
-
+  
   return cons(id(listNewLine(indent)), cons(id(perlFuncMap(second(node), variables)), cons(boxString("->{"), cons(id(third(node)), cons(boxString("} = "), cons(id(perlExpression(fourth(node), indent, variables)), null))))));
 
 }
 
 
 Box perlReturn(Box node, int indent, Box variables) {
-
+  
   if ( greaterthan(listLength(node), 1)) {
     return cons(id(listNewLine(indent)), cons(boxString("return "), cons(id(perlExpression(cadr(node), indent, variables)), null)));
 
@@ -2408,14 +2408,14 @@ Box perlReturn(Box node, int indent, Box variables) {
 
 
 Box perlIf(Box node, int indent, Box variables) {
-
+  
   return cons(id(listNewLine(indent)), cons(boxString("if ( "), cons(id(perlExpression(second(node), 0, variables)), cons(boxString(" ) {"), cons(id(perlBody(cdr(third(node)), add1(indent), variables)), cons(id(listNewLine(indent)), cons(boxString("} else {"), cons(id(perlBody(cdr(fourth(node)), add1(indent), variables)), cons(id(listNewLine(indent)), cons(boxString("}"), null))))))))));
 
 }
 
 
 Box perlStatement(Box node, int indent, Box variables) {
-
+  
   if ( equalBox(boxString("set"), first(node))) {
     return cons(id(perlSet(node, indent, variables)), cons(boxString(";\n"), null));
 
@@ -2462,7 +2462,7 @@ Box perlBody(Box tree, int indent, Box variables) {
 
 
 Box perlGetStruct(Box node, int indent) {
-
+  
   return cons(id(listNewLine(indent)), cons(id(boxString(dollar())), cons(id(first(node)), cons(boxString("->{"), cons(id(second(node)), cons(boxString("}"), null))))));
 
 }
@@ -2502,7 +2502,7 @@ Box decls = null;
 
     variables = collectVariables(args, decls);
 
-    return cons(boxString("\n\n# Function "), cons(id(name), cons(boxString(" from line "), cons(id(getTag(name, boxString("line"))), cons(id(listNewLine(0)), cons(id(listNewLine(0)), cons(boxString("sub "), cons(id(second(node)), cons(boxString(" {"), cons(id(listNewLine(1)), cons(boxString("my ("), cons(id(perlFunctionArgs(args)), cons(boxString(") = "), cons(id(boxString(atsymbol())), cons(boxString("_;"), cons(id(listNewLine(1)), cons(id(perlDeclarations(decls, 1, variables)), cons(id(perlBody(cdr(fifth(node)), 1, variables)), cons(boxString("\n}\n"), null)))))))))))))))))));
+    return cons(boxString("\n\n# Function "), cons(id(name), cons(boxString(" from line "), cons(id(getTag(name, boxString("line"))), cons(id(listNewLine(0)), cons(id(listNewLine(0)), cons(boxString("sub "), cons(id(perlFuncMap(second(node), null)), cons(boxString(" {"), cons(id(listNewLine(1)), cons(boxString("my ("), cons(id(perlFunctionArgs(args)), cons(boxString(") = "), cons(id(boxString(atsymbol())), cons(boxString("_;"), cons(id(listNewLine(1)), cons(id(perlDeclarations(decls, 1, variables)), cons(id(perlBody(cdr(fifth(node)), 1, variables)), cons(boxString("\n}\n"), null)))))))))))))))))));
 
   }
 
@@ -2510,12 +2510,12 @@ Box decls = null;
 
 
 Box perlForwardDeclaration(Box node) {
-
+  
   if ( isNil(node)) {
     return emptyList();
 
   } else {
-    return cons(boxString("sub "), cons(id(second(node)), cons(boxString(";\n"), null)));
+    return cons(boxString("sub "), cons(id(perlFuncMap(second(node), null)), cons(boxString(";\n"), null)));
 
   }
 
@@ -2523,7 +2523,7 @@ Box perlForwardDeclaration(Box node) {
 
 
 Box perlForwardDeclarations(Box tree) {
-
+  
   if ( isEmpty(tree)) {
     return emptyList();
 
@@ -2536,7 +2536,7 @@ Box perlForwardDeclarations(Box tree) {
 
 
 Box perlFunctions(Box tree) {
-
+  
   if ( isEmpty(tree)) {
     return emptyList();
 
@@ -2549,14 +2549,14 @@ Box perlFunctions(Box tree) {
 
 
 Box perlIncludes(Box nodes) {
-
+  
   return cons(boxString("use strict;\n"), cons(boxString("use warnings;\n"), cons(boxString("use v5.10;\n\n"), cons(boxString("no warnings 'recursion';\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("^M = 10_000;\n"), null)))))));
 
 }
 
 
 Box perlTypes(Box nodes) {
-
+  
   return emptyList();
 
 }
@@ -2586,7 +2586,7 @@ Box perlFuncMap(Box aSym, Box variables) {
       return boxSymbol(stringConcatenate(dollar(), stringify(aSym)));
 
     } else {
-      symMap = alistCons(boxSymbol("sub"), boxSymbol("subtract"), alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("substr"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("length"), alistCons(boxSymbol("nil"), boxSymbol("undef"), null))))))));
+      symMap = alistCons(boxSymbol("sub"), boxSymbol("subtract"), alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("substr"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("length"), alistCons(boxSymbol("say"), boxSymbol("say_"), alistCons(boxSymbol("nil"), boxSymbol("undef"), null)))))))));
 
       if ( truthy(assoc(stringify(aSym), symMap))) {
         return cdr(assoc(stringify(aSym), symMap));
@@ -2628,21 +2628,21 @@ Box replace = null;
 
 
 Box perlProgramTree(Box tree) {
-
+  
   return cons(id(perlIncludes(cdr(first(tree)))), cons(id(perlTypes(cdr(second(tree)))), cons(id(perlGlobalVariables()), cons(boxString("\n# Forward declarations\n"), cons(id(perlForwardDeclarations(cdr(third(tree)))), cons(boxString("\n# End forward declarations\n"), cons(id(perlFunctions(cdr(third(tree)))), cons(id(perlMainEntry()), cons(boxString("\n"), null)))))))));
 
 }
 
 
 String perlProgram(Box tree) {
-
+  
   return ListToString(flatten(perlProgramTree(tree)), 0, true, false);
 
 }
 
 
 String perlCompileString(String filename) {
-
+  
   return perlProgram(perlLoadProgram(filename));
 
 }
@@ -2706,7 +2706,7 @@ Box tree = null;
 
 
 void parserPanicAt(String filename, Box token, String message) {
-
+  
   if ( isNil(token)) {
     System.out.printf("Parse error in %s: %s\n", filename, message);
 
@@ -2721,7 +2721,7 @@ void parserPanicAt(String filename, Box token, String message) {
 
 
 void parserPanicAtNode(String filename, Box node, String message) {
-
+  
   if ( isNil(node)) {
     parserPanicAt(filename, null, message);
 
@@ -2746,7 +2746,7 @@ void parserPanicAtNode(String filename, Box node, String message) {
 
 
 boolean parserSymbolIs(Box b, String name) {
-
+  
   if ( isNil(b)) {
     return false;
 
@@ -2771,7 +2771,7 @@ boolean parserSymbolIs(Box b, String name) {
 
 
 boolean parserListStartsWith(Box node, String name) {
-
+  
   if ( isNil(node)) {
     return false;
 
@@ -2836,7 +2836,7 @@ void parserValidateParens(Box tokens, Box openStack, String filename) {
 
 
 void parserValidateRoot(Box roots, String filename) {
-
+  
   if ( equal(listLength(roots), 1)) {
     return;
 
@@ -2855,7 +2855,7 @@ void parserValidateRoot(Box roots, String filename) {
 
 
 void parserValidateSection(Box section, String name, String filename) {
-
+  
   if ( isNil(section)) {
     parserPanicAt(filename, null, "missing program section");
 
@@ -2880,7 +2880,7 @@ void parserValidateSection(Box section, String name, String filename) {
 
 
 boolean parserIsFunctionDefinition(Box node) {
-
+  
   if ( isNil(node)) {
     return false;
 
@@ -2935,7 +2935,7 @@ boolean parserIsFunctionDefinition(Box node) {
 
 
 void parserRejectFunctionDefinitions(Box node, String filename) {
-
+  
   if ( isNil(node)) {
     return;
 
@@ -2960,7 +2960,7 @@ void parserRejectFunctionDefinitions(Box node, String filename) {
 
 
 void parserRejectFunctionDefinitionsList(Box nodes, String filename) {
-
+  
   if ( isEmpty(nodes)) {
     return;
 
@@ -2975,7 +2975,7 @@ void parserRejectFunctionDefinitionsList(Box nodes, String filename) {
 
 
 void parserValidateProgram(Box program, String filename) {
-
+  
   if ( isNil(program)) {
     parserPanicAt(filename, null, "empty program");
 
@@ -3046,7 +3046,7 @@ void parserValidateFunctions(Box functions, String filename) {
 
 
 void parserValidateFunction(Box fn, String filename) {
-
+  
   parserRejectFunctionDefinitions(third(fn), filename);
 
   parserRejectFunctionDefinitions(cdr(fourth(fn)), filename);
@@ -3057,7 +3057,7 @@ void parserValidateFunction(Box fn, String filename) {
 
 
 void parserValidateBody(Box forms, String filename) {
-
+  
   if ( isEmpty(forms)) {
     return;
 
@@ -3072,7 +3072,7 @@ void parserValidateBody(Box forms, String filename) {
 
 
 void parserValidateStatement(Box stmt, String filename) {
-
+  
   if ( isNil(stmt)) {
     return;
 
@@ -3177,7 +3177,7 @@ void parserValidateStatement(Box stmt, String filename) {
 
 
 void parserValidateReturn(Box stmt, String filename) {
-
+  
   if ( greaterthan(listLength(stmt), 2)) {
     parserPanicAtNode(filename, stmt, "return takes zero or one value");
 
@@ -3196,7 +3196,7 @@ void parserValidateReturn(Box stmt, String filename) {
 
 
 void parserValidateSet(Box stmt, String filename) {
-
+  
   if ( equal(listLength(stmt), 3)) {
     parserValidateExpression(second(stmt), filename);
 
@@ -3211,7 +3211,7 @@ void parserValidateSet(Box stmt, String filename) {
 
 
 void parserValidateSetStruct(Box stmt, String filename) {
-
+  
   if ( equal(listLength(stmt), 4)) {
     parserValidateExpression(second(stmt), filename);
 
@@ -3228,7 +3228,7 @@ void parserValidateSetStruct(Box stmt, String filename) {
 
 
 void parserValidateIf(Box stmt, String filename) {
-
+  
   if ( equal(listLength(stmt), 4)) {
   } else {
     parserPanicAtNode(filename, stmt, "if must contain condition, then, and else");
@@ -3245,7 +3245,7 @@ void parserValidateIf(Box stmt, String filename) {
 
 
 void parserValidateBranch(Box branch, String name, String filename) {
-
+  
   if ( parserListStartsWith(branch, name)) {
     parserValidateBody(cdr(branch), filename);
 
@@ -3258,7 +3258,7 @@ void parserValidateBranch(Box branch, String name, String filename) {
 
 
 void parserValidateExpression(Box expr, String filename) {
-
+  
   if ( isNil(expr)) {
     return;
 
@@ -3339,7 +3339,7 @@ void parserValidateExpression(Box expr, String filename) {
 
 
 void parserValidateExpressionList(Box exprs, String filename) {
-
+  
   if ( isEmpty(exprs)) {
     return;
 
@@ -3395,21 +3395,21 @@ Box tree = null;
 
 
 Box getIncludes(Box program) {
-
+  
   return cdr(first(program));
 
 }
 
 
 Box getTypes(Box program) {
-
+  
   return cdr(second(program));
 
 }
 
 
 Box getFunctions(Box program) {
-
+  
   return cdr(third(program));
 
 }
@@ -3448,16 +3448,80 @@ Box newIncludes = null;
 }
 
 
+boolean stringInList(String item, Box l) {
+  
+  if ( isNil(l)) {
+    return false;
+
+  } else {
+    if ( equalString(item, stringify(car(l)))) {
+      return true;
+
+    } else {
+      return stringInList(item, cdr(l));
+
+    }
+
+  }
+
+}
+
+
+Box appendMissingIncludes(Box candidates, Box pending, Box seen) {
+  Box candidate = null;
+String candidateFile = "";
+
+  if ( isNil(candidates)) {
+    return pending;
+
+  } else {
+    candidate = car(candidates);
+
+    candidateFile = stringify(candidate);
+
+    if ( orBool(stringInList(candidateFile, seen), stringInList(candidateFile, pending))) {
+      return appendMissingIncludes(cdr(candidates), pending, seen);
+
+    } else {
+      return cons(candidate, appendMissingIncludes(cdr(candidates), pending, seen));
+
+    }
+
+  }
+
+}
+
+
 Box loadIncludes(Box tree) {
+  
+  return loadIncludesSeen(tree, null);
+
+}
+
+
+Box loadIncludesSeen(Box tree, Box seen) {
   Box newProg = null;
 String includeFile = "";
 Box functionsCombined = null;
 Box typesCombined = null;
 Box includeTree = null;
+Box pendingIncludes = null;
+Box nextIncludes = null;
+Box nextSeen = null;
 String contents = "";
 
   if ( greaterthan(listLength(getIncludes(tree)), 0)) {
     includeFile = stringify(first(getIncludes(tree)));
+
+    if ( stringInList(includeFile, seen)) {
+      newProg = buildProg(cdr(getIncludes(tree)), getTypes(tree), getFunctions(tree));
+
+      return loadIncludesSeen(newProg, seen);
+
+    } else {
+    }
+
+    nextSeen = cons(boxString(includeFile), seen);
 
     contents = read_file(includeFile);
 
@@ -3483,9 +3547,13 @@ String contents = "";
 
         typesCombined = concatLists(getTypes(includeTree), getTypes(tree));
 
-        newProg = buildProg(cdr(getIncludes(tree)), typesCombined, functionsCombined);
+        pendingIncludes = cdr(getIncludes(tree));
 
-        return loadIncludes(newProg);
+        nextIncludes = appendMissingIncludes(getIncludes(includeTree), pendingIncludes, nextSeen);
+
+        newProg = buildProg(nextIncludes, typesCombined, functionsCombined);
+
+        return loadIncludesSeen(newProg, nextSeen);
 
       }
 
@@ -3516,7 +3584,7 @@ Box buildProg(Box includes, Box types, Box functions) {
 
 
 Box car(Box l) {
-
+  
   if ( isNil(l)) {
     System.out.printf("Cannot call car on empty list!\n");
 
@@ -3541,7 +3609,7 @@ Box car(Box l) {
 
 
 Box cdr(Box l) {
-
+  
   if ( isEmpty(l)) {
     System.out.printf("Attempt to cdr an empty list!!!!\n");
 
@@ -3574,140 +3642,140 @@ Box cons(Box data, Box l) {
 
 
 Box caar(Box l) {
-
+  
   return car(car(l));
 
 }
 
 
 Box cadr(Box l) {
-
+  
   return car(cdr(l));
 
 }
 
 
 Box caddr(Box l) {
-
+  
   return car(cdr(cdr(l)));
 
 }
 
 
 Box cadddr(Box l) {
-
+  
   return car(cdr(cdr(cdr(l))));
 
 }
 
 
 Box caddddr(Box l) {
-
+  
   return car(cdr(cdr(cdr(cdr(l)))));
 
 }
 
 
 Box cddr(Box l) {
-
+  
   return cdr(cdr(l));
 
 }
 
 
 Box first(Box l) {
-
+  
   return car(l);
 
 }
 
 
 Box second(Box l) {
-
+  
   return cadr(l);
 
 }
 
 
 Box third(Box l) {
-
+  
   return caddr(l);
 
 }
 
 
 Box fourth(Box l) {
-
+  
   return cadddr(l);
 
 }
 
 
 Box fifth(Box l) {
-
+  
   return caddddr(l);
 
 }
 
 
 Box sixth(Box l) {
-
+  
   return car(cdr(cdr(cdr(cdr(cdr(l))))));
 
 }
 
 
 Box seventh(Box l) {
-
+  
   return car(cdr(cdr(cdr(cdr(cdr(cdr(l)))))));
 
 }
 
 
 Box eighth(Box l) {
-
+  
   return car(cdr(cdr(cdr(cdr(cdr(cdr(cdr(l))))))));
 
 }
 
 
 Box ninth(Box l) {
-
+  
   return car(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(l)))))))));
 
 }
 
 
 Box tenth(Box l) {
-
+  
   return car(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(l))))))))));
 
 }
 
 
 Box eleventh(Box l) {
-
+  
   return car(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(l)))))))))));
 
 }
 
 
 Box twelfth(Box l) {
-
+  
   return car(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(l))))))))))));
 
 }
 
 
 Box rest(Box l) {
-
+  
   return cdr(l);
 
 }
 
 
 boolean isList(Box b) {
-
+  
   if ( isNil(b)) {
     return true;
 
@@ -3720,14 +3788,14 @@ boolean isList(Box b) {
 
 
 Box emptyList() {
-
+  
   return null;
 
 }
 
 
 boolean isEmpty(Box b) {
-
+  
   if ( isNil(b)) {
     return true;
 
@@ -3740,7 +3808,7 @@ boolean isEmpty(Box b) {
 
 
 int listLength(Box l) {
-
+  
   if ( isEmpty(l)) {
     return 0;
 
@@ -3753,7 +3821,7 @@ int listLength(Box l) {
 
 
 Box alistCons(Box key, Box value, Box alist) {
-
+  
   return cons(cons(key, value), alist);
 
 }
@@ -3800,7 +3868,7 @@ Box assoc(String searchTerm, Box l) {
 
 
 String chooseBox(String aType) {
-
+  
   if ( equalString("string", aType)) {
     return "boxString";
 
@@ -3839,7 +3907,7 @@ String chooseBox(String aType) {
 
 
 Box mlistLiteral(Box b) {
-
+  
   if ( isNil(b)) {
     return null;
 
@@ -3978,7 +4046,7 @@ boolean isInt(String val) {
 
 
 Box id(Box b) {
-
+  
   return b;
 
 }
@@ -4096,7 +4164,7 @@ Box ret = null;
 
 
 Box doBoxList(Box l) {
-
+  
   if ( isNil(l)) {
     return cons(boxSymbol("nil"), null);
 
@@ -4109,7 +4177,7 @@ Box doBoxList(Box l) {
 
 
 Box concatLists(Box seq1, Box seq2) {
-
+  
   if ( isNil(seq1)) {
     return seq2;
 
@@ -4122,7 +4190,7 @@ Box concatLists(Box seq1, Box seq2) {
 
 
 Box alistKeys(Box alist) {
-
+  
   if ( isNil(alist)) {
     return null;
 
@@ -4135,7 +4203,7 @@ Box alistKeys(Box alist) {
 
 
 void display(Box l) {
-
+  
   if ( isEmpty(l)) {
     System.out.printf("nil ");
 
@@ -4268,7 +4336,7 @@ String StringListJoin(Box l, String sep) {
 
 
 Box ListToBoxString(Box l, int indent) {
-
+  
   return boxString(ListToString(l, indent, true, false));
 
 }
@@ -4309,7 +4377,7 @@ String ListToString(Box l, int indent, boolean first, boolean withNewLines) {
 
 
 Box listReverse(Box l) {
-
+  
   if ( isNil(l)) {
     return null;
 
@@ -4322,7 +4390,7 @@ Box listReverse(Box l) {
 
 
 boolean inList(Box item, Box l) {
-
+  
   if ( isNil(l)) {
     return false;
 
@@ -4341,7 +4409,7 @@ boolean inList(Box item, Box l) {
 
 
 boolean equalList(Box a, Box b) {
-
+  
   if ( isNil(a)) {
     if ( isNil(b)) {
       return true;
@@ -4378,7 +4446,7 @@ boolean equalList(Box a, Box b) {
 
 
 Box reverseRec(Box oldL, Box newL) {
-
+  
   if ( isEmpty(oldL)) {
     return newL;
 
@@ -4391,14 +4459,14 @@ Box reverseRec(Box oldL, Box newL) {
 
 
 Box reverseList(Box l) {
-
+  
   return reverseRec(l, null);
 
 }
 
 
 Box flatten(Box tree) {
-
+  
   if ( isEmpty(tree)) {
     return emptyList();
 
@@ -4417,7 +4485,7 @@ Box flatten(Box tree) {
 
 
 Box macrowalk(Box l) {
-
+  
   if ( isEmpty(l)) {
     return null;
 
@@ -4645,39 +4713,8 @@ String readComment(String prog, int start, int len) {
 }
 
 
-boolean isWhiteSpace(String s) {
-
-  if ( equalString(" ", s)) {
-    return true;
-
-  } else {
-    if ( equalString("\t", s)) {
-      return true;
-
-    } else {
-      if ( equalString("\n", s)) {
-        return true;
-
-      } else {
-        if ( equalString("\r", s)) {
-          return true;
-
-        } else {
-          return false;
-
-        }
-
-      }
-
-    }
-
-  }
-
-}
-
-
 boolean isLineBreak(String s) {
-
+  
   if ( equalString("\n", s)) {
     return true;
 
@@ -4696,7 +4733,7 @@ boolean isLineBreak(String s) {
 
 
 int incForNewLine(Box token, int val) {
-
+  
   if ( equalString("\n", stringify(token))) {
     return add1(val);
 
@@ -4709,7 +4746,7 @@ int incForNewLine(Box token, int val) {
 
 
 Box annotateReadPosition(String filename, int linecount, int column, int start, Box newBox) {
-
+  
   return setTag(boxString("filename"), boxString(filename), setTag(boxString("column"), boxInt(column), setTag(boxString("line"), boxInt(linecount), setTag(boxString("totalCharPos"), boxInt(start), newBox))));
 
 }
@@ -4770,7 +4807,7 @@ Box newBox = null;
 
 
 boolean isOpenBrace(Box b) {
-
+  
   if ( equalBox(boxSymbol(openBrace()), b)) {
     return true;
 
@@ -4783,7 +4820,7 @@ boolean isOpenBrace(Box b) {
 
 
 boolean isCloseBrace(Box b) {
-
+  
   if ( equalBox(boxSymbol(closeBrace()), b)) {
     return true;
 
@@ -4824,28 +4861,28 @@ Box skipList(Box l) {
 
 
 int add(int a, int b) {
-
+  
   return sub(a, sub(0, b));
 
 }
 
 
 double addf(double a, double b) {
-
+  
   return subf(a, subf(0, b));
 
 }
 
 
 int sub1(int a) {
-
+  
   return sub(a, 1);
 
 }
 
 
 int add1(int a) {
-
+  
   return add(a, 1);
 
 }
@@ -4884,7 +4921,7 @@ Box clone(Box b) {
 
 
 Box tern(boolean cond, Box tr, Box fal) {
-
+  
   if ( cond) {
     return tr;
 
@@ -4897,7 +4934,7 @@ Box tern(boolean cond, Box tr, Box fal) {
 
 
 String ternString(boolean cond, String tr, String fal) {
-
+  
   if ( cond) {
     return tr;
 
@@ -4910,7 +4947,7 @@ String ternString(boolean cond, String tr, String fal) {
 
 
 Box ternList(boolean cond, Box tr, Box fal) {
-
+  
   if ( cond) {
     return tr;
 
@@ -4937,21 +4974,21 @@ Box newVoid() {
 
 
 void stackDump() {
-
+  
   System.out.printf("");
 
 }
 
 
 void nop() {
-
+  
   System.out.printf("");
 
 }
 
 
 boolean equalBox(Box a, Box b) {
-
+  
   if ( isList(b)) {
     return false;
 
@@ -4994,21 +5031,21 @@ boolean equalBox(Box a, Box b) {
 
 
 String openBrace() {
-
+  
   return "(";
 
 }
 
 
 String closeBrace() {
-
+  
   return ")";
 
 }
 
 
 String boxType(Box b) {
-
+  
   return b.typ;
 
 }
@@ -5041,7 +5078,7 @@ Box makeBox() {
 
 
 Box makePair() {
-
+  
   return makeBox();
 
 }
@@ -5104,7 +5141,7 @@ Box boxInt(int val) {
 
 
 void assertType(String atype, Box abox, int line, String file) {
-
+  
   if ( isNil(abox)) {
     if ( equalString(atype, "nil")) {
       return;
@@ -5139,7 +5176,7 @@ void assertType(String atype, Box abox, int line, String file) {
 
 
 String unBoxString(Box b) {
-
+  
   assertType("string", b, 177, "q/base.qon");
 
   return b.str;
@@ -5148,28 +5185,28 @@ String unBoxString(Box b) {
 
 
 String unBoxSymbol(Box b) {
-
+  
   return b.str;
 
 }
 
 
 boolean unBoxBool(Box b) {
-
+  
   return b.boo;
 
 }
 
 
 int unBoxInt(Box b) {
-
+  
   return b.i;
 
 }
 
 
 String stringify_rec(Box b) {
-
+  
   if ( isNil(b)) {
     return "";
 
@@ -5182,7 +5219,7 @@ String stringify_rec(Box b) {
 
 
 String stringify(Box b) {
-
+  
   if ( isNil(b)) {
     return "()";
 
@@ -5231,7 +5268,7 @@ String stringify(Box b) {
 
 
 boolean hasTag(Box aBox, Box key) {
-
+  
   if ( isNil(aBox)) {
     return false;
 
@@ -5244,7 +5281,7 @@ boolean hasTag(Box aBox, Box key) {
 
 
 Box getTag(Box aBox, Box key) {
-
+  
   if ( false) {
     System.out.printf("Getting %s from: ", stringify(key));
 
@@ -5263,7 +5300,7 @@ Box getTag(Box aBox, Box key) {
 
 
 Box getTagFail(Box aBox, Box key, Box onFail) {
-
+  
   if ( hasTag(aBox, key)) {
     return getTag(aBox, key);
 
@@ -5276,7 +5313,7 @@ Box getTagFail(Box aBox, Box key, Box onFail) {
 
 
 boolean assocExists(String key, Box aBox) {
-
+  
   if ( isNil(aBox)) {
     return false;
 
@@ -5289,7 +5326,7 @@ boolean assocExists(String key, Box aBox) {
 
 
 Box assocFail(String key, Box aBox, Box onFail) {
-
+  
   if ( assocExists(key, aBox)) {
     return assoc(key, aBox);
 
@@ -5302,7 +5339,7 @@ Box assocFail(String key, Box aBox, Box onFail) {
 
 
 Box assocPanic(String key, Box aBox, String onFail) {
-
+  
   if ( assocExists(key, aBox)) {
     return assoc(key, aBox);
 
@@ -5319,7 +5356,7 @@ Box assocPanic(String key, Box aBox, String onFail) {
 
 
 Box setTag(Box key, Box val, Box aStruct) {
-
+  
   aStruct.tag = alistCons(key, val, aStruct.tag);
 
   return aStruct;
@@ -5328,7 +5365,7 @@ Box setTag(Box key, Box val, Box aStruct) {
 
 
 void locPanic(String file, String line, String message) {
-
+  
   System.out.printf("%s %s:%s\n", file, line, message);
 
   panic(message);
@@ -5337,14 +5374,14 @@ void locPanic(String file, String line, String message) {
 
 
 boolean truthy(Box aVal) {
-
+  
   return isNotFalse(aVal);
 
 }
 
 
 boolean isNotFalse(Box aVal) {
-
+  
   if ( equalString(boxType(aVal), "bool")) {
     if ( unBoxBool(aVal)) {
       return true;
@@ -5363,14 +5400,14 @@ boolean isNotFalse(Box aVal) {
 
 
 Box toStr(Box thing) {
-
+  
   return boxString(stringify(thing));
 
 }
 
 
 Box listLast(Box alist) {
-
+  
   if ( isEmpty(cdr(alist))) {
     return car(alist);
 
@@ -5383,7 +5420,7 @@ Box listLast(Box alist) {
 
 
 void newLine(int indent) {
-
+  
   System.out.printf("\n");
 
   printIndent(indent);
@@ -5392,7 +5429,7 @@ void newLine(int indent) {
 
 
 void printIndent(int ii) {
-
+  
   if ( greaterthan(ii, 0)) {
     System.out.printf("  ");
 
@@ -5407,7 +5444,7 @@ void printIndent(int ii) {
 
 
 String stringIndent(int ii) {
-
+  
   if ( greaterthan(ii, 0)) {
     return stringConcatenate("  ", stringIndent(sub1(ii)));
 
@@ -5420,21 +5457,21 @@ String stringIndent(int ii) {
 
 
 Box listIndent(int ii) {
-
+  
   return cons(id(boxString(stringIndent(ii))), null);
 
 }
 
 
 Box listNewLine(int ii) {
-
+  
   return cons(id(boxString(stringConcatenate("\n", stringIndent(ii)))), null);
 
 }
 
 
 Box argList(int count, int pos, String[] args) {
-
+  
   if ( greaterthan(count, pos)) {
     return cons(boxString(getStringArray(pos, args)), argList(count, add1(pos), args));
 
@@ -5447,35 +5484,35 @@ Box argList(int count, int pos, String[] args) {
 
 
 void tron() {
-
+  
   globalTrace = true;
 
 }
 
 
 void troff() {
-
+  
   globalTrace = false;
 
 }
 
 
 void stron() {
-
+  
   globalStepTrace = true;
 
 }
 
 
 void stroff() {
-
+  
   globalStepTrace = false;
 
 }
 
 
 void StackTraceMove(String direction, String filename, String fname, String line) {
-
+  
   if ( equalString(direction, "in")) {
     globalStackTrace = cons(cons(boxString(filename), cons(boxString(line), cons(boxString(fname), null))), globalStackTrace);
 
@@ -5488,7 +5525,7 @@ void StackTraceMove(String direction, String filename, String fname, String line
 
 
 void StackTracePrint() {
-
+  
   System.out.printf("Stack trace:\n");
 
   if ( isNil(globalStackTrace)) {
@@ -5529,21 +5566,21 @@ String func = "";
 
 
 Box NoStackTrace_list() {
-
+  
   return cons(boxString("StackTraceMove"), cons(boxString("StackTracePrint"), cons(boxString("StackTracePrintHelper"), cons(boxString("NoStackTrace_list"), cons(boxString("car"), cons(boxString("cdr"), cons(boxString("cons"), cons(boxString("set"), cons(boxString("boxString"), cons(boxString("makePair"), cons(boxString("set-struct"), cons(boxString("display"), cons(boxString("list"), cons(boxString("assertType"), cons(boxString("isEmpty"), cons(boxString("isNil"), cons(boxString("get-struct"), cons(boxString("equalString"), cons(boxString("binop"), cons(boxString("strcmp"), cons(boxString("main"), cons(boxString("makeBox"), cons(boxString("string_length"), cons(boxString("boxType"), cons(boxString("displayList"), cons(boxString("newLine"), cons(boxString("panic"), null)))))))))))))))))))))))))));
 
 }
 
 
 Box NoTrace_list() {
-
+  
   return cons(boxString("StackTraceMove"), cons(boxString("StackTracePrint"), cons(boxString("StackTracePrintHelper"), cons(boxString("NoStackTrace_list"), cons(boxString("car"), cons(boxString("cdr"), cons(boxString("cons"), cons(boxString("set"), cons(boxString("boxString"), cons(boxString("makePair"), cons(boxString("set-struct"), cons(boxString("display"), cons(boxString("list"), cons(boxString("assertType"), cons(boxString("isEmpty"), cons(boxString("isNil"), cons(boxString("get-struct"), cons(boxString("equalString"), cons(boxString("binop"), cons(boxString("strcmp"), cons(boxString("main"), cons(boxString("makeBox"), cons(boxString("string_length"), cons(boxString("boxType"), cons(boxString("displayList"), cons(boxString("newLine"), cons(boxString("panic"), cons(boxString("boxString"), cons(boxString("boxSymbol"), cons(boxString("boxType"), cons(boxString("equalString"), cons(boxString("unBoxSymbol"), cons(boxString("isList"), cons(boxString("makeBox"), cons(boxString("equalBox"), cons(boxString("sub"), cons(boxString("sub1"), cons(boxString("stringify"), cons(boxString("add"), cons(boxString("greaterthan"), null))))))))))))))))))))))))))))))))))))))));
 
 }
 
 
 int indexOfHelper(String haystack, String needle, int start, int current) {
-
+  
   if ( greaterthan(add(current, string_length(needle)), string_length(haystack))) {
     return -1;
 
@@ -5562,7 +5599,7 @@ int indexOfHelper(String haystack, String needle, int start, int current) {
 
 
 int indexOf(String haystack, String needle, int start) {
-
+  
   if ( equal(string_length(needle), 0)) {
     return start;
 
@@ -5634,8 +5671,39 @@ int needleLength = 0;
 }
 
 
-String stringTrim(String s) {
+boolean isWhiteSpace(String s) {
+  
+  if ( equalString(" ", s)) {
+    return true;
 
+  } else {
+    if ( equalString("\t", s)) {
+      return true;
+
+    } else {
+      if ( equalString("\n", s)) {
+        return true;
+
+      } else {
+        if ( equalString("\r", s)) {
+          return true;
+
+        } else {
+          return false;
+
+        }
+
+      }
+
+    }
+
+  }
+
+}
+
+
+String stringTrim(String s) {
+  
   if ( equal(string_length(s), 0)) {
     return "";
 
@@ -5685,182 +5753,182 @@ int delimiterLength = 0;
 
 
 boolean isNil(Box a) {
-
+  
   return a == null;
 
 }
 
 
 String getEnv(String key) {
-
+  
   return System.getenv(key);
 
 }
 
 
 void panic(String s) {
-
+  
   throw new RuntimeException(s);
 
 }
 
 
 int sub(int a, int b) {
-
+  
   return (a - b);
 
 }
 
 
 int mult(int a, int b) {
-
+  
   return (a * b);
 
 }
 
 
 boolean greaterthan(int a, int b) {
-
+  
   return (a > b);
 
 }
 
 
 double subf(double a, double b) {
-
+  
   return (a - b);
 
 }
 
 
 double multf(double a, double b) {
-
+  
   return (a * b);
 
 }
 
 
 boolean greaterthanf(double a, double b) {
-
+  
   return (a > b);
 
 }
 
 
 boolean equal(int a, int b) {
-
+  
   return (a == b);
 
 }
 
 
 boolean equalString(String a, String b) {
-
+  
   return a.equals(b);
 
 }
 
 
 int string_length(String s) {
-
+  
   return s.length();
 
 }
 
 
 String setSubString(String target, int start, String source) {
-
+  
   return target.substring(0, start) + source + target.substring(start + 1);
 
 }
 
 
 String sub_string(String s, int start, int length) {
-
+  
   return s.substring(start, start + length);
 
 }
 
 
 String stringConcatenate(String a, String b) {
-
+  
   return (a + b);
 
 }
 
 
 String intToString(int a) {
-
+  
   return Integer.toString(a);
 
 }
 
 
 String read_file(String filename) {
-
+  
   return readFileUnchecked(filename);
 
 }
 
 
 void write_file(String filename, String data) {
-
+  
   writeFileUnchecked(filename, data);
 
 }
 
 
 String getStringArray(int index, String[] strs) {
-
+  
   return strs[index];
 
 }
 
 
 String[] programArgs() {
-
+  
   return globalArgs;
 
 }
 
 
 int programArgsCount() {
-
+  
   return globalArgsCount;
 
 }
 
 
 String character(int num) {
-
+  
   return Character.toString((char) num);
 
 }
 
 
 void displays(String s) {
-
+  
   System.out.printf("%s", s);
 
 }
 
 
 int remainder(int a, int b) {
-
+  
   return (a % b);
 
 }
 
 
 boolean or(boolean a, boolean b) {
-
+  
   return (a || b);
 
 }
 
 
 int max(int a, int b) {
-
+  
   if ( greaterthan(a, b)) {
     return a;
 
@@ -5873,7 +5941,7 @@ int max(int a, int b) {
 
 
 int min(int a, int b) {
-
+  
   if ( greaterthan(a, b)) {
     return b;
 
@@ -5886,49 +5954,49 @@ int min(int a, int b) {
 
 
 HashMap<String, String> makeHash() {
-
+  
   return new HashMap<String, String>();
 
 }
 
 
 void setHash(HashMap<String, String> hash, String key, String value) {
-
+  
   hash.put(key, value);
 
 }
 
 
 String getHash(HashMap<String, String> hash, String key) {
-
+  
   return hash.get(key);
 
 }
 
 
 boolean inHash(HashMap<String, String> hash, String key) {
-
+  
   return hash.containsKey(key);
 
 }
 
 
 Box makeArray(int length) {
-
+  
   return new Box();
 
 }
 
 
 void setArray(Box array, int index, String value) {
-
+  
   panic("setArray is not implemented for Java yet");
 
 }
 
 
 String getArray(Box array, int index) {
-
+  
   panic("getArray is not implemented for Java yet");
 
   return "";
