@@ -7,6 +7,8 @@
   q/lib/tinytest.qon
   q/lib/json.qon
   q/lib/url.qon
+  q/lib/query.qon
+  q/lib/http.qon
   q/lib/base64.qon)
  (types)
  (functions
@@ -43,6 +45,32 @@
     (tinyExpectString "urlDecode" "hello world!" (urlDecode "hello%20world%21"))
     (tinyExpectString "urlFormDecode" "a b+c" (urlFormDecode "a+b%2Bc"))))
 
+  (void testQueryLibrary () (declare (list parsed nil) (list encoded nil))
+   (body
+    (set parsed (queryParse "name=Quon&message=hello+world%21&empty="))
+    (tinyExpectString "queryParse name" "Quon" (queryGet parsed "name" "missing"))
+    (tinyExpectString "queryParse message" "hello world!" (queryGet parsed "message" "missing"))
+    (tinyExpectString "queryParse empty" "" (queryGet parsed "empty" "missing"))
+    (tinyExpectString "queryParse missing" "fallback" (queryGet parsed "missing" "fallback"))
+
+    (set encoded
+     (cons
+      (cons (boxString "name") (boxString "Quon"))
+      (cons
+       (cons (boxString "message") (boxString "hello world!"))
+       nil)))
+    (tinyExpectString "queryEncode" "name=Quon&message=hello%20world%21" (queryEncode encoded))))
+
+  (void testHttpLibrary () (declare (httpRequest request nil))
+   (body
+    (set request (httpParseRequest "GET /hello?name=Quon HTTP/1.1\r\nHost: example.test\r\nAccept: text/plain\r\n\r\n"))
+    (tinyExpectBool "httpParse ok" true (get-struct request ok))
+    (tinyExpectString "httpParse method" "GET" (get-struct request method))
+    (tinyExpectString "httpParse target" "/hello?name=Quon" (get-struct request target))
+    (tinyExpectString "httpParse version" "HTTP/1.1" (get-struct request version))
+    (tinyExpectString "httpGetHeader Host" "example.test" (httpGetHeader request "Host" "missing"))
+    (tinyExpectString "httpGetHeader missing" "fallback" (httpGetHeader request "Missing" "fallback"))))
+
   (void testBase64Library () (declare)
    (body
     (tinyExpectString "base64Encode hello" "aGVsbG8=" (base64Encode "hello"))
@@ -54,6 +82,8 @@
     (testPortableHelpers)
     (testJsonLibrary)
     (testUrlLibrary)
+    (testQueryLibrary)
+    (testHttpLibrary)
     (testBase64Library)
     (return 0)))
 

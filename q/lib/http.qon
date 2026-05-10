@@ -1,0 +1,118 @@
+((includes)
+ (types
+  (HttpRequest
+   (struct
+    (method string)
+    (target string)
+    (version string)
+    (headers struct Box*)
+    (body string)
+    (ok bool)
+    (message string)))
+  (httpRequest HttpRequest*))
+ (functions
+
+  (httpRequest httpMakeRequest (string method string target string version list headers string body bool ok string message) (declare (httpRequest request nil))
+   (body
+    (set request (new httpRequest HttpRequest))
+    (set-struct request method method)
+    (set-struct request target target)
+    (set-struct request version version)
+    (set-struct request headers headers)
+    (set-struct request body body)
+    (set-struct request ok ok)
+    (set-struct request message message)
+    (return request)))
+
+  (int httpFindLineEnd (string s int pos) (declare)
+   (body
+    (if (greaterthan (string-length s) pos)
+      (then
+       (if (equalString (sub-string s pos 1) (character 10))
+         (then (return pos))
+         (else (return (httpFindLineEnd s (add1 pos))))))
+      (else (return (string-length s))))))
+
+  (string httpTrimLine (string line) (declare)
+   (body
+    (if (stringEndsWith line (character 13))
+      (then (return (sub-string line 0 (sub1 (string-length line)))))
+      (else (return line)))))
+
+  (int httpFindSpace (string s int pos) (declare)
+   (body
+    (if (greaterthan (string-length s) pos)
+      (then
+       (if (equalString (sub-string s pos 1) " ")
+         (then (return pos))
+         (else (return (httpFindSpace s (add1 pos))))))
+      (else (return -1)))))
+
+  (int httpFindColon (string s int pos) (declare)
+   (body
+    (if (greaterthan (string-length s) pos)
+      (then
+       (if (equalString (sub-string s pos 1) ":")
+         (then (return pos))
+         (else (return (httpFindColon s (add1 pos))))))
+      (else (return -1)))))
+
+  (box httpParseHeaderLine (string line) (declare (int colon -1) (string name "") (string value ""))
+   (body
+    (set colon (httpFindColon line 0))
+    (if (equal colon -1)
+      (then (return (cons (boxString line) (boxString ""))))
+      (else))
+    (set name (sub-string line 0 colon))
+    (set value (stringTrim (sub-string line (add1 colon) (sub (string-length line) (add1 colon)))))
+    (return (cons (boxString name) (boxString value)))))
+
+  (list httpParseHeadersRec (string s int pos list headers) (declare (int end 0) (string line ""))
+   (body
+    (if (greaterthan (string-length s) pos)
+      (then)
+      (else (return (reverseList headers))))
+    (set end (httpFindLineEnd s pos))
+    (set line (httpTrimLine (sub-string s pos (sub end pos))))
+    (if (equalString line "")
+      (then (return (reverseList headers)))
+      (else))
+    (return (httpParseHeadersRec s (add1 end) (cons (httpParseHeaderLine line) headers)))))
+
+  (httpRequest httpParseRequestLine (string line string fullText int headersStart) (declare (int firstSpace -1) (int secondSpace -1) (string method "") (string target "") (string version ""))
+   (body
+    (set firstSpace (httpFindSpace line 0))
+    (if (equal firstSpace -1)
+      (then (return (httpMakeRequest "" "" "" nil "" false "missing request target")))
+      (else))
+    (set secondSpace (httpFindSpace line (add1 firstSpace)))
+    (if (equal secondSpace -1)
+      (then (return (httpMakeRequest "" "" "" nil "" false "missing HTTP version")))
+      (else))
+    (set method (sub-string line 0 firstSpace))
+    (set target (sub-string line (add1 firstSpace) (sub secondSpace (add1 firstSpace))))
+    (set version (sub-string line (add1 secondSpace) (sub (string-length line) (add1 secondSpace))))
+    (return
+     (httpMakeRequest
+      method
+      target
+      version
+      (httpParseHeadersRec fullText headersStart nil)
+      ""
+      true
+      ""))))
+
+  (httpRequest httpParseRequest (string s) (declare (int end 0) (string line ""))
+   (body
+    (set end (httpFindLineEnd s 0))
+    (set line (httpTrimLine (sub-string s 0 end)))
+    (return (httpParseRequestLine line s (add1 end)))))
+
+  (string httpGetHeader (httpRequest request string name string fallback) (declare (box found nil))
+   (body
+    (set found (assoc name (get-struct request headers)))
+    (if (truthy found)
+      (then (return (stringify (cdr found))))
+      (else (return fallback)))))
+
+ ))

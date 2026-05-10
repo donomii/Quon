@@ -1,0 +1,81 @@
+((includes)
+ (types)
+ (functions
+
+  (int queryFindAmp (string s int pos) (declare)
+   (body
+    (if (greaterthan (string-length s) pos)
+      (then
+       (if (equalString (sub-string s pos 1) "&")
+         (then (return pos))
+         (else (return (queryFindAmp s (add1 pos))))))
+      (else (return (string-length s))))))
+
+  (int queryFindEquals (string s int pos) (declare)
+   (body
+    (if (greaterthan (string-length s) pos)
+      (then
+       (if (equalString (sub-string s pos 1) "=")
+         (then (return pos))
+         (else (return (queryFindEquals s (add1 pos))))))
+      (else (return -1)))))
+
+  (box queryParsePair (string pairText) (declare (int eq -1) (string key "") (string value ""))
+   (body
+    (set eq (queryFindEquals pairText 0))
+    (if (equal eq -1)
+      (then
+       (set key pairText)
+       (set value ""))
+      (else
+       (set key (sub-string pairText 0 eq))
+       (set value (sub-string pairText (add1 eq) (sub (string-length pairText) (add1 eq))))))
+    (return (cons (boxString (urlFormDecode key)) (boxString (urlFormDecode value))))))
+
+  (list queryParseRec (string s int pos) (declare (int end 0) (string pairText ""))
+   (body
+    (if (greaterthan (string-length s) pos)
+      (then)
+      (else (return nil)))
+    (set end (queryFindAmp s pos))
+    (set pairText (sub-string s pos (sub end pos)))
+    (if (greaterthan (string-length s) end)
+      (then (return (cons (queryParsePair pairText) (queryParseRec s (add1 end)))))
+      (else (return (cons (queryParsePair pairText) nil))))))
+
+  (list queryParse (string s) (declare)
+   (body
+    (return (queryParseRec s 0))))
+
+  (string queryGet (list pairs string key string fallback) (declare (box found nil))
+   (body
+    (set found (assoc key pairs))
+    (if (truthy found)
+      (then (return (stringify (cdr found))))
+      (else (return fallback)))))
+
+  (string queryEncodePair (box pair) (declare)
+   (body
+    (return
+     (stringConcatenate
+      (urlEncode (stringify (car pair)))
+      (stringConcatenate "=" (urlEncode (stringify (cdr pair))))))))
+
+  (string queryEncodeRec (list pairs) (declare)
+   (body
+    (if (isNil pairs)
+      (then (return ""))
+      (else))
+    (if (isNil (cdr pairs))
+      (then (return (queryEncodePair (car pairs))))
+      (else))
+    (return
+     (stringConcatenate
+      (queryEncodePair (car pairs))
+      (stringConcatenate "&" (queryEncodeRec (cdr pairs)))))))
+
+  (string queryEncode (list pairs) (declare)
+   (body
+    (return (queryEncodeRec pairs))))
+
+ ))
