@@ -2,12 +2,320 @@
 (types)
  (functions
 
-  (list readSexpr (string aStr string filename) (declare (list tokens nil) (list as nil))
+  (list readSexpr (string aStr string filename) (declare (list tokens nil) (list as nil) (list tree nil))
    (body
     (set tokens (emptyList))
     (set tokens (filterTokens (filterVoid (scan aStr 0 1 0 0 filename))))
+    (parserValidateParens tokens nil filename)
     (set as (sexprTree tokens))
-    (return (car as))))
+    (parserValidateRoot as filename)
+    (set tree (car as))
+    (parserValidateProgram tree filename)
+    (return tree)))
+
+  (void parserPanicAt (string filename box token string message) (declare)
+   (body
+    (if (isNil token)
+      (then
+       (printf "Parse error in %s: %s\n" filename message))
+      (else
+       (printf
+        "Parse error in %s:%s:%s: %s\n"
+        (stringify (getTagFail token (boxString "filename") (boxString filename)))
+        (stringify (getTagFail token (boxString "line") (boxString "?")))
+        (stringify (getTagFail token (boxString "column") (boxString "?")))
+        message)))
+    (exit 1)))
+
+  (void parserPanicAtNode (string filename box node string message) (declare)
+   (body
+    (if (isNil node)
+      (then (parserPanicAt filename nil message))
+      (else
+       (if (isList node)
+         (then
+          (if (isEmpty node)
+            (then (parserPanicAt filename nil message))
+            (else (parserPanicAt filename (car node) message))))
+         (else (parserPanicAt filename node message)))))))
+
+  (bool parserSymbolIs (box b string name) (declare)
+   (body
+    (if (isNil b) (then (return false)) (else))
+    (if (isList b) (then (return false)) (else))
+    (if (equalString "symbol" (boxType b))
+      (then (return (equalString name (stringify b))))
+      (else (return false)))))
+
+  (bool parserListStartsWith (box node string name) (declare)
+   (body
+    (if (isNil node) (then (return false)) (else))
+    (if (isList node)
+      (then
+       (if (isEmpty node)
+         (then (return false))
+         (else (return (parserSymbolIs (car node) name)))))
+      (else (return false)))))
+
+  (void parserValidateParens (list tokens list openStack string filename) (declare (box token nil))
+   (body
+    (if (isEmpty tokens)
+      (then
+       (if (isEmpty openStack)
+         (then (return))
+         (else (parserPanicAt filename (car openStack) "missing ')'"))))
+      (else
+       (set token (car tokens))
+       (if (isOpenBrace token)
+         (then (parserValidateParens (cdr tokens) (cons token openStack) filename))
+         (else
+          (if (isCloseBrace token)
+            (then
+             (if (isEmpty openStack)
+               (then (parserPanicAt filename token "unexpected ')'"))
+               (else (parserValidateParens (cdr tokens) (cdr openStack) filename))))
+            (else (parserValidateParens (cdr tokens) openStack filename)))))))))
+
+  (void parserValidateRoot (list roots string filename) (declare)
+   (body
+    (if (equal (listLength roots) 1)
+      (then (return))
+      (else
+       (if (isEmpty roots)
+         (then (parserPanicAt filename nil "expected one top-level program form"))
+         (else (parserPanicAtNode filename (second roots) "extra top-level form after program")))))))
+
+  (void parserValidateSection (box section string name string filename) (declare)
+   (body
+    (if (isNil section)
+      (then (parserPanicAt filename nil "missing program section"))
+      (else))
+    (if (isList section)
+      (then)
+      (else (parserPanicAtNode filename section "program section must be a list")))
+    (if (parserListStartsWith section name)
+      (then (return))
+      (else (parserPanicAtNode filename section (stringConcatenate "expected program section " name))))))
+
+  (bool parserIsFunctionDefinition (box node) (declare)
+   (body
+    (if (isNil node) (then (return false)) (else))
+    (if (isList node) (then) (else (return false)))
+    (if (equal (listLength node) 5) (then) (else (return false)))
+    (if (isList (first node)) (then (return false)) (else))
+    (if (isList (second node)) (then (return false)) (else))
+    (if (isList (third node)) (then) (else (return false)))
+    (if (parserListStartsWith (fourth node) "declare") (then) (else (return false)))
+    (if (parserListStartsWith (fifth node) "body") (then (return true)) (else (return false)))))
+
+  (void parserRejectFunctionDefinitions (box node string filename) (declare)
+   (body
+    (if (isNil node)
+      (then (return))
+      (else))
+    (if (parserIsFunctionDefinition node)
+      (then (parserPanicAtNode filename node "function definition is not allowed here"))
+      (else))
+    (if (isList node)
+      (then (parserRejectFunctionDefinitionsList node filename))
+      (else (return)))))
+
+  (void parserRejectFunctionDefinitionsList (list nodes string filename) (declare)
+   (body
+    (if (isEmpty nodes)
+      (then (return))
+      (else
+       (parserRejectFunctionDefinitions (car nodes) filename)
+       (parserRejectFunctionDefinitionsList (cdr nodes) filename)))))
+
+  (void parserValidateProgram (box program string filename) (declare)
+   (body
+    (if (isNil program)
+      (then (parserPanicAt filename nil "empty program"))
+      (else))
+    (if (isList program)
+      (then)
+      (else (parserPanicAtNode filename program "program must be a list")))
+    (if (equal (listLength program) 3)
+      (then)
+      (else
+       (if (equal (listLength program) 4)
+         (then)
+         (else (parserPanicAtNode filename program "program must contain includes, types, and functions sections")))))
+    (parserValidateSection (first program) "includes" filename)
+    (parserValidateSection (second program) "types" filename)
+    (parserValidateSection (third program) "functions" filename)
+    (parserRejectFunctionDefinitions (cdr (first program)) filename)
+    (parserRejectFunctionDefinitions (cdr (second program)) filename)
+    (if (equal (listLength program) 4)
+      (then
+       (parserValidateSection (fourth program) "globals" filename)
+       (parserRejectFunctionDefinitions (cdr (fourth program)) filename))
+      (else))
+    (parserValidateFunctions (cdr (third program)) filename)))
+
+  (void parserValidateFunctions (list functions string filename) (declare (box fn nil))
+   (body
+    (if (isEmpty functions)
+      (then (return))
+      (else
+       (set fn (car functions))
+       (if (parserIsFunctionDefinition fn)
+         (then (parserValidateFunction fn filename))
+         (else (parserPanicAtNode filename fn "invalid function definition")))
+       (parserValidateFunctions (cdr functions) filename)))))
+
+  (void parserValidateFunction (list fn string filename) (declare)
+   (body
+    (parserRejectFunctionDefinitions (third fn) filename)
+    (parserRejectFunctionDefinitions (cdr (fourth fn)) filename)
+    (parserValidateBody (cdr (fifth fn)) filename)))
+
+  (void parserValidateBody (list forms string filename) (declare)
+   (body
+    (if (isEmpty forms)
+      (then (return))
+      (else
+       (parserValidateStatement (car forms) filename)
+       (parserValidateBody (cdr forms) filename)))))
+
+  (void parserValidateStatement (box stmt string filename) (declare)
+   (body
+    (if (isNil stmt)
+      (then (return))
+      (else))
+    (if (isList stmt)
+      (then)
+      (else (parserPanicAtNode filename stmt "statement must be a list")))
+    (if (isEmpty stmt)
+      (then (return))
+      (else))
+    (if (parserIsFunctionDefinition stmt)
+      (then (parserPanicAtNode filename stmt "function definition nested inside body"))
+      (else))
+    (if (parserListStartsWith stmt "if")
+      (then (parserValidateIf stmt filename) (return))
+      (else))
+    (if (parserListStartsWith stmt "then")
+      (then (parserPanicAtNode filename stmt "then branch outside if"))
+      (else))
+    (if (parserListStartsWith stmt "else")
+      (then (parserPanicAtNode filename stmt "else branch outside if"))
+      (else))
+    (if (parserListStartsWith stmt "declare")
+      (then (parserPanicAtNode filename stmt "declare block outside function header"))
+      (else))
+    (if (parserListStartsWith stmt "body")
+      (then (parserPanicAtNode filename stmt "body block nested inside body"))
+      (else))
+    (if (parserListStartsWith stmt "functions")
+      (then (parserPanicAtNode filename stmt "functions section nested inside body"))
+      (else))
+    (if (parserListStartsWith stmt "types")
+      (then (parserPanicAtNode filename stmt "types section nested inside body"))
+      (else))
+    (if (parserListStartsWith stmt "includes")
+      (then (parserPanicAtNode filename stmt "includes section nested inside body"))
+      (else))
+    (if (parserListStartsWith stmt "return")
+      (then (parserValidateReturn stmt filename) (return))
+      (else))
+    (if (parserListStartsWith stmt "set")
+      (then (parserValidateSet stmt filename) (return))
+      (else))
+    (if (parserListStartsWith stmt "set-struct")
+      (then (parserValidateSetStruct stmt filename) (return))
+      (else))
+    (parserValidateExpression stmt filename)))
+
+  (void parserValidateReturn (list stmt string filename) (declare)
+   (body
+    (if (greaterthan (listLength stmt) 2)
+      (then (parserPanicAtNode filename stmt "return takes zero or one value"))
+      (else))
+    (if (equal (listLength stmt) 2)
+      (then (parserValidateExpression (second stmt) filename))
+      (else (return)))))
+
+  (void parserValidateSet (list stmt string filename) (declare)
+   (body
+    (if (equal (listLength stmt) 3)
+      (then
+       (parserValidateExpression (second stmt) filename)
+       (parserValidateExpression (third stmt) filename))
+      (else (parserPanicAtNode filename stmt "set takes a target and value")))))
+
+  (void parserValidateSetStruct (list stmt string filename) (declare)
+   (body
+    (if (equal (listLength stmt) 4)
+      (then
+       (parserValidateExpression (second stmt) filename)
+       (parserValidateExpression (third stmt) filename)
+       (parserValidateExpression (fourth stmt) filename))
+      (else (parserPanicAtNode filename stmt "set-struct takes a target, field, and value")))))
+
+  (void parserValidateIf (list stmt string filename) (declare)
+   (body
+    (if (equal (listLength stmt) 4)
+      (then)
+      (else (parserPanicAtNode filename stmt "if must contain condition, then, and else")))
+    (parserValidateExpression (second stmt) filename)
+    (parserValidateBranch (third stmt) "then" filename)
+    (parserValidateBranch (fourth stmt) "else" filename)))
+
+  (void parserValidateBranch (box branch string name string filename) (declare)
+   (body
+    (if (parserListStartsWith branch name)
+      (then (parserValidateBody (cdr branch) filename))
+      (else (parserPanicAtNode filename branch (stringConcatenate "expected " name))))))
+
+  (void parserValidateExpression (box expr string filename) (declare)
+   (body
+    (if (isNil expr)
+      (then (return))
+      (else))
+    (if (isList expr)
+      (then)
+      (else (return)))
+    (if (isEmpty expr)
+      (then (return))
+      (else))
+    (if (parserIsFunctionDefinition expr)
+      (then (parserPanicAtNode filename expr "function definition nested inside expression"))
+      (else))
+    (if (parserListStartsWith expr "if")
+      (then (parserValidateIf expr filename) (return))
+      (else))
+    (if (parserListStartsWith expr "then")
+      (then (parserPanicAtNode filename expr "then branch outside if"))
+      (else))
+    (if (parserListStartsWith expr "else")
+      (then (parserPanicAtNode filename expr "else branch outside if"))
+      (else))
+    (if (parserListStartsWith expr "declare")
+      (then (parserPanicAtNode filename expr "declare block inside expression"))
+      (else))
+    (if (parserListStartsWith expr "body")
+      (then (parserPanicAtNode filename expr "body block inside expression"))
+      (else))
+    (if (parserListStartsWith expr "functions")
+      (then (parserPanicAtNode filename expr "functions section inside expression"))
+      (else))
+    (if (parserListStartsWith expr "types")
+      (then (parserPanicAtNode filename expr "types section inside expression"))
+      (else))
+    (if (parserListStartsWith expr "includes")
+      (then (parserPanicAtNode filename expr "includes section inside expression"))
+      (else))
+    (parserValidateExpressionList expr filename)))
+
+  (void parserValidateExpressionList (list exprs string filename) (declare)
+   (body
+    (if (isEmpty exprs)
+      (then (return))
+      (else
+       (parserValidateExpression (car exprs) filename)
+       (parserValidateExpressionList (cdr exprs) filename)))))
 
   (list sexprTree (list l) (declare (box b nil))
    (body

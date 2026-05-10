@@ -136,14 +136,14 @@
   (list scan (string prog int start int len int linecount int column string filename) (declare (box token nil) (string newString "") (box newBox nil))
    (body
    ;(qlog "Input: %s %d:%d\n" filename linecount column)
-    (if (> (string-length prog) (sub start (sub 0 len)))
+    (if (> (string-length prog) (sub1 (add start len)))
       (then
        (set token (boxSymbol (sub-string prog (sub1 (add start len)) 1)))
        (set-struct token tag (alistCons (boxString "totalCharPos") (boxInt start) nil))
        (if (isOpenBrace token)
          (then
           (return (cons
-             (finish_token prog start (sub1 len) linecount column filename) (cons (boxSymbol (openBrace))
+             (finish_token prog start (sub1 len) linecount column filename) (cons (annotateReadPosition filename linecount column start (boxSymbol (openBrace)))
              (scan prog (add1 start) 1 linecount (add1 column) filename)))))
          (else
           (if (isCloseBrace token)

@@ -94,28 +94,17 @@
        (printf "\n\nAfter all that hard work, I need a beer...\n")
        (beers 9))
       (else
-      (if runTree
-      (then (display (macrowalk (treeCompile  filename))))
-      (else
-
-      (if (orBool runNode runNode2)
-      (then (node2Compile  filename)(printf "\n"))
-      (else
-      (if runPerl
-      (then (perlCompile  filename) (printf "\n"))
-      (else
-
-
-      (if runAnsi3
-      (then (ansi3Compile  filename) (printf "\n"))
-	  (else
-
-      (ansi3Compile  filename) (printf "\n"))))))
-      ))))
-    
-    (return 0)
-    )
-
-  (return 0)
-)
+       (if runTree
+        (then (display (macrowalk (treeCompile filename))))
+        (else
+         (if (orBool runNode runNode2)
+          (then (node2Compile filename) (printf "\n"))
+          (else
+           (if runPerl
+            (then (perlCompile filename) (printf "\n"))
+            (else
+             (if runAnsi3
+              (then (ansi3Compile filename) (printf "\n"))
+              (else (ansi3Compile filename) (printf "\n")))))))))))
+    (return 0)))
  ))
