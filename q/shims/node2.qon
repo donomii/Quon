@@ -146,4 +146,39 @@
   (body
     (return (passthrough "array[index]"))))
 
+; Node does not optimize the recursive list helpers, and generated output trees can
+; be large enough to overflow V8's stack. Keep the public Quon functions, but use
+; iterative JavaScript for this backend.
+(string readString (string prog int start int len) (declare)
+  (body
+    (return (passthrough "(() => { let currentLen = len; while (true) { const token = sub_string(prog, sub1(add(start, currentLen)), 1); if (token === String.fromCharCode(34)) { return sub_string(prog, start, sub1(currentLen)); } if (token === String.fromCharCode(92)) { currentLen = add(2, currentLen); } else { currentLen = add1(currentLen); } } })()"))))
+
+(string readComment (string prog int start int len) (declare)
+  (body
+    (return (passthrough "(() => { let currentLen = len; while (true) { if (greaterthan(add(start, currentLen), string_length(prog))) { return ''; } const token = sub_string(prog, sub1(add(start, currentLen)), 1); if (isLineBreak(token)) { return sub_string(prog, start, sub1(currentLen)); } currentLen = add1(currentLen); } })()"))))
+
+(list scan (string prog int start int len int linecount int column string filename) (declare)
+  (body
+    (return (passthrough "(() => { const tokens = []; while (greaterthan(string_length(prog), sub1(add(start, len)))) { const token = boxSymbol(sub_string(prog, sub1(add(start, len)), 1)); token.tag = alistCons(boxString('totalCharPos'), boxInt(start), null); if (isOpenBrace(token)) { tokens.push(finish_token(prog, start, sub1(len), linecount, column, filename)); tokens.push(annotateReadPosition(filename, linecount, column, start, boxSymbol(openBrace()))); start = add1(start); len = 1; column = add1(column); } else if (isCloseBrace(token)) { tokens.push(finish_token(prog, start, sub1(len), linecount, column, filename)); tokens.push(annotateReadPosition(filename, linecount, column, start, boxSymbol(closeBrace()))); start = add(start, len); len = 1; column = add1(column); } else if (isWhiteSpace(stringify(token))) { tokens.push(finish_token(prog, start, sub1(len), linecount, column, filename)); start = add(start, len); len = 1; linecount = incForNewLine(token, linecount); column = 0; } else if (equalBox(boxSymbol(';'), token)) { start = add(start, add1(add1(string_length(readComment(prog, add1(start), len))))); len = 1; linecount = add1(linecount); column = 0; } else if (equalBox(boxSymbol(String.fromCharCode(34)), token)) { const newString = readString(prog, add1(start), len); tokens.push(annotateReadPosition(filename, linecount, column, start, boxString(newString))); start = add(start, add1(add1(string_length(newString)))); len = 1; column = add1(column); } else { len = sub(len, -1); column = add1(column); } } let out = null; for (let i = tokens.length - 1; i >= 0; i--) { out = cons(tokens[i], out); } return out; })()"))))
+
+(list filterVoid (list l) (declare)
+  (body
+    (return (passthrough "(() => { const tokens = []; for (let p = l; p !== null; p = p.cdr) { const token = p.car; if (!equalString('void', boxType(token))) { tokens.push(token); } } let out = null; for (let i = tokens.length - 1; i >= 0; i--) { out = cons(tokens[i], out); } return out; })()"))))
+
+(list filterTokens (list l) (declare)
+  (body
+    (return (passthrough "(() => { const tokens = []; for (let p = l; p !== null; p = p.cdr) { const token = p.car; if (equalString(boxType(token), 'symbol')) { if (equalString('__LINE__', stringify(token))) { tokens.push(getTagFail(token, boxString('line'), boxInt(-1))); } else if (equalString('__COLUMN__', stringify(token))) { tokens.push(getTagFail(token, boxString('column'), boxInt(-1))); } else if (equalString('__FILE__', stringify(token))) { tokens.push(getTagFail(token, boxString('filename'), boxString('Unknown file'))); } else { tokens.push(token); } } else { tokens.push(token); } } let out = null; for (let i = tokens.length - 1; i >= 0; i--) { out = cons(tokens[i], out); } return out; })()"))))
+
+(list concatLists (list seq1 list seq2) (declare)
+  (body
+    (return (passthrough "(() => { const values = []; for (let p = seq1; p !== null; p = p.cdr) { values.push(p.car); } let out = seq2; for (let i = values.length - 1; i >= 0; i--) { out = cons(values[i], out); } return out; })()"))))
+
+(list flatten (list tree) (declare)
+  (body
+    (return (passthrough "(() => { let out = null; const stack = [tree]; while (stack.length > 0) { const item = stack.pop(); if (item === null) { continue; } if (isList(item)) { stack.push(item.cdr); stack.push(item.car); } else { out = cons(item, out); } } let rev = null; for (let p = out; p !== null; p = p.cdr) { rev = cons(p.car, rev); } return rev; })()"))))
+
+(string ListToString (list l int indent bool first bool withNewLines) (declare)
+  (body
+    (return (passthrough "(() => { let out = ''; const frames = [{ value: l, indent: indent, first: first, withNewLines: withNewLines }]; while (frames.length > 0) { const frame = frames.pop(); if (frame.text !== undefined) { out += frame.text; continue; } const value = frame.value; if (value === null) { continue; } if (isList(value)) { const val = value.car; if (isList(val)) { frames.push({ value: value.cdr, indent: frame.indent, first: false, withNewLines: frame.withNewLines }); frames.push({ text: ' ' }); frames.push({ text: closeBrace() }); frames.push({ value: val, indent: add1(frame.indent), first: true, withNewLines: frame.withNewLines }); frames.push({ text: ' ' }); frames.push({ text: openBrace() }); frames.push({ text: frame.withNewLines ? String.fromCharCode(10) : stringIndent(frame.indent) }); } else { frames.push({ value: value.cdr, indent: frame.indent, first: false, withNewLines: frame.withNewLines }); frames.push({ text: stringify(val) }); } } else { out += stringify(value); } } return out; })()"))))
+
 ))

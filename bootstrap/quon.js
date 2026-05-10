@@ -40,7 +40,7 @@ function fprintf(stream, fmt, ...args) { stream.write(cformat(fmt, ...args)); }
 
 
 function notBool(a) {
-
+  
   if (a) {
     return false;
 
@@ -53,7 +53,7 @@ function notBool(a) {
 
 
 function andBool(a, b) {
-
+  
   if (a) {
     if (b) {
       return true;
@@ -72,7 +72,7 @@ function andBool(a, b) {
 
 
 function orBool(a, b) {
-
+  
   if (a) {
     return true;
 
@@ -91,28 +91,28 @@ function orBool(a, b) {
 
 
 function nand(a, b) {
-
+  
   return notBool(andBool(a, b));
 
 }
 
 
 function xor(a, b) {
-
+  
   return nand(nand(a, nand(a, b)), nand(b, nand(a, b)));
 
 }
 
 
 function lessThan(a, b) {
-
+  
   return andBool(notBool(equal(a, b)), notBool(greaterthan(a, b)));
 
 }
 
 
 function node2FunctionArgs(tree) {
-
+  
   if (isEmpty(tree)) {
     return emptyList();
 
@@ -143,7 +143,7 @@ function node2FunctionArgs(tree) {
 
 
 function node2Atom(tree) {
-
+  
   if (equalString("string", boxType(tree))) {
     return cons(boxString("\""), cons(id(boxString(stringify(tree))), cons(boxString("\""), null)));
 
@@ -208,7 +208,7 @@ function node2Expression(tree, indent) {
 
 
 function node2RecurList(expr, indent) {
-
+  
   if (isEmpty(expr)) {
     return emptyList();
 
@@ -227,28 +227,28 @@ function node2RecurList(expr, indent) {
 
 
 function node2If(node, indent, functionName) {
-
+  
   return cons(id(listNewLine(indent)), cons(boxString("if ("), cons(id(node2Expression(second(node), 0)), cons(boxString(") {"), cons(id(node2Body(cdr(third(node)), add1(indent), functionName)), cons(id(listNewLine(indent)), cons(boxString("} else {"), cons(id(node2Body(cdr(fourth(node)), add1(indent), functionName)), cons(id(listNewLine(indent)), cons(boxString("}"), null))))))))));
 
 }
 
 
 function node2SetStruct(node, indent) {
-
+  
   return cons(id(listNewLine(indent)), cons(id(node2Expression(second(node), indent)), cons(boxString("."), cons(id(third(node)), cons(boxString(" = "), cons(id(node2Expression(fourth(node), indent)), null))))));
 
 }
 
 
 function node2Set(node, indent) {
-
+  
   return cons(id(listNewLine(indent)), cons(id(node2Expression(second(node), indent)), cons(boxString(" = "), cons(id(node2Expression(third(node), indent)), null))));
 
 }
 
 
 function node2Return(node, indent) {
-
+  
   if (equal(listLength(node), 1)) {
     return cons(id(listNewLine(indent)), cons(boxString("return"), null));
 
@@ -261,7 +261,7 @@ function node2Return(node, indent) {
 
 
 function node2Statement(node, indent, functionName) {
-
+  
   if (equalBox(boxString("set"), first(node))) {
     return cons(id(node2Set(node, indent)), cons(boxString(";\n"), null));
 
@@ -340,7 +340,7 @@ function node2Function(node) {
 
 
 function node2Functions(tree) {
-
+  
   if (isEmpty(tree)) {
     return emptyList();
 
@@ -353,14 +353,14 @@ function node2Functions(tree) {
 
 
 function node2Includes(nodes) {
-
+  
   return cons(boxString("\"use strict\";\n"), cons(boxString("const fs = require(\"fs\");\n"), cons(boxString("let globalArgsCount = 0;\n"), cons(boxString("let globalArgs = [];\n"), cons(boxString("let releaseMode = false;\n"), cons(boxString("let globalTrace = false;\n"), cons(boxString("let globalStepTrace = false;\n"), cons(boxString("let globalStackTrace = null;\n"), cons(boxString("let caller = \"\";\n"), cons(boxString("let stderr = process.stderr;\n"), cons(boxString("function cformat(fmt, ...args) {\n"), cons(boxString("  fmt = String(fmt);\n"), cons(boxString("  let out = '';\n"), cons(boxString("  let argi = 0;\n"), cons(boxString("  for (let pos = 0; pos < fmt.length; pos++) {\n"), cons(boxString("    let ch = fmt[pos];\n"), cons(boxString("    if (ch !== '%') { out += ch; continue; }\n"), cons(boxString("    if (fmt[pos + 1] === '%') { out += '%'; pos++; continue; }\n"), cons(boxString("    let precision = null;\n"), cons(boxString("    if (fmt[pos + 1] === '.') {\n"), cons(boxString("      let end = pos + 2;\n"), cons(boxString("      while (end < fmt.length && fmt[end] >= '0' && fmt[end] <= '9') end++;\n"), cons(boxString("      precision = Number(fmt.slice(pos + 2, end));\n"), cons(boxString("      pos = end - 1;\n"), cons(boxString("    }\n"), cons(boxString("    let spec = fmt[pos + 1];\n"), cons(boxString("    if (spec === 's' || spec === 'd') {\n"), cons(boxString("      let value = String(args[argi++]);\n"), cons(boxString("      if (precision !== null) value = value.slice(0, precision);\n"), cons(boxString("      out += value;\n"), cons(boxString("      pos++;\n"), cons(boxString("    } else {\n"), cons(boxString("      out += ch;\n"), cons(boxString("    }\n"), cons(boxString("  }\n"), cons(boxString("  return out;\n"), cons(boxString("}\n"), cons(boxString("function printf(fmt, ...args) { process.stdout.write(cformat(fmt, ...args)); }\n"), cons(boxString("function fprintf(stream, fmt, ...args) { stream.write(cformat(fmt, ...args)); }\n"), null)))))))))))))))))))))))))))))))))))))));
 
 }
 
 
 function node2Types(nodes) {
-
+  
   return emptyList();
 
 }
@@ -389,7 +389,7 @@ function node2FuncMap(aSym) {
 
 
 function node2MainEntry() {
-
+  
   return cons(boxString("\n// Main entry point\n"), cons(boxString("globalArgs = [\"fixmeprogname\", ...process.argv.slice(2)];\n"), cons(boxString("globalArgsCount = globalArgs.length;\n"), cons(boxString("start();\n"), null))));
 
 }
@@ -417,21 +417,21 @@ function node2LoadProgram(filename) {
 
 
 function node2ProgramTree(tree) {
-
+  
   return cons(id(node2Includes(cdr(first(tree)))), cons(id(node2Types(cdr(second(tree)))), cons(id(node2Functions(cdr(third(tree)))), cons(id(node2MainEntry()), cons(boxString("\n"), null)))));
 
 }
 
 
 function node2Program(tree) {
-
+  
   return ListToString(flatten(node2ProgramTree(tree)), 0, true, false);
 
 }
 
 
 function node2CompileString(filename) {
-
+  
   return node2Program(node2LoadProgram(filename));
 
 }
@@ -471,7 +471,7 @@ function node2Compile(filename) {
 
 
 function test0() {
-
+  
   if (equalString(stringify(boxString("hello")), stringify(boxString("hello")))) {
     printf("0.  pass string compare works\n");
 
@@ -492,28 +492,28 @@ function test0() {
 
 
 function test1() {
-
+  
   printf("1.  pass Function call and print work\n");
 
 }
 
 
 function test2_do(message) {
-
+  
   printf("2.  pass Function call with arg works: %s\n", message);
 
 }
 
 
 function test2() {
-
+  
   test2_do("This is the argument");
 
 }
 
 
 function test3_do(b, c) {
-
+  
   printf("3.1 pass Two arg call, first arg: %d\n", b);
 
   printf("3.2 pass Two arg call, second arg: %s\n", c);
@@ -522,21 +522,21 @@ function test3_do(b, c) {
 
 
 function test3() {
-
+  
   test3_do(42, "Fourty-two");
 
 }
 
 
 function test4_do() {
-
+  
   return "pass Return works";
 
 }
 
 
 function returnThis(returnMessage) {
-
+  
   return returnMessage;
 
 }
@@ -563,7 +563,7 @@ function test5() {
 
 
 function test6() {
-
+  
   if (true) {
     printf("6.  pass If statement works\n");
 
@@ -576,7 +576,7 @@ function test6() {
 
 
 function test7_do(count) {
-
+  
   count = sub(count, 1);
 
   if (greaterthan(count, 0)) {
@@ -593,7 +593,7 @@ function test7_do(count) {
 
 
 function test7() {
-
+  
   if (equal(0, test7_do(10))) {
     printf("7.  pass count works\n");
 
@@ -606,14 +606,14 @@ function test7() {
 
 
 function beer() {
-
+  
   printf("%d bottle of beer on the wall, %d bottle of beer.  Take one down, pass it round, no bottles of beer on the wall\n", 1, 1);
 
 }
 
 
 function plural(num) {
-
+  
   if (equal(num, 1)) {
     return "";
 
@@ -646,7 +646,7 @@ function beers(count) {
 
 
 function test8() {
-
+  
   if (equal(sub(sub(2, 1), sub(3, 1)), -1)) {
     printf("8.  pass Nested expressions work\n");
 
@@ -947,7 +947,7 @@ function test19() {
 
 
 function concatenateLists(oldL, newL) {
-
+  
   return reverseRec(reverseList(oldL), newL);
 
 }
@@ -1133,7 +1133,7 @@ function test27() {
 
 
 function javaFunctionArgs(tree) {
-
+  
   if (isEmpty(tree)) {
     return emptyList();
 
@@ -1164,7 +1164,7 @@ function javaFunctionArgs(tree) {
 
 
 function javaAtom(tree) {
-
+  
   if (equalString("string", boxType(tree))) {
     return cons(boxString("\""), cons(id(boxString(stringify(tree))), cons(boxString("\""), null)));
 
@@ -1229,7 +1229,7 @@ function javaExpression(tree, indent) {
 
 
 function javaRecurList(expr, indent) {
-
+  
   if (isEmpty(expr)) {
     return emptyList();
 
@@ -1248,28 +1248,28 @@ function javaRecurList(expr, indent) {
 
 
 function javaIf(node, indent, functionName) {
-
+  
   return cons(id(listNewLine(indent)), cons(boxString("if ( "), cons(id(javaExpression(second(node), 0)), cons(boxString(") {"), cons(id(javaBody(cdr(third(node)), add1(indent), functionName)), cons(id(listNewLine(indent)), cons(boxString("} else {"), cons(id(javaBody(cdr(fourth(node)), add1(indent), functionName)), cons(id(listNewLine(indent)), cons(boxString("}"), null))))))))));
 
 }
 
 
 function javaSetStruct(node, indent) {
-
+  
   return cons(id(listNewLine(indent)), cons(id(javaExpression(second(node), indent)), cons(boxString("."), cons(id(third(node)), cons(boxString(" = "), cons(id(javaExpression(fourth(node), indent)), null))))));
 
 }
 
 
 function javaSet(node, indent) {
-
+  
   return cons(id(listNewLine(indent)), cons(id(javaExpression(second(node), indent)), cons(boxString(" = "), cons(id(javaExpression(third(node), indent)), null))));
 
 }
 
 
 function javaReturn(node, indent) {
-
+  
   if (equal(listLength(node), 1)) {
     return cons(id(listNewLine(indent)), cons(boxString("return"), null));
 
@@ -1282,7 +1282,7 @@ function javaReturn(node, indent) {
 
 
 function javaStatement(node, indent, functionName) {
-
+  
   if (equalBox(boxString("set"), first(node))) {
     return cons(id(javaSet(node, indent)), cons(boxString(";\n"), null));
 
@@ -1361,7 +1361,7 @@ function javaFunction(node) {
 
 
 function javaFunctions(tree) {
-
+  
   if (isEmpty(tree)) {
     return emptyList();
 
@@ -1374,7 +1374,7 @@ function javaFunctions(tree) {
 
 
 function javaIncludes(nodes) {
-
+  
   return cons(boxString("import java.nio.charset.StandardCharsets;\n"), cons(boxString("import java.nio.file.Files;\n"), cons(boxString("import java.nio.file.Paths;\n"), cons(boxString("import java.util.HashMap;\n\n"), cons(boxString("class QuonProgram {\n"), cons(boxString("  boolean globalTrace = false;\n"), cons(boxString("  boolean globalStepTrace = false;\n"), cons(boxString("  boolean releaseMode = false;\n"), cons(boxString("  Box globalStackTrace = null;\n"), cons(boxString("  String caller = \"\";\n"), cons(boxString("  String[] globalArgs = new String[0];\n"), cons(boxString("  int globalArgsCount = 0;\n\n"), cons(boxString("  Object stderr = new Object();\n\n"), cons(boxString("  void fprintf(Object stream, String format, Object... args) {\n"), cons(boxString("    if (args.length == 0) {\n"), cons(boxString("      System.err.print(format);\n"), cons(boxString("    } else {\n"), cons(boxString("      System.err.printf(format, args);\n"), cons(boxString("    }\n"), cons(boxString("  }\n\n"), cons(boxString("  void exit(int code) {\n"), cons(boxString("    System.exit(code);\n"), cons(boxString("  }\n\n"), cons(boxString("  String readFileUnchecked(String filename) {\n"), cons(boxString("    try {\n"), cons(boxString("      return Files.readString(Paths.get(filename));\n"), cons(boxString("    } catch (Exception e) {\n"), cons(boxString("      throw new RuntimeException(\"Could not read file: \" + filename, e);\n"), cons(boxString("    }\n"), cons(boxString("  }\n\n"), cons(boxString("  void writeFileUnchecked(String filename, String data) {\n"), cons(boxString("    try {\n"), cons(boxString("      Files.write(Paths.get(filename), data.getBytes(StandardCharsets.UTF_8));\n"), cons(boxString("    } catch (Exception e) {\n"), cons(boxString("      throw new RuntimeException(\"Could not write file: \" + filename, e);\n"), cons(boxString("    }\n"), cons(boxString("  }\n"), null)))))))))))))))))))))))))))))))))))));
 
 }
@@ -1419,7 +1419,7 @@ function javaFuncMap(aSym) {
 
 
 function javaTypeDecl(l) {
-
+  
   if (greaterthan(listLength(l), 2)) {
     return cons(id(boxString(stringIndent(1))), cons(id(javaTypeMap(listLast(l))), cons(boxString(" "), cons(id(first(l)), cons(boxString(";\n"), null)))));
 
@@ -1432,7 +1432,7 @@ function javaTypeDecl(l) {
 
 
 function javaStructComponents(node) {
-
+  
   if (isEmpty(node)) {
     return emptyList();
 
@@ -1445,14 +1445,14 @@ function javaStructComponents(node) {
 
 
 function javaStruct(node) {
-
+  
   return javaStructComponents(cdr(node));
 
 }
 
 
 function javaType(node) {
-
+  
   if (isList(second(node))) {
     return cons(boxString("\nclass "), cons(id(first(node)), cons(boxString(" {\n"), cons(id(javaStruct(second(node))), cons(boxString("}\n"), null)))));
 
@@ -1465,7 +1465,7 @@ function javaType(node) {
 
 
 function javaTypes(nodes) {
-
+  
   if (isEmpty(nodes)) {
     return emptyList();
 
@@ -1478,7 +1478,7 @@ function javaTypes(nodes) {
 
 
 function javaMainEntry() {
-
+  
   return cons(boxString("\npublic static void main(String[] args) {\n"), cons(boxString("  QuonProgram program = new QuonProgram();\n"), cons(boxString("  program.globalArgs = new String[args.length + 1];\n"), cons(boxString("  program.globalArgs[0] = \"fixmeprogname\";\n"), cons(boxString("  System.arraycopy(args, 0, program.globalArgs, 1, args.length);\n"), cons(boxString("  program.globalArgsCount = program.globalArgs.length;\n"), cons(boxString("  program.start();\n"), cons(boxString("}\n"), cons(boxString("}\n"), null)))))))));
 
 }
@@ -1506,21 +1506,21 @@ function javaLoadProgram(filename) {
 
 
 function javaProgramTree(tree) {
-
+  
   return cons(id(javaIncludes(cdr(first(tree)))), cons(id(javaTypes(cdr(second(tree)))), cons(id(javaFunctions(cdr(third(tree)))), cons(id(javaMainEntry()), cons(boxString("\n"), null)))));
 
 }
 
 
 function javaProgram(tree) {
-
+  
   return ListToString(flatten(javaProgramTree(tree)), 0, true, false);
 
 }
 
 
 function javaCompileString(filename) {
-
+  
   return javaProgram(javaLoadProgram(filename));
 
 }
@@ -1560,7 +1560,7 @@ function javaCompile(filename) {
 
 
 function ansi3FunctionArgs(tree) {
-
+  
   if (isEmpty(tree)) {
     return emptyList();
 
@@ -1591,7 +1591,7 @@ function ansi3FunctionArgs(tree) {
 
 
 function ansi3Atom(tree) {
-
+  
   if (equalString("string", boxType(tree))) {
     return cons(boxString("\""), cons(id(boxString(stringify(tree))), cons(boxString("\""), null)));
 
@@ -1656,7 +1656,7 @@ function ansi3Expression(tree, indent) {
 
 
 function ansi3RecurList(expr, indent) {
-
+  
   if (isEmpty(expr)) {
     return emptyList();
 
@@ -1675,35 +1675,35 @@ function ansi3RecurList(expr, indent) {
 
 
 function ansi3If(node, indent, functionName) {
-
+  
   return cons(id(listNewLine(indent)), cons(boxString("if ( "), cons(id(ansi3Expression(second(node), 0)), cons(boxString(") {"), cons(id(ansi3Body(cdr(third(node)), add1(indent), functionName)), cons(id(listNewLine(indent)), cons(boxString("} else {"), cons(id(ansi3Body(cdr(fourth(node)), add1(indent), functionName)), cons(id(listNewLine(indent)), cons(boxString("}"), null))))))))));
 
 }
 
 
 function ansi3SetStruct(node, indent) {
-
+  
   return cons(id(listNewLine(indent)), cons(id(second(node)), cons(boxString("->"), cons(id(third(node)), cons(boxString(" = "), cons(id(ansi3Expression(fourth(node), indent)), null))))));
 
 }
 
 
 function ansi3GetStruct(node, indent) {
-
+  
   return cons(id(listNewLine(indent)), cons(id(first(node)), cons(boxString("->"), cons(id(second(node)), null))));
 
 }
 
 
 function ansi3Set(node, indent) {
-
+  
   return cons(id(listNewLine(indent)), cons(id(ansi3Expression(second(node), indent)), cons(boxString(" = "), cons(id(ansi3Expression(third(node), indent)), null))));
 
 }
 
 
 function ansi3Return(node, indent) {
-
+  
   if (equal(listLength(node), 1)) {
     return cons(id(listNewLine(indent)), cons(boxString("return;"), null));
 
@@ -1716,7 +1716,7 @@ function ansi3Return(node, indent) {
 
 
 function ansi3TraceReturn(node, indent, functionName) {
-
+  
   if (releaseMode) {
     return ansi3Return(node, indent);
 
@@ -1735,7 +1735,7 @@ function ansi3TraceReturn(node, indent, functionName) {
 
 
 function ansi3Statement(node, indent, functionName) {
-
+  
   if (equalBox(boxString("set"), first(node))) {
     return cons(id(ansi3Set(node, indent)), cons(boxString(";\n"), null));
 
@@ -1766,7 +1766,7 @@ function ansi3Statement(node, indent, functionName) {
 
 
 function ansi3StatementTrace(code, indent, functionName) {
-
+  
   if (releaseMode) {
     return emptyList();
 
@@ -1785,7 +1785,7 @@ function ansi3StatementTrace(code, indent, functionName) {
 
 
 function ansi3StepTrace(indent) {
-
+  
   if (releaseMode) {
     return emptyList();
 
@@ -1830,7 +1830,7 @@ function ansi3Declarations(decls, indent) {
 
 
 function ansi3FunctionTrace(name) {
-
+  
   if (releaseMode) {
     return emptyList();
 
@@ -1849,7 +1849,7 @@ function ansi3FunctionTrace(name) {
 
 
 function ansi3FunctionStackTrace(name) {
-
+  
   if (releaseMode) {
     return emptyList();
 
@@ -1884,7 +1884,7 @@ function ansi3Function(node) {
 
 
 function ansi3ForwardDeclaration(node) {
-
+  
   if (isNil(node)) {
     return emptyList();
 
@@ -1897,7 +1897,7 @@ function ansi3ForwardDeclaration(node) {
 
 
 function ansi3ForwardDeclarations(tree) {
-
+  
   if (isEmpty(tree)) {
     return emptyList();
 
@@ -1910,7 +1910,7 @@ function ansi3ForwardDeclarations(tree) {
 
 
 function ansi3Functions(tree) {
-
+  
   if (isEmpty(tree)) {
     return emptyList();
 
@@ -1923,14 +1923,14 @@ function ansi3Functions(tree) {
 
 
 function ansi3Includes(nodes) {
-
+  
   return cons(boxString("\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#include <unistd.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n"), cons(boxString("void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n"), null));
 
 }
 
 
 function ansi3TypeDecl(l) {
-
+  
   if (greaterthan(listLength(l), 2)) {
     return cons(id(boxString(stringIndent(1))), cons(id(second(l)), cons(boxString(" "), cons(id(ansi3TypeMap(listLast(l))), cons(boxString(" "), cons(id(first(l)), cons(boxString(";\n"), null)))))));
 
@@ -1943,7 +1943,7 @@ function ansi3TypeDecl(l) {
 
 
 function ansi3StructComponents(node) {
-
+  
   if (isEmpty(node)) {
     return emptyList();
 
@@ -1956,7 +1956,7 @@ function ansi3StructComponents(node) {
 
 
 function ansi3Struct(node) {
-
+  
   return ansi3StructComponents(cdr(node));
 
 }
@@ -2001,7 +2001,7 @@ function ansi3FuncMap(aSym) {
 
 
 function ansi3Type(node) {
-
+  
   if (isList(second(node))) {
     return cons(boxString("\ntypedef struct "), cons(id(first(node)), cons(boxString(" {\n"), cons(id(ansi3Struct(second(node))), cons(boxString("\n} "), cons(id(first(node)), cons(boxString(";\n"), null)))))));
 
@@ -2014,7 +2014,7 @@ function ansi3Type(node) {
 
 
 function ansi3Types(nodes) {
-
+  
   if (isEmpty(nodes)) {
     return emptyList();
 
@@ -2048,21 +2048,21 @@ function ansi3LoadProgram(filename) {
 
 
 function ansi3ProgramTree(tree) {
-
+  
   return cons(id(ansi3Includes(cdr(first(tree)))), cons(id(ansi3Types(cdr(second(tree)))), cons(boxString("Box* globalStackTrace = NULL;\n"), cons(boxString("\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n"), cons(id(ansi3ForwardDeclarations(cdr(third(tree)))), cons(boxString("\n\n//End forward declarations\n\n"), cons(id(ansi3Functions(cdr(third(tree)))), cons(boxString("\n"), null))))))));
 
 }
 
 
 function ansi3Program(tree) {
-
+  
   return ListToString(flatten(ansi3ProgramTree(tree)), 0, true, false);
 
 }
 
 
 function ansi3CompileString(filename) {
-
+  
   return ansi3Program(ansi3LoadProgram(filename));
 
 }
@@ -2104,70 +2104,70 @@ function ansi3Compile(filename) {
 
 
 function dollar() {
-
+  
   return character(36);
 
 }
 
 
 function atsymbol() {
-
+  
   return character(64);
 
 }
 
 
 function singleQuote() {
-
+  
   return "'";
 
 }
 
 
 function escapedSingleQuote() {
-
+  
   return "\\'";
 
 }
 
 
 function backslash() {
-
+  
   return character(92);
 
 }
 
 
 function escapedDollar() {
-
+  
   return StringListJoin(cons(boxString(backslash()), cons(boxString(dollar()), null)), "");
 
 }
 
 
 function escapedAtSign() {
-
+  
   return StringListJoin(cons(boxString(backslash()), cons(boxString(atsymbol()), null)), "");
 
 }
 
 
 function escapeSingleQuotes(s) {
-
+  
   return stringReplace(singleQuote(), escapedSingleQuote(), s);
 
 }
 
 
 function escapePerlString(s) {
-
+  
   return stringReplace(atsymbol(), escapedAtSign(), stringReplace(dollar(), escapedDollar(), s));
 
 }
 
 
 function getGlobalVariables() {
-
+  
   return cons(id(boxSymbol("stderr")), cons(id(boxSymbol("true")), cons(id(boxSymbol("false")), cons(id(boxSymbol("releaseMode")), cons(id(boxSymbol("caller")), cons(id(boxSymbol("globalTrace")), cons(id(boxSymbol("globalStepTrace")), cons(id(boxSymbol("globalStackTrace")), cons(id(boxSymbol("globalArgsCount")), cons(id(boxSymbol("globalArgs")), cons(id(boxSymbol("quonGlobalArgs")), null)))))))))));
 
 }
@@ -2189,14 +2189,14 @@ function collectVariables(args, decls) {
 
 
 function perlGlobalVariables() {
-
+  
   return cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalArgsCount;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalArgs;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("releaseMode;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalTrace;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalStepTrace;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("globalStackTrace;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("caller;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("false = 0;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("true = 1;\n"), cons(boxString("my "), cons(boxString(dollar()), cons(boxString("stderr = \\*STDERR;\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("quonGlobalArgs;\n"), null)))))))))))))))))))))))))))))))));
 
 }
 
 
 function perlMainEntry() {
-
+  
   return cons(boxString("\n# Main entry point\n"), cons(boxString(dollar()), cons(boxString("globalArgsCount = scalar("), cons(boxString(atsymbol()), cons(boxString("ARGV) + 1;\n"), cons(boxString(dollar()), cons(boxString("globalArgs = \\"), cons(boxString(atsymbol()), cons(boxString("ARGV;\n"), cons(boxString("unshift "), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("globalArgs, 'fixmeprogname' ;\n"), cons(boxString(dollar()), cons(boxString("quonGlobalArgs = [];\n"), cons(boxString("for my "), cons(boxString(dollar()), cons(boxString("arg ("), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("globalArgs) {\n"), cons(boxString("    push "), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("quonGlobalArgs, {car => "), cons(boxString(dollar()), cons(boxString("arg, cdr => undef};\n"), cons(boxString("}\n"), cons(boxString("for (my "), cons(boxString(dollar()), cons(boxString("i = scalar("), cons(boxString(atsymbol()), cons(boxString(dollar()), cons(boxString("quonGlobalArgs) - 1; "), cons(boxString(dollar()), cons(boxString("i >= 0; "), cons(boxString(dollar()), cons(boxString("i--) {\n"), cons(boxString("    "), cons(boxString(dollar()), cons(boxString("quonGlobalArgs->["), cons(boxString(dollar()), cons(boxString("i]->{cdr} = "), cons(boxString(dollar()), cons(boxString("quonGlobalArgs->["), cons(boxString(dollar()), cons(boxString("i + 1];\n"), cons(boxString("}\n"), cons(boxString("*stderr = *STDERR;\n"), cons(boxString("sub fprintf { my "), cons(boxString(dollar()), cons(boxString("f = shift; printf "), cons(boxString(dollar()), cons(boxString("f "), cons(boxString(atsymbol()), cons(boxString("_ }\n"), cons(boxString("start();\n"), null)))))))))))))))))))))))))))))))))))))))))))))))))))))))));
 
 }
@@ -2246,7 +2246,7 @@ function collectVariablesFromDecls(decls) {
 
 
 function appendVariables(vars1, vars2) {
-
+  
   if (isNil(vars2)) {
     return vars1;
 
@@ -2261,7 +2261,7 @@ function appendVariables(vars1, vars2) {
 
 
 function perlFunctionArgs(tree) {
-
+  
   if (isEmpty(tree)) {
     return emptyList();
 
@@ -2280,7 +2280,7 @@ function perlFunctionArgs(tree) {
 
 
 function perlAtom(tree, variables) {
-
+  
   if (equalString("string", boxType(tree))) {
     return cons(boxString("\""), cons(id(boxString(escapePerlString(stringify(tree)))), cons(boxString("\""), null)));
 
@@ -2345,7 +2345,7 @@ function perlExpression(tree, indent, variables) {
 
 
 function perlRecurList(expr, indent, variables) {
-
+  
   if (isEmpty(expr)) {
     return emptyList();
 
@@ -2364,21 +2364,21 @@ function perlRecurList(expr, indent, variables) {
 
 
 function perlSet(node, indent, variables) {
-
+  
   return cons(id(listNewLine(indent)), cons(id(perlFuncMap(second(node), variables)), cons(boxString(" = "), cons(id(perlExpression(third(node), indent, variables)), null))));
 
 }
 
 
 function perlSetStruct(node, indent, variables) {
-
+  
   return cons(id(listNewLine(indent)), cons(id(perlFuncMap(second(node), variables)), cons(boxString("->{"), cons(id(third(node)), cons(boxString("} = "), cons(id(perlExpression(fourth(node), indent, variables)), null))))));
 
 }
 
 
 function perlReturn(node, indent, variables) {
-
+  
   if (greaterthan(listLength(node), 1)) {
     return cons(id(listNewLine(indent)), cons(boxString("return "), cons(id(perlExpression(cadr(node), indent, variables)), null)));
 
@@ -2391,14 +2391,14 @@ function perlReturn(node, indent, variables) {
 
 
 function perlIf(node, indent, variables) {
-
+  
   return cons(id(listNewLine(indent)), cons(boxString("if ( "), cons(id(perlExpression(second(node), 0, variables)), cons(boxString(" ) {"), cons(id(perlBody(cdr(third(node)), add1(indent), variables)), cons(id(listNewLine(indent)), cons(boxString("} else {"), cons(id(perlBody(cdr(fourth(node)), add1(indent), variables)), cons(id(listNewLine(indent)), cons(boxString("}"), null))))))))));
 
 }
 
 
 function perlStatement(node, indent, variables) {
-
+  
   if (equalBox(boxString("set"), first(node))) {
     return cons(id(perlSet(node, indent, variables)), cons(boxString(";\n"), null));
 
@@ -2445,7 +2445,7 @@ function perlBody(tree, indent, variables) {
 
 
 function perlGetStruct(node, indent) {
-
+  
   return cons(id(listNewLine(indent)), cons(id(boxString(dollar())), cons(id(first(node)), cons(boxString("->{"), cons(id(second(node)), cons(boxString("}"), null))))));
 
 }
@@ -2493,7 +2493,7 @@ function perlFunction(node) {
 
 
 function perlForwardDeclaration(node) {
-
+  
   if (isNil(node)) {
     return emptyList();
 
@@ -2506,7 +2506,7 @@ function perlForwardDeclaration(node) {
 
 
 function perlForwardDeclarations(tree) {
-
+  
   if (isEmpty(tree)) {
     return emptyList();
 
@@ -2519,7 +2519,7 @@ function perlForwardDeclarations(tree) {
 
 
 function perlFunctions(tree) {
-
+  
   if (isEmpty(tree)) {
     return emptyList();
 
@@ -2532,14 +2532,14 @@ function perlFunctions(tree) {
 
 
 function perlIncludes(nodes) {
-
+  
   return cons(boxString("use strict;\n"), cons(boxString("use warnings;\n"), cons(boxString("use v5.10;\n\n"), cons(boxString("no warnings 'recursion';\n"), cons(boxString("our "), cons(boxString(dollar()), cons(boxString("^M = 10_000;\n"), null)))))));
 
 }
 
 
 function perlTypes(nodes) {
-
+  
   return emptyList();
 
 }
@@ -2611,21 +2611,21 @@ function perlLoadProgram(filename) {
 
 
 function perlProgramTree(tree) {
-
+  
   return cons(id(perlIncludes(cdr(first(tree)))), cons(id(perlTypes(cdr(second(tree)))), cons(id(perlGlobalVariables()), cons(boxString("\n# Forward declarations\n"), cons(id(perlForwardDeclarations(cdr(third(tree)))), cons(boxString("\n# End forward declarations\n"), cons(id(perlFunctions(cdr(third(tree)))), cons(id(perlMainEntry()), cons(boxString("\n"), null)))))))));
 
 }
 
 
 function perlProgram(tree) {
-
+  
   return ListToString(flatten(perlProgramTree(tree)), 0, true, false);
 
 }
 
 
 function perlCompileString(filename) {
-
+  
   return perlProgram(perlLoadProgram(filename));
 
 }
@@ -2689,7 +2689,7 @@ function readSexpr(aStr, filename) {
 
 
 function parserPanicAt(filename, token, message) {
-
+  
   if (isNil(token)) {
     printf("Parse error in %s: %s\n", filename, message);
 
@@ -2704,7 +2704,7 @@ function parserPanicAt(filename, token, message) {
 
 
 function parserPanicAtNode(filename, node, message) {
-
+  
   if (isNil(node)) {
     parserPanicAt(filename, null, message);
 
@@ -2729,7 +2729,7 @@ function parserPanicAtNode(filename, node, message) {
 
 
 function parserSymbolIs(b, name) {
-
+  
   if (isNil(b)) {
     return false;
 
@@ -2754,7 +2754,7 @@ function parserSymbolIs(b, name) {
 
 
 function parserListStartsWith(node, name) {
-
+  
   if (isNil(node)) {
     return false;
 
@@ -2819,7 +2819,7 @@ function parserValidateParens(tokens, openStack, filename) {
 
 
 function parserValidateRoot(roots, filename) {
-
+  
   if (equal(listLength(roots), 1)) {
     return;
 
@@ -2838,7 +2838,7 @@ function parserValidateRoot(roots, filename) {
 
 
 function parserValidateSection(section, name, filename) {
-
+  
   if (isNil(section)) {
     parserPanicAt(filename, null, "missing program section");
 
@@ -2863,7 +2863,7 @@ function parserValidateSection(section, name, filename) {
 
 
 function parserIsFunctionDefinition(node) {
-
+  
   if (isNil(node)) {
     return false;
 
@@ -2918,7 +2918,7 @@ function parserIsFunctionDefinition(node) {
 
 
 function parserRejectFunctionDefinitions(node, filename) {
-
+  
   if (isNil(node)) {
     return;
 
@@ -2943,7 +2943,7 @@ function parserRejectFunctionDefinitions(node, filename) {
 
 
 function parserRejectFunctionDefinitionsList(nodes, filename) {
-
+  
   if (isEmpty(nodes)) {
     return;
 
@@ -2958,7 +2958,7 @@ function parserRejectFunctionDefinitionsList(nodes, filename) {
 
 
 function parserValidateProgram(program, filename) {
-
+  
   if (isNil(program)) {
     parserPanicAt(filename, null, "empty program");
 
@@ -3029,7 +3029,7 @@ function parserValidateFunctions(functions, filename) {
 
 
 function parserValidateFunction(fn, filename) {
-
+  
   parserRejectFunctionDefinitions(third(fn), filename);
 
   parserRejectFunctionDefinitions(cdr(fourth(fn)), filename);
@@ -3040,7 +3040,7 @@ function parserValidateFunction(fn, filename) {
 
 
 function parserValidateBody(forms, filename) {
-
+  
   if (isEmpty(forms)) {
     return;
 
@@ -3055,7 +3055,7 @@ function parserValidateBody(forms, filename) {
 
 
 function parserValidateStatement(stmt, filename) {
-
+  
   if (isNil(stmt)) {
     return;
 
@@ -3160,7 +3160,7 @@ function parserValidateStatement(stmt, filename) {
 
 
 function parserValidateReturn(stmt, filename) {
-
+  
   if (greaterthan(listLength(stmt), 2)) {
     parserPanicAtNode(filename, stmt, "return takes zero or one value");
 
@@ -3179,7 +3179,7 @@ function parserValidateReturn(stmt, filename) {
 
 
 function parserValidateSet(stmt, filename) {
-
+  
   if (equal(listLength(stmt), 3)) {
     parserValidateExpression(second(stmt), filename);
 
@@ -3194,7 +3194,7 @@ function parserValidateSet(stmt, filename) {
 
 
 function parserValidateSetStruct(stmt, filename) {
-
+  
   if (equal(listLength(stmt), 4)) {
     parserValidateExpression(second(stmt), filename);
 
@@ -3211,7 +3211,7 @@ function parserValidateSetStruct(stmt, filename) {
 
 
 function parserValidateIf(stmt, filename) {
-
+  
   if (equal(listLength(stmt), 4)) {
   } else {
     parserPanicAtNode(filename, stmt, "if must contain condition, then, and else");
@@ -3228,7 +3228,7 @@ function parserValidateIf(stmt, filename) {
 
 
 function parserValidateBranch(branch, name, filename) {
-
+  
   if (parserListStartsWith(branch, name)) {
     parserValidateBody(cdr(branch), filename);
 
@@ -3241,7 +3241,7 @@ function parserValidateBranch(branch, name, filename) {
 
 
 function parserValidateExpression(expr, filename) {
-
+  
   if (isNil(expr)) {
     return;
 
@@ -3322,7 +3322,7 @@ function parserValidateExpression(expr, filename) {
 
 
 function parserValidateExpressionList(exprs, filename) {
-
+  
   if (isEmpty(exprs)) {
     return;
 
@@ -3378,21 +3378,21 @@ function loadQuon(filename) {
 
 
 function getIncludes(program) {
-
+  
   return cdr(first(program));
 
 }
 
 
 function getTypes(program) {
-
+  
   return cdr(second(program));
 
 }
 
 
 function getFunctions(program) {
-
+  
   return cdr(third(program));
 
 }
@@ -3499,7 +3499,7 @@ function buildProg(includes, types, functions) {
 
 
 function car(l) {
-
+  
   if (isNil(l)) {
     printf("Cannot call car on empty list!\n");
 
@@ -3524,7 +3524,7 @@ function car(l) {
 
 
 function cdr(l) {
-
+  
   if (isEmpty(l)) {
     printf("Attempt to cdr an empty list!!!!\n");
 
@@ -3557,140 +3557,140 @@ function cons(data, l) {
 
 
 function caar(l) {
-
+  
   return car(car(l));
 
 }
 
 
 function cadr(l) {
-
+  
   return car(cdr(l));
 
 }
 
 
 function caddr(l) {
-
+  
   return car(cdr(cdr(l)));
 
 }
 
 
 function cadddr(l) {
-
+  
   return car(cdr(cdr(cdr(l))));
 
 }
 
 
 function caddddr(l) {
-
+  
   return car(cdr(cdr(cdr(cdr(l)))));
 
 }
 
 
 function cddr(l) {
-
+  
   return cdr(cdr(l));
 
 }
 
 
 function first(l) {
-
+  
   return car(l);
 
 }
 
 
 function second(l) {
-
+  
   return cadr(l);
 
 }
 
 
 function third(l) {
-
+  
   return caddr(l);
 
 }
 
 
 function fourth(l) {
-
+  
   return cadddr(l);
 
 }
 
 
 function fifth(l) {
-
+  
   return caddddr(l);
 
 }
 
 
 function sixth(l) {
-
+  
   return car(cdr(cdr(cdr(cdr(cdr(l))))));
 
 }
 
 
 function seventh(l) {
-
+  
   return car(cdr(cdr(cdr(cdr(cdr(cdr(l)))))));
 
 }
 
 
 function eighth(l) {
-
+  
   return car(cdr(cdr(cdr(cdr(cdr(cdr(cdr(l))))))));
 
 }
 
 
 function ninth(l) {
-
+  
   return car(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(l)))))))));
 
 }
 
 
 function tenth(l) {
-
+  
   return car(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(l))))))))));
 
 }
 
 
 function eleventh(l) {
-
+  
   return car(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(l)))))))))));
 
 }
 
 
 function twelfth(l) {
-
+  
   return car(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(l))))))))))));
 
 }
 
 
 function rest(l) {
-
+  
   return cdr(l);
 
 }
 
 
 function isList(b) {
-
+  
   if (isNil(b)) {
     return true;
 
@@ -3703,14 +3703,14 @@ function isList(b) {
 
 
 function emptyList() {
-
+  
   return null;
 
 }
 
 
 function isEmpty(b) {
-
+  
   if (isNil(b)) {
     return true;
 
@@ -3723,7 +3723,7 @@ function isEmpty(b) {
 
 
 function listLength(l) {
-
+  
   if (isEmpty(l)) {
     return 0;
 
@@ -3736,7 +3736,7 @@ function listLength(l) {
 
 
 function alistCons(key, value, alist) {
-
+  
   return cons(cons(key, value), alist);
 
 }
@@ -3783,7 +3783,7 @@ function assoc(searchTerm, l) {
 
 
 function chooseBox(aType) {
-
+  
   if (equalString("string", aType)) {
     return "boxString";
 
@@ -3822,7 +3822,7 @@ function chooseBox(aType) {
 
 
 function mlistLiteral(b) {
-
+  
   if (isNil(b)) {
     return null;
 
@@ -3961,7 +3961,7 @@ function isInt(val) {
 
 
 function id(b) {
-
+  
   return b;
 
 }
@@ -4079,7 +4079,7 @@ function doSymbolList(l) {
 
 
 function doBoxList(l) {
-
+  
   if (isNil(l)) {
     return cons(boxSymbol("nil"), null);
 
@@ -4092,7 +4092,7 @@ function doBoxList(l) {
 
 
 function concatLists(seq1, seq2) {
-
+  
   if (isNil(seq1)) {
     return seq2;
 
@@ -4105,7 +4105,7 @@ function concatLists(seq1, seq2) {
 
 
 function alistKeys(alist) {
-
+  
   if (isNil(alist)) {
     return null;
 
@@ -4118,7 +4118,7 @@ function alistKeys(alist) {
 
 
 function display(l) {
-
+  
   if (isEmpty(l)) {
     printf("nil ");
 
@@ -4251,7 +4251,7 @@ function StringListJoin(l, sep) {
 
 
 function ListToBoxString(l, indent) {
-
+  
   return boxString(ListToString(l, indent, true, false));
 
 }
@@ -4292,7 +4292,7 @@ function ListToString(l, indent, first, withNewLines) {
 
 
 function listReverse(l) {
-
+  
   if (isNil(l)) {
     return null;
 
@@ -4305,7 +4305,7 @@ function listReverse(l) {
 
 
 function inList(item, l) {
-
+  
   if (isNil(l)) {
     return false;
 
@@ -4324,7 +4324,7 @@ function inList(item, l) {
 
 
 function equalList(a, b) {
-
+  
   if (isNil(a)) {
     if (isNil(b)) {
       return true;
@@ -4361,7 +4361,7 @@ function equalList(a, b) {
 
 
 function reverseRec(oldL, newL) {
-
+  
   if (isEmpty(oldL)) {
     return newL;
 
@@ -4374,14 +4374,14 @@ function reverseRec(oldL, newL) {
 
 
 function reverseList(l) {
-
+  
   return reverseRec(l, null);
 
 }
 
 
 function flatten(tree) {
-
+  
   if (isEmpty(tree)) {
     return emptyList();
 
@@ -4400,7 +4400,7 @@ function flatten(tree) {
 
 
 function macrowalk(l) {
-
+  
   if (isEmpty(l)) {
     return null;
 
@@ -4629,7 +4629,7 @@ function readComment(prog, start, len) {
 
 
 function isWhiteSpace(s) {
-
+  
   if (equalString(" ", s)) {
     return true;
 
@@ -4660,7 +4660,7 @@ function isWhiteSpace(s) {
 
 
 function isLineBreak(s) {
-
+  
   if (equalString("\n", s)) {
     return true;
 
@@ -4679,7 +4679,7 @@ function isLineBreak(s) {
 
 
 function incForNewLine(token, val) {
-
+  
   if (equalString("\n", stringify(token))) {
     return add1(val);
 
@@ -4692,7 +4692,7 @@ function incForNewLine(token, val) {
 
 
 function annotateReadPosition(filename, linecount, column, start, newBox) {
-
+  
   return setTag(boxString("filename"), boxString(filename), setTag(boxString("column"), boxInt(column), setTag(boxString("line"), boxInt(linecount), setTag(boxString("totalCharPos"), boxInt(start), newBox))));
 
 }
@@ -4753,7 +4753,7 @@ function scan(prog, start, len, linecount, column, filename) {
 
 
 function isOpenBrace(b) {
-
+  
   if (equalBox(boxSymbol(openBrace()), b)) {
     return true;
 
@@ -4766,7 +4766,7 @@ function isOpenBrace(b) {
 
 
 function isCloseBrace(b) {
-
+  
   if (equalBox(boxSymbol(closeBrace()), b)) {
     return true;
 
@@ -4807,28 +4807,28 @@ function skipList(l) {
 
 
 function add(a, b) {
-
+  
   return sub(a, sub(0, b));
 
 }
 
 
 function addf(a, b) {
-
+  
   return subf(a, subf(0, b));
 
 }
 
 
 function sub1(a) {
-
+  
   return sub(a, 1);
 
 }
 
 
 function add1(a) {
-
+  
   return add(a, 1);
 
 }
@@ -4867,7 +4867,7 @@ function clone(b) {
 
 
 function tern(cond, tr, fal) {
-
+  
   if (cond) {
     return tr;
 
@@ -4880,7 +4880,7 @@ function tern(cond, tr, fal) {
 
 
 function ternString(cond, tr, fal) {
-
+  
   if (cond) {
     return tr;
 
@@ -4893,7 +4893,7 @@ function ternString(cond, tr, fal) {
 
 
 function ternList(cond, tr, fal) {
-
+  
   if (cond) {
     return tr;
 
@@ -4920,21 +4920,21 @@ function newVoid() {
 
 
 function stackDump() {
-
+  
   printf("");
 
 }
 
 
 function nop() {
-
+  
   printf("");
 
 }
 
 
 function equalBox(a, b) {
-
+  
   if (isList(b)) {
     return false;
 
@@ -4977,21 +4977,21 @@ function equalBox(a, b) {
 
 
 function openBrace() {
-
+  
   return "(";
 
 }
 
 
 function closeBrace() {
-
+  
   return ")";
 
 }
 
 
 function boxType(b) {
-
+  
   return b.typ;
 
 }
@@ -5024,7 +5024,7 @@ function makeBox() {
 
 
 function makePair() {
-
+  
   return makeBox();
 
 }
@@ -5087,7 +5087,7 @@ function boxInt(val) {
 
 
 function assertType(atype, abox, line, file) {
-
+  
   if (isNil(abox)) {
     if (equalString(atype, "nil")) {
       return;
@@ -5122,7 +5122,7 @@ function assertType(atype, abox, line, file) {
 
 
 function unBoxString(b) {
-
+  
   assertType("string", b, 177, "q/base.qon");
 
   return b.str;
@@ -5131,28 +5131,28 @@ function unBoxString(b) {
 
 
 function unBoxSymbol(b) {
-
+  
   return b.str;
 
 }
 
 
 function unBoxBool(b) {
-
+  
   return b.boo;
 
 }
 
 
 function unBoxInt(b) {
-
+  
   return b.i;
 
 }
 
 
 function stringify_rec(b) {
-
+  
   if (isNil(b)) {
     return "";
 
@@ -5165,7 +5165,7 @@ function stringify_rec(b) {
 
 
 function stringify(b) {
-
+  
   if (isNil(b)) {
     return "()";
 
@@ -5214,7 +5214,7 @@ function stringify(b) {
 
 
 function hasTag(aBox, key) {
-
+  
   if (isNil(aBox)) {
     return false;
 
@@ -5227,7 +5227,7 @@ function hasTag(aBox, key) {
 
 
 function getTag(aBox, key) {
-
+  
   if (false) {
     printf("Getting %s from: ", stringify(key));
 
@@ -5246,7 +5246,7 @@ function getTag(aBox, key) {
 
 
 function getTagFail(aBox, key, onFail) {
-
+  
   if (hasTag(aBox, key)) {
     return getTag(aBox, key);
 
@@ -5259,7 +5259,7 @@ function getTagFail(aBox, key, onFail) {
 
 
 function assocExists(key, aBox) {
-
+  
   if (isNil(aBox)) {
     return false;
 
@@ -5272,7 +5272,7 @@ function assocExists(key, aBox) {
 
 
 function assocFail(key, aBox, onFail) {
-
+  
   if (assocExists(key, aBox)) {
     return assoc(key, aBox);
 
@@ -5285,7 +5285,7 @@ function assocFail(key, aBox, onFail) {
 
 
 function assocPanic(key, aBox, onFail) {
-
+  
   if (assocExists(key, aBox)) {
     return assoc(key, aBox);
 
@@ -5302,7 +5302,7 @@ function assocPanic(key, aBox, onFail) {
 
 
 function setTag(key, val, aStruct) {
-
+  
   aStruct.tag = alistCons(key, val, aStruct.tag);
 
   return aStruct;
@@ -5311,7 +5311,7 @@ function setTag(key, val, aStruct) {
 
 
 function locPanic(file, line, message) {
-
+  
   printf("%s %s:%s\n", file, line, message);
 
   panic(message);
@@ -5320,14 +5320,14 @@ function locPanic(file, line, message) {
 
 
 function truthy(aVal) {
-
+  
   return isNotFalse(aVal);
 
 }
 
 
 function isNotFalse(aVal) {
-
+  
   if (equalString(boxType(aVal), "bool")) {
     if (unBoxBool(aVal)) {
       return true;
@@ -5346,14 +5346,14 @@ function isNotFalse(aVal) {
 
 
 function toStr(thing) {
-
+  
   return boxString(stringify(thing));
 
 }
 
 
 function listLast(alist) {
-
+  
   if (isEmpty(cdr(alist))) {
     return car(alist);
 
@@ -5366,7 +5366,7 @@ function listLast(alist) {
 
 
 function newLine(indent) {
-
+  
   printf("\n");
 
   printIndent(indent);
@@ -5375,7 +5375,7 @@ function newLine(indent) {
 
 
 function printIndent(ii) {
-
+  
   if (greaterthan(ii, 0)) {
     printf("  ");
 
@@ -5390,7 +5390,7 @@ function printIndent(ii) {
 
 
 function stringIndent(ii) {
-
+  
   if (greaterthan(ii, 0)) {
     return stringConcatenate("  ", stringIndent(sub1(ii)));
 
@@ -5403,21 +5403,21 @@ function stringIndent(ii) {
 
 
 function listIndent(ii) {
-
+  
   return cons(id(boxString(stringIndent(ii))), null);
 
 }
 
 
 function listNewLine(ii) {
-
+  
   return cons(id(boxString(stringConcatenate("\n", stringIndent(ii)))), null);
 
 }
 
 
 function argList(count, pos, args) {
-
+  
   if (greaterthan(count, pos)) {
     return cons(boxString(getStringArray(pos, args)), argList(count, add1(pos), args));
 
@@ -5430,35 +5430,35 @@ function argList(count, pos, args) {
 
 
 function tron() {
-
+  
   globalTrace = true;
 
 }
 
 
 function troff() {
-
+  
   globalTrace = false;
 
 }
 
 
 function stron() {
-
+  
   globalStepTrace = true;
 
 }
 
 
 function stroff() {
-
+  
   globalStepTrace = false;
 
 }
 
 
 function StackTraceMove(direction, filename, fname, line) {
-
+  
   if (equalString(direction, "in")) {
     globalStackTrace = cons(cons(boxString(filename), cons(boxString(line), cons(boxString(fname), null))), globalStackTrace);
 
@@ -5471,7 +5471,7 @@ function StackTraceMove(direction, filename, fname, line) {
 
 
 function StackTracePrint() {
-
+  
   printf("Stack trace:\n");
 
   if (isNil(globalStackTrace)) {
@@ -5512,21 +5512,21 @@ function StackTracePrintHelper(stack) {
 
 
 function NoStackTrace_list() {
-
+  
   return cons(boxString("StackTraceMove"), cons(boxString("StackTracePrint"), cons(boxString("StackTracePrintHelper"), cons(boxString("NoStackTrace_list"), cons(boxString("car"), cons(boxString("cdr"), cons(boxString("cons"), cons(boxString("set"), cons(boxString("boxString"), cons(boxString("makePair"), cons(boxString("set-struct"), cons(boxString("display"), cons(boxString("list"), cons(boxString("assertType"), cons(boxString("isEmpty"), cons(boxString("isNil"), cons(boxString("get-struct"), cons(boxString("equalString"), cons(boxString("binop"), cons(boxString("strcmp"), cons(boxString("main"), cons(boxString("makeBox"), cons(boxString("string_length"), cons(boxString("boxType"), cons(boxString("displayList"), cons(boxString("newLine"), cons(boxString("panic"), null)))))))))))))))))))))))))));
 
 }
 
 
 function NoTrace_list() {
-
+  
   return cons(boxString("StackTraceMove"), cons(boxString("StackTracePrint"), cons(boxString("StackTracePrintHelper"), cons(boxString("NoStackTrace_list"), cons(boxString("car"), cons(boxString("cdr"), cons(boxString("cons"), cons(boxString("set"), cons(boxString("boxString"), cons(boxString("makePair"), cons(boxString("set-struct"), cons(boxString("display"), cons(boxString("list"), cons(boxString("assertType"), cons(boxString("isEmpty"), cons(boxString("isNil"), cons(boxString("get-struct"), cons(boxString("equalString"), cons(boxString("binop"), cons(boxString("strcmp"), cons(boxString("main"), cons(boxString("makeBox"), cons(boxString("string_length"), cons(boxString("boxType"), cons(boxString("displayList"), cons(boxString("newLine"), cons(boxString("panic"), cons(boxString("boxString"), cons(boxString("boxSymbol"), cons(boxString("boxType"), cons(boxString("equalString"), cons(boxString("unBoxSymbol"), cons(boxString("isList"), cons(boxString("makeBox"), cons(boxString("equalBox"), cons(boxString("sub"), cons(boxString("sub1"), cons(boxString("stringify"), cons(boxString("add"), cons(boxString("greaterthan"), null))))))))))))))))))))))))))))))))))))))));
 
 }
 
 
 function indexOfHelper(haystack, needle, start, current) {
-
+  
   if (greaterthan(add(current, string_length(needle)), string_length(haystack))) {
     return -1;
 
@@ -5545,7 +5545,7 @@ function indexOfHelper(haystack, needle, start, current) {
 
 
 function indexOf(haystack, needle, start) {
-
+  
   if (equal(string_length(needle), 0)) {
     return start;
 
@@ -5618,7 +5618,7 @@ function stringContainsHelper(haystack, needle, startIndex) {
 
 
 function stringTrim(s) {
-
+  
   if (equal(string_length(s), 0)) {
     return "";
 
@@ -5668,189 +5668,189 @@ function stringSplit(s, delimiter) {
 
 
 function isNil(a) {
-
+  
   return a == null;
 
 }
 
 
 function getEnv(key) {
-
+  
   return process.env[key];
 
 }
 
 
 function panic(s) {
-
+  
   throw new Error(s);
 
 }
 
 
 function exit(status) {
-
+  
   process.exit(status);
 
 }
 
 
 function sub(a, b) {
-
+  
   return (a - b);
 
 }
 
 
 function mult(a, b) {
-
+  
   return (a * b);
 
 }
 
 
 function greaterthan(a, b) {
-
+  
   return (a > b);
 
 }
 
 
 function subf(a, b) {
-
+  
   return (a - b);
 
 }
 
 
 function multf(a, b) {
-
+  
   return (a * b);
 
 }
 
 
 function greaterthanf(a, b) {
-
+  
   return (a > b);
 
 }
 
 
 function equal(a, b) {
-
+  
   return (a == b);
 
 }
 
 
 function equalString(a, b) {
-
+  
   return (a == b);
 
 }
 
 
 function string_length(s) {
-
+  
   return s.length;
 
 }
 
 
 function setSubString(target, start, source) {
-
+  
   return target.substring(0, start) + source + target.substring(start + 1);
 
 }
 
 
 function sub_string(s, start, length) {
-
+  
   return s.substring(start, start + length);
 
 }
 
 
 function stringConcatenate(a, b) {
-
+  
   return (a + b);
 
 }
 
 
 function intToString(a) {
-
+  
   return String(a);
 
 }
 
 
 function read_file(filename) {
-
+  
   return fs.readFileSync(filename, 'utf8');
 
 }
 
 
 function write_file(filename, data) {
-
+  
   fs.writeFileSync(filename, data);
 
 }
 
 
 function getStringArray(index, strs) {
-
+  
   return strs[index];
 
 }
 
 
 function programArgs() {
-
+  
   return globalArgs;
 
 }
 
 
 function programArgsCount() {
-
+  
   return globalArgsCount;
 
 }
 
 
 function character(num) {
-
+  
   return String.fromCharCode(num);
 
 }
 
 
 function displays(s) {
-
+  
   printf("%s", s);
 
 }
 
 
 function remainder(a, b) {
-
+  
   return (a % b);
 
 }
 
 
 function or(a, b) {
-
+  
   return (a || b);
 
 }
 
 
 function max(a, b) {
-
+  
   if (greaterthan(a, b)) {
     return a;
 
@@ -5863,7 +5863,7 @@ function max(a, b) {
 
 
 function min(a, b) {
-
+  
   if (greaterthan(a, b)) {
     return b;
 
@@ -5876,50 +5876,106 @@ function min(a, b) {
 
 
 function makeHash() {
-
+  
   return {};
 
 }
 
 
 function setHash(hash, key, value) {
-
+  
   hash[key] = value;
 
 }
 
 
 function getHash(hash, key) {
-
+  
   return hash[key];
 
 }
 
 
 function inHash(hash, key) {
-
+  
   return Object.prototype.hasOwnProperty.call(hash, key);
 
 }
 
 
 function makeArray(length) {
-
+  
   return new Array(length);
 
 }
 
 
 function setArray(array, index, value) {
-
+  
   array[index] = value;
 
 }
 
 
 function getArray(array, index) {
-
+  
   return array[index];
+
+}
+
+
+function readString(prog, start, len) {
+  
+  return (() => { let currentLen = len; while (true) { const token = sub_string(prog, sub1(add(start, currentLen)), 1); if (token === String.fromCharCode(34)) { return sub_string(prog, start, sub1(currentLen)); } if (token === String.fromCharCode(92)) { currentLen = add(2, currentLen); } else { currentLen = add1(currentLen); } } })();
+
+}
+
+
+function readComment(prog, start, len) {
+  
+  return (() => { let currentLen = len; while (true) { if (greaterthan(add(start, currentLen), string_length(prog))) { return ''; } const token = sub_string(prog, sub1(add(start, currentLen)), 1); if (isLineBreak(token)) { return sub_string(prog, start, sub1(currentLen)); } currentLen = add1(currentLen); } })();
+
+}
+
+
+function scan(prog, start, len, linecount, column, filename) {
+  
+  return (() => { const tokens = []; while (greaterthan(string_length(prog), sub1(add(start, len)))) { const token = boxSymbol(sub_string(prog, sub1(add(start, len)), 1)); token.tag = alistCons(boxString('totalCharPos'), boxInt(start), null); if (isOpenBrace(token)) { tokens.push(finish_token(prog, start, sub1(len), linecount, column, filename)); tokens.push(annotateReadPosition(filename, linecount, column, start, boxSymbol(openBrace()))); start = add1(start); len = 1; column = add1(column); } else if (isCloseBrace(token)) { tokens.push(finish_token(prog, start, sub1(len), linecount, column, filename)); tokens.push(annotateReadPosition(filename, linecount, column, start, boxSymbol(closeBrace()))); start = add(start, len); len = 1; column = add1(column); } else if (isWhiteSpace(stringify(token))) { tokens.push(finish_token(prog, start, sub1(len), linecount, column, filename)); start = add(start, len); len = 1; linecount = incForNewLine(token, linecount); column = 0; } else if (equalBox(boxSymbol(';'), token)) { start = add(start, add1(add1(string_length(readComment(prog, add1(start), len))))); len = 1; linecount = add1(linecount); column = 0; } else if (equalBox(boxSymbol(String.fromCharCode(34)), token)) { const newString = readString(prog, add1(start), len); tokens.push(annotateReadPosition(filename, linecount, column, start, boxString(newString))); start = add(start, add1(add1(string_length(newString)))); len = 1; column = add1(column); } else { len = sub(len, -1); column = add1(column); } } let out = null; for (let i = tokens.length - 1; i >= 0; i--) { out = cons(tokens[i], out); } return out; })();
+
+}
+
+
+function filterVoid(l) {
+  
+  return (() => { const tokens = []; for (let p = l; p !== null; p = p.cdr) { const token = p.car; if (!equalString('void', boxType(token))) { tokens.push(token); } } let out = null; for (let i = tokens.length - 1; i >= 0; i--) { out = cons(tokens[i], out); } return out; })();
+
+}
+
+
+function filterTokens(l) {
+  
+  return (() => { const tokens = []; for (let p = l; p !== null; p = p.cdr) { const token = p.car; if (equalString(boxType(token), 'symbol')) { if (equalString('__LINE__', stringify(token))) { tokens.push(getTagFail(token, boxString('line'), boxInt(-1))); } else if (equalString('__COLUMN__', stringify(token))) { tokens.push(getTagFail(token, boxString('column'), boxInt(-1))); } else if (equalString('__FILE__', stringify(token))) { tokens.push(getTagFail(token, boxString('filename'), boxString('Unknown file'))); } else { tokens.push(token); } } else { tokens.push(token); } } let out = null; for (let i = tokens.length - 1; i >= 0; i--) { out = cons(tokens[i], out); } return out; })();
+
+}
+
+
+function concatLists(seq1, seq2) {
+  
+  return (() => { const values = []; for (let p = seq1; p !== null; p = p.cdr) { values.push(p.car); } let out = seq2; for (let i = values.length - 1; i >= 0; i--) { out = cons(values[i], out); } return out; })();
+
+}
+
+
+function flatten(tree) {
+  
+  return (() => { let out = null; const stack = [tree]; while (stack.length > 0) { const item = stack.pop(); if (item === null) { continue; } if (isList(item)) { stack.push(item.cdr); stack.push(item.car); } else { out = cons(item, out); } } let rev = null; for (let p = out; p !== null; p = p.cdr) { rev = cons(p.car, rev); } return rev; })();
+
+}
+
+
+function ListToString(l, indent, first, withNewLines) {
+  
+  return (() => { let out = ''; const frames = [{ value: l, indent: indent, first: first, withNewLines: withNewLines }]; while (frames.length > 0) { const frame = frames.pop(); if (frame.text !== undefined) { out += frame.text; continue; } const value = frame.value; if (value === null) { continue; } if (isList(value)) { const val = value.car; if (isList(val)) { frames.push({ value: value.cdr, indent: frame.indent, first: false, withNewLines: frame.withNewLines }); frames.push({ text: ' ' }); frames.push({ text: closeBrace() }); frames.push({ value: val, indent: add1(frame.indent), first: true, withNewLines: frame.withNewLines }); frames.push({ text: ' ' }); frames.push({ text: openBrace() }); frames.push({ text: frame.withNewLines ? String.fromCharCode(10) : stringIndent(frame.indent) }); } else { frames.push({ value: value.cdr, indent: frame.indent, first: false, withNewLines: frame.withNewLines }); frames.push({ text: stringify(val) }); } } else { out += stringify(value); } } return out; })();
 
 }
 
