@@ -121,7 +121,7 @@
          (set (passthrough "array[index]") value)
 ))
 
-(char* read_file (char* filename) (declare (char* buffer nil) (long length 0) (FILE* f nil))
+(box read_file (char* filename) (declare (char* buffer nil) (long length 0) (FILE* f nil))
     	(body
          (set f (fopen filename "rb"))
          (if (ansi3IsNil f)
@@ -138,7 +138,7 @@
               (fclose f)
               ))
              
-         (return buffer)
+         (return (boxString buffer))
 ))
 
 (void write_file (char* filename char* data)   (declare (char* buffer nil) (long length 0) (FILE* f nil))

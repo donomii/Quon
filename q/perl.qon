@@ -388,7 +388,7 @@
    (body
     (set tree (loadQuon filename))
     (set tree (insertInclude tree "q/shims/perl.qon"))
-    (set tree (loadIncludes tree))
+    (set tree (loadIncludes tree nil))
     (set tree (macrowalk tree))
     (set replace (symbolList "fprintf" "stderr"))
     (set tree (macrolist tree (stringConcatenate "q" "log") replace))
@@ -422,7 +422,7 @@
      (qlog "Adding shim functions\n")
      (set tree (insertInclude tree "q/shims/perl.qon"))
      (qlog "Loading includes\n")
-     (set tree (loadIncludes tree))
+     (set tree (loadIncludes tree nil))
      (qlog "Walking tree\n")
      (set tree (macrowalk tree))
      (qlog "Replacing q log\n")

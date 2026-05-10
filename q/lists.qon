@@ -174,33 +174,66 @@
     )
  (return ret))) ))))
 
- (bool isInt (string val) (declare 
- (string firstLetter (sub-string val 0 1)))
+ (bool isDigit (string val) (declare)
   (body
-  ;(printf "isInt: %s\n" firstLetter)
-  (if (equalString "-" firstLetter)
-  (then (return true))
-  (else (if (equalString "0" firstLetter)
-  (then (return true))
-  (else (if (equalString "1" firstLetter)
-  (then (return true))
-  (else (if (equalString "2" firstLetter)
-  (then (return true))
-  (else (if (equalString "3" firstLetter)
-  (then (return true))
-  (else (if (equalString "4" firstLetter)
-  (then (return true))
-  (else (if (equalString "5" firstLetter)
-  (then (return true))
-  (else (if (equalString "6" firstLetter)
-  (then (return true))
-  (else (if (equalString "7" firstLetter)
-  (then (return true))
-  (else (if (equalString "8" firstLetter)
-  (then (return true))
-  (else (if (equalString "9" firstLetter)
-  (then (return true))
-  (else (return false)))))))))))))))))))))))))
+   (if (equal (string-length val) 1)
+     (then (return (stringContains "0123456789" val)))
+     (else (return false)))))
+
+ (bool isUnsignedIntFrom (string val int pos) (declare (int len 0))
+  (body
+   (set len (string-length val))
+   (if (greaterthan (add1 pos) len)
+     (then (return true))
+     (else
+      (if (isDigit (sub-string val pos 1))
+        (then (return (isUnsignedIntFrom val (add1 pos))))
+        (else (return false)))))))
+
+ (bool isInt (string val) (declare (int len 0) (string firstLetter ""))
+  (body
+   (set len (string-length val))
+   (if (equal len 0)
+     (then (return false))
+     (else))
+   (set firstLetter (sub-string val 0 1))
+   (if (equalString "-" firstLetter)
+     (then
+      (if (equal len 1)
+        (then (return false))
+        (else (return (isUnsignedIntFrom val 1)))))
+     (else (return (isUnsignedIntFrom val 0))))))
+
+ (bool isFloatFrom (string val int pos bool seenDot bool seenDigit bool digitAfterDot) (declare (int len 0) (string ch ""))
+  (body
+   (set len (string-length val))
+   (if (greaterthan (add1 pos) len)
+     (then (return (andBool seenDot (andBool seenDigit digitAfterDot))))
+     (else))
+   (set ch (sub-string val pos 1))
+   (if (isDigit ch)
+     (then (return (isFloatFrom val (add1 pos) seenDot true (orBool digitAfterDot seenDot))))
+     (else
+      (if (equalString "." ch)
+        (then
+         (if seenDot
+           (then (return false))
+           (else (return (isFloatFrom val (add1 pos) true seenDigit false)))))
+        (else (return false)))))))
+
+ (bool isFloat (string val) (declare (int len 0) (string firstLetter ""))
+  (body
+   (set len (string-length val))
+   (if (equal len 0)
+     (then (return false))
+     (else))
+   (set firstLetter (sub-string val 0 1))
+   (if (equalString "-" firstLetter)
+     (then
+      (if (equal len 1)
+        (then (return false))
+        (else (return (isFloatFrom val 1 false false false)))))
+     (else (return (isFloatFrom val 0 false false false))))))
 
 (box id (box b) (declare) (body (return b)))
 
@@ -218,10 +251,10 @@
 	(then (return "boxBool"))
   (else (if (equalString "false" val)
 	(then (return "boxBool"))
+	(else (if (isFloat val)
+	(then (return "boxFloat"))
 	(else (if (isInt val)
 	(then (return "boxInt"))
-	(else (if (isInt val)  ;FIXME
-	(then (return "boxFloat"))
 	(else (return "id")))))))))))))))
 	
 	

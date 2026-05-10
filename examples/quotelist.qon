@@ -1,4 +1,4 @@
-((includes "q/base.qon" "q/lists.qon" "q/macros.qon" "q/boolean.qon" )
+((includes q/base.qon q/lists.qon q/macros.qon q/boolean.qon)
 (types)
  (functions
 

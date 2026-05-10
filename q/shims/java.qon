@@ -38,6 +38,10 @@
   (body
     (return (binop > a b))))
 
+(bool equalf (float a float b) (declare)
+  (body
+    (return (binop == a b))))
+
 (bool equal (int a int b) (declare)
   (body
     (return (binop == a b))))
@@ -66,9 +70,13 @@
   (body
     (return (passthrough "Integer.toString(a)"))))
 
-(string read_file (string filename) (declare)
+(string floatToString (float a) (declare)
   (body
-    (return (passthrough "readFileUnchecked(filename)"))))
+    (return (passthrough "Double.toString(a)"))))
+
+(box read_file (string filename) (declare)
+  (body
+    (return (passthrough "readFileBox(filename)"))))
 
 (void write_file (string filename string data) (declare)
   (body

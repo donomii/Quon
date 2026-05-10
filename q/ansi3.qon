@@ -421,7 +421,7 @@
    (body
     (set tree (loadQuon filename))
     (set tree (buildProg (cons (boxString "q/shims/ansi3.qon") (getIncludes tree)) (getTypes tree) (getFunctions tree)))
-    (set tree (loadIncludes tree))
+    (set tree (loadIncludes tree nil))
     (set tree (macrowalk tree))
     (set replace (symbolList "fprintf" "stderr"))
     (set tree (macrolist tree (stringConcatenate "q" "log") replace))
@@ -455,7 +455,7 @@
     (qlog "Loading shim ansi3\n")
     (set tree (buildProg (cons (boxString "q/shims/ansi3.qon") (getIncludes tree)) (getTypes tree) (getFunctions tree)))
     (qlog "Loading all includes\n")
-    (set tree (loadIncludes tree))
+    (set tree (loadIncludes tree nil))
     (qlog "Applying macros\n")
     (set tree (macrowalk tree))
     (set replace (symbolList "fprintf" "stderr"))

@@ -213,7 +213,6 @@ sub insertInclude;
 sub stringInList;
 sub appendMissingIncludes;
 sub loadIncludes;
-sub loadIncludesSeen;
 sub buildProg;
 sub car;
 sub cdr;
@@ -246,7 +245,11 @@ sub assoc;
 sub chooseBox;
 sub mlistLiteral;
 sub doMultiList;
+sub isDigit;
+sub isUnsignedIntFrom;
 sub isInt;
+sub isFloatFrom;
+sub isFloat;
 sub id;
 sub chooseBoxInterp;
 sub doInterpolatedList;
@@ -303,11 +306,13 @@ sub boxString;
 sub boxSymbol;
 sub boxBool;
 sub boxInt;
+sub boxFloat;
 sub assertType;
 sub unBoxString;
 sub unBoxSymbol;
 sub unBoxBool;
 sub unBoxInt;
+sub unBoxFloat;
 sub stringify_rec;
 sub stringify;
 sub hasTag;
@@ -354,6 +359,7 @@ sub greaterthan;
 sub subf;
 sub multf;
 sub greaterthanf;
+sub equalf;
 sub equal;
 sub equalString;
 sub string_length;
@@ -361,6 +367,7 @@ sub setSubString;
 sub sub_string;
 sub stringConcatenate;
 sub intToString;
+sub floatToString;
 sub read_file;
 sub write_file;
 sub getStringArray;
@@ -821,7 +828,7 @@ my $replace = undef;
 
   $tree = insertInclude($tree, "q/shims/node2.qon");
 
-  $tree = loadIncludes($tree);
+  $tree = loadIncludes($tree, undef);
 
   $tree = macrowalk($tree);
 
@@ -881,7 +888,7 @@ my $replace = undef;
 
   fprintf($stderr, "Loading all includes\n");
 
-  $tree = loadIncludes($tree);
+  $tree = loadIncludes($tree, undef);
 
   fprintf($stderr, "Applying macros\n");
 
@@ -1305,28 +1312,41 @@ sub test12 {
 sub test13 {
   my () = @_;
   my $testString = "Hello from the filesystem!";
+my $contentsBox = undef;
 my $contents = "";
 
   write_file("test.txt", $testString);
 
-  $contents = read_file("test.txt");
+  $contentsBox = read_file("test.txt");
 
-  if ( equalString($testString, $contents) ) {
-    printf("13. pass Read and write files\n");
-
-  } else {
+  if ( isNil($contentsBox) ) {
     printf("13. fail Read and write files\n");
 
     printf("Expected: %s\n", $testString);
 
-    printf("Got: %s\n", $contents);
+    printf("Got: nil\n");
+
+  } else {
+    $contents = unBoxString($contentsBox);
+
+    if ( equalString($testString, $contents) ) {
+      printf("13. pass Read and write files\n");
+
+    } else {
+      printf("13. fail Read and write files\n");
+
+      printf("Expected: %s\n", $testString);
+
+      printf("Got: %s\n", $contents);
+
+    };
 
   };
 
 }
 
 
-# Function test15 from line 204
+# Function test15 from line 212
 
 sub test15 {
   my () = @_;
@@ -1347,7 +1367,7 @@ my $c = "";
 }
 
 
-# Function test16 from line 212
+# Function test16 from line 220
 
 sub test16 {
   my () = @_;
@@ -1387,7 +1407,7 @@ my $assocCell3 = undef;
 }
 
 
-# Function test17 from line 236
+# Function test17 from line 244
 
 sub test17 {
   my () = @_;
@@ -1406,7 +1426,7 @@ sub test17 {
 }
 
 
-# Function test18 from line 247
+# Function test18 from line 255
 
 sub test18 {
   my () = @_;
@@ -1427,7 +1447,7 @@ my $l = undef;
 }
 
 
-# Function test19 from line 261
+# Function test19 from line 269
 
 sub test19 {
   my () = @_;
@@ -1454,7 +1474,7 @@ my $answer = undef;
 }
 
 
-# Function concatenateLists from line 279
+# Function concatenateLists from line 287
 
 sub concatenateLists {
   my ($oldL, $newL) = @_;
@@ -1464,7 +1484,7 @@ sub concatenateLists {
 }
 
 
-# Function test20 from line 284
+# Function test20 from line 292
 
 sub test20 {
   my () = @_;
@@ -1495,7 +1515,7 @@ my $combined = undef;
 }
 
 
-# Function test21 from line 304
+# Function test21 from line 312
 
 sub test21 {
   my () = @_;
@@ -1520,7 +1540,7 @@ my $l2 = undef;
 }
 
 
-# Function test22 from line 320
+# Function test22 from line 328
 
 sub test22 {
   my () = @_;
@@ -1558,7 +1578,7 @@ my $correct = undef;
 }
 
 
-# Function test23 from line 343
+# Function test23 from line 351
 
 sub test23 {
   my () = @_;
@@ -1594,7 +1614,7 @@ my $correct = undef;
 }
 
 
-# Function test24 from line 366
+# Function test24 from line 374
 
 sub test24 {
   my () = @_;
@@ -1614,7 +1634,7 @@ my $res = "";
 }
 
 
-# Function test25 from line 380
+# Function test25 from line 388
 
 sub test25 {
   my () = @_;
@@ -1640,12 +1660,15 @@ my $input = undef;
 }
 
 
-# Function test27 from line 416
+# Function test27 from line 424
 
 sub test27 {
   my () = @_;
   my $expected = "a b c d e";
+my $floatExpected = "6.5";
+my $floatResult = "";
 my $res = "";
+my $floatBox = undef;
 my $variable = cons(boxString("c "), cons(boxString("d "), undef));
 my $input = undef;
 
@@ -1658,6 +1681,18 @@ my $input = undef;
 
   } else {
     printf("27. fail Interpolated List.  expected %s, got %s\n", $expected, $res);
+
+  };
+
+  $floatBox = boxFloat(6.5);
+
+  $floatResult = stringify($floatBox);
+
+  if ( equalString($floatExpected, $floatResult) ) {
+    printf("27. pass Float box stringify\n");
+
+  } else {
+    printf("27. fail Float box stringify.  expected %s, got %s\n", $floatExpected, $floatResult);
 
   };
 
@@ -1949,7 +1984,7 @@ sub javaFunctions {
 sub javaIncludes {
   my ($nodes) = @_;
   
-  return cons(boxString("import java.nio.charset.StandardCharsets;\n"), cons(boxString("import java.nio.file.Files;\n"), cons(boxString("import java.nio.file.Paths;\n"), cons(boxString("import java.util.HashMap;\n\n"), cons(boxString("class QuonProgram {\n"), cons(boxString("  boolean globalTrace = false;\n"), cons(boxString("  boolean globalStepTrace = false;\n"), cons(boxString("  boolean releaseMode = false;\n"), cons(boxString("  Box globalStackTrace = null;\n"), cons(boxString("  String caller = \"\";\n"), cons(boxString("  String[] globalArgs = new String[0];\n"), cons(boxString("  int globalArgsCount = 0;\n\n"), cons(boxString("  Object stderr = new Object();\n\n"), cons(boxString("  void fprintf(Object stream, String format, Object... args) {\n"), cons(boxString("    if (args.length == 0) {\n"), cons(boxString("      System.err.print(format);\n"), cons(boxString("    } else {\n"), cons(boxString("      System.err.printf(format, args);\n"), cons(boxString("    }\n"), cons(boxString("  }\n\n"), cons(boxString("  void exit(int code) {\n"), cons(boxString("    System.exit(code);\n"), cons(boxString("  }\n\n"), cons(boxString("  String readFileUnchecked(String filename) {\n"), cons(boxString("    try {\n"), cons(boxString("      return Files.readString(Paths.get(filename));\n"), cons(boxString("    } catch (Exception e) {\n"), cons(boxString("      throw new RuntimeException(\"Could not read file: \" + filename, e);\n"), cons(boxString("    }\n"), cons(boxString("  }\n\n"), cons(boxString("  void writeFileUnchecked(String filename, String data) {\n"), cons(boxString("    try {\n"), cons(boxString("      Files.write(Paths.get(filename), data.getBytes(StandardCharsets.UTF_8));\n"), cons(boxString("    } catch (Exception e) {\n"), cons(boxString("      throw new RuntimeException(\"Could not write file: \" + filename, e);\n"), cons(boxString("    }\n"), cons(boxString("  }\n"), undef)))))))))))))))))))))))))))))))))))));
+  return cons(boxString("import java.nio.charset.StandardCharsets;\n"), cons(boxString("import java.nio.file.Files;\n"), cons(boxString("import java.nio.file.Paths;\n"), cons(boxString("import java.util.HashMap;\n\n"), cons(boxString("class QuonProgram {\n"), cons(boxString("  boolean globalTrace = false;\n"), cons(boxString("  boolean globalStepTrace = false;\n"), cons(boxString("  boolean releaseMode = false;\n"), cons(boxString("  Box globalStackTrace = null;\n"), cons(boxString("  String caller = \"\";\n"), cons(boxString("  String[] globalArgs = new String[0];\n"), cons(boxString("  int globalArgsCount = 0;\n\n"), cons(boxString("  Object stderr = new Object();\n\n"), cons(boxString("  void fprintf(Object stream, String format, Object... args) {\n"), cons(boxString("    if (args.length == 0) {\n"), cons(boxString("      System.err.print(format);\n"), cons(boxString("    } else {\n"), cons(boxString("      System.err.printf(format, args);\n"), cons(boxString("    }\n"), cons(boxString("  }\n\n"), cons(boxString("  void exit(int code) {\n"), cons(boxString("    System.exit(code);\n"), cons(boxString("  }\n\n"), cons(boxString("  Box readFileBox(String filename) {\n"), cons(boxString("    try {\n"), cons(boxString("      return boxString(Files.readString(Paths.get(filename)));\n"), cons(boxString("    } catch (Exception e) {\n"), cons(boxString("      return null;\n"), cons(boxString("    }\n"), cons(boxString("  }\n\n"), cons(boxString("  void writeFileUnchecked(String filename, String data) {\n"), cons(boxString("    try {\n"), cons(boxString("      Files.write(Paths.get(filename), data.getBytes(StandardCharsets.UTF_8));\n"), cons(boxString("    } catch (Exception e) {\n"), cons(boxString("      throw new RuntimeException(\"Could not write file: \" + filename, e);\n"), cons(boxString("    }\n"), cons(boxString("  }\n"), undef)))))))))))))))))))))))))))))))))))));
 
 }
 
@@ -2093,7 +2128,7 @@ my $replace = undef;
 
   $tree = buildProg(cons(boxString("q/shims/java.qon"), getIncludes($tree)), getTypes($tree), getFunctions($tree));
 
-  $tree = loadIncludes($tree);
+  $tree = loadIncludes($tree, undef);
 
   $tree = macrowalk($tree);
 
@@ -2153,7 +2188,7 @@ my $replace = undef;
 
   fprintf($stderr, "Loading all includes\n");
 
-  $tree = loadIncludes($tree);
+  $tree = loadIncludes($tree, undef);
 
   fprintf($stderr, "Applying macros\n");
 
@@ -2737,7 +2772,7 @@ my $replace = undef;
 
   $tree = buildProg(cons(boxString("q/shims/ansi3.qon"), getIncludes($tree)), getTypes($tree), getFunctions($tree));
 
-  $tree = loadIncludes($tree);
+  $tree = loadIncludes($tree, undef);
 
   $tree = macrowalk($tree);
 
@@ -2799,7 +2834,7 @@ my $replace = undef;
 
   fprintf($stderr, "Loading all includes\n");
 
-  $tree = loadIncludes($tree);
+  $tree = loadIncludes($tree, undef);
 
   fprintf($stderr, "Applying macros\n");
 
@@ -3423,7 +3458,7 @@ my $replace = undef;
 
   $tree = insertInclude($tree, "q/shims/perl.qon");
 
-  $tree = loadIncludes($tree);
+  $tree = loadIncludes($tree, undef);
 
   $tree = macrowalk($tree);
 
@@ -3483,7 +3518,7 @@ my $replace = undef;
 
   fprintf($stderr, "Loading includes\n");
 
-  $tree = loadIncludes($tree);
+  $tree = loadIncludes($tree, undef);
 
   fprintf($stderr, "Walking tree\n");
 
@@ -4278,10 +4313,25 @@ sub sexprTree {
 
 sub loadQuon {
   my ($filename) = @_;
-  my $programStr = "";
+  my $programBox = undef;
+my $programStr = "";
 my $tree = undef;
 
-  $programStr = read_file($filename);
+  $programBox = read_file($filename);
+
+  if ( isNil($programBox) ) {
+    fprintf($stderr, "Could not read file: ");
+
+    fprintf($stderr, $filename);
+
+    fprintf($stderr, "\n");
+
+    exit(1);
+
+  } else {
+  };
+
+  $programStr = unBoxString($programBox);
 
   $tree = readSexpr($programStr, $filename);
 
@@ -4290,7 +4340,7 @@ my $tree = undef;
 }
 
 
-# Function getIncludes from line 346
+# Function getIncludes from line 354
 
 sub getIncludes {
   my ($program) = @_;
@@ -4300,7 +4350,7 @@ sub getIncludes {
 }
 
 
-# Function getTypes from line 350
+# Function getTypes from line 358
 
 sub getTypes {
   my ($program) = @_;
@@ -4310,7 +4360,7 @@ sub getTypes {
 }
 
 
-# Function getFunctions from line 354
+# Function getFunctions from line 362
 
 sub getFunctions {
   my ($program) = @_;
@@ -4320,7 +4370,7 @@ sub getFunctions {
 }
 
 
-# Function insertInclude from line 358
+# Function insertInclude from line 366
 
 sub insertInclude {
   my ($tree, $extra) = @_;
@@ -4356,7 +4406,7 @@ my $newIncludes = undef;
 }
 
 
-# Function stringInList from line 387
+# Function stringInList from line 395
 
 sub stringInList {
   my ($item, $l) = @_;
@@ -4378,7 +4428,7 @@ sub stringInList {
 }
 
 
-# Function appendMissingIncludes from line 396
+# Function appendMissingIncludes from line 404
 
 sub appendMissingIncludes {
   my ($candidates, $pending, $seen) = @_;
@@ -4406,19 +4456,9 @@ my $candidateFile = "";
 }
 
 
-# Function loadIncludes from line 407
+# Function loadIncludes from line 415
 
 sub loadIncludes {
-  my ($tree) = @_;
-  
-  return loadIncludesSeen($tree, undef);
-
-}
-
-
-# Function loadIncludesSeen from line 411
-
-sub loadIncludesSeen {
   my ($tree, $seen) = @_;
   my $newProg = undef;
 my $includeFile = "";
@@ -4428,6 +4468,7 @@ my $includeTree = undef;
 my $pendingIncludes = undef;
 my $nextIncludes = undef;
 my $nextSeen = undef;
+my $contentsBox = undef;
 my $contents = "";
 
   if ( greaterthan(listLength(getIncludes($tree)), 0) ) {
@@ -4436,46 +4477,56 @@ my $contents = "";
     if ( stringInList($includeFile, $seen) ) {
       $newProg = buildProg(cdr(getIncludes($tree)), getTypes($tree), getFunctions($tree));
 
-      return loadIncludesSeen($newProg, $seen);
+      return loadIncludes($newProg, $seen);
 
     } else {
     };
 
     $nextSeen = cons(boxString($includeFile), $seen);
 
-    $contents = read_file($includeFile);
+    $contentsBox = read_file($includeFile);
 
-    if ( equalString($contents, "") ) {
+    if ( isNil($contentsBox) ) {
       fprintf($stderr, "Could not read include file: ");
 
       fprintf($stderr, $includeFile);
 
+      fprintf($stderr, "\n");
+
+      exit(1);
+
       return undef;
 
     } else {
-      $includeTree = readSexpr($contents, $includeFile);
+    };
 
-      if ( isNil($includeTree) ) {
-        fprintf($stderr, "Could not parse include file: ");
+    $contents = unBoxString($contentsBox);
 
-        fprintf($stderr, $includeFile);
+    $includeTree = readSexpr($contents, $includeFile);
 
-        return undef;
+    if ( isNil($includeTree) ) {
+      fprintf($stderr, "Could not parse include file: ");
 
-      } else {
-        $functionsCombined = concatLists(getFunctions($includeTree), getFunctions($tree));
+      fprintf($stderr, $includeFile);
 
-        $typesCombined = concatLists(getTypes($includeTree), getTypes($tree));
+      fprintf($stderr, "\n");
 
-        $pendingIncludes = cdr(getIncludes($tree));
+      exit(1);
 
-        $nextIncludes = appendMissingIncludes(getIncludes($includeTree), $pendingIncludes, $nextSeen);
+      return undef;
 
-        $newProg = buildProg($nextIncludes, $typesCombined, $functionsCombined);
+    } else {
+      $functionsCombined = concatLists(getFunctions($includeTree), getFunctions($tree));
 
-        return loadIncludesSeen($newProg, $nextSeen);
+      $typesCombined = concatLists(getTypes($includeTree), getTypes($tree));
 
-      };
+      $pendingIncludes = cdr(getIncludes($tree));
+
+      $nextIncludes = appendMissingIncludes(getIncludes($includeTree), $pendingIncludes, $nextSeen);
+
+      $newProg = buildProg($nextIncludes, $typesCombined, $functionsCombined);
+
+      return loadIncludes($newProg, $nextSeen);
 
     };
 
@@ -4487,7 +4538,7 @@ my $contents = "";
 }
 
 
-# Function buildProg from line 454
+# Function buildProg from line 464
 
 sub buildProg {
   my ($includes, $types, $functions) = @_;
@@ -4987,75 +5038,39 @@ my $elem = undef;
 }
 
 
-# Function isInt from line 176
+# Function isDigit from line 176
 
-sub isInt {
+sub isDigit {
   my ($val) = @_;
-  my $firstLetter = substr($val, 0, 1);
+  
+  if ( equal(length($val), 1) ) {
+    return stringContains("0123456789", $val);
 
-  if ( equalString("-", $firstLetter) ) {
+  } else {
+    return $false;
+
+  };
+
+}
+
+
+# Function isUnsignedIntFrom from line 182
+
+sub isUnsignedIntFrom {
+  my ($val, $pos) = @_;
+  my $len = 0;
+
+  $len = length($val);
+
+  if ( greaterthan(add1($pos), $len) ) {
     return $true;
 
   } else {
-    if ( equalString("0", $firstLetter) ) {
-      return $true;
+    if ( isDigit(substr($val, $pos, 1)) ) {
+      return isUnsignedIntFrom($val, add1($pos));
 
     } else {
-      if ( equalString("1", $firstLetter) ) {
-        return $true;
-
-      } else {
-        if ( equalString("2", $firstLetter) ) {
-          return $true;
-
-        } else {
-          if ( equalString("3", $firstLetter) ) {
-            return $true;
-
-          } else {
-            if ( equalString("4", $firstLetter) ) {
-              return $true;
-
-            } else {
-              if ( equalString("5", $firstLetter) ) {
-                return $true;
-
-              } else {
-                if ( equalString("6", $firstLetter) ) {
-                  return $true;
-
-                } else {
-                  if ( equalString("7", $firstLetter) ) {
-                    return $true;
-
-                  } else {
-                    if ( equalString("8", $firstLetter) ) {
-                      return $true;
-
-                    } else {
-                      if ( equalString("9", $firstLetter) ) {
-                        return $true;
-
-                      } else {
-                        return $false;
-
-                      };
-
-                    };
-
-                  };
-
-                };
-
-              };
-
-            };
-
-          };
-
-        };
-
-      };
+      return $false;
 
     };
 
@@ -5064,7 +5079,115 @@ sub isInt {
 }
 
 
-# Function id from line 204
+# Function isInt from line 192
+
+sub isInt {
+  my ($val) = @_;
+  my $len = 0;
+my $firstLetter = "";
+
+  $len = length($val);
+
+  if ( equal($len, 0) ) {
+    return $false;
+
+  } else {
+  };
+
+  $firstLetter = substr($val, 0, 1);
+
+  if ( equalString("-", $firstLetter) ) {
+    if ( equal($len, 1) ) {
+      return $false;
+
+    } else {
+      return isUnsignedIntFrom($val, 1);
+
+    };
+
+  } else {
+    return isUnsignedIntFrom($val, 0);
+
+  };
+
+}
+
+
+# Function isFloatFrom from line 206
+
+sub isFloatFrom {
+  my ($val, $pos, $seenDot, $seenDigit, $digitAfterDot) = @_;
+  my $len = 0;
+my $ch = "";
+
+  $len = length($val);
+
+  if ( greaterthan(add1($pos), $len) ) {
+    return andBool($seenDot, andBool($seenDigit, $digitAfterDot));
+
+  } else {
+  };
+
+  $ch = substr($val, $pos, 1);
+
+  if ( isDigit($ch) ) {
+    return isFloatFrom($val, add1($pos), $seenDot, $true, orBool($digitAfterDot, $seenDot));
+
+  } else {
+    if ( equalString(".", $ch) ) {
+      if ( $seenDot ) {
+        return $false;
+
+      } else {
+        return isFloatFrom($val, add1($pos), $true, $seenDigit, $false);
+
+      };
+
+    } else {
+      return $false;
+
+    };
+
+  };
+
+}
+
+
+# Function isFloat from line 223
+
+sub isFloat {
+  my ($val) = @_;
+  my $len = 0;
+my $firstLetter = "";
+
+  $len = length($val);
+
+  if ( equal($len, 0) ) {
+    return $false;
+
+  } else {
+  };
+
+  $firstLetter = substr($val, 0, 1);
+
+  if ( equalString("-", $firstLetter) ) {
+    if ( equal($len, 1) ) {
+      return $false;
+
+    } else {
+      return isFloatFrom($val, 1, $false, $false, $false);
+
+    };
+
+  } else {
+    return isFloatFrom($val, 0, $false, $false, $false);
+
+  };
+
+}
+
+
+# Function id from line 237
 
 sub id {
   my ($b) = @_;
@@ -5074,7 +5197,7 @@ sub id {
 }
 
 
-# Function chooseBoxInterp from line 207
+# Function chooseBoxInterp from line 240
 
 sub chooseBoxInterp {
   my ($b) = @_;
@@ -5097,12 +5220,12 @@ my $firstLetter = substr($val, 0, 1);
           return "boxBool";
 
         } else {
-          if ( isInt($val) ) {
-            return "boxInt";
+          if ( isFloat($val) ) {
+            return "boxFloat";
 
           } else {
             if ( isInt($val) ) {
-              return "boxFloat";
+              return "boxInt";
 
             } else {
               return "id";
@@ -5122,7 +5245,7 @@ my $firstLetter = substr($val, 0, 1);
 }
 
 
-# Function doInterpolatedList from line 232
+# Function doInterpolatedList from line 265
 
 sub doInterpolatedList {
   my ($l) = @_;
@@ -5153,7 +5276,7 @@ my $elem = undef;
 }
 
 
-# Function doStringList from line 256
+# Function doStringList from line 289
 
 sub doStringList {
   my ($l) = @_;
@@ -5175,7 +5298,7 @@ my $ret = undef;
 }
 
 
-# Function doSymbolList from line 273
+# Function doSymbolList from line 306
 
 sub doSymbolList {
   my ($l) = @_;
@@ -5197,7 +5320,7 @@ my $ret = undef;
 }
 
 
-# Function doBoxList from line 291
+# Function doBoxList from line 324
 
 sub doBoxList {
   my ($l) = @_;
@@ -5213,7 +5336,7 @@ sub doBoxList {
 }
 
 
-# Function concatLists from line 310
+# Function concatLists from line 343
 
 sub concatLists {
   my ($seq1, $seq2) = @_;
@@ -5229,7 +5352,7 @@ sub concatLists {
 }
 
 
-# Function alistKeys from line 316
+# Function alistKeys from line 349
 
 sub alistKeys {
   my ($alist) = @_;
@@ -5245,7 +5368,7 @@ sub alistKeys {
 }
 
 
-# Function display from line 322
+# Function display from line 355
 
 sub display {
   my ($l) = @_;
@@ -5273,7 +5396,7 @@ sub display {
 }
 
 
-# Function displayList from line 331
+# Function displayList from line 364
 
 sub displayList {
   my ($l, $indent, $first) = @_;
@@ -5338,7 +5461,7 @@ sub displayList {
 }
 
 
-# Function StringListJoinRec from line 362
+# Function StringListJoinRec from line 395
 
 sub StringListJoinRec {
   my ($l, $sep) = @_;
@@ -5373,7 +5496,7 @@ sub StringListJoinRec {
 }
 
 
-# Function StringListJoin from line 385
+# Function StringListJoin from line 418
 
 sub StringListJoin {
   my ($l, $sep) = @_;
@@ -5390,7 +5513,7 @@ sub StringListJoin {
 }
 
 
-# Function ListToBoxString from line 395
+# Function ListToBoxString from line 428
 
 sub ListToBoxString {
   my ($l, $indent) = @_;
@@ -5400,7 +5523,7 @@ sub ListToBoxString {
 }
 
 
-# Function ListToString from line 400
+# Function ListToString from line 433
 
 sub ListToString {
   my ($l, $indent, $first, $withNewLines) = @_;
@@ -5437,7 +5560,7 @@ sub ListToString {
 }
 
 
-# Function listReverse from line 440
+# Function listReverse from line 473
 
 sub listReverse {
   my ($l) = @_;
@@ -5453,7 +5576,7 @@ sub listReverse {
 }
 
 
-# Function inList from line 446
+# Function inList from line 479
 
 sub inList {
   my ($item, $l) = @_;
@@ -5475,7 +5598,7 @@ sub inList {
 }
 
 
-# Function equalList from line 456
+# Function equalList from line 489
 
 sub equalList {
   my ($a, $b) = @_;
@@ -5515,7 +5638,7 @@ sub equalList {
 }
 
 
-# Function reverseRec from line 479
+# Function reverseRec from line 512
 
 sub reverseRec {
   my ($oldL, $newL) = @_;
@@ -5531,7 +5654,7 @@ sub reverseRec {
 }
 
 
-# Function reverseList from line 486
+# Function reverseList from line 519
 
 sub reverseList {
   my ($l) = @_;
@@ -5541,7 +5664,7 @@ sub reverseList {
 }
 
 
-# Function flatten from line 491
+# Function flatten from line 524
 
 sub flatten {
   my ($tree) = @_;
@@ -5984,7 +6107,7 @@ sub skipList {
 }
 
 
-# Function add from line 19
+# Function add from line 20
 
 sub add {
   my ($a, $b) = @_;
@@ -5994,7 +6117,7 @@ sub add {
 }
 
 
-# Function addf from line 20
+# Function addf from line 21
 
 sub addf {
   my ($a, $b) = @_;
@@ -6004,7 +6127,7 @@ sub addf {
 }
 
 
-# Function sub1 from line 21
+# Function sub1 from line 22
 
 sub sub1 {
   my ($a) = @_;
@@ -6014,7 +6137,7 @@ sub sub1 {
 }
 
 
-# Function add1 from line 22
+# Function add1 from line 23
 
 sub add1 {
   my ($a) = @_;
@@ -6024,7 +6147,7 @@ sub add1 {
 }
 
 
-# Function clone from line 24
+# Function clone from line 25
 
 sub clone {
   my ($b) = @_;
@@ -6042,6 +6165,10 @@ sub clone {
   } else {
     $newb->{typ} = $b->{typ};
 
+    $newb->{voi} = $b->{voi};
+
+    $newb->{boo} = $b->{boo};
+
     $newb->{tag} = $b->{tag};
 
     $newb->{lis} = $b->{lis};
@@ -6050,7 +6177,13 @@ sub clone {
 
     $newb->{i} = $b->{i};
 
+    $newb->{f} = $b->{f};
+
     $newb->{lengt} = $b->{lengt};
+
+    $newb->{car} = $b->{car};
+
+    $newb->{cdr} = $b->{cdr};
 
     return $newb;
 
@@ -6059,7 +6192,7 @@ sub clone {
 }
 
 
-# Function tern from line 42
+# Function tern from line 48
 
 sub tern {
   my ($cond, $tr, $fal) = @_;
@@ -6075,7 +6208,7 @@ sub tern {
 }
 
 
-# Function ternString from line 46
+# Function ternString from line 52
 
 sub ternString {
   my ($cond, $tr, $fal) = @_;
@@ -6091,7 +6224,7 @@ sub ternString {
 }
 
 
-# Function ternList from line 50
+# Function ternList from line 56
 
 sub ternList {
   my ($cond, $tr, $fal) = @_;
@@ -6107,7 +6240,7 @@ sub ternList {
 }
 
 
-# Function newVoid from line 55
+# Function newVoid from line 61
 
 sub newVoid {
   my () = @_;
@@ -6124,7 +6257,7 @@ sub newVoid {
 }
 
 
-# Function stackDump from line 64
+# Function stackDump from line 70
 
 sub stackDump {
   my () = @_;
@@ -6134,7 +6267,7 @@ sub stackDump {
 }
 
 
-# Function nop from line 69
+# Function nop from line 75
 
 sub nop {
   my () = @_;
@@ -6144,7 +6277,7 @@ sub nop {
 }
 
 
-# Function equalBox from line 72
+# Function equalBox from line 78
 
 sub equalBox {
   my ($a, $b) = @_;
@@ -6175,7 +6308,19 @@ sub equalBox {
             return equal(unBoxInt($a), unBoxInt($b));
 
           } else {
-            return $false;
+            if ( equalString("float", boxType($a)) ) {
+              if ( equalString("float", boxType($b)) ) {
+                return equalf(unBoxFloat($a), unBoxFloat($b));
+
+              } else {
+                return $false;
+
+              };
+
+            } else {
+              return $false;
+
+            };
 
           };
 
@@ -6190,7 +6335,7 @@ sub equalBox {
 }
 
 
-# Function openBrace from line 93
+# Function openBrace from line 105
 
 sub openBrace {
   my () = @_;
@@ -6200,7 +6345,7 @@ sub openBrace {
 }
 
 
-# Function closeBrace from line 94
+# Function closeBrace from line 106
 
 sub closeBrace {
   my () = @_;
@@ -6210,7 +6355,7 @@ sub closeBrace {
 }
 
 
-# Function boxType from line 99
+# Function boxType from line 111
 
 sub boxType {
   my ($b) = @_;
@@ -6220,7 +6365,7 @@ sub boxType {
 }
 
 
-# Function makeBox from line 103
+# Function makeBox from line 115
 
 sub makeBox {
   my () = @_;
@@ -6249,7 +6394,7 @@ sub makeBox {
 }
 
 
-# Function makePair from line 117
+# Function makePair from line 129
 
 sub makePair {
   my () = @_;
@@ -6259,7 +6404,7 @@ sub makePair {
 }
 
 
-# Function boxString from line 122
+# Function boxString from line 134
 
 sub boxString {
   my ($s) = @_;
@@ -6278,7 +6423,7 @@ sub boxString {
 }
 
 
-# Function boxSymbol from line 132
+# Function boxSymbol from line 144
 
 sub boxSymbol {
   my ($s) = @_;
@@ -6293,7 +6438,7 @@ sub boxSymbol {
 }
 
 
-# Function boxBool from line 141
+# Function boxBool from line 153
 
 sub boxBool {
   my ($boo) = @_;
@@ -6310,7 +6455,7 @@ sub boxBool {
 }
 
 
-# Function boxInt from line 150
+# Function boxInt from line 162
 
 sub boxInt {
   my ($val) = @_;
@@ -6327,7 +6472,24 @@ sub boxInt {
 }
 
 
-# Function assertType from line 159
+# Function boxFloat from line 172
+
+sub boxFloat {
+  my ($val) = @_;
+  my $b = undef;
+
+  $b = makeBox();
+
+  $b->{f} = $val;
+
+  $b->{typ} = "float";
+
+  return $b;
+
+}
+
+
+# Function assertType from line 181
 
 sub assertType {
   my ($atype, $abox, $line, $file) = @_;
@@ -6365,19 +6527,19 @@ sub assertType {
 }
 
 
-# Function unBoxString from line 176
+# Function unBoxString from line 198
 
 sub unBoxString {
   my ($b) = @_;
   
-  assertType("string", $b, 177, "q/base.qon");
+  assertType("string", $b, 199, "q/base.qon");
 
   return $b->{str};
 
 }
 
 
-# Function unBoxSymbol from line 179
+# Function unBoxSymbol from line 201
 
 sub unBoxSymbol {
   my ($b) = @_;
@@ -6387,7 +6549,7 @@ sub unBoxSymbol {
 }
 
 
-# Function unBoxBool from line 180
+# Function unBoxBool from line 202
 
 sub unBoxBool {
   my ($b) = @_;
@@ -6397,7 +6559,7 @@ sub unBoxBool {
 }
 
 
-# Function unBoxInt from line 181
+# Function unBoxInt from line 203
 
 sub unBoxInt {
   my ($b) = @_;
@@ -6407,7 +6569,17 @@ sub unBoxInt {
 }
 
 
-# Function stringify_rec from line 183
+# Function unBoxFloat from line 204
+
+sub unBoxFloat {
+  my ($b) = @_;
+  
+  return $b->{f};
+
+}
+
+
+# Function stringify_rec from line 206
 
 sub stringify_rec {
   my ($b) = @_;
@@ -6423,7 +6595,7 @@ sub stringify_rec {
 }
 
 
-# Function stringify from line 192
+# Function stringify from line 215
 
 sub stringify {
   my ($b) = @_;
@@ -6450,15 +6622,21 @@ sub stringify {
           return intToString(unBoxInt($b));
 
         } else {
-          if ( equalString("symbol", boxType($b)) ) {
-            return unBoxSymbol($b);
+          if ( equalString("float", boxType($b)) ) {
+            return floatToString(unBoxFloat($b));
 
           } else {
-            if ( equalString("list", boxType($b)) ) {
-              return stringConcatenate("(", stringConcatenate(stringify(car($b)), stringConcatenate(" ", stringConcatenate(stringify_rec(cdr($b)), ")"))));
+            if ( equalString("symbol", boxType($b)) ) {
+              return unBoxSymbol($b);
 
             } else {
-              return stringConcatenate("Unsupported type in stringify: ", boxType($b));
+              if ( equalString("list", boxType($b)) ) {
+                return stringConcatenate("(", stringConcatenate(stringify(car($b)), stringConcatenate(" ", stringConcatenate(stringify_rec(cdr($b)), ")"))));
+
+              } else {
+                return stringConcatenate("Unsupported type in stringify: ", boxType($b));
+
+              };
 
             };
 
@@ -6475,7 +6653,7 @@ sub stringify {
 }
 
 
-# Function hasTag from line 227
+# Function hasTag from line 253
 
 sub hasTag {
   my ($aBox, $key) = @_;
@@ -6491,7 +6669,7 @@ sub hasTag {
 }
 
 
-# Function getTag from line 234
+# Function getTag from line 260
 
 sub getTag {
   my ($aBox, $key) = @_;
@@ -6513,7 +6691,7 @@ sub getTag {
 }
 
 
-# Function getTagFail from line 246
+# Function getTagFail from line 272
 
 sub getTagFail {
   my ($aBox, $key, $onFail) = @_;
@@ -6529,7 +6707,7 @@ sub getTagFail {
 }
 
 
-# Function assocExists from line 256
+# Function assocExists from line 282
 
 sub assocExists {
   my ($key, $aBox) = @_;
@@ -6545,7 +6723,7 @@ sub assocExists {
 }
 
 
-# Function assocFail from line 264
+# Function assocFail from line 290
 
 sub assocFail {
   my ($key, $aBox, $onFail) = @_;
@@ -6561,7 +6739,7 @@ sub assocFail {
 }
 
 
-# Function assocPanic from line 271
+# Function assocPanic from line 297
 
 sub assocPanic {
   my ($key, $aBox, $onFail) = @_;
@@ -6581,7 +6759,7 @@ sub assocPanic {
 }
 
 
-# Function setTag from line 282
+# Function setTag from line 308
 
 sub setTag {
   my ($key, $val, $aStruct) = @_;
@@ -6593,7 +6771,7 @@ sub setTag {
 }
 
 
-# Function locPanic from line 288
+# Function locPanic from line 314
 
 sub locPanic {
   my ($file, $line, $message) = @_;
@@ -6605,7 +6783,7 @@ sub locPanic {
 }
 
 
-# Function truthy from line 294
+# Function truthy from line 320
 
 sub truthy {
   my ($aVal) = @_;
@@ -6615,7 +6793,7 @@ sub truthy {
 }
 
 
-# Function isNotFalse from line 299
+# Function isNotFalse from line 325
 
 sub isNotFalse {
   my ($aVal) = @_;
@@ -6637,7 +6815,7 @@ sub isNotFalse {
 }
 
 
-# Function toStr from line 306
+# Function toStr from line 332
 
 sub toStr {
   my ($thing) = @_;
@@ -6647,7 +6825,7 @@ sub toStr {
 }
 
 
-# Function listLast from line 310
+# Function listLast from line 336
 
 sub listLast {
   my ($alist) = @_;
@@ -6663,7 +6841,7 @@ sub listLast {
 }
 
 
-# Function newLine from line 317
+# Function newLine from line 343
 
 sub newLine {
   my ($indent) = @_;
@@ -6675,7 +6853,7 @@ sub newLine {
 }
 
 
-# Function printIndent from line 321
+# Function printIndent from line 347
 
 sub printIndent {
   my ($ii) = @_;
@@ -6693,7 +6871,7 @@ sub printIndent {
 }
 
 
-# Function stringIndent from line 328
+# Function stringIndent from line 354
 
 sub stringIndent {
   my ($ii) = @_;
@@ -6709,7 +6887,7 @@ sub stringIndent {
 }
 
 
-# Function listIndent from line 334
+# Function listIndent from line 360
 
 sub listIndent {
   my ($ii) = @_;
@@ -6719,7 +6897,7 @@ sub listIndent {
 }
 
 
-# Function listNewLine from line 340
+# Function listNewLine from line 366
 
 sub listNewLine {
   my ($ii) = @_;
@@ -6729,7 +6907,7 @@ sub listNewLine {
 }
 
 
-# Function argList from line 346
+# Function argList from line 372
 
 sub argList {
   my ($count, $pos, $args) = @_;
@@ -6745,7 +6923,7 @@ sub argList {
 }
 
 
-# Function tron from line 356
+# Function tron from line 382
 
 sub tron {
   my () = @_;
@@ -6755,7 +6933,7 @@ sub tron {
 }
 
 
-# Function troff from line 357
+# Function troff from line 383
 
 sub troff {
   my () = @_;
@@ -6765,7 +6943,7 @@ sub troff {
 }
 
 
-# Function stron from line 358
+# Function stron from line 384
 
 sub stron {
   my () = @_;
@@ -6775,7 +6953,7 @@ sub stron {
 }
 
 
-# Function stroff from line 359
+# Function stroff from line 385
 
 sub stroff {
   my () = @_;
@@ -6785,7 +6963,7 @@ sub stroff {
 }
 
 
-# Function StackTraceMove from line 363
+# Function StackTraceMove from line 389
 
 sub StackTraceMove {
   my ($direction, $filename, $fname, $line) = @_;
@@ -6801,7 +6979,7 @@ sub StackTraceMove {
 }
 
 
-# Function StackTracePrint from line 371
+# Function StackTracePrint from line 397
 
 sub StackTracePrint {
   my () = @_;
@@ -6819,7 +6997,7 @@ sub StackTracePrint {
 }
 
 
-# Function StackTracePrintHelper from line 379
+# Function StackTracePrintHelper from line 405
 
 sub StackTracePrintHelper {
   my ($stack) = @_;
@@ -6848,7 +7026,7 @@ my $func = "";
 }
 
 
-# Function NoStackTrace_list from line 404
+# Function NoStackTrace_list from line 430
 
 sub NoStackTrace_list {
   my () = @_;
@@ -6858,7 +7036,7 @@ sub NoStackTrace_list {
 }
 
 
-# Function NoTrace_list from line 409
+# Function NoTrace_list from line 435
 
 sub NoTrace_list {
   my () = @_;
@@ -6868,7 +7046,7 @@ sub NoTrace_list {
 }
 
 
-# Function indexOfHelper from line 418
+# Function indexOfHelper from line 444
 
 sub indexOfHelper {
   my ($haystack, $needle, $start, $current) = @_;
@@ -6890,7 +7068,7 @@ sub indexOfHelper {
 }
 
 
-# Function indexOf from line 427
+# Function indexOf from line 453
 
 sub indexOf {
   my ($haystack, $needle, $start) = @_;
@@ -6906,7 +7084,7 @@ sub indexOf {
 }
 
 
-# Function stringReplace from line 434
+# Function stringReplace from line 460
 
 sub stringReplace {
   my ($old, $new, $s) = @_;
@@ -6925,7 +7103,7 @@ sub stringReplace {
 }
 
 
-# Function stringContains from line 448
+# Function stringContains from line 474
 
 sub stringContains {
   my ($haystack, $needle) = @_;
@@ -6947,7 +7125,7 @@ my $needleLength = 0;
 }
 
 
-# Function stringContainsHelper from line 463
+# Function stringContainsHelper from line 489
 
 sub stringContainsHelper {
   my ($haystack, $needle, $startIndex) = @_;
@@ -6975,7 +7153,7 @@ my $needleLength = 0;
 }
 
 
-# Function isWhiteSpace from line 484
+# Function isWhiteSpace from line 510
 
 sub isWhiteSpace {
   my ($s) = @_;
@@ -7009,7 +7187,7 @@ sub isWhiteSpace {
 }
 
 
-# Function stringTrim from line 499
+# Function stringTrim from line 525
 
 sub stringTrim {
   my ($s) = @_;
@@ -7037,7 +7215,7 @@ sub stringTrim {
 }
 
 
-# Function stringSplit from line 515
+# Function stringSplit from line 541
 
 sub stringSplit {
   my ($s, $delimiter) = @_;
@@ -7163,7 +7341,17 @@ sub greaterthanf {
 }
 
 
-# Function equal from line 44
+# Function equalf from line 44
+
+sub equalf {
+  my ($a, $b) = @_;
+  
+  return ($a == $b);
+
+}
+
+
+# Function equal from line 48
 
 sub equal {
   my ($a, $b) = @_;
@@ -7173,7 +7361,7 @@ sub equal {
 }
 
 
-# Function equalString from line 48
+# Function equalString from line 52
 
 sub equalString {
   my ($a, $b) = @_;
@@ -7183,7 +7371,7 @@ sub equalString {
 }
 
 
-# Function string_length from line 52
+# Function string_length from line 56
 
 sub string_length {
   my ($s) = @_;
@@ -7193,7 +7381,7 @@ sub string_length {
 }
 
 
-# Function setSubString from line 56
+# Function setSubString from line 60
 
 sub setSubString {
   my ($target, $start, $source) = @_;
@@ -7205,7 +7393,7 @@ sub setSubString {
 }
 
 
-# Function sub_string from line 61
+# Function sub_string from line 65
 
 sub sub_string {
   my ($s, $start, $length) = @_;
@@ -7215,7 +7403,7 @@ sub sub_string {
 }
 
 
-# Function stringConcatenate from line 65
+# Function stringConcatenate from line 69
 
 sub stringConcatenate {
   my ($a, $b) = @_;
@@ -7225,7 +7413,7 @@ sub stringConcatenate {
 }
 
 
-# Function intToString from line 69
+# Function intToString from line 73
 
 sub intToString {
   my ($a) = @_;
@@ -7235,26 +7423,40 @@ sub intToString {
 }
 
 
-# Function read_file from line 73
+# Function floatToString from line 77
+
+sub floatToString {
+  my ($a) = @_;
+  
+  return sprintf("%g", $a);
+
+}
+
+
+# Function read_file from line 81
 
 sub read_file {
   my ($filename) = @_;
   my $contents = "";
 
-  open my $fh, '<', $filename or die 'Cannot open file: ' . $!;
+  if ( !open(my $fh, '<', $filename) ) {
+    return undef;
 
-  local $/= undef;
+  } else {
+    local $/= undef;
 
-  $contents = <$fh>;
+    $contents = <$fh>;
 
-  close($fh);
+    close($fh);
 
-  return $contents;
+    return boxString($contents);
+
+  };
 
 }
 
 
-# Function write_file from line 81
+# Function write_file from line 91
 
 sub write_file {
   my ($filename, $data) = @_;
@@ -7268,7 +7470,7 @@ sub write_file {
 }
 
 
-# Function getStringArray from line 87
+# Function getStringArray from line 97
 
 sub getStringArray {
   my ($index, $strs) = @_;
@@ -7278,7 +7480,7 @@ sub getStringArray {
 }
 
 
-# Function programArgs from line 91
+# Function programArgs from line 101
 
 sub programArgs {
   my () = @_;
@@ -7288,7 +7490,7 @@ sub programArgs {
 }
 
 
-# Function programArgsCount from line 95
+# Function programArgsCount from line 105
 
 sub programArgsCount {
   my () = @_;
@@ -7298,7 +7500,7 @@ sub programArgsCount {
 }
 
 
-# Function character from line 99
+# Function character from line 109
 
 sub character {
   my ($num) = @_;
@@ -7308,7 +7510,7 @@ sub character {
 }
 
 
-# Function displays from line 103
+# Function displays from line 113
 
 sub displays {
   my ($s) = @_;
@@ -7318,7 +7520,7 @@ sub displays {
 }
 
 
-# Function remainder from line 107
+# Function remainder from line 117
 
 sub remainder {
   my ($a, $b) = @_;
@@ -7328,7 +7530,7 @@ sub remainder {
 }
 
 
-# Function or from line 111
+# Function or from line 121
 
 sub or {
   my ($a, $b) = @_;
@@ -7338,7 +7540,7 @@ sub or {
 }
 
 
-# Function max from line 115
+# Function max from line 125
 
 sub max {
   my ($a, $b) = @_;
@@ -7354,7 +7556,7 @@ sub max {
 }
 
 
-# Function min from line 121
+# Function min from line 131
 
 sub min {
   my ($a, $b) = @_;
@@ -7370,7 +7572,7 @@ sub min {
 }
 
 
-# Function makeHash from line 127
+# Function makeHash from line 137
 
 sub makeHash {
   my () = @_;
@@ -7380,7 +7582,7 @@ sub makeHash {
 }
 
 
-# Function setHash from line 131
+# Function setHash from line 141
 
 sub setHash {
   my ($hash, $key, $value) = @_;
@@ -7390,7 +7592,7 @@ sub setHash {
 }
 
 
-# Function getHash from line 135
+# Function getHash from line 145
 
 sub getHash {
   my ($hash, $key) = @_;
@@ -7400,7 +7602,7 @@ sub getHash {
 }
 
 
-# Function inHash from line 139
+# Function inHash from line 149
 
 sub inHash {
   my ($hash, $key) = @_;
@@ -7410,7 +7612,7 @@ sub inHash {
 }
 
 
-# Function makeArray from line 143
+# Function makeArray from line 153
 
 sub makeArray {
   my ($length) = @_;
@@ -7420,7 +7622,7 @@ sub makeArray {
 }
 
 
-# Function setArray from line 147
+# Function setArray from line 157
 
 sub setArray {
   my ($array, $index, $value) = @_;
@@ -7430,7 +7632,7 @@ sub setArray {
 }
 
 
-# Function getArray from line 151
+# Function getArray from line 161
 
 sub getArray {
   my ($array, $index) = @_;
@@ -7440,7 +7642,7 @@ sub getArray {
 }
 
 
-# Function isNil from line 155
+# Function isNil from line 165
 
 sub isNil {
   my ($a) = @_;

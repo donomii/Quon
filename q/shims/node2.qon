@@ -42,6 +42,10 @@
   (body
     (return (binop > a b))))
 
+(bool equalf (float a float b) (declare)
+  (body
+    (return (binop == a b))))
+
 (bool equal (int a int b) (declare)
   (body
     (return (binop == a b))))
@@ -70,9 +74,13 @@
   (body
     (return (passthrough "String(a)"))))
 
-(string read_file (string filename) (declare)
+(string floatToString (float a) (declare)
   (body
-    (return (passthrough "fs.readFileSync(filename, 'utf8')"))))
+    (return (passthrough "String(a)"))))
+
+(box read_file (string filename) (declare)
+  (body
+    (return (passthrough "(() => { try { return boxString(fs.readFileSync(filename, 'utf8')); } catch (e) { return null; } })()"))))
 
 (void write_file (string filename string data) (declare)
   (body

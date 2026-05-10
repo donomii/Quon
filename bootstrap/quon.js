@@ -403,7 +403,7 @@ function node2LoadProgram(filename) {
 
   tree = insertInclude(tree, "q/shims/node2.qon");
 
-  tree = loadIncludes(tree);
+  tree = loadIncludes(tree, null);
 
   tree = macrowalk(tree);
 
@@ -451,7 +451,7 @@ function node2Compile(filename) {
 
   fprintf(stderr, "Loading all includes\n");
 
-  tree = loadIncludes(tree);
+  tree = loadIncludes(tree, null);
 
   fprintf(stderr, "Applying macros\n");
 
@@ -812,21 +812,34 @@ function test12() {
 
 function test13() {
     let testString = "Hello from the filesystem!";
+  let contentsBox = null;
   let contents = "";
 
   write_file("test.txt", testString);
 
-  contents = read_file("test.txt");
+  contentsBox = read_file("test.txt");
 
-  if (equalString(testString, contents)) {
-    printf("13. pass Read and write files\n");
-
-  } else {
+  if (isNil(contentsBox)) {
     printf("13. fail Read and write files\n");
 
     printf("Expected: %s\n", testString);
 
-    printf("Got: %s\n", contents);
+    printf("Got: nil\n");
+
+  } else {
+    contents = unBoxString(contentsBox);
+
+    if (equalString(testString, contents)) {
+      printf("13. pass Read and write files\n");
+
+    } else {
+      printf("13. fail Read and write files\n");
+
+      printf("Expected: %s\n", testString);
+
+      printf("Got: %s\n", contents);
+
+    };
 
   };
 
@@ -1113,7 +1126,10 @@ function test25() {
 
 function test27() {
     let expected = "a b c d e";
+  let floatExpected = "6.5";
+  let floatResult = "";
   let res = "";
+  let floatBox = null;
   let variable = cons(boxString("c "), cons(boxString("d "), null));
   let input = null;
 
@@ -1126,6 +1142,18 @@ function test27() {
 
   } else {
     printf("27. fail Interpolated List.  expected %s, got %s\n", expected, res);
+
+  };
+
+  floatBox = boxFloat(6.5);
+
+  floatResult = stringify(floatBox);
+
+  if (equalString(floatExpected, floatResult)) {
+    printf("27. pass Float box stringify\n");
+
+  } else {
+    printf("27. fail Float box stringify.  expected %s, got %s\n", floatExpected, floatResult);
 
   };
 
@@ -1375,7 +1403,7 @@ function javaFunctions(tree) {
 
 function javaIncludes(nodes) {
   
-  return cons(boxString("import java.nio.charset.StandardCharsets;\n"), cons(boxString("import java.nio.file.Files;\n"), cons(boxString("import java.nio.file.Paths;\n"), cons(boxString("import java.util.HashMap;\n\n"), cons(boxString("class QuonProgram {\n"), cons(boxString("  boolean globalTrace = false;\n"), cons(boxString("  boolean globalStepTrace = false;\n"), cons(boxString("  boolean releaseMode = false;\n"), cons(boxString("  Box globalStackTrace = null;\n"), cons(boxString("  String caller = \"\";\n"), cons(boxString("  String[] globalArgs = new String[0];\n"), cons(boxString("  int globalArgsCount = 0;\n\n"), cons(boxString("  Object stderr = new Object();\n\n"), cons(boxString("  void fprintf(Object stream, String format, Object... args) {\n"), cons(boxString("    if (args.length == 0) {\n"), cons(boxString("      System.err.print(format);\n"), cons(boxString("    } else {\n"), cons(boxString("      System.err.printf(format, args);\n"), cons(boxString("    }\n"), cons(boxString("  }\n\n"), cons(boxString("  void exit(int code) {\n"), cons(boxString("    System.exit(code);\n"), cons(boxString("  }\n\n"), cons(boxString("  String readFileUnchecked(String filename) {\n"), cons(boxString("    try {\n"), cons(boxString("      return Files.readString(Paths.get(filename));\n"), cons(boxString("    } catch (Exception e) {\n"), cons(boxString("      throw new RuntimeException(\"Could not read file: \" + filename, e);\n"), cons(boxString("    }\n"), cons(boxString("  }\n\n"), cons(boxString("  void writeFileUnchecked(String filename, String data) {\n"), cons(boxString("    try {\n"), cons(boxString("      Files.write(Paths.get(filename), data.getBytes(StandardCharsets.UTF_8));\n"), cons(boxString("    } catch (Exception e) {\n"), cons(boxString("      throw new RuntimeException(\"Could not write file: \" + filename, e);\n"), cons(boxString("    }\n"), cons(boxString("  }\n"), null)))))))))))))))))))))))))))))))))))));
+  return cons(boxString("import java.nio.charset.StandardCharsets;\n"), cons(boxString("import java.nio.file.Files;\n"), cons(boxString("import java.nio.file.Paths;\n"), cons(boxString("import java.util.HashMap;\n\n"), cons(boxString("class QuonProgram {\n"), cons(boxString("  boolean globalTrace = false;\n"), cons(boxString("  boolean globalStepTrace = false;\n"), cons(boxString("  boolean releaseMode = false;\n"), cons(boxString("  Box globalStackTrace = null;\n"), cons(boxString("  String caller = \"\";\n"), cons(boxString("  String[] globalArgs = new String[0];\n"), cons(boxString("  int globalArgsCount = 0;\n\n"), cons(boxString("  Object stderr = new Object();\n\n"), cons(boxString("  void fprintf(Object stream, String format, Object... args) {\n"), cons(boxString("    if (args.length == 0) {\n"), cons(boxString("      System.err.print(format);\n"), cons(boxString("    } else {\n"), cons(boxString("      System.err.printf(format, args);\n"), cons(boxString("    }\n"), cons(boxString("  }\n\n"), cons(boxString("  void exit(int code) {\n"), cons(boxString("    System.exit(code);\n"), cons(boxString("  }\n\n"), cons(boxString("  Box readFileBox(String filename) {\n"), cons(boxString("    try {\n"), cons(boxString("      return boxString(Files.readString(Paths.get(filename)));\n"), cons(boxString("    } catch (Exception e) {\n"), cons(boxString("      return null;\n"), cons(boxString("    }\n"), cons(boxString("  }\n\n"), cons(boxString("  void writeFileUnchecked(String filename, String data) {\n"), cons(boxString("    try {\n"), cons(boxString("      Files.write(Paths.get(filename), data.getBytes(StandardCharsets.UTF_8));\n"), cons(boxString("    } catch (Exception e) {\n"), cons(boxString("      throw new RuntimeException(\"Could not write file: \" + filename, e);\n"), cons(boxString("    }\n"), cons(boxString("  }\n"), null)))))))))))))))))))))))))))))))))))));
 
 }
 
@@ -1492,7 +1520,7 @@ function javaLoadProgram(filename) {
 
   tree = buildProg(cons(boxString("q/shims/java.qon"), getIncludes(tree)), getTypes(tree), getFunctions(tree));
 
-  tree = loadIncludes(tree);
+  tree = loadIncludes(tree, null);
 
   tree = macrowalk(tree);
 
@@ -1540,7 +1568,7 @@ function javaCompile(filename) {
 
   fprintf(stderr, "Loading all includes\n");
 
-  tree = loadIncludes(tree);
+  tree = loadIncludes(tree, null);
 
   fprintf(stderr, "Applying macros\n");
 
@@ -2034,7 +2062,7 @@ function ansi3LoadProgram(filename) {
 
   tree = buildProg(cons(boxString("q/shims/ansi3.qon"), getIncludes(tree)), getTypes(tree), getFunctions(tree));
 
-  tree = loadIncludes(tree);
+  tree = loadIncludes(tree, null);
 
   tree = macrowalk(tree);
 
@@ -2084,7 +2112,7 @@ function ansi3Compile(filename) {
 
   fprintf(stderr, "Loading all includes\n");
 
-  tree = loadIncludes(tree);
+  tree = loadIncludes(tree, null);
 
   fprintf(stderr, "Applying macros\n");
 
@@ -2597,7 +2625,7 @@ function perlLoadProgram(filename) {
 
   tree = insertInclude(tree, "q/shims/perl.qon");
 
-  tree = loadIncludes(tree);
+  tree = loadIncludes(tree, null);
 
   tree = macrowalk(tree);
 
@@ -2645,7 +2673,7 @@ function perlCompile(filename) {
 
   fprintf(stderr, "Loading includes\n");
 
-  tree = loadIncludes(tree);
+  tree = loadIncludes(tree, null);
 
   fprintf(stderr, "Walking tree\n");
 
@@ -3365,10 +3393,25 @@ function sexprTree(l) {
 
 
 function loadQuon(filename) {
-    let programStr = "";
+    let programBox = null;
+  let programStr = "";
   let tree = null;
 
-  programStr = read_file(filename);
+  programBox = read_file(filename);
+
+  if (isNil(programBox)) {
+    fprintf(stderr, "Could not read file: ");
+
+    fprintf(stderr, filename);
+
+    fprintf(stderr, "\n");
+
+    exit(1);
+
+  } else {
+  };
+
+  programStr = unBoxString(programBox);
 
   tree = readSexpr(programStr, filename);
 
@@ -3475,14 +3518,7 @@ function appendMissingIncludes(candidates, pending, seen) {
 }
 
 
-function loadIncludes(tree) {
-  
-  return loadIncludesSeen(tree, null);
-
-}
-
-
-function loadIncludesSeen(tree, seen) {
+function loadIncludes(tree, seen) {
     let newProg = null;
   let includeFile = "";
   let functionsCombined = null;
@@ -3491,6 +3527,7 @@ function loadIncludesSeen(tree, seen) {
   let pendingIncludes = null;
   let nextIncludes = null;
   let nextSeen = null;
+  let contentsBox = null;
   let contents = "";
 
   if (greaterthan(listLength(getIncludes(tree)), 0)) {
@@ -3499,46 +3536,56 @@ function loadIncludesSeen(tree, seen) {
     if (stringInList(includeFile, seen)) {
       newProg = buildProg(cdr(getIncludes(tree)), getTypes(tree), getFunctions(tree));
 
-      return loadIncludesSeen(newProg, seen);
+      return loadIncludes(newProg, seen);
 
     } else {
     };
 
     nextSeen = cons(boxString(includeFile), seen);
 
-    contents = read_file(includeFile);
+    contentsBox = read_file(includeFile);
 
-    if (equalString(contents, "")) {
+    if (isNil(contentsBox)) {
       fprintf(stderr, "Could not read include file: ");
 
       fprintf(stderr, includeFile);
 
+      fprintf(stderr, "\n");
+
+      exit(1);
+
       return null;
 
     } else {
-      includeTree = readSexpr(contents, includeFile);
+    };
 
-      if (isNil(includeTree)) {
-        fprintf(stderr, "Could not parse include file: ");
+    contents = unBoxString(contentsBox);
 
-        fprintf(stderr, includeFile);
+    includeTree = readSexpr(contents, includeFile);
 
-        return null;
+    if (isNil(includeTree)) {
+      fprintf(stderr, "Could not parse include file: ");
 
-      } else {
-        functionsCombined = concatLists(getFunctions(includeTree), getFunctions(tree));
+      fprintf(stderr, includeFile);
 
-        typesCombined = concatLists(getTypes(includeTree), getTypes(tree));
+      fprintf(stderr, "\n");
 
-        pendingIncludes = cdr(getIncludes(tree));
+      exit(1);
 
-        nextIncludes = appendMissingIncludes(getIncludes(includeTree), pendingIncludes, nextSeen);
+      return null;
 
-        newProg = buildProg(nextIncludes, typesCombined, functionsCombined);
+    } else {
+      functionsCombined = concatLists(getFunctions(includeTree), getFunctions(tree));
 
-        return loadIncludesSeen(newProg, nextSeen);
+      typesCombined = concatLists(getTypes(includeTree), getTypes(tree));
 
-      };
+      pendingIncludes = cdr(getIncludes(tree));
+
+      nextIncludes = appendMissingIncludes(getIncludes(includeTree), pendingIncludes, nextSeen);
+
+      newProg = buildProg(nextIncludes, typesCombined, functionsCombined);
+
+      return loadIncludes(newProg, nextSeen);
 
     };
 
@@ -3954,74 +4001,134 @@ function doMultiList(l) {
 }
 
 
-function isInt(val) {
-    let firstLetter = sub_string(val, 0, 1);
+function isDigit(val) {
+  
+  if (equal(string_length(val), 1)) {
+    return stringContains("0123456789", val);
 
-  if (equalString("-", firstLetter)) {
+  } else {
+    return false;
+
+  };
+
+}
+
+
+function isUnsignedIntFrom(val, pos) {
+    let len = 0;
+
+  len = string_length(val);
+
+  if (greaterthan(add1(pos), len)) {
     return true;
 
   } else {
-    if (equalString("0", firstLetter)) {
-      return true;
+    if (isDigit(sub_string(val, pos, 1))) {
+      return isUnsignedIntFrom(val, add1(pos));
 
     } else {
-      if (equalString("1", firstLetter)) {
-        return true;
+      return false;
+
+    };
+
+  };
+
+}
+
+
+function isInt(val) {
+    let len = 0;
+  let firstLetter = "";
+
+  len = string_length(val);
+
+  if (equal(len, 0)) {
+    return false;
+
+  } else {
+  };
+
+  firstLetter = sub_string(val, 0, 1);
+
+  if (equalString("-", firstLetter)) {
+    if (equal(len, 1)) {
+      return false;
+
+    } else {
+      return isUnsignedIntFrom(val, 1);
+
+    };
+
+  } else {
+    return isUnsignedIntFrom(val, 0);
+
+  };
+
+}
+
+
+function isFloatFrom(val, pos, seenDot, seenDigit, digitAfterDot) {
+    let len = 0;
+  let ch = "";
+
+  len = string_length(val);
+
+  if (greaterthan(add1(pos), len)) {
+    return andBool(seenDot, andBool(seenDigit, digitAfterDot));
+
+  } else {
+  };
+
+  ch = sub_string(val, pos, 1);
+
+  if (isDigit(ch)) {
+    return isFloatFrom(val, add1(pos), seenDot, true, orBool(digitAfterDot, seenDot));
+
+  } else {
+    if (equalString(".", ch)) {
+      if (seenDot) {
+        return false;
 
       } else {
-        if (equalString("2", firstLetter)) {
-          return true;
-
-        } else {
-          if (equalString("3", firstLetter)) {
-            return true;
-
-          } else {
-            if (equalString("4", firstLetter)) {
-              return true;
-
-            } else {
-              if (equalString("5", firstLetter)) {
-                return true;
-
-              } else {
-                if (equalString("6", firstLetter)) {
-                  return true;
-
-                } else {
-                  if (equalString("7", firstLetter)) {
-                    return true;
-
-                  } else {
-                    if (equalString("8", firstLetter)) {
-                      return true;
-
-                    } else {
-                      if (equalString("9", firstLetter)) {
-                        return true;
-
-                      } else {
-                        return false;
-
-                      };
-
-                    };
-
-                  };
-
-                };
-
-              };
-
-            };
-
-          };
-
-        };
+        return isFloatFrom(val, add1(pos), true, seenDigit, false);
 
       };
 
+    } else {
+      return false;
+
     };
+
+  };
+
+}
+
+
+function isFloat(val) {
+    let len = 0;
+  let firstLetter = "";
+
+  len = string_length(val);
+
+  if (equal(len, 0)) {
+    return false;
+
+  } else {
+  };
+
+  firstLetter = sub_string(val, 0, 1);
+
+  if (equalString("-", firstLetter)) {
+    if (equal(len, 1)) {
+      return false;
+
+    } else {
+      return isFloatFrom(val, 1, false, false, false);
+
+    };
+
+  } else {
+    return isFloatFrom(val, 0, false, false, false);
 
   };
 
@@ -4055,12 +4162,12 @@ function chooseBoxInterp(b) {
           return "boxBool";
 
         } else {
-          if (isInt(val)) {
-            return "boxInt";
+          if (isFloat(val)) {
+            return "boxFloat";
 
           } else {
             if (isInt(val)) {
-              return "boxFloat";
+              return "boxInt";
 
             } else {
               return "id";
@@ -4886,6 +4993,10 @@ function clone(b) {
   } else {
     newb.typ = b.typ;
 
+    newb.voi = b.voi;
+
+    newb.boo = b.boo;
+
     newb.tag = b.tag;
 
     newb.lis = b.lis;
@@ -4894,7 +5005,13 @@ function clone(b) {
 
     newb.i = b.i;
 
+    newb.f = b.f;
+
     newb.lengt = b.lengt;
+
+    newb.car = b.car;
+
+    newb.cdr = b.cdr;
 
     return newb;
 
@@ -4998,7 +5115,19 @@ function equalBox(a, b) {
             return equal(unBoxInt(a), unBoxInt(b));
 
           } else {
-            return false;
+            if (equalString("float", boxType(a))) {
+              if (equalString("float", boxType(b))) {
+                return equalf(unBoxFloat(a), unBoxFloat(b));
+
+              } else {
+                return false;
+
+              };
+
+            } else {
+              return false;
+
+            };
 
           };
 
@@ -5123,6 +5252,20 @@ function boxInt(val) {
 }
 
 
+function boxFloat(val) {
+    let b = null;
+
+  b = makeBox();
+
+  b.f = val;
+
+  b.typ = "float";
+
+  return b;
+
+}
+
+
 function assertType(atype, abox, line, file) {
   
   if (isNil(abox)) {
@@ -5160,7 +5303,7 @@ function assertType(atype, abox, line, file) {
 
 function unBoxString(b) {
   
-  assertType("string", b, 177, "q/base.qon");
+  assertType("string", b, 199, "q/base.qon");
 
   return b.str;
 
@@ -5184,6 +5327,13 @@ function unBoxBool(b) {
 function unBoxInt(b) {
   
   return b.i;
+
+}
+
+
+function unBoxFloat(b) {
+  
+  return b.f;
 
 }
 
@@ -5225,15 +5375,21 @@ function stringify(b) {
           return intToString(unBoxInt(b));
 
         } else {
-          if (equalString("symbol", boxType(b))) {
-            return unBoxSymbol(b);
+          if (equalString("float", boxType(b))) {
+            return floatToString(unBoxFloat(b));
 
           } else {
-            if (equalString("list", boxType(b))) {
-              return stringConcatenate("(", stringConcatenate(stringify(car(b)), stringConcatenate(" ", stringConcatenate(stringify_rec(cdr(b)), ")"))));
+            if (equalString("symbol", boxType(b))) {
+              return unBoxSymbol(b);
 
             } else {
-              return stringConcatenate("Unsupported type in stringify: ", boxType(b));
+              if (equalString("list", boxType(b))) {
+                return stringConcatenate("(", stringConcatenate(stringify(car(b)), stringConcatenate(" ", stringConcatenate(stringify_rec(cdr(b)), ")"))));
+
+              } else {
+                return stringConcatenate("Unsupported type in stringify: ", boxType(b));
+
+              };
 
             };
 
@@ -5805,6 +5961,13 @@ function greaterthanf(a, b) {
 }
 
 
+function equalf(a, b) {
+  
+  return (a == b);
+
+}
+
+
 function equal(a, b) {
   
   return (a == b);
@@ -5854,9 +6017,16 @@ function intToString(a) {
 }
 
 
+function floatToString(a) {
+  
+  return String(a);
+
+}
+
+
 function read_file(filename) {
   
-  return fs.readFileSync(filename, 'utf8');
+  return (() => { try { return boxString(fs.readFileSync(filename, 'utf8')); } catch (e) { return null; } })();
 
 }
 

@@ -1,10 +1,8 @@
 (
-(includes "q/base.qon" "q/lists.qon" "q/macros.qon" "q/astaccessors.qon"  )
+(includes q/base.qon)
 
-(types (a int)
- (b float)
-)
-(functions 
+(types)
+(functions
 
 (int factorial (int x)
 (declare )
@@ -22,6 +20,7 @@
 (printf "Factorial 1: %d\n" (factorial 1)) 
 (printf "Factorial 2: %d\n" (factorial 2)) 
 (printf "Factorial 3: %d\n" (factorial 3)) 
-(printf "Factorial 10: %d\n" (factorial 10))))
+(printf "Factorial 10: %d\n" (factorial 10))
+(return 0)))
  )
 )

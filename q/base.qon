@@ -5,6 +5,7 @@
     (lis struct Box*)
     (str string)
     (i int)
+    (f float)
     (typ string)
     (voi bool)
     (boo bool)
@@ -33,11 +34,16 @@
       (return newb))
     (else
       (set-struct newb typ (get-struct b typ))
+      (set-struct newb voi (get-struct b voi))
+      (set-struct newb boo (get-struct b boo))
       (set-struct newb tag (get-struct b tag))
       (set-struct newb lis (get-struct b lis))
       (set-struct newb str (get-struct b str))
       (set-struct newb i (get-struct b i))
+      (set-struct newb f (get-struct b f))
       (set-struct newb lengt (get-struct b lengt))
+      (set-struct newb car (get-struct b car))
+      (set-struct newb cdr (get-struct b cdr))
       (return newb)))))
 
   (box tern (bool cond list tr list fal) (declare)
@@ -89,7 +95,13 @@
                     (else
                      (if (equalString "int" (boxType a))
                        (then (return (equal (unBoxInt a) (unBoxInt b))))
-                       (else (return false)))))))))))))
+                       (else
+                        (if (equalString "float" (boxType a))
+                          (then
+                           (if (equalString "float" (boxType b))
+                             (then (return (equalf (unBoxFloat a) (unBoxFloat b))))
+                             (else (return false))))
+                          (else (return false)))))))))))))))
 
   (string openBrace () (declare) (body (return "(")))
   (string closeBrace () (declare) (body (return ")")))
@@ -157,6 +169,16 @@
     (set-struct b typ "int")
     (return b)))
 
+  (box
+   boxFloat
+   (float val)
+   (declare (box b nil))
+   (body
+    (set b (makeBox))
+    (set-struct b f val)
+    (set-struct b typ "float")
+    (return b)))
+
   (void assertType (string atype box abox int line string file) (declare)
         (body
          (if (isNil abox)
@@ -180,6 +202,7 @@
   (string unBoxSymbol (box b) (declare) (body (return (get-struct b str))))
   (bool unBoxBool (box b) (declare) (body (return (get-struct b boo))))
   (int unBoxInt (box b) (declare) (body (return (get-struct b i))))
+  (float unBoxFloat (box b) (declare) (body (return (get-struct b f))))
 
   (string stringify_rec (box b) (declare)
           (body
@@ -205,18 +228,21 @@
                     (if (equalString "int" (boxType b))
                       (then (return (intToString (unBoxInt b))))
                       (else
-                       (if (equalString "symbol" (boxType b))
-                         (then (return (unBoxSymbol b)))
+                       (if (equalString "float" (boxType b))
+                         (then (return (floatToString (unBoxFloat b))))
                          (else
-                          (if (equalString "list" (boxType b))
-                            (then
-                             (return
-                              (stringConcatenate "("
-                                                 (stringConcatenate (stringify (car b))
-                                                                    (stringConcatenate " "
-                                                                                       (stringConcatenate (stringify_rec (cdr b)) ")"))))))
+                          (if (equalString "symbol" (boxType b))
+                            (then (return (unBoxSymbol b)))
                             (else
-                             (return (stringConcatenate "Unsupported type in stringify: " (boxType b)))))))))))))))))
+                             (if (equalString "list" (boxType b))
+                               (then
+                                (return
+                                 (stringConcatenate "("
+                                                    (stringConcatenate (stringify (car b))
+                                                                       (stringConcatenate " "
+                                                                                          (stringConcatenate (stringify_rec (cdr b)) ")"))))))
+                               (else
+                                (return (stringConcatenate "Unsupported type in stringify: " (boxType b)))))))))))))))))))
   ;;;;;;;;;;;;;;;;;;
   ;; Tag functions
   ;;;;;;;;;;;;;;;;;;

@@ -190,17 +190,25 @@
    ()
    (declare
     (string testString "Hello from the filesystem!")
+    (box contentsBox nil)
     (string contents ""))
    (body
     (write-file "test.txt" testString)
-    (set contents (read-file "test.txt"))
+    (set contentsBox (read-file "test.txt"))
+    (if (isNil contentsBox)
+      (then
+      (printf "13. fail Read and write files\n")
+      (printf "Expected: %s\n" testString)
+      (printf "Got: nil\n"))
+      (else
+    (set contents (unBoxString contentsBox))
     (if (equalString testString contents)
       (then (printf "13. pass Read and write files\n"))
       (else 
       (printf "13. fail Read and write files\n")
       (printf "Expected: %s\n" testString)
       (printf "Got: %s\n" contents)
-      ))))
+      ))))))
 
 (void test15 ()
    (declare (string a "hello") (string b " world") (string c ""))
@@ -417,7 +425,10 @@
 (void test27 () 
   (declare 
     (string expected  "a b c d e")
+    (string floatExpected "6.5")
+    (string floatResult "")
     (string res "")
+    (box floatBox nil)
     (list variable  (makeList "c "  "d "))
     (list input nil)
   )
@@ -427,6 +438,12 @@
     (if (equalString expected res)
       (then (printf "27. pass Interpolated List\n"))
       (else (printf "27. fail Interpolated List.  expected %s, got %s\n" expected res))
+    )
+    (set floatBox (boxFloat 6.5))
+    (set floatResult (stringify floatBox))
+    (if (equalString floatExpected floatResult)
+      (then (printf "27. pass Float box stringify\n"))
+      (else (printf "27. fail Float box stringify.  expected %s, got %s\n" floatExpected floatResult))
     )
   )
 )

@@ -269,7 +269,7 @@
    (body
     (set tree (loadQuon filename))
     (set tree (insertInclude tree "q/shims/node2.qon"))
-    (set tree (loadIncludes tree))
+    (set tree (loadIncludes tree nil))
     (set tree (macrowalk tree))
     (set replace (symbolList "fprintf" "stderr"))
     (set tree (macrolist tree (stringConcatenate "q" "log") replace))
@@ -299,7 +299,7 @@
       (qlog "Loading shim node2\n")
       (set tree (insertInclude tree "q/shims/node2.qon"))
       (qlog "Loading all includes\n")
-      (set tree (loadIncludes tree))
+      (set tree (loadIncludes tree nil))
       (qlog "Applying macros\n")
       (set tree (macrowalk tree))
       (set replace (symbolList "fprintf" "stderr"))

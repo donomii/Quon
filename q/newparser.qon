@@ -335,10 +335,18 @@
               )))))))
 
     ))
-(list loadQuon (string filename) (declare   (string programStr "")  (list tree nil) )
+(list loadQuon (string filename) (declare   (box programBox nil) (string programStr "")  (list tree nil) )
 (body
 
-    (set programStr (read-file filename))
+    (set programBox (read-file filename))
+    (if (isNil programBox)
+      (then
+        (qlog "Could not read file: ")
+        (qlog filename)
+        (qlog "\n")
+        (exit 1))
+      (else))
+    (set programStr (unBoxString programBox))
     (set tree (readSexpr programStr filename))
 	
   (return tree)
@@ -405,11 +413,7 @@
           (then (return (appendMissingIncludes (cdr candidates) pending seen)))
           (else (return (cons candidate (appendMissingIncludes (cdr candidates) pending seen)))))))))
 
-(list loadIncludes (list tree) (declare)
-  (body
-    (return (loadIncludesSeen tree nil))))
-
-(list loadIncludesSeen (list tree list seen) (declare
+(list loadIncludes (list tree list seen) (declare
   (list newProg nil)
   (string includeFile "") 
   (list functionsCombined nil)
@@ -418,6 +422,7 @@
   (list pendingIncludes nil)
   (list nextIncludes nil)
   (list nextSeen nil)
+  (box contentsBox nil)
   (string contents ""))
 (body
   (if (greaterthan (listLength (getIncludes tree)) 0)
@@ -426,29 +431,34 @@
       (if (stringInList includeFile seen)
         (then
           (set newProg (buildProg (cdr (getIncludes tree)) (getTypes tree) (getFunctions tree)))
-          (return (loadIncludesSeen newProg seen)))
+          (return (loadIncludes newProg seen)))
         (else))
       (set nextSeen (cons (boxString includeFile) seen))
-      (set contents (read-file includeFile))
-      (if (equalString contents "")
+      (set contentsBox (read-file includeFile))
+      (if (isNil contentsBox)
         (then
           (qlog "Could not read include file: ")
           (qlog includeFile)
+          (qlog "\n")
+          (exit 1)
+          (return nil))
+        (else))
+      (set contents (unBoxString contentsBox))
+      (set includeTree (readSexpr contents includeFile))
+      (if (isNil includeTree)
+        (then
+          (qlog "Could not parse include file: " )
+          (qlog includeFile)
+          (qlog "\n")
+          (exit 1)
           (return nil))
         (else
-          (set includeTree (readSexpr contents includeFile))
-          (if (isNil includeTree)
-            (then
-              (qlog "Could not parse include file: " )
-              (qlog includeFile)
-              (return nil))
-            (else
-              (set functionsCombined (concatLists (getFunctions includeTree) (getFunctions tree)))
-              (set typesCombined (concatLists (getTypes includeTree) (getTypes tree)))
-              (set pendingIncludes (cdr (getIncludes tree)))
-              (set nextIncludes (appendMissingIncludes (getIncludes includeTree) pendingIncludes nextSeen))
-              (set newProg (buildProg nextIncludes typesCombined functionsCombined))
-              (return (loadIncludesSeen newProg nextSeen)))))))
+          (set functionsCombined (concatLists (getFunctions includeTree) (getFunctions tree)))
+          (set typesCombined (concatLists (getTypes includeTree) (getTypes tree)))
+          (set pendingIncludes (cdr (getIncludes tree)))
+          (set nextIncludes (appendMissingIncludes (getIncludes includeTree) pendingIncludes nextSeen))
+          (set newProg (buildProg nextIncludes typesCombined functionsCombined))
+          (return (loadIncludes newProg nextSeen)))))
     (else
       (return tree)))))
 

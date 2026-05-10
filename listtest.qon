@@ -4,7 +4,7 @@
     
  (functions
 
-(void test27 () 
+(void listtest27 ()
   (declare 
     (string expected  "a b c d e")
     (string res "")
@@ -24,7 +24,7 @@
 
   (int start () (declare)
        (body
-        (test27)
+        (listtest27)
         (return 0)
         ))
   ))

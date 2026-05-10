@@ -42,6 +42,10 @@
   (body
     (return (binop > a b))))
 
+(bool equalf (float a float b) (declare)
+  (body
+    (return (binop == a b))))
+
 (bool equal (int a int b) (declare)
   (body
     (return (binop == a b))))
@@ -71,13 +75,19 @@
   (body
          (return (sprintf "%d" a))))
 
-(string read_file (string filename) (declare (string contents ""))
+(string floatToString (float a) (declare)
   (body
-         (passthrough "open my $fh, '<', $filename or die 'Cannot open file: ' . $!")
-         (passthrough "local $/= undef")
-         (set contents <$fh>)
-         (close $fh)
-         (return contents)))
+         (return (sprintf "%g" a))))
+
+(box read_file (string filename) (declare (string contents ""))
+  (body
+         (if (passthrough "!open(my $fh, '<', $filename)")
+           (then (return nil))
+           (else
+             (passthrough "local $/= undef")
+             (set contents <$fh>)
+             (close $fh)
+             (return (boxString contents))))))
 
 (void write_file (string filename string data) (declare)
       (body

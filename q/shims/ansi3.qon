@@ -17,6 +17,7 @@
 			(then (return true))
 			(else (return false)))
 ))
+
 (void* pointerAdd (void* a int b) (declare)
 	(body
 		(return (binop + a b))))
@@ -55,6 +56,10 @@
 (int greaterthanf (float a float b) (declare)
 	(body
 		(return (binop > a b))))
+
+(int equalf (float a float b) (declare)
+	(body
+		(return (binop == a b))))
 
 (int equal (int a int b) (declare)
 	(body
@@ -98,6 +103,14 @@
          (return target)
 ))
 
+(char* floatToString (float a) (declare (int len 0)(char* target nil))
+	(body
+         (set len  100)
+         (set target  (calloc len 1))
+         (snprintf target  99  "%g"  a)
+         (return target)
+))
+
 (void* gc_malloc (uint size) (declare)
 	(body
          (return (malloc size))
@@ -124,7 +137,7 @@
          (set (passthrough "array[index]") value)
 ))
 
-(char* read_file (char* filename) (declare (char* buffer nil) (long length 0) (FILE* f nil))
+(box read_file (char* filename) (declare (char* buffer nil) (long length 0) (FILE* f nil))
     	(body
          (set f (fopen filename "rb"))
          (if (ansi3IsNil f)
@@ -141,7 +154,7 @@
               (fclose f)
               ))
              
-         (return buffer)
+         (return (boxString buffer))
 ))
 
 (void write_file (char* filename char* data)   (declare (char* buffer nil) (long length 0) (FILE* f nil))

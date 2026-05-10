@@ -92,6 +92,7 @@
 
   (int start () (declare
     (string filename "")
+    (box inputBox nil)
     (string inputContent "")
     (string convertedContent ""))
     (body
@@ -102,12 +103,13 @@
         (else
           (set filename (getStringArray 1 globalArgs))
           (printf "Reading file: %s\n" filename)
-          (set inputContent (read-file filename))
-          (if (equalString inputContent "")
+          (set inputBox (read-file filename))
+          (if (isNil inputBox)
             (then
-              (printf "Error: Could not read file or file is empty.\n")
+              (printf "Error: Could not read file.\n")
               (return 1))
             (else
+              (set inputContent (unBoxString inputBox))
               (printf "%s\n" inputContent)
               (set convertedContent (convertToSexpr inputContent))
               (printf "%s\n" convertedContent)

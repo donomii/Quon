@@ -181,6 +181,7 @@
 (int start () (declare
   (string inputFilename "")
   (string outputFilename "")
+  (box inputBox nil)
   (string input "")
   (string output ""))
   (body
@@ -198,12 +199,13 @@
             (set outputFilename "")))
         
         (printf "Reading input file: %s\n" inputFilename)
-        (set input (read-file inputFilename))
-        (if (equalString input "")
+        (set inputBox (read-file inputFilename))
+        (if (isNil inputBox)
           (then
-            (printf "Error: Could not read file or file is empty: %s\n" inputFilename)
+            (printf "Error: Could not read file: %s\n" inputFilename)
             (return 1))
           (else
+            (set input (unBoxString inputBox))
             (printf "Converting input to Quon\n")
             (set output (convertToQuon input))
             (if (equalString outputFilename "")
