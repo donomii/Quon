@@ -3,332 +3,353 @@
 
  (functions
 
-(void ansi3displays (string s) (declare)
-	(body
-		(printf "%s" s)
-	)
-)
-
-  (void ansi3FunctionArgs (list tree) (declare)
+  (list ansi3FunctionArgs (list tree) (declare)
    (body
     (if (isEmpty tree)
-      (then (return))
+      (then (return (emptyList)))
       (else
-       (if (equalString (stringify (first tree))  "...")
-           (then (printf "..."))
-           (else
-            (display (ansi3TypeMap (first tree)))
-            (ansi3displays " ")
-            (display (second tree))
-            ))
-       (if ( isNil (cddr tree)) (then ) (else (ansi3displays ", ")))
-       (ansi3FunctionArgs (cddr tree))))))
+       (if (equalString (stringify (first tree)) "...")
+         (then
+          (if (isNil (cddr tree))
+            (then (return (makeList "...")))
+            (else (return (makeList "..." ", " (ansi3FunctionArgs (cddr tree)))))))
+         (else
+          (if (isNil (cddr tree))
+            (then (return (makeList (ansi3TypeMap (first tree)) " " (second tree))))
+            (else
+             (return (makeList
+              (ansi3TypeMap (first tree))
+              " "
+              (second tree)
+              ", "
+              (ansi3FunctionArgs (cddr tree))))))))))))
 
-
-
-  (void ansi3Expression (list tree int indent) (declare (list thing nil))
+  (list ansi3Atom (box tree) (declare)
    (body
-    (if (isList tree)
-		;It is a function call
-      (then
+    (if (equalString "string" (boxType tree))
+      (then (return (makeList "\"" (boxString (stringify tree)) "\"")))
+      (else (return (makeList (ansi3FuncMap tree)))))))
 
-	  (if (equal 1 (listLength  tree))
-				;A function call with no args
+  (list ansi3Expression (list tree int indent) (declare (list thing nil))
+   (body
+    (if (notBool (isList tree))
+      (then (return (ansi3Atom tree)))
+      (else
+       (if (equal 1 (listLength tree))
+         (then
+          (if (equalBox (boxString "return") (car tree))
+            (then (return (makeList (ansi3FuncMap (car tree)))))
+            (else (return (makeList (ansi3FuncMap (car tree)) "()")))))
+         (else
+          (set thing (first tree))
+          (if (equalBox (boxSymbol "get-struct") thing)
+            (then
+             (return (makeList
+              (second tree)
+              "->"
+              (third tree))))
+            (else
+             (if (equalBox (boxSymbol "new") thing)
                (then
-               
-                (display (car  tree))
-				;C does not allow "return();"
-                (if (equalBox
-                     (boxString "return")
-                      (car  tree))
-                  (then )
-                  (else (ansi3displays "()"))))
+                (return (makeList
+                 "malloc(sizeof("
+                 (third tree)
+                 "))")))
                (else
-			   ;Handle special functions
-                (set thing (first   tree))
-                (if (equalBox (boxSymbol "get-struct") thing)
-				;Get a value from a C struct ref
-                  (then
-                   (printf
-                    "%s->%s"
-                    (stringify (second  tree))
-                    (stringify (third  tree))))
+                (if (equalBox (boxSymbol "passthrough") thing)
+                  (then (return (makeList (second tree))))
                   (else
-                   (if (equalBox (boxSymbol "new") thing)
-				   ;Create a new value on the heap
+                   (if (equalBox (boxSymbol "binop") thing)
                      (then
-                      (printf
-                       "malloc(sizeof(%s))"
-                       (stringify  (third tree))))
+                      (return (makeList
+                       "("
+                       (ansi3Expression (third tree) indent)
+                       " "
+                       (second tree)
+                       " "
+                       (ansi3Expression (fourth tree) indent)
+                       ")")))
                      (else
-                      (if (equalBox (boxSymbol "passthrough") thing)
-				   ;Print the second arg directly into the compiler output.  Hope you got it perfectly right!
-                     (then
-                      (printf
-                       "%s"
-                       (stringify  (second tree))))
-                     (else
-                      (if (equalBox (boxSymbol "binop") thing)
-				   ;Print the expression as a binop, i.e. the first element is moved to the middle
-                     (then
-                      (printf "(")
-                      (ansi3Expression (third tree) indent)
-                      (printf
-                       " %s "
-                       (stringify  (second tree)))
-                      (ansi3Expression (fourth tree) indent)
-                      (printf ")")
-                      )
-					   ;It's a normal expression
-                     (else
-                      (printf
-                       "%s("
-                       (stringify
-                        (ansi3FuncMap (car tree))))
-                      (ansi3RecurList (cdr  tree) indent)
-                      (printf ")")))))))))))
+                      (return (makeList
+                       (ansi3FuncMap (car tree))
+                       "("
+                       (ansi3RecurList (cdr tree) indent)
+                       ")"))))))))))))))))
 
-
-
-
-	  )
-
-	  ;It is a variable or literal
-      (else (display (ansi3FuncMap  tree))))))
-
-  (void
-   ansi3RecurList
-   (list expr int indent)
-   (declare)
+  (list ansi3RecurList (list expr int indent) (declare)
    (body
     (if (isEmpty expr)
-      (then (return))
+      (then (return (emptyList)))
       (else
-       (ansi3Expression (car expr) indent)
        (if (isNil (cdr expr))
-         (then (ansi3displays ""))
-         (else (ansi3displays ", ") (ansi3RecurList (cdr expr) indent)))))
-    ))
+         (then (return (ansi3Expression (car expr) indent)))
+         (else
+          (return (makeList
+           (ansi3Expression (car expr) indent)
+           ", "
+           (ansi3RecurList (cdr expr) indent)))))))))
 
-
-
-
-
-  (void ansi3If (list node int indent string functionName) (declare)
+  (list ansi3If (list node int indent string functionName) (declare)
    (body
-    (newLine indent)
-    (ansi3displays "if ( ")
-    (ansi3Expression (second node) 0)
-    (ansi3displays ") {")
-    (ansi3Body (cdr (third node)) (add1 indent) functionName)
-    (newLine indent)
-    (ansi3displays "} else {")
-    (ansi3Body (cdr (fourth node)) (add1 indent) functionName)
-    (newLine indent)
-    (ansi3displays "}")))
+    (return (makeList
+     (listNewLine indent)
+     "if ( "
+     (ansi3Expression (second node) 0)
+     ") {"
+     (ansi3Body (cdr (third node)) (add1 indent) functionName)
+     (listNewLine indent)
+     "} else {"
+     (ansi3Body (cdr (fourth node)) (add1 indent) functionName)
+     (listNewLine indent)
+     "}"))))
 
-  (void ansi3SetStruct (list node int indent) (declare)
+  (list ansi3SetStruct (list node int indent) (declare)
    (body
-    (newLine indent)
-    (printf
-     "%s->%s = "
-     (stringify (second  node))
-     (stringify (third  node)))
-    (ansi3Expression (fourth node) indent)))
+    (return (makeList
+     (listNewLine indent)
+     (second node)
+     "->"
+     (third node)
+     " = "
+     (ansi3Expression (fourth node) indent)))))
 
-  (void ansi3GetStruct (list node int indent) (declare)
+  (list ansi3GetStruct (list node int indent) (declare)
    (body
-    (newLine indent)
-    (printf
-     "%s->%s"
-     (stringify (first  node))
-     (stringify (second  node)))))
+    (return (makeList
+     (listNewLine indent)
+     (first node)
+     "->"
+     (second node)))))
 
-  (void ansi3Set (list node int indent) (declare)
+  (list ansi3Set (list node int indent) (declare)
    (body
-    (newLine indent)
-    (ansi3Expression (first  (cdr node)) indent)
-    (printf " = " )
-    (ansi3Expression (third node) indent)))
+    (return (makeList
+     (listNewLine indent)
+     (ansi3Expression (second node) indent)
+     " = "
+     (ansi3Expression (third node) indent)))))
 
-  (void ansi3Return (list node int indent) (declare)
+  (list ansi3Return (list node int indent) (declare)
    (body
-   ;Stackpop here
+    (if (equal (listLength node) 1)
+      (then (return (makeList (listNewLine indent) "return;")))
+      (else
+       (return (makeList
+        (listNewLine indent)
+        "return "
+        (ansi3Expression (cadr node) indent)
+        ";"))))))
 
+  (list ansi3TraceReturn (list node int indent string functionName) (declare)
+   (body
+    (if releaseMode
+      (then (return (ansi3Return node indent)))
+      (else
+       (if (inList (boxString functionName) (NoStackTrace_list))
+         (then (return (ansi3Return node indent)))
+         (else
+          (return (makeList
+           "\n"
+           (boxString (stringIndent indent))
+           "StackTraceMove(\"out\", \"\", \"\", \"\");\n"
+           (ansi3Return node indent)))))))))
 
-    (newLine indent)
-	(if (equal (listLength node) 1)
-	(then (ansi3displays "return;"))
-	(else
-    (ansi3displays "return ")
-    (ansi3Expression (cadr node) indent)
-	(ansi3displays ";")
-	))))
-
-  (void ansi3Statement (list node int indent string functionname) (declare)
+  (list ansi3Statement (list node int indent string functionName) (declare)
    (body
     (if (equalBox (boxString "set") (first node))
-      (then (ansi3Set node indent))
+      (then (return (makeList (ansi3Set node indent) ";\n")))
       (else
        (if (equalBox (boxString "set-struct") (first node))
-         (then (ansi3SetStruct node indent))
+         (then (return (makeList (ansi3SetStruct node indent) ";\n")))
          (else
           (if (equalBox (boxString "if") (first node))
-            (then (ansi3If node indent functionname))
+            (then (return (makeList (ansi3If node indent functionName) ";\n")))
             (else
              (if (equalBox (boxString "return") (first node))
-               (then 
-                (if (inList (boxString functionname) (NoStackTrace_list))
-                  (then )
-                  (else
-                    (printf "\n")
-                    (printIndent indent)
-                    (printf "%s" "StackTraceMove(\"out\", \"\", \"\", \"\");\n")))
-               (ansi3Return node indent))
+               (then (return (makeList (ansi3TraceReturn node indent functionName) ";\n")))
                (else
-                (newLine indent)
-                (ansi3Expression  node indent)))))))))
-    (ansi3displays ";\n")))
+                (return (makeList
+                 (listNewLine indent)
+                 (ansi3Expression node indent)
+                 ";\n"))))))))))))
 
-  (void ansi3Body (list tree int indent string functionName) (declare (list code nil))
+  (list ansi3StatementTrace (list code int indent string functionName) (declare)
+   (body
+    (if releaseMode
+      (then (return (emptyList)))
+      (else
+       (if (inList (boxString functionName) (NoTrace_list))
+         (then (return (emptyList)))
+         (else
+          (return (makeList
+           "\nif (globalTrace)\n    snprintf(caller, 1024, \"from "
+           (getTagFail (car code) (boxString "filename") (boxString "Unknown file (not provided by parser)"))
+           ":"
+           (getTagFail (car code) (boxString "line") (boxString "Line missing"))
+           "\");\n"))))))))
+
+  (list ansi3StepTrace (int indent) (declare)
+   (body
+    (if releaseMode
+      (then (return (emptyList)))
+      (else
+       (return (makeList
+        (boxString (stringIndent indent))
+        "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n"))))))
+
+  (list ansi3Body (list tree int indent string functionName) (declare (list code nil))
    (body
     (if (isEmpty tree)
-      (then (return))
+      (then (return (emptyList)))
       (else
-       (set code  tree)
-       (if (isNil code)
-       (then)
-       (else
        (set code (car tree))
-       (if (notBool releaseMode)
-       (then
-       
-        (if  (inList (boxString functionName) (NoTrace_list))
-	      (then
-        ;(printf "//Function %s omitted due to the no trace list\n" functionName )
-        )
-        (else  (printf "\nif (globalTrace)\n    snprintf(caller, 1024, \"from %s:%s\");\n"  (stringify (getTagFail (car code)  (boxString "filename")  (boxString "Unknown file (not provided by parser)"))) (stringify (getTagFail (car code) (boxString "line") (boxString "Line missing") ))))
-        )
-        )
-        (else))
-        ))
-        (if (notBool releaseMode) (then
-      (printIndent indent)
-	    (printf "%s" "if (globalStepTrace) printf(\"StepTrace %s:%d\\n\", __FILE__, __LINE__);\n")
-      )(else)
-    )
-       (ansi3Statement code indent functionName)
-       (ansi3Body (cdr tree) indent functionName)))))
+       (return (makeList
+        (ansi3StatementTrace code indent functionName)
+        (ansi3StepTrace indent)
+        (ansi3Statement code indent functionName)
+        (ansi3Body (cdr tree) indent functionName)))))))
 
-  (void ansi3Declarations (list decls int indent) (declare (box decl nil))
+  (list ansi3Declarations (list decls int indent) (declare (box decl nil))
    (body
     (if (isEmpty decls)
-      (then (return))
+      (then (return (emptyList)))
       (else
        (set decl (car decls))
-       (printf
-        "%s %s = "
-        (stringify (ansi3TypeMap (first decl)))
-        (stringify (second decl)))
-       (ansi3Expression (third decl) indent)
-       (printf ";\n")
-       (ansi3Declarations (cdr decls) indent)))))
+       (return (makeList
+        (ansi3TypeMap (first decl))
+        " "
+        (second decl)
+        " = "
+        (ansi3Expression (third decl) indent)
+        ";\n"
+        (ansi3Declarations (cdr decls) indent)))))))
 
-  (void ansi3Function (list node) (declare (box name nil))
+  (list ansi3FunctionTrace (box name) (declare)
    (body
-    (set name  (second node))
-    ;(printf "\n\n//Building function %s from file %s, line: %s" (stringify name) (stringify (getTag name (boxString "filename"))) (stringify (getTag name (boxString "line"))))
-    (newLine 0)
-    (if (isNil node)
-      (then (return))
+    (if releaseMode
+      (then (return (emptyList)))
       (else
-       (newLine 0)
-       (printf
-        "%s %s("
-        (stringify (ansi3TypeMap (first node)))
-        (stringify (second node)))
-       (ansi3FunctionArgs (third node))
-       (printf ") {")
-       (newLine 1)
-       (ansi3Declarations (cdr (fourth node)) 1)
-       (if releaseMode
-       (then (printf ""))
-       (else
-       ;
-        (if (inList  name (NoTrace_list))
-       (then
-       ;(printf "//Function %s omitted due to no trace list\n" (stringify name) )
-       )
-       (else 
-           (printf "\nif (globalTrace)\n    printf(\"%s at %s:%s (%%s)\\n\", caller);\n" (stringify name) (stringify (getTag name (boxString "filename"))) (stringify (getTag name (boxString "line")))))   )))
-       (if releaseMode
-         (then (printf ""))
+       (if (inList name (NoTrace_list))
+         (then (return (emptyList)))
          (else
-          (if (inList  name (NoStackTrace_list))
-          (then )
-          (else
-          (printf "\n  StackTraceMove(\"in\", \"%s\", \"%s\", \"%s\" );\n" (stringify (getTag name (boxString "filename"))) (stringify name) (stringify (getTag name (boxString "line"))) )))
-          ))
-	   ;(display (second(fifth node)))
-       (ansi3Body (cdr (fifth node)) 1 (stringify name))
-   
-       (printf "\n}\n")))))
+          (return (makeList
+           "\nif (globalTrace)\n    printf(\""
+           name
+           " at "
+           (getTag name (boxString "filename"))
+           ":"
+           (getTag name (boxString "line"))
+           " (%s)\\n\", caller);\n"))))))))
 
-  (void ansi3ForwardDeclaration (list node) (declare)
+  (list ansi3FunctionStackTrace (box name) (declare)
    (body
-    (if (isNil node) (then (return)) (else
-       (printf
-        "\n%s %s("
-        (stringify (ansi3TypeMap (first node)))
-        (stringify (second node)))
-       (ansi3FunctionArgs (third node))
-       (ansi3displays ");")))))
+    (if releaseMode
+      (then (return (emptyList)))
+      (else
+       (if (inList name (NoStackTrace_list))
+         (then (return (emptyList)))
+         (else
+          (return (makeList
+           "\n  StackTraceMove(\"in\", \""
+           (getTag name (boxString "filename"))
+           "\", \""
+           name
+           "\", \""
+           (getTag name (boxString "line"))
+           "\" );\n"))))))))
 
-  (void ansi3ForwardDeclarations (list tree) (declare)
+  (list ansi3Function (list node) (declare (box name nil))
    (body
-    (if (isEmpty tree) (then (return)) (else
-       (ansi3ForwardDeclaration (car tree))
-       (ansi3ForwardDeclarations (cdr tree))))))
+    (set name (second node))
+    (if (isNil node)
+      (then (return (emptyList)))
+      (else
+       (return (makeList
+        (listNewLine 0)
+        (listNewLine 0)
+        (ansi3TypeMap (first node))
+        " "
+        (second node)
+        "("
+        (ansi3FunctionArgs (third node))
+        ") {"
+        (listNewLine 1)
+        (ansi3Declarations (cdr (fourth node)) 1)
+        (ansi3FunctionTrace name)
+        (ansi3FunctionStackTrace name)
+        (ansi3Body (cdr (fifth node)) 1 (stringify name))
+        "\n}\n"))))))
 
-  (void ansi3Functions (list tree) (declare)
+  (list ansi3ForwardDeclaration (list node) (declare)
    (body
-    (if (isEmpty tree) (then (return))(else
-		(ansi3Function (car tree)) (ansi3Functions (cdr tree))))))
+    (if (isNil node)
+      (then (return (emptyList)))
+      (else
+       (return (makeList
+        "\n"
+        (ansi3TypeMap (first node))
+        " "
+        (second node)
+        "("
+        (ansi3FunctionArgs (third node))
+        ");"))))))
 
-
-  (void ansi3Includes (list nodes) (declare)
+  (list ansi3ForwardDeclarations (list tree) (declare)
    (body
-    (printf
-     "%s"
-     "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#include <unistd.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n")
-     (printf "%s" "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n")
-))
+    (if (isEmpty tree)
+      (then (return (emptyList)))
+      (else
+       (return (makeList
+        (ansi3ForwardDeclaration (car tree))
+        (ansi3ForwardDeclarations (cdr tree))))))))
 
-  (void ansi3TypeDecl (list l) (declare)
+  (list ansi3Functions (list tree) (declare)
+   (body
+    (if (isEmpty tree)
+      (then (return (emptyList)))
+      (else
+       (return (makeList
+        (ansi3Function (car tree))
+        (ansi3Functions (cdr tree))))))))
+
+  (list ansi3Includes (list nodes) (declare)
+   (body
+    (return (stringList
+     "\n//Start include block\n#include <stdarg.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#include <unistd.h>\n\ntypedef int*  array;\ntypedef int bool;\n#define true 1\n#define false 0\n\n\n\nint start();  //Forwards declare the user's main routine\nchar* caller;\nchar** globalArgs;\nint globalArgsCount;\nbool globalTrace = false;\nbool globalStepTrace = false;\nbool releaseMode = false;\n\n"
+     "void qlog(const char* format, ...) { va_list args; va_start (args, format); vfprintf (stderr, format, args); va_end (args); }\n//End include block\n"))))
+
+  (list ansi3TypeDecl (list l) (declare)
    (body
     (if (> (listLength l) 2)
       (then
-       (printIndent 1)
-       (printf
-        "%s %s %s;\n"
-        (stringify (second l))
-        (stringify (ansi3TypeMap (listLast l)))
-        (stringify (first l))))
+       (return (makeList
+        (boxString (stringIndent 1))
+        (second l)
+        " "
+        (ansi3TypeMap (listLast l))
+        " "
+        (first l)
+        ";\n")))
       (else
-       (printIndent 1)
-       (printf
-        "%s %s;\n"
-        (stringify (ansi3TypeMap (listLast l)))
-        (stringify (car l)))))))
+       (return (makeList
+        (boxString (stringIndent 1))
+        (ansi3TypeMap (listLast l))
+        " "
+        (car l)
+        ";\n"))))))
 
-  (void ansi3StructComponents (list node) (declare)
+  (list ansi3StructComponents (list node) (declare)
    (body
     (if (isEmpty node)
-      (then (return))
-      (else (ansi3TypeDecl (car node)) (ansi3StructComponents (cdr node))))))
+      (then (return (emptyList)))
+      (else
+       (return (makeList
+        (ansi3TypeDecl (car node))
+        (ansi3StructComponents (cdr node))))))))
 
-  (void ansi3Struct (list node) (declare)
-   (body (ansi3StructComponents (cdr  node))))
+  (list ansi3Struct (list node) (declare)
+   (body
+    (return (ansi3StructComponents (cdr node)))))
 
   (box ansi3TypeMap (box aSym) (declare (list symMap nil))
    (body
@@ -365,65 +386,82 @@
               (boxSymbol "string-length")
               (boxSymbol "string_length")
               (alistCons (boxSymbol "nil") (boxSymbol "NULL") nil))))))))
-
        (if (truthy (assoc (stringify aSym) symMap))
          (then (return (cdr (assoc (stringify aSym) symMap))))
          (else (return aSym))))
       (else (return aSym)))))
 
-  (void ansi3Type (list node) (declare)
+  (list ansi3Type (list node) (declare)
    (body
-    (if (isList  (second node))
+    (if (isList (second node))
       (then
-       (printf "\ntypedef struct %s {\n" (stringify (first  node)))
-       (ansi3Struct  (second node))
-       (printf "\n} %s;\n" (stringify (first  node))))
-      (else (ansi3displays "typedef ") (ansi3TypeDecl  node)))
-    ))
+       (return (makeList
+        "\ntypedef struct "
+        (first node)
+        " {\n"
+        (ansi3Struct (second node))
+        "\n} "
+        (first node)
+        ";\n")))
+      (else
+       (return (makeList
+        "typedef "
+        (ansi3TypeDecl node)))))))
 
-  (void ansi3Types (list nodes) (declare)
+  (list ansi3Types (list nodes) (declare)
    (body
     (if (isEmpty nodes)
-      (then (return))
-      (else  (ansi3Type (car nodes)) (ansi3Types (cdr nodes))))))
+      (then (return (emptyList)))
+      (else
+       (return (makeList
+        (ansi3Type (car nodes))
+        (ansi3Types (cdr nodes))))))))
 
+  (list ansi3LoadProgram (string filename) (declare (list tree nil)(list replace nil))
+   (body
+    (set tree (loadQuon filename))
+    (set tree (buildProg (cons (boxString "q/shims/ansi3.qon") (getIncludes tree)) (getTypes tree) (getFunctions tree)))
+    (set tree (loadIncludes tree))
+    (set tree (macrowalk tree))
+    (set replace (symbolList "fprintf" "stderr"))
+    (set tree (macrolist tree (stringConcatenate "q" "log") replace))
+    (return tree)))
 
+  (list ansi3ProgramTree (list tree) (declare)
+   (body
+    (return (makeList
+     (ansi3Includes (cdr (first tree)))
+     (ansi3Types (cdr (second tree)))
+     "Box* globalStackTrace = NULL;\n"
+     "\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n"
+     (ansi3ForwardDeclarations (cdr (third tree)))
+     "\n\n//End forward declarations\n\n"
+     (ansi3Functions (cdr (third tree)))
+     "\n"))))
 
+  (string ansi3Program (list tree) (declare)
+   (body
+    (return (ListToString (flatten (ansi3ProgramTree tree)) 0 true false))))
 
+  (string ansi3CompileString (string filename) (declare)
+   (body
+    (return (ansi3Program (ansi3LoadProgram filename)))))
 
-(void ansi3Compile (string filename) (declare (list tree nil)(list replace nil))
-    (body
+  (void ansi3Compile (string filename) (declare (list tree nil)(list replace nil))
+   (body
+    (qlog "//Scanning file...%s\n" filename)
+    (set tree (loadQuon filename))
+    (qlog "//Building sexpr\n")
+    (qlog "Loading shim ansi3\n")
+    (set tree (buildProg (cons (boxString "q/shims/ansi3.qon") (getIncludes tree)) (getTypes tree) (getFunctions tree)))
+    (qlog "Loading all includes\n")
+    (set tree (loadIncludes tree))
+    (qlog "Applying macros\n")
+    (set tree (macrowalk tree))
+    (set replace (symbolList "fprintf" "stderr"))
+    (set tree (macrolist tree (stringConcatenate "q" "log") replace))
+    (qlog "//Printing program\n")
+    (printf "%s" (ansi3Program tree))
+    (qlog "//Done printing program\n")))
 
-
-
-   	(qlog "//Scanning file...%s\n" filename)
-
-	(set tree (loadQuon filename))
-   	(qlog "//Building sexpr\n")
-
-(qlog "Loading shim ansi3\n")
-  (set tree (buildProg (cons (boxString "q/shims/ansi3.qon") (getIncludes tree)) (getTypes tree) (getFunctions tree))) ;FIXME check includes are recursive
-(qlog "Loading all includes\n")
-	(set tree (loadIncludes tree))
-(qlog "Applying macros\n")
-	(set tree (macrowalk tree))
-        (set replace (symbolList "fprintf" "stderr"))
-       (set tree (macrolist tree (stringConcatenate "q" "log") replace))
-
-
-
-   (qlog "//Printing program\n")
-
-    (ansi3Includes (cdr (first tree)))
-    (ansi3Types (cdr (second tree)))
-	;(display (cdr (second tree)))(exit 1)
-    (ansi3displays "Box* globalStackTrace = NULL;\n")
-    (ansi3displays
-     "\nbool isNil(list p) {\n    return p == NULL;\n}\n\n\n//Forward declarations\n")
-    (ansi3ForwardDeclarations (cdr (third tree)))
-    (ansi3displays "\n\n//End forward declarations\n\n")
-    (ansi3Functions (cdr (third tree)))
-    (ansi3displays "\n")
-   (qlog "//Done printing program\n")
-))
-  ))
+ ))

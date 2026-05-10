@@ -18,6 +18,10 @@ Captured May 9, 2026.
 - Rename awkward constructs like `ternlist` and `chooseBox`.
 - Make the language easier to change.
 - Harden the parser so malformed forms error and quit properly instead of being passed to backends as strange trees.
+- Fix import/module resolution.
+  - Today, the top-level program has to import every library and sub-library directly, or the build fails.
+  - Handle modules importing their own libraries, either with a pre-pass that gathers the full import closure or by patching the program tree as imports are encountered.
+  - This may need real modules and namespaces first.
 
 ## Backends
 
