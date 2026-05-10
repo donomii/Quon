@@ -21,7 +21,8 @@ Usage: $0 [--outdir DIR] [program.qon ...]
 Compiles each check program with every live bootstrap backend, writes every
 generated target backend to DIR, and prints pairwise comparison matrices.
 For compiler.qon, generated compiler outputs are also run with --test.
-For other programs, generated outputs are syntax/build checked but not run.
+For other programs, generated outputs are syntax/build checked, run, and
+their stdout is compared across all target/backend combinations.
 
 If no check program is provided, compiler.qon is checked.
 USAGE
@@ -136,6 +137,22 @@ run_logged_quiet() {
   fi
 }
 
+run_stdout_quiet() {
+  label="$1"
+  stdout="$2"
+  log="$3"
+  shift 3
+
+  if "$@" >"$stdout" 2>"$log"; then
+    return 0
+  else
+    printf "%-64sFAIL\n" "$label"
+    echo "Log: $log" >&2
+    sed -n '1,160p' "$log" >&2
+    return 1
+  fi
+}
+
 prepare_java_bootstrap() {
   JAVA_CLASSES="$OUTDIR/java-bootstrap-classes"
   mkdir -p "$JAVA_CLASSES"
@@ -238,6 +255,35 @@ verify_artifact() {
   esac
 }
 
+run_generated_program() {
+  backend="$1"
+  target="$2"
+  artifact="$3"
+  target_dir="$4"
+  stdout="$target_dir/$backend.stdout"
+  log="$target_dir/$backend.run.log"
+
+  case "$target" in
+    ansi3)
+      run_stdout_quiet "run $backend -> $target" "$stdout" "$log" "$target_dir/$backend.bin"
+      ;;
+    perl)
+      run_stdout_quiet "run $backend -> $target" "$stdout" "$log" perl "$artifact"
+      ;;
+    java)
+      run_stdout_quiet "run $backend -> $target" "$stdout" "$log" \
+        java -Xss100M -cp "$target_dir/$backend.classes" QuonProgram
+      ;;
+    node2)
+      run_stdout_quiet "run $backend -> $target" "$stdout" "$log" node "$artifact"
+      ;;
+    *)
+      echo "Unknown target: $target" >&2
+      exit 2
+      ;;
+  esac
+}
+
 compare_target() {
   program="$1"
   target="$2"
@@ -263,6 +309,38 @@ compare_target() {
       else
         print_cell "DIFF"
         DIFFS=1
+      fi
+    done
+    printf "\n"
+  done
+}
+
+compare_runtime_outputs() {
+  program="$1"
+  program_dir="$2"
+  baseline_target="${TARGETS[0]}"
+  baseline_backend="${BACKENDS[0]}"
+  baseline="$program_dir/$baseline_target/$baseline_backend.stdout"
+
+  printf "\nRuntime stdout matrix: %s (baseline %s/%s)\n" "$program" "$baseline_target" "$baseline_backend"
+  printf "%${CELL_WIDTH}s" ""
+  for col in "${BACKENDS[@]}"; do
+    print_cell "$col"
+  done
+  printf "\n"
+
+  for target in "${TARGETS[@]}"; do
+    printf "%${CELL_WIDTH}s" "$target"
+    for backend in "${BACKENDS[@]}"; do
+      stdout="$program_dir/$target/$backend.stdout"
+      if [ "$target" = "$baseline_target" ] && [ "$backend" = "$baseline_backend" ]; then
+        print_cell "-"
+      elif cmp -s "$baseline" "$stdout"; then
+        print_cell "$MATCH_MARK"
+      else
+        print_cell "DIFF"
+        DIFFS=1
+        diff -u "$baseline" "$stdout" >"$program_dir/runtime-$target-$backend.diff" || true
       fi
     done
     printf "\n"
@@ -304,8 +382,15 @@ check_program() {
     for backend in "${BACKENDS[@]}"; do
       artifact="$target_dir/$backend.$ext"
       verify_artifact "$backend" "$target" "$artifact" "$program" "$target_dir"
+      if ! is_compiler_program "$program"; then
+        run_generated_program "$backend" "$target" "$artifact" "$target_dir"
+      fi
     done
   done
+
+  if ! is_compiler_program "$program"; then
+    compare_runtime_outputs "$program" "$program_dir"
+  fi
 }
 
 printf "Output directory: %s\n" "$OUTDIR"
