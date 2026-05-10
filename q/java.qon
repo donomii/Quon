@@ -1,0 +1,412 @@
+((includes)
+ (types)
+
+ (functions
+
+  (list javaFunctionArgs (list tree) (declare)
+   (body
+    (if (isEmpty tree)
+      (then (return (emptyList)))
+      (else
+       (if (equalString (stringify (first tree)) "...")
+         (then
+          (if (isNil (cddr tree))
+            (then (return (makeList "Object... args")))
+            (else (return (makeList "Object... args, " (javaFunctionArgs (cddr tree)))))))
+         (else
+          (if (isNil (cddr tree))
+            (then (return (makeList (javaTypeMap (first tree)) " " (second tree))))
+            (else
+             (return (makeList
+              (javaTypeMap (first tree))
+              " "
+              (second tree)
+              ", "
+              (javaFunctionArgs (cddr tree))))))))))))
+
+  (list javaAtom (box tree) (declare)
+   (body
+    (if (equalString "string" (boxType tree))
+      (then (return (makeList "\"" (boxString (stringify tree)) "\"")))
+      (else (return (makeList (javaFuncMap tree)))))))
+
+  (list javaExpression (list tree int indent) (declare (list thing nil))
+   (body
+    (if (notBool (isList tree))
+      (then (return (javaAtom tree)))
+      (else
+       (if (equal 1 (listLength tree))
+         (then
+          (if (equalBox (boxString "return") (car tree))
+            (then (return (makeList (javaFuncMap (car tree)))))
+            (else (return (makeList (javaFuncMap (car tree)) "()")))))
+         (else
+          (set thing (first tree))
+          (if (equalBox (boxSymbol "get-struct") thing)
+            (then
+             (return (makeList
+              (javaExpression (second tree) indent)
+              "."
+              (third tree))))
+            (else
+             (if (equalBox (boxSymbol "new") thing)
+               (then
+                (return (makeList
+                 "new "
+                 (third tree)
+                 "()")))
+               (else
+                (if (equalBox (boxSymbol "passthrough") thing)
+                  (then (return (makeList (second tree))))
+                  (else
+                   (if (equalBox (boxSymbol "binop") thing)
+                     (then
+                      (return (makeList
+                       "("
+                       (javaExpression (third tree) indent)
+                       " "
+                       (second tree)
+                       " "
+                       (javaExpression (fourth tree) indent)
+                       ")")))
+                     (else
+                      (return (makeList
+                       (javaFuncMap (car tree))
+                       "("
+                       (javaRecurList (cdr tree) indent)
+                       ")"))))))))))))))))
+
+  (list javaRecurList (list expr int indent) (declare)
+   (body
+    (if (isEmpty expr)
+      (then (return (emptyList)))
+      (else
+       (if (isNil (cdr expr))
+         (then (return (javaExpression (car expr) indent)))
+         (else
+          (return (makeList
+           (javaExpression (car expr) indent)
+           ", "
+           (javaRecurList (cdr expr) indent)))))))))
+
+  (list javaIf (list node int indent string functionName) (declare)
+   (body
+    (return (makeList
+     (listNewLine indent)
+     "if ( "
+     (javaExpression (second node) 0)
+     ") {"
+     (javaBody (cdr (third node)) (add1 indent) functionName)
+     (listNewLine indent)
+     "} else {"
+     (javaBody (cdr (fourth node)) (add1 indent) functionName)
+     (listNewLine indent)
+     "}"))))
+
+  (list javaSetStruct (list node int indent) (declare)
+   (body
+    (return (makeList
+     (listNewLine indent)
+     (javaExpression (second node) indent)
+     "."
+     (third node)
+     " = "
+     (javaExpression (fourth node) indent)))))
+
+  (list javaSet (list node int indent) (declare)
+   (body
+    (return (makeList
+     (listNewLine indent)
+     (javaExpression (second node) indent)
+     " = "
+     (javaExpression (third node) indent)))))
+
+  (list javaReturn (list node int indent) (declare)
+   (body
+    (if (equal (listLength node) 1)
+      (then (return (makeList (listNewLine indent) "return")))
+      (else
+       (return (makeList
+        (listNewLine indent)
+        "return "
+        (javaExpression (cadr node) indent)))))))
+
+  (list javaStatement (list node int indent string functionName) (declare)
+   (body
+    (if (equalBox (boxString "set") (first node))
+      (then (return (makeList (javaSet node indent) ";\n")))
+      (else
+       (if (equalBox (boxString "set-struct") (first node))
+         (then (return (makeList (javaSetStruct node indent) ";\n")))
+         (else
+          (if (equalBox (boxString "if") (first node))
+            (then (return (makeList (javaIf node indent functionName) ";\n")))
+            (else
+             (if (equalBox (boxString "return") (first node))
+               (then (return (makeList (javaReturn node indent) ";\n")))
+               (else
+                (return (makeList
+                 (listNewLine indent)
+                 (javaExpression node indent)
+                 ";\n"))))))))))))
+
+  (list javaBody (list tree int indent string functionName) (declare (list code nil))
+   (body
+    (if (isEmpty tree)
+      (then (return (emptyList)))
+      (else
+       (set code (car tree))
+       (return (makeList
+        (javaStatement code indent functionName)
+        (javaBody (cdr tree) indent functionName)))))))
+
+  (list javaDeclarations (list decls int indent) (declare (box decl nil))
+   (body
+    (if (isEmpty decls)
+      (then (return (emptyList)))
+      (else
+       (set decl (car decls))
+       (return (makeList
+        (javaTypeMap (first decl))
+        " "
+        (second decl)
+        " = "
+        (javaExpression (third decl) indent)
+        ";\n"
+        (javaDeclarations (cdr decls) indent)))))))
+
+  (list javaFunction (list node) (declare (box name nil))
+   (body
+    (set name (second node))
+    (if (isNil node)
+      (then (return (emptyList)))
+      (else
+       (return (makeList
+        (listNewLine 0)
+        (listNewLine 0)
+        (javaTypeMap (first node))
+        " "
+        (second node)
+        "("
+        (javaFunctionArgs (third node))
+        ") {"
+        (listNewLine 1)
+        (javaDeclarations (cdr (fourth node)) 1)
+        (javaBody (cdr (fifth node)) 1 (stringify name))
+        "\n}\n"))))))
+
+  (list javaFunctions (list tree) (declare)
+   (body
+    (if (isEmpty tree)
+      (then (return (emptyList)))
+      (else
+       (return (makeList
+        (javaFunction (car tree))
+        (javaFunctions (cdr tree))))))))
+
+  (list javaIncludes (list nodes) (declare)
+   (body
+    (return (stringList
+     "import java.nio.charset.StandardCharsets;\n"
+     "import java.nio.file.Files;\n"
+     "import java.nio.file.Paths;\n"
+     "import java.util.HashMap;\n\n"
+     "class QuonProgram {\n"
+     "  boolean globalTrace = false;\n"
+     "  boolean globalStepTrace = false;\n"
+     "  boolean releaseMode = false;\n"
+     "  Box globalStackTrace = null;\n"
+     "  String caller = \"\";\n"
+     "  String[] globalArgs = new String[0];\n"
+     "  int globalArgsCount = 0;\n\n"
+     "  Object stderr = new Object();\n\n"
+     "  void fprintf(Object stream, String format, Object... args) {\n"
+     "    if (args.length == 0) {\n"
+     "      System.err.print(format);\n"
+     "    } else {\n"
+     "      System.err.printf(format, args);\n"
+     "    }\n"
+     "  }\n\n"
+     "  void exit(int code) {\n"
+     "    System.exit(code);\n"
+     "  }\n\n"
+     "  String readFileUnchecked(String filename) {\n"
+     "    try {\n"
+     "      return Files.readString(Paths.get(filename));\n"
+     "    } catch (Exception e) {\n"
+     "      throw new RuntimeException(\"Could not read file: \" + filename, e);\n"
+     "    }\n"
+     "  }\n\n"
+     "  void writeFileUnchecked(String filename, String data) {\n"
+     "    try {\n"
+     "      Files.write(Paths.get(filename), data.getBytes(StandardCharsets.UTF_8));\n"
+     "    } catch (Exception e) {\n"
+     "      throw new RuntimeException(\"Could not write file: \" + filename, e);\n"
+     "    }\n"
+     "  }\n"))))
+
+  (box javaTypeMap (box aSym) (declare (list symMap nil))
+   (body
+    (set
+     symMap
+     (alistCons (boxSymbol "pair") (boxSymbol "Box")
+      (alistCons (boxSymbol "box") (boxSymbol "Box")
+       (alistCons (boxSymbol "list") (boxSymbol "Box")
+        (alistCons (boxSymbol "Box*") (boxSymbol "Box")
+         (alistCons (boxSymbol "struct") (boxSymbol "")
+          (alistCons (boxSymbol "bool") (boxSymbol "boolean")
+           (alistCons (boxSymbol "uint") (boxSymbol "int")
+            (alistCons (boxSymbol "float") (boxSymbol "double")
+             (alistCons (boxSymbol "stringArray") (boxSymbol "String[]")
+              (alistCons (boxSymbol "array") (boxSymbol "String[]")
+               (alistCons (boxSymbol "hashmap") (boxSymbol "HashMap<String, String>")
+                (alistCons (boxSymbol "string") (boxSymbol "String") nil)))))))))))))
+    (if (truthy (assoc (stringify aSym) symMap))
+      (then (return (cdr (assoc (stringify aSym) symMap))))
+      (else (return aSym)))))
+
+  (box javaFuncMap (box aSym) (declare (list symMap nil))
+   (body
+    (if (equalString "symbol" (boxType aSym))
+      (then
+       (set
+        symMap
+        (alistCons
+         (boxSymbol "printf")
+         (boxSymbol "System.out.printf")
+         (alistCons
+          (boxSymbol (stringConcatenate "q" "log"))
+          (boxSymbol "System.err.printf")
+          (alistCons
+           (boxSymbol "=")
+           (boxSymbol "equal")
+           (alistCons
+            (boxSymbol "sub-string")
+            (boxSymbol "sub_string")
+            (alistCons
+             (boxSymbol "read-file")
+             (boxSymbol "read_file")
+             (alistCons
+              (boxSymbol "write-file")
+              (boxSymbol "write_file")
+              (alistCons
+               (boxSymbol ">")
+               (boxSymbol "greaterthan")
+               (alistCons
+                (boxSymbol "string-length")
+                (boxSymbol "string_length")
+                (alistCons (boxSymbol "nil") (boxSymbol "null") nil))))))))))
+       (if (truthy (assoc (stringify aSym) symMap))
+         (then (return (cdr (assoc (stringify aSym) symMap))))
+         (else (return aSym))))
+      (else (return aSym)))))
+
+  (list javaTypeDecl (list l) (declare)
+   (body
+    (if (> (listLength l) 2)
+      (then
+       (return (makeList
+        (boxString (stringIndent 1))
+        (javaTypeMap (listLast l))
+        " "
+        (first l)
+        ";\n")))
+      (else
+       (return (makeList
+        (boxString (stringIndent 1))
+        (javaTypeMap (listLast l))
+        " "
+        (car l)
+        ";\n"))))))
+
+  (list javaStructComponents (list node) (declare)
+   (body
+    (if (isEmpty node)
+      (then (return (emptyList)))
+      (else
+       (return (makeList
+        (javaTypeDecl (car node))
+        (javaStructComponents (cdr node))))))))
+
+  (list javaStruct (list node) (declare)
+   (body
+    (return (javaStructComponents (cdr node)))))
+
+  (list javaType (list node) (declare)
+   (body
+    (if (isList (second node))
+      (then
+       (return (makeList
+        "\nclass "
+        (first node)
+        " {\n"
+        (javaStruct (second node))
+        "}\n")))
+      (else (return (emptyList))))))
+
+  (list javaTypes (list nodes) (declare)
+   (body
+    (if (isEmpty nodes)
+      (then (return (emptyList)))
+      (else
+       (return (makeList
+        (javaType (car nodes))
+        (javaTypes (cdr nodes))))))))
+
+  (list javaMainEntry () (declare)
+   (body
+    (return (stringList
+     "\npublic static void main(String[] args) {\n"
+     "  QuonProgram program = new QuonProgram();\n"
+     "  program.globalArgs = new String[args.length + 1];\n"
+     "  program.globalArgs[0] = \"fixmeprogname\";\n"
+     "  System.arraycopy(args, 0, program.globalArgs, 1, args.length);\n"
+     "  program.globalArgsCount = program.globalArgs.length;\n"
+     "  program.start();\n"
+     "}\n"
+     "}\n"))))
+
+  (list javaLoadProgram (string filename) (declare (list tree nil)(list replace nil))
+   (body
+    (set tree (loadQuon filename))
+    (set tree (buildProg (cons (boxString "q/shims/java.qon") (getIncludes tree)) (getTypes tree) (getFunctions tree)))
+    (set tree (loadIncludes tree))
+    (set tree (macrowalk tree))
+    (set replace (symbolList "fprintf" "stderr"))
+    (set tree (macrolist tree (stringConcatenate "q" "log") replace))
+    (return tree)))
+
+  (list javaProgramTree (list tree) (declare)
+   (body
+    (return (makeList
+     (javaIncludes (cdr (first tree)))
+     (javaTypes (cdr (second tree)))
+     (javaFunctions (cdr (third tree)))
+     (javaMainEntry)
+     "\n"))))
+
+  (string javaProgram (list tree) (declare)
+   (body
+    (return (ListToString (flatten (javaProgramTree tree)) 0 true false))))
+
+  (string javaCompileString (string filename) (declare)
+   (body
+    (return (javaProgram (javaLoadProgram filename)))))
+
+  (void javaCompile (string filename) (declare (list tree nil)(list replace nil))
+   (body
+    (qlog "//Scanning file...%s\n" filename)
+    (set tree (loadQuon filename))
+    (qlog "Loading shim java\n")
+    (set tree (buildProg (cons (boxString "q/shims/java.qon") (getIncludes tree)) (getTypes tree) (getFunctions tree)))
+    (qlog "Loading all includes\n")
+    (set tree (loadIncludes tree))
+    (qlog "Applying macros\n")
+    (set replace (symbolList "fprintf" "stderr"))
+    (set tree (macrowalk tree))
+    (set tree (macrolist tree (stringConcatenate "q" "log") replace))
+    (qlog "//Printing program\n")
+    (printf "%s" (javaProgram tree))
+    (qlog "//Done printing program\n")))
+
+ ))
