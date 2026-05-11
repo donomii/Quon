@@ -481,7 +481,7 @@ Box replace = null;
 
   fprintf(stderr, "//Printing program\n");
 
-  System.out.printf("%s", node2Program(tree));
+  printStringTree(node2ProgramTree(tree));
 
   fprintf(stderr, "//Done printing program\n");
 
@@ -1196,6 +1196,1157 @@ Box input = null;
 }
 
 
+void test28() {
+  Box splitExpected = null;
+Box splitResult = null;
+
+  if ( equalString("aXYZc", stringReplace("b", "XYZ", "abc"))) {
+    System.out.printf("28.1 pass stringReplace\n");
+
+  } else {
+    System.out.printf("28.1 fail stringReplace\n");
+
+  }
+
+  if ( equalString("abc", stringTrim(" abc "))) {
+    System.out.printf("28.2 pass stringTrim\n");
+
+  } else {
+    System.out.printf("28.2 fail stringTrim\n");
+
+  }
+
+  splitExpected = cons(boxString("a"), cons(boxString("b"), null));
+
+  splitResult = stringSplit("a,b", ",");
+
+  if ( equalList(splitExpected, splitResult)) {
+    System.out.printf("28.3 pass stringSplit\n");
+
+  } else {
+    System.out.printf("28.3 fail stringSplit\n");
+
+  }
+
+}
+
+
+String haskellBackslash() {
+  
+  return character(92);
+
+}
+
+
+String haskellDoubleQuote() {
+  
+  return character(34);
+
+}
+
+
+String haskellEscapedBackslash() {
+  
+  return stringConcatenate(haskellBackslash(), haskellBackslash());
+
+}
+
+
+String haskellEscapedDoubleQuote() {
+  
+  return stringConcatenate(haskellBackslash(), haskellDoubleQuote());
+
+}
+
+
+String haskellEscapeString(String s) {
+  
+  s = stringReplace(character(10), stringConcatenate(haskellBackslash(), "n"), s);
+
+  s = stringReplace(character(13), stringConcatenate(haskellBackslash(), "r"), s);
+
+  s = stringReplace(character(9), stringConcatenate(haskellBackslash(), "t"), s);
+
+  return s;
+
+}
+
+
+String haskellSafeNameString(String name) {
+  
+  if ( equalString(name, "case")) {
+    return "caseValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "class")) {
+    return "classValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "data")) {
+    return "dataValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "default")) {
+    return "defaultValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "deriving")) {
+    return "derivingValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "do")) {
+    return "doValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "else")) {
+    return "elseValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "foreign")) {
+    return "foreignValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "if")) {
+    return "ifValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "import")) {
+    return "importValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "in")) {
+    return "inValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "infix")) {
+    return "infixValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "infixl")) {
+    return "infixlValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "infixr")) {
+    return "infixrValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "instance")) {
+    return "instanceValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "let")) {
+    return "letValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "module")) {
+    return "moduleValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "newtype")) {
+    return "newtypeValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "of")) {
+    return "ofValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "then")) {
+    return "thenValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "type")) {
+    return "typeValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "where")) {
+    return "whereValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "id")) {
+    return "qid";
+
+  } else {
+  }
+
+  if ( equalString(name, "old")) {
+    return "oldValue";
+
+  } else {
+  }
+
+  if ( equalString(name, "new")) {
+    return "newValue";
+
+  } else {
+  }
+
+  if ( haskellStringStartsWith(name, "-")) {
+    return name;
+
+  } else {
+  }
+
+  if ( equalString(name, "StringListJoinRec")) {
+    return "stringListJoinRec";
+
+  } else {
+  }
+
+  if ( equalString(name, "StringListJoin")) {
+    return "stringListJoin";
+
+  } else {
+  }
+
+  if ( equalString(name, "ListToBoxString")) {
+    return "listToBoxString";
+
+  } else {
+  }
+
+  if ( equalString(name, "ListToString")) {
+    return "listToString";
+
+  } else {
+  }
+
+  if ( equalString(name, "StackTraceMove")) {
+    return "stackTraceMove";
+
+  } else {
+  }
+
+  if ( equalString(name, "StackTracePrint")) {
+    return "stackTracePrint";
+
+  } else {
+  }
+
+  if ( equalString(name, "StackTracePrintHelper")) {
+    return "stackTracePrintHelper";
+
+  } else {
+  }
+
+  if ( equalString(name, "NoStackTrace_list")) {
+    return "noStackTrace_list";
+
+  } else {
+  }
+
+  if ( equalString(name, "NoTrace_list")) {
+    return "noTrace_list";
+
+  } else {
+  }
+
+  name = stringReplace("-", "_", name);
+
+  name = stringReplace("?", "_q", name);
+
+  name = stringReplace("!", "_bang", name);
+
+  return name;
+
+}
+
+
+Box haskellSafeName(Box aSym) {
+  
+  return boxSymbol(haskellSafeNameString(stringify(aSym)));
+
+}
+
+
+String haskellFieldName(Box aSym) {
+  
+  return stringConcatenate("qf_", haskellSafeNameString(stringify(aSym)));
+
+}
+
+
+String haskellNewName(Box aSym) {
+  
+  return stringConcatenate("new", stringify(aSym));
+
+}
+
+
+boolean haskellStringEndsWith(String s, String suffix) {
+  int start = 0;
+
+  if ( greaterthan(string_length(suffix), string_length(s))) {
+    return false;
+
+  } else {
+    start = sub(string_length(s), string_length(suffix));
+
+    return equalString(sub_string(s, start, string_length(suffix)), suffix);
+
+  }
+
+}
+
+
+boolean haskellStringStartsWith(String s, String prefix) {
+  
+  if ( greaterthan(string_length(prefix), string_length(s))) {
+    return false;
+
+  } else {
+    return equalString(sub_string(s, 0, string_length(prefix)), prefix);
+
+  }
+
+}
+
+
+Box haskellPointerBase(Box aSym) {
+  String name = "";
+
+  name = stringify(aSym);
+
+  if ( haskellStringEndsWith(name, "*")) {
+    return boxSymbol(sub_string(name, 0, sub1(string_length(name))));
+
+  } else {
+    return aSym;
+
+  }
+
+}
+
+
+boolean haskellTypeIsPointer(Box aSym) {
+  String mapped = "";
+
+  mapped = stringify(haskellTypeMap(aSym));
+
+  return haskellStringStartsWith(mapped, "Maybe ");
+
+}
+
+
+Box haskellTypeMap(Box aSym) {
+  Box symMap = null;
+String name = "";
+
+  symMap = alistCons(boxSymbol("pair"), boxSymbol("Maybe Box"), alistCons(boxSymbol("box"), boxSymbol("Maybe Box"), alistCons(boxSymbol("list"), boxSymbol("Maybe Box"), alistCons(boxSymbol("Box*"), boxSymbol("Maybe Box"), alistCons(boxSymbol("Pair"), boxSymbol("Box"), alistCons(boxSymbol("struct"), boxSymbol(""), alistCons(boxSymbol("bool"), boxSymbol("Bool"), alistCons(boxSymbol("uint"), boxSymbol("Int"), alistCons(boxSymbol("int"), boxSymbol("Int"), alistCons(boxSymbol("float"), boxSymbol("Double"), alistCons(boxSymbol("void"), boxSymbol("()"), alistCons(boxSymbol("stringArray"), boxSymbol("[String]"), alistCons(boxSymbol("array"), boxSymbol("[String]"), alistCons(boxSymbol("hashmap"), boxSymbol("IORef [(String, String)]"), alistCons(boxSymbol("string"), boxSymbol("String"), null)))))))))))))));
+
+  if ( truthy(assoc(stringify(aSym), symMap))) {
+    return cdr(assoc(stringify(aSym), symMap));
+
+  } else {
+    name = stringify(aSym);
+
+    if ( haskellStringEndsWith(name, "*")) {
+      return boxSymbol(stringConcatenate("Maybe ", stringify(haskellPointerBase(aSym))));
+
+    } else {
+      return aSym;
+
+    }
+
+  }
+
+}
+
+
+String haskellDefaultValue(Box typeSym) {
+  String typ = "";
+
+  typ = stringify(haskellTypeMap(typeSym));
+
+  if ( equalString(typ, "()")) {
+    return "()";
+
+  } else {
+  }
+
+  if ( equalString(typ, "Bool")) {
+    return "False";
+
+  } else {
+  }
+
+  if ( equalString(typ, "Int")) {
+    return "0";
+
+  } else {
+  }
+
+  if ( equalString(typ, "Double")) {
+    return "0.0";
+
+  } else {
+  }
+
+  if ( equalString(typ, "String")) {
+    return "\"\"";
+
+  } else {
+  }
+
+  if ( equalString(typ, "[String]")) {
+    return "[]";
+
+  } else {
+  }
+
+  if ( haskellStringStartsWith(typ, "Maybe ")) {
+    return "Nothing";
+
+  } else {
+  }
+
+  return stringConcatenate("(error \"no default value for ", stringConcatenate(typ, "\")"));
+
+}
+
+
+String haskellRefType(Box typeSym) {
+  
+  return stringConcatenate("(", stringConcatenate(stringify(haskellTypeMap(typeSym)), ")"));
+
+}
+
+
+Box haskellGlobalVariables() {
+  
+  return cons(id(boxSymbol("globalArgsCount")), cons(id(boxSymbol("globalArgs")), cons(id(boxSymbol("releaseMode")), cons(id(boxSymbol("caller")), cons(id(boxSymbol("globalTrace")), cons(id(boxSymbol("globalStepTrace")), cons(id(boxSymbol("globalStackTrace")), null)))))));
+
+}
+
+
+Box haskellCollectVariablesFromArgs(Box args) {
+  Box variables = null;
+
+  if ( isNil(args)) {
+    return variables;
+
+  } else {
+    variables = cons(second(args), variables);
+
+    return appendVariables(variables, haskellCollectVariablesFromArgs(cddr(args)));
+
+  }
+
+}
+
+
+Box haskellCollectVariablesFromDecls(Box decls) {
+  Box variables = null;
+Box decl = null;
+
+  if ( isNil(decls)) {
+    return variables;
+
+  } else {
+    decl = car(decls);
+
+    variables = cons(second(decl), variables);
+
+    return appendVariables(variables, haskellCollectVariablesFromDecls(cdr(decls)));
+
+  }
+
+}
+
+
+Box haskellCollectVariables(Box args, Box decls) {
+  Box variables = null;
+
+  variables = haskellCollectVariablesFromArgs(args);
+
+  variables = appendVariables(variables, haskellCollectVariablesFromDecls(decls));
+
+  variables = appendVariables(variables, haskellGlobalVariables());
+
+  return variables;
+
+}
+
+
+Box haskellFuncMap(Box aSym, Box variables) {
+  Box symMap = null;
+
+  if ( orBool(equalString("symbol", boxType(aSym)), equalString("string", boxType(aSym)))) {
+    if ( inList(aSym, variables)) {
+      return haskellSafeName(aSym);
+
+    } else {
+      symMap = alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("sub_string"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("string_length"), alistCons(boxSymbol("nil"), boxSymbol("Nothing"), alistCons(boxSymbol("true"), boxSymbol("True"), alistCons(boxSymbol("false"), boxSymbol("False"), alistCons(boxSymbol("old"), boxSymbol("oldValue"), alistCons(boxSymbol("new"), boxSymbol("newValue"), null)))))))))));
+
+      if ( truthy(assoc(stringify(aSym), symMap))) {
+        return cdr(assoc(stringify(aSym), symMap));
+
+      } else {
+        return haskellSafeName(aSym);
+
+      }
+
+    }
+
+  } else {
+    return aSym;
+
+  }
+
+}
+
+
+Box haskellNumberAtom(Box tree) {
+  String val = "";
+
+  val = stringify(tree);
+
+  if ( haskellStringStartsWith(val, "-")) {
+    return cons(boxString("pure ("), cons(id(boxString(val)), cons(boxString(")"), null)));
+
+  } else {
+    return cons(boxString("pure "), cons(id(boxString(val)), null));
+
+  }
+
+}
+
+
+Box haskellAtom(Box tree, Box variables) {
+  
+  if ( equalString("int", boxType(tree))) {
+    return haskellNumberAtom(tree);
+
+  } else {
+    if ( equalString("float", boxType(tree))) {
+      return haskellNumberAtom(tree);
+
+    } else {
+      if ( equalString("string", boxType(tree))) {
+        return cons(boxString("pure \""), cons(id(boxString(haskellEscapeString(stringify(tree)))), cons(boxString("\""), null)));
+
+      } else {
+        if ( isInt(stringify(tree))) {
+          return haskellNumberAtom(tree);
+
+        } else {
+          if ( isFloat(stringify(tree))) {
+            return haskellNumberAtom(tree);
+
+          } else {
+            if ( haskellStringStartsWith(stringify(tree), "-")) {
+              return cons(boxString("pure ("), cons(id(haskellFuncMap(tree, variables)), cons(boxString(")"), null)));
+
+            } else {
+              if ( inList(tree, variables)) {
+                return cons(boxString("liftIO (readIORef "), cons(id(haskellFuncMap(tree, variables)), cons(boxString(")"), null)));
+
+              } else {
+                return cons(boxString("pure "), cons(id(haskellFuncMap(tree, variables)), null));
+
+              }
+
+            }
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+}
+
+
+Box haskellArgNames(Box expr, int pos) {
+  
+  if ( isEmpty(expr)) {
+    return emptyList();
+
+  } else {
+    if ( isNil(cdr(expr))) {
+      return cons(boxString(" arg"), cons(id(boxString(intToString(pos))), null));
+
+    } else {
+      return cons(boxString(" arg"), cons(id(boxString(intToString(pos))), cons(id(haskellArgNames(cdr(expr), add1(pos))), null)));
+
+    }
+
+  }
+
+}
+
+
+Box haskellBindArgs(Box expr, int indent, Box variables, int pos) {
+  
+  if ( isEmpty(expr)) {
+    return emptyList();
+
+  } else {
+    return cons(id(listNewLine(indent)), cons(boxString("arg"), cons(id(boxString(intToString(pos))), cons(boxString(" <- "), cons(id(haskellExpression(car(expr), indent, variables)), cons(id(haskellBindArgs(cdr(expr), indent, variables, add1(pos))), null))))));
+
+  }
+
+}
+
+
+Box haskellCall(Box name, Box args, int indent, Box variables) {
+  
+  if ( isEmpty(args)) {
+    return cons(boxString("liftIO "), cons(id(haskellFuncMap(name, null)), null));
+
+  } else {
+    return cons(boxString("do"), cons(id(haskellBindArgs(args, add1(indent), variables, 0)), cons(id(listNewLine(add1(indent))), cons(boxString("liftIO ("), cons(id(haskellFuncMap(name, null)), cons(id(haskellArgNames(args, 0)), cons(boxString(")"), null)))))));
+
+  }
+
+}
+
+
+Box haskellBinop(Box tree, int indent, Box variables) {
+  
+  return cons(boxString("do"), cons(id(listNewLine(add1(indent))), cons(boxString("arg0 <- "), cons(id(haskellExpression(third(tree), add1(indent), variables)), cons(id(listNewLine(add1(indent))), cons(boxString("arg1 <- "), cons(id(haskellExpression(fourth(tree), add1(indent), variables)), cons(id(listNewLine(add1(indent))), cons(boxString("pure (arg0 "), cons(id(second(tree)), cons(boxString(" arg1)"), null)))))))))));
+
+}
+
+
+Box haskellGetStruct(Box tree, int indent, Box variables) {
+  
+  return cons(boxString("do"), cons(id(listNewLine(add1(indent))), cons(boxString("hobj <- "), cons(id(haskellExpression(second(tree), add1(indent), variables)), cons(id(listNewLine(add1(indent))), cons(boxString("liftIO (readIORef ("), cons(boxString("getField @\""), cons(id(boxString(haskellFieldName(third(tree)))), cons(boxString("\" (expect hobj)))"), null)))))))));
+
+}
+
+
+Box haskellNewExpression(Box tree) {
+  
+  if ( haskellTypeIsPointer(second(tree))) {
+    return cons(boxString("liftIO (Just <$> "), cons(id(boxString(haskellNewName(third(tree)))), cons(boxString(")"), null)));
+
+  } else {
+    return cons(boxString("liftIO "), cons(id(boxString(haskellNewName(third(tree)))), null));
+
+  }
+
+}
+
+
+Box haskellExpression(Box tree, int indent, Box variables) {
+  Box thing = null;
+
+  if ( notBool(isList(tree))) {
+    return haskellAtom(tree, variables);
+
+  } else {
+    if ( equal(1, listLength(tree))) {
+      if ( equalBox(boxString("return"), car(tree))) {
+        return cons(boxString("pure "), cons(id(haskellFuncMap(car(tree), variables)), null));
+
+      } else {
+        return haskellCall(car(tree), null, indent, variables);
+
+      }
+
+    } else {
+      thing = first(tree);
+
+      if ( equalBox(boxSymbol("get-struct"), thing)) {
+        return haskellGetStruct(tree, indent, variables);
+
+      } else {
+        if ( equalBox(boxSymbol("new"), thing)) {
+          return haskellNewExpression(tree);
+
+        } else {
+          if ( equalBox(boxSymbol("passthrough"), thing)) {
+            return cons(boxString("pure ("), cons(id(second(tree)), cons(boxString(")"), null)));
+
+          } else {
+            if ( equalBox(boxSymbol("binop"), thing)) {
+              return haskellBinop(tree, indent, variables);
+
+            } else {
+              return haskellCall(car(tree), cdr(tree), indent, variables);
+
+            }
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+}
+
+
+Box haskellSet(Box node, int indent, Box variables) {
+  
+  return cons(id(listNewLine(indent)), cons(boxString("qset <- "), cons(id(haskellExpression(third(node), indent, variables)), cons(id(listNewLine(indent)), cons(boxString("liftIO (writeIORef "), cons(id(haskellFuncMap(second(node), variables)), cons(boxString(" qset)"), null)))))));
+
+}
+
+
+Box haskellSetStruct(Box node, int indent, Box variables) {
+  
+  return cons(id(listNewLine(indent)), cons(boxString("hobj <- "), cons(id(haskellExpression(second(node), indent, variables)), cons(id(listNewLine(indent)), cons(boxString("qset <- "), cons(id(haskellExpression(fourth(node), indent, variables)), cons(id(listNewLine(indent)), cons(boxString("liftIO (writeIORef ("), cons(boxString("getField @\""), cons(id(boxString(haskellFieldName(third(node)))), cons(boxString("\" (expect hobj)) qset)"), null)))))))))));
+
+}
+
+
+Box haskellReturn(Box node, int indent, Box variables) {
+  
+  if ( greaterthan(listLength(node), 1)) {
+    return cons(id(listNewLine(indent)), cons(boxString("hret <- "), cons(id(haskellExpression(cadr(node), indent, variables)), cons(id(listNewLine(indent)), cons(boxString("qreturn hret"), null)))));
+
+  } else {
+    return cons(id(listNewLine(indent)), cons(boxString("qreturn ()"), null));
+
+  }
+
+}
+
+
+Box haskellIf(Box node, int indent, Box variables) {
+  
+  return cons(id(listNewLine(indent)), cons(boxString("hcond <- "), cons(id(haskellExpression(second(node), indent, variables)), cons(id(listNewLine(indent)), cons(boxString("if hcond"), cons(id(listNewLine(indent)), cons(boxString("  then do"), cons(id(haskellBody(cdr(third(node)), add(indent, 2), variables)), cons(id(listNewLine(add(indent, 2))), cons(boxString("pure ()"), cons(id(listNewLine(indent)), cons(boxString("  else do"), cons(id(haskellBody(cdr(fourth(node)), add(indent, 2), variables)), cons(id(listNewLine(add(indent, 2))), cons(boxString("pure ()"), null)))))))))))))));
+
+}
+
+
+Box haskellStatement(Box node, int indent, Box variables) {
+  
+  if ( equalBox(boxString("set"), first(node))) {
+    return haskellSet(node, indent, variables);
+
+  } else {
+    if ( equalBox(boxString("set-struct"), first(node))) {
+      return haskellSetStruct(node, indent, variables);
+
+    } else {
+      if ( equalBox(boxString("if"), first(node))) {
+        return haskellIf(node, indent, variables);
+
+      } else {
+        if ( equalBox(boxString("return"), first(node))) {
+          return haskellReturn(node, indent, variables);
+
+        } else {
+          return cons(id(listNewLine(indent)), cons(boxString("_ <- "), cons(id(haskellExpression(node, indent, variables)), null)));
+
+        }
+
+      }
+
+    }
+
+  }
+
+}
+
+
+Box haskellBody(Box tree, int indent, Box variables) {
+  
+  if ( isEmpty(tree)) {
+    return emptyList();
+
+  } else {
+    return cons(id(haskellStatement(car(tree), indent, variables)), cons(id(haskellBody(cdr(tree), indent, variables)), null));
+
+  }
+
+}
+
+
+Box haskellFunctionArgsSignature(Box tree) {
+  
+  if ( isEmpty(tree)) {
+    return emptyList();
+
+  } else {
+    if ( isNil(cddr(tree))) {
+      return cons(id(haskellTypeMap(first(tree))), cons(boxString(" -> "), null));
+
+    } else {
+      return cons(id(haskellTypeMap(first(tree))), cons(boxString(" -> "), cons(id(haskellFunctionArgsSignature(cddr(tree))), null)));
+
+    }
+
+  }
+
+}
+
+
+Box haskellFunctionArgs(Box tree) {
+  
+  if ( isEmpty(tree)) {
+    return emptyList();
+
+  } else {
+    if ( isNil(cddr(tree))) {
+      return cons(boxString(" "), cons(id(haskellFuncMap(second(tree), null)), cons(boxString("_arg"), null)));
+
+    } else {
+      return cons(boxString(" "), cons(id(haskellFuncMap(second(tree), null)), cons(boxString("_arg"), cons(id(haskellFunctionArgs(cddr(tree))), null))));
+
+    }
+
+  }
+
+}
+
+
+Box haskellArgRefs(Box args, int indent) {
+  
+  if ( isEmpty(args)) {
+    return emptyList();
+
+  } else {
+    return cons(id(listNewLine(indent)), cons(id(haskellFuncMap(second(args), null)), cons(boxString(" <- liftIO (newIORef "), cons(id(haskellFuncMap(second(args), null)), cons(boxString("_arg)"), cons(id(haskellArgRefs(cddr(args), indent)), null))))));
+
+  }
+
+}
+
+
+Box haskellDeclarations(Box decls, int indent, Box variables) {
+  Box decl = null;
+
+  if ( isEmpty(decls)) {
+    return emptyList();
+
+  } else {
+    decl = car(decls);
+
+    return cons(id(listNewLine(indent)), cons(boxString("qinit <- "), cons(id(haskellExpression(third(decl), indent, variables)), cons(id(listNewLine(indent)), cons(id(haskellFuncMap(second(decl), null)), cons(boxString(" <- liftIO (newIORef qinit)"), cons(id(haskellDeclarations(cdr(decls), indent, variables)), null)))))));
+
+  }
+
+}
+
+
+Box haskellFunction(Box node) {
+  Box variables = null;
+Box args = null;
+Box decls = null;
+
+  if ( isNil(node)) {
+    return emptyList();
+
+  } else {
+    args = third(node);
+
+    decls = cdr(fourth(node));
+
+    variables = haskellCollectVariables(args, decls);
+
+    return cons(id(listNewLine(0)), cons(id(haskellFuncMap(second(node), null)), cons(boxString(" :: "), cons(id(haskellFunctionArgsSignature(args)), cons(boxString("IO "), cons(id(boxString(haskellRefType(first(node)))), cons(id(listNewLine(0)), cons(id(haskellFuncMap(second(node), null)), cons(id(haskellFunctionArgs(args)), cons(boxString(" = evalContT $ callCC $ \\qreturn -> do"), cons(id(haskellArgRefs(args, 1)), cons(id(haskellDeclarations(decls, 1, variables)), cons(id(haskellBody(cdr(fifth(node)), 1, variables)), cons(id(listNewLine(1)), cons(boxString("pure "), cons(id(boxString(haskellDefaultValue(first(node)))), cons(boxString("\n"), null)))))))))))))))));
+
+  }
+
+}
+
+
+Box haskellFunctions(Box tree) {
+  
+  if ( isEmpty(tree)) {
+    return emptyList();
+
+  } else {
+    return cons(id(haskellFunction(car(tree))), cons(id(haskellFunctions(cdr(tree))), null));
+
+  }
+
+}
+
+
+Box haskellTypeDecl(Box l) {
+  Box fieldType = null;
+
+  if ( greaterthan(listLength(l), 2)) {
+    fieldType = listLast(l);
+
+  } else {
+    fieldType = second(l);
+
+  }
+
+  return cons(boxString("  "), cons(id(boxString(haskellFieldName(first(l)))), cons(boxString(" :: IORef "), cons(id(boxString(haskellRefType(fieldType))), null))));
+
+}
+
+
+Box haskellStructFields(Box node) {
+  
+  if ( isEmpty(node)) {
+    return emptyList();
+
+  } else {
+    if ( isNil(cdr(node))) {
+      return haskellTypeDecl(car(node));
+
+    } else {
+      return cons(id(haskellTypeDecl(car(node))), cons(boxString("\n, "), cons(id(haskellStructFields(cdr(node))), null)));
+
+    }
+
+  }
+
+}
+
+
+Box haskellNewStructField(Box l, int indent) {
+  Box fieldType = null;
+
+  if ( greaterthan(listLength(l), 2)) {
+    fieldType = listLast(l);
+
+  } else {
+    fieldType = second(l);
+
+  }
+
+  return cons(id(listNewLine(indent)), cons(boxString("v_"), cons(id(boxString(haskellFieldName(first(l)))), cons(boxString(" <- newIORef "), cons(id(boxString(haskellDefaultValue(fieldType))), null)))));
+
+}
+
+
+Box haskellNewStructFields(Box fields, int indent) {
+  
+  if ( isEmpty(fields)) {
+    return emptyList();
+
+  } else {
+    return cons(id(haskellNewStructField(car(fields), indent)), cons(id(haskellNewStructFields(cdr(fields), indent)), null));
+
+  }
+
+}
+
+
+Box haskellStructCtorFields(Box fields) {
+  
+  if ( isEmpty(fields)) {
+    return emptyList();
+
+  } else {
+    if ( isNil(cdr(fields))) {
+      return cons(id(boxString(haskellFieldName(first(car(fields))))), cons(boxString(" = v_"), cons(id(boxString(haskellFieldName(first(car(fields))))), null)));
+
+    } else {
+      return cons(id(boxString(haskellFieldName(first(car(fields))))), cons(boxString(" = v_"), cons(id(boxString(haskellFieldName(first(car(fields))))), cons(boxString(", "), cons(id(haskellStructCtorFields(cdr(fields))), null)))));
+
+    }
+
+  }
+
+}
+
+
+Box haskellType(Box node) {
+  Box fields = null;
+
+  if ( isList(second(node))) {
+    fields = cdr(second(node));
+
+    return cons(boxString("\ndata "), cons(id(first(node)), cons(boxString(" = "), cons(id(first(node)), cons(boxString(" { "), cons(id(haskellStructFields(fields)), cons(boxString("\n}\n\n"), cons(id(boxString(haskellNewName(first(node)))), cons(boxString(" :: IO "), cons(id(first(node)), cons(boxString("\n"), cons(id(boxString(haskellNewName(first(node)))), cons(boxString(" = do"), cons(id(haskellNewStructFields(fields, 1)), cons(id(listNewLine(1)), cons(boxString("pure "), cons(id(first(node)), cons(boxString(" { "), cons(id(haskellStructCtorFields(fields)), cons(boxString(" }\n"), null))))))))))))))))))));
+
+  } else {
+    return emptyList();
+
+  }
+
+}
+
+
+Box haskellTypes(Box nodes) {
+  
+  if ( isEmpty(nodes)) {
+    return emptyList();
+
+  } else {
+    return cons(id(haskellType(car(nodes))), cons(id(haskellTypes(cdr(nodes))), null));
+
+  }
+
+}
+
+
+Box haskellIncludes(Box nodes) {
+  
+  return cons(boxString("{-# LANGUAGE DataKinds #-}\n"), cons(boxString("{-# LANGUAGE DuplicateRecordFields #-}\n"), cons(boxString("{-# LANGUAGE ExtendedDefaultRules #-}\n"), cons(boxString("{-# LANGUAGE TypeApplications #-}\n"), cons(boxString("import Control.Monad.Trans.Cont\n"), cons(boxString("import Control.Monad.IO.Class\n"), cons(boxString("import Data.Char (chr)\n"), cons(boxString("import Data.IORef\n"), cons(boxString("import Data.Maybe (isNothing)\n"), cons(boxString("import GHC.Records (getField)\n"), cons(boxString("import System.Directory (doesFileExist)\n"), cons(boxString("import System.Environment (getArgs, lookupEnv)\n"), cons(boxString("import System.Exit (ExitCode(..), exitWith)\n"), cons(boxString("import System.IO (Handle, stderr, hPutStr, hFlush)\n"), cons(boxString("import System.IO.Unsafe (unsafePerformIO)\n"), cons(boxString("import Text.Printf (printf, hPrintf)\n\n"), cons(boxString("default (Int, Double)\n\n"), cons(boxString("expect :: Maybe a -> a\n"), cons(boxString("expect (Just x) = x\n"), cons(boxString("expect Nothing = error \"Quon nil dereference\"\n\n"), cons(boxString("globalTrace :: IORef Bool\n"), cons(boxString("globalTrace = unsafePerformIO (newIORef False)\n"), cons(boxString("{-# NOINLINE globalTrace #-}\n\n"), cons(boxString("globalStepTrace :: IORef Bool\n"), cons(boxString("globalStepTrace = unsafePerformIO (newIORef False)\n"), cons(boxString("{-# NOINLINE globalStepTrace #-}\n\n"), cons(boxString("releaseMode :: IORef Bool\n"), cons(boxString("releaseMode = unsafePerformIO (newIORef False)\n"), cons(boxString("{-# NOINLINE releaseMode #-}\n\n"), cons(boxString("caller :: IORef String\n"), cons(boxString("caller = unsafePerformIO (newIORef \"\")\n"), cons(boxString("{-# NOINLINE caller #-}\n\n"), cons(boxString("globalArgs :: IORef [String]\n"), cons(boxString("globalArgs = unsafePerformIO (newIORef [])\n"), cons(boxString("{-# NOINLINE globalArgs #-}\n\n"), cons(boxString("globalArgsCount :: IORef Int\n"), cons(boxString("globalArgsCount = unsafePerformIO (newIORef 0)\n"), cons(boxString("{-# NOINLINE globalArgsCount #-}\n\n"), cons(boxString("globalStackTrace :: IORef (Maybe Box)\n"), cons(boxString("globalStackTrace = unsafePerformIO (newIORef Nothing)\n"), cons(boxString("{-# NOINLINE globalStackTrace #-}\n\n"), cons(boxString("hsIsNil :: Maybe a -> IO Bool\n"), cons(boxString("hsIsNil = pure . isNothing\n\n"), cons(boxString("hsGetEnv :: String -> IO String\n"), cons(boxString("hsGetEnv key = do\n"), cons(boxString("  value <- lookupEnv key\n"), cons(boxString("  pure (maybe \"\" (\\x -> x) value)\n\n"), cons(boxString("hsPanic :: String -> IO ()\n"), cons(boxString("hsPanic = error\n\n"), cons(boxString("hsExit :: Int -> IO ()\n"), cons(boxString("hsExit 0 = exitWith ExitSuccess\n"), cons(boxString("hsExit n = exitWith (ExitFailure n)\n\n"), cons(boxString("hsStringLength :: String -> IO Int\n"), cons(boxString("hsStringLength = pure . length\n\n"), cons(boxString("hsSubString :: String -> Int -> Int -> IO String\n"), cons(boxString("hsSubString s start len = pure (take len (drop start s))\n\n"), cons(boxString("hsSetSubString :: String -> Int -> String -> IO String\n"), cons(boxString("hsSetSubString target start source = pure (take start target ++ source ++ drop (start + 1) target)\n\n"), cons(boxString("hsShowInt :: Int -> IO String\n"), cons(boxString("hsShowInt = pure . show\n\n"), cons(boxString("hsShowFloat :: Double -> IO String\n"), cons(boxString("hsShowFloat = pure . show\n\n"), cons(boxString("hsReadFile :: String -> IO (Maybe Box)\n"), cons(boxString("hsReadFile filename = do\n"), cons(boxString("  exists <- doesFileExist filename\n"), cons(boxString("  if exists then do\n"), cons(boxString("    contents <- readFile filename\n"), cons(boxString("    boxString contents\n"), cons(boxString("  else pure Nothing\n\n"), cons(boxString("hsWriteFile :: String -> String -> IO ()\n"), cons(boxString("hsWriteFile = writeFile\n\n"), cons(boxString("hsGetStringArray :: Int -> [String] -> IO String\n"), cons(boxString("hsGetStringArray index strs = pure (strs !! index)\n\n"), cons(boxString("hsProgramArgs :: IO [String]\n"), cons(boxString("hsProgramArgs = readIORef globalArgs\n\n"), cons(boxString("hsProgramArgsCount :: IO Int\n"), cons(boxString("hsProgramArgsCount = readIORef globalArgsCount\n\n"), cons(boxString("hsCharacter :: Int -> IO String\n"), cons(boxString("hsCharacter num = pure [chr num]\n\n"), cons(boxString("hsRemainder :: Int -> Int -> IO Int\n"), cons(boxString("hsRemainder a b = pure (a `mod` b)\n\n"), cons(boxString("hsMakeHash :: IO (IORef [(String, String)])\n"), cons(boxString("hsMakeHash = newIORef []\n\n"), cons(boxString("hsSetHash :: IORef [(String, String)] -> String -> String -> IO ()\n"), cons(boxString("hsSetHash hash key value = modifyIORef hash ((key, value) :)\n\n"), cons(boxString("hsGetHash :: IORef [(String, String)] -> String -> IO String\n"), cons(boxString("hsGetHash hash key = do\n"), cons(boxString("  pairs <- readIORef hash\n"), cons(boxString("  pure (maybe \"\" (\\x -> x) (lookup key pairs))\n\n"), cons(boxString("hsInHash :: IORef [(String, String)] -> String -> IO Bool\n"), cons(boxString("hsInHash hash key = do\n"), cons(boxString("  pairs <- readIORef hash\n"), cons(boxString("  pure (not (isNothing (lookup key pairs)))\n\n"), cons(boxString("hsMakeArray :: Int -> IO [String]\n"), cons(boxString("hsMakeArray len = pure (replicate len \"\")\n\n"), cons(boxString("hsSetArray :: [String] -> Int -> String -> IO ()\n"), cons(boxString("hsSetArray _ _ _ = pure ()\n\n"), cons(boxString("hsGetArray :: [String] -> Int -> IO String\n"), cons(boxString("hsGetArray array index = pure (array !! index)\n\n"), null)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))));
+
+}
+
+
+Box haskellMainEntry() {
+  
+  return cons(boxString("\nmain :: IO ()\n"), cons(boxString("main = do\n"), cons(boxString("  args <- getArgs\n"), cons(boxString("  let qargs = \"fixmeprogname\" : args\n"), cons(boxString("  writeIORef globalArgs qargs\n"), cons(boxString("  writeIORef globalArgsCount (length qargs)\n"), cons(boxString("  _ <- start\n"), cons(boxString("  pure ()\n"), null))))))));
+
+}
+
+
+Box haskellApplyTypeAliases(Box tree, Box types) {
+  Box node = null;
+Box alias = null;
+Box target = null;
+
+  if ( isEmpty(types)) {
+    return tree;
+
+  } else {
+  }
+
+  node = car(types);
+
+  if ( isList(second(node))) {
+    return haskellApplyTypeAliases(tree, cdr(types));
+
+  } else {
+  }
+
+  alias = first(node);
+
+  if ( equalString(stringify(haskellTypeMap(alias)), stringify(alias))) {
+    target = haskellTypeMap(second(node));
+
+    return haskellApplyTypeAliases(macroSymbolSingle(tree, stringify(alias), stringify(target)), cdr(types));
+
+  } else {
+    return haskellApplyTypeAliases(tree, cdr(types));
+
+  }
+
+}
+
+
+Box haskellLoadProgram(String filename) {
+  Box tree = null;
+Box replace = null;
+
+  tree = loadQuon(filename);
+
+  tree = insertInclude(tree, "q/shims/haskell.qon");
+
+  tree = loadIncludes(tree, null);
+
+  tree = macrowalk(tree);
+
+  replace = cons(boxSymbol("hPrintf"), cons(boxSymbol("stderr"), null));
+
+  tree = macrolist(tree, stringConcatenate("q", "log"), replace);
+
+  tree = haskellApplyTypeAliases(tree, cdr(getTypes(tree)));
+
+  return tree;
+
+}
+
+
+Box haskellProgramTree(Box tree) {
+  
+  return cons(id(haskellIncludes(cdr(first(tree)))), cons(id(haskellTypes(cdr(second(tree)))), cons(id(haskellFunctions(cdr(third(tree)))), cons(id(haskellMainEntry()), cons(boxString("\n"), null)))));
+
+}
+
+
+String haskellProgram(Box tree) {
+  
+  return ListToString(flatten(haskellProgramTree(tree)), 0, true, false);
+
+}
+
+
+String haskellCompileString(String filename) {
+  
+  return haskellProgram(haskellLoadProgram(filename));
+
+}
+
+
+void haskellCompile(String filename) {
+  Box tree = null;
+Box replace = null;
+
+  fprintf(stderr, "Scanning file...%s\n", filename);
+
+  tree = loadQuon(filename);
+
+  fprintf(stderr, "Adding Haskell shim functions\n");
+
+  tree = insertInclude(tree, "q/shims/haskell.qon");
+
+  fprintf(stderr, "Loading includes\n");
+
+  tree = loadIncludes(tree, null);
+
+  fprintf(stderr, "Walking tree\n");
+
+  tree = macrowalk(tree);
+
+  fprintf(stderr, "Replacing q log\n");
+
+  replace = cons(boxSymbol("hPrintf"), cons(boxSymbol("stderr"), null));
+
+  tree = macrolist(tree, stringConcatenate("q", "log"), replace);
+
+  tree = haskellApplyTypeAliases(tree, cdr(getTypes(tree)));
+
+  fprintf(stderr, "Printing program\n");
+
+  printStringTree(haskellProgramTree(tree));
+
+}
+
+
 Box javaFunctionArgs(Box tree) {
   
   if ( isEmpty(tree)) {
@@ -1264,7 +2415,7 @@ Box javaExpression(Box tree, int indent) {
 
       } else {
         if ( equalBox(boxSymbol("new"), thing)) {
-          return cons(boxString("new "), cons(id(third(tree)), cons(boxString("()"), null)));
+          return cons(boxString("new "), cons(id(javaTypeMap(second(tree))), cons(boxString("()"), null)));
 
         } else {
           if ( equalBox(boxSymbol("passthrough"), thing)) {
@@ -1460,6 +2611,22 @@ Box javaTypeMap(Box aSym) {
 }
 
 
+Box javaPointerBase(Box aSym) {
+  String name = "";
+
+  name = stringify(aSym);
+
+  if ( equalString("*", sub_string(name, sub1(string_length(name)), 1))) {
+    return boxSymbol(sub_string(name, 0, sub1(string_length(name))));
+
+  } else {
+    return aSym;
+
+  }
+
+}
+
+
 Box javaFuncMap(Box aSym) {
   Box symMap = null;
 
@@ -1541,6 +2708,40 @@ Box javaTypes(Box nodes) {
 }
 
 
+Box javaApplyTypeAliases(Box tree, Box types) {
+  Box node = null;
+Box alias = null;
+Box target = null;
+
+  if ( isEmpty(types)) {
+    return tree;
+
+  } else {
+  }
+
+  node = car(types);
+
+  if ( isList(second(node))) {
+    return javaApplyTypeAliases(tree, cdr(types));
+
+  } else {
+  }
+
+  alias = first(node);
+
+  if ( equalString(stringify(javaTypeMap(alias)), stringify(alias))) {
+    target = javaTypeMap(javaPointerBase(second(node)));
+
+    return javaApplyTypeAliases(macroSymbolSingle(tree, stringify(alias), stringify(target)), cdr(types));
+
+  } else {
+    return javaApplyTypeAliases(tree, cdr(types));
+
+  }
+
+}
+
+
 Box javaMainEntry() {
   
   return cons(boxString("\npublic static void main(String[] args) {\n"), cons(boxString("  QuonProgram program = new QuonProgram();\n"), cons(boxString("  program.globalArgs = new String[args.length + 1];\n"), cons(boxString("  program.globalArgs[0] = \"fixmeprogname\";\n"), cons(boxString("  System.arraycopy(args, 0, program.globalArgs, 1, args.length);\n"), cons(boxString("  program.globalArgsCount = program.globalArgs.length;\n"), cons(boxString("  program.start();\n"), cons(boxString("}\n"), cons(boxString("}\n"), null)))))))));
@@ -1563,6 +2764,8 @@ Box replace = null;
   replace = cons(boxSymbol("fprintf"), cons(boxSymbol("stderr"), null));
 
   tree = macrolist(tree, stringConcatenate("q", "log"), replace);
+
+  tree = javaApplyTypeAliases(tree, cdr(getTypes(tree)));
 
   return tree;
 
@@ -1592,7 +2795,7 @@ String javaCompileString(String filename) {
 
 void javaCompile(String filename) {
   
-  System.out.printf("%s", javaCompileString(filename));
+  printStringTree(javaProgramTree(javaLoadProgram(filename)));
 
   fprintf(stderr, "//Done printing program\n");
 
@@ -2103,7 +3306,7 @@ String ansi3CompileString(String filename) {
 
 void ansi3Compile(String filename) {
   
-  System.out.printf("%s", ansi3CompileString(filename));
+  printStringTree(ansi3ProgramTree(ansi3LoadProgram(filename)));
 
   fprintf(stderr, "//Done printing program\n");
 
@@ -2666,7 +3869,7 @@ Box replace = null;
 
   fprintf(stderr, "Printing program\n");
 
-  System.out.printf("%s", perlProgram(tree));
+  printStringTree(perlProgramTree(tree));
 
 }
 
@@ -4553,6 +5756,30 @@ Box flatten(Box tree) {
 }
 
 
+void printStringTree(Box tree) {
+  Box val = null;
+
+  if ( isEmpty(tree)) {
+    return;
+
+  } else {
+  }
+
+  val = car(tree);
+
+  if ( isList(val)) {
+    printStringTree(car(tree));
+
+  } else {
+    System.out.printf("%s", stringify(val));
+
+  }
+
+  printStringTree(cdr(tree));
+
+}
+
+
 Box macrowalk(Box l) {
   
   if ( isEmpty(l)) {
@@ -4619,6 +5846,40 @@ Box macrosingle(Box tree, String search, String replace) {
         val.str = replace;
 
         return val;
+
+      } else {
+      }
+
+      return tree;
+
+    }
+
+  }
+
+}
+
+
+Box macroSymbolSingle(Box tree, String search, String replace) {
+  Box val = null;
+
+  if ( isEmpty(tree)) {
+    return null;
+
+  } else {
+    if ( isList(tree)) {
+      return cons(macroSymbolSingle(car(tree), search, replace), macroSymbolSingle(cdr(tree), search, replace));
+
+    } else {
+      if ( equalString("symbol", boxType(tree))) {
+        if ( equalString(search, stringify(tree))) {
+          val = clone(tree);
+
+          val.str = replace;
+
+          return val;
+
+        } else {
+        }
 
       } else {
       }
@@ -5738,7 +6999,7 @@ String stringReplace(String oldValue, String newValue, String s) {
     return s;
 
   } else {
-    return stringConcatenate(sub_string(s, 0, pos), stringConcatenate(newValue, stringReplace(oldValue, newValue, sub_string(s, add(pos, string_length(oldValue)), string_length(s)))));
+    return stringConcatenate(sub_string(s, 0, pos), stringConcatenate(newValue, stringReplace(oldValue, newValue, sub_string(s, add(pos, string_length(oldValue)), sub(string_length(s), add(pos, string_length(oldValue)))))));
 
   }
 
@@ -5827,10 +7088,10 @@ String stringTrim(String s) {
 
   } else {
     if ( isWhiteSpace(sub_string(s, 0, 1))) {
-      return stringTrim(sub_string(s, 1, string_length(s)));
+      return stringTrim(sub_string(s, 1, sub1(string_length(s))));
 
     } else {
-      if ( isWhiteSpace(sub_string(s, sub(string_length(s), 1), string_length(s)))) {
+      if ( isWhiteSpace(sub_string(s, sub(string_length(s), 1), 1))) {
         return stringTrim(sub_string(s, 0, sub(string_length(s), 1)));
 
       } else {
@@ -5863,7 +7124,7 @@ int delimiterLength = 0;
   } else {
     System.out.printf("Splitting string in stringSplit\n");
 
-    return cons(boxString(sub_string(s, 0, end)), stringSplit(sub_string(s, add(end, delimiterLength), string_length(s)), delimiter));
+    return cons(boxString(sub_string(s, 0, end)), stringSplit(sub_string(s, add(end, delimiterLength), sub(string_length(s), add(end, delimiterLength))), delimiter));
 
   }
 
@@ -6145,6 +7406,7 @@ boolean runPerl = false;
 boolean runJava = false;
 boolean runNode = false;
 boolean runNode2 = false;
+boolean runHaskell = false;
 boolean runAnsi3 = false;
 boolean runTree = false;
 
@@ -6174,6 +7436,8 @@ boolean runTree = false;
 
   runNode2 = inList(boxString("--node2"), cmdLine);
 
+  runHaskell = orBool(inList(boxString("--haskell"), cmdLine), inList(boxString("--hs"), cmdLine));
+
   runAnsi3 = inList(boxString("--ansi3"), cmdLine);
 
   globalTrace = inList(boxString("--trace"), cmdLine);
@@ -6200,6 +7464,8 @@ boolean runTree = false;
     System.out.printf("  --node      Compile to Node.js\n");
 
     System.out.printf("  --node2      Compile to Node.js, new outputter\n");
+
+    System.out.printf("  --haskell, --hs Compile to Haskell\n");
 
     System.out.printf("  --ansi3     Compile to ANSI C (quon version 3)\n");
 
@@ -6265,6 +7531,8 @@ boolean runTree = false;
 
     test27();
 
+    test28();
+
     System.out.printf("\n\nAfter all that hard work, I need a beer...\n");
 
     beers(9);
@@ -6280,27 +7548,35 @@ boolean runTree = false;
         System.out.printf("\n");
 
       } else {
-        if ( runPerl) {
-          perlCompile(filename);
+        if ( runHaskell) {
+          haskellCompile(filename);
 
           System.out.printf("\n");
 
         } else {
-          if ( runJava) {
-            javaCompile(filename);
+          if ( runPerl) {
+            perlCompile(filename);
 
             System.out.printf("\n");
 
           } else {
-            if ( runAnsi3) {
-              ansi3Compile(filename);
+            if ( runJava) {
+              javaCompile(filename);
 
               System.out.printf("\n");
 
             } else {
-              ansi3Compile(filename);
+              if ( runAnsi3) {
+                ansi3Compile(filename);
 
-              System.out.printf("\n");
+                System.out.printf("\n");
+
+              } else {
+                ansi3Compile(filename);
+
+                System.out.printf("\n");
+
+              }
 
             }
 

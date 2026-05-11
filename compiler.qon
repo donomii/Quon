@@ -1,5 +1,5 @@
 ;  compiler.qon - the compiler for quon
-((includes q/base.qon q/compiler.qon q/macros.qon q/lists.qon q/newparser.qon q/perl.qon q/ansi3.qon q/java.qon q/tests.qon q/node2.qon q/boolean.qon)
+((includes q/base.qon q/compiler.qon q/macros.qon q/lists.qon q/newparser.qon q/perl.qon q/ansi3.qon q/java.qon q/haskell.qon q/tests.qon q/node2.qon q/boolean.qon)
  (types)
  (functions
 
@@ -13,6 +13,7 @@
   (bool runJava false)
   (bool runNode false)
   (bool runNode2 false)
+  (bool runHaskell false)
   (bool runAnsi3 false)
   (bool runTree false))
    (body
@@ -30,6 +31,7 @@
     (set runTree (inList (boxString "--tree") cmdLine))
     (set runNode (inList (boxString "--node") cmdLine))
     (set runNode2 (inList (boxString "--node2") cmdLine))
+    (set runHaskell (orBool (inList (boxString "--haskell") cmdLine) (inList (boxString "--hs") cmdLine)))
     (set runAnsi3 (inList (boxString "--ansi3") cmdLine))
     (set globalTrace (inList (boxString "--trace") cmdLine))
     (set globalStepTrace (inList (boxString "--steptrace") cmdLine))
@@ -45,6 +47,7 @@
         (printf "  --tree      Compile to an s-expression tree\n")
         (printf "  --node      Compile to Node.js\n")
         (printf "  --node2      Compile to Node.js, new outputter\n")
+        (printf "  --haskell, --hs Compile to Haskell\n")
 
         (printf "  --ansi3     Compile to ANSI C (quon version 3)\n")
         (printf "  --trace     Trace execution\n")
@@ -81,6 +84,7 @@
        (test24)
        (test25)
        (test27)
+       (test28)
 	   ;(test22)
        (printf "\n\nAfter all that hard work, I need a beer...\n")
        (beers 9))
@@ -91,14 +95,17 @@
          (if (orBool runNode runNode2)
           (then (node2Compile filename) (printf "\n"))
           (else
-           (if runPerl
-            (then (perlCompile filename) (printf "\n"))
+           (if runHaskell
+            (then (haskellCompile filename) (printf "\n"))
             (else
-             (if runJava
-              (then (javaCompile filename) (printf "\n"))
+             (if runPerl
+              (then (perlCompile filename) (printf "\n"))
               (else
-               (if runAnsi3
-                (then (ansi3Compile filename) (printf "\n"))
-                (else (ansi3Compile filename) (printf "\n")))))))))))))
+               (if runJava
+                (then (javaCompile filename) (printf "\n"))
+                (else
+                 (if runAnsi3
+                  (then (ansi3Compile filename) (printf "\n"))
+                  (else (ansi3Compile filename) (printf "\n")))))))))))))))
     (return 0)))
  ))

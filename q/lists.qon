@@ -533,6 +533,17 @@
         )))
 ))
 
+(void printStringTree (list tree) (declare (box val nil))
+  (body
+    (if (isEmpty tree)
+      (then (return))
+      (else))
+    (set val (car tree))
+    (if (isList val)
+      (then (printStringTree (car tree)))
+      (else (printf "%s" (stringify val))))
+    (printStringTree (cdr tree))))
+
 
 
  ))

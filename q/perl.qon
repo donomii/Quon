@@ -429,6 +429,6 @@
      (set replace (symbolList "fprintf" "stderr"))
      (set tree (macrolist tree (stringConcatenate "q" "log") replace))
      (qlog "Printing program\n")
-     (printf "%s" (perlProgram tree))))
+     (printStringTree (perlProgramTree tree))))
 
 ))

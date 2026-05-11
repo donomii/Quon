@@ -6,9 +6,8 @@ OUTDIR=""
 PROGRAMS=()
 
 BACKENDS=(c perl java node)
-TARGETS=(ansi3 perl java node2)
-TARGET_FLAGS=(--ansi3 --perl --java --node2)
-TARGET_EXTS=(c pl java js)
+TARGETS=(ansi3 ansi3-release perl java node2 haskell)
+TARGET_EXTS=(c c pl java js hs)
 
 DIFFS=0
 MATCH_MARK="√"
@@ -153,6 +152,34 @@ run_stdout_quiet() {
   fi
 }
 
+target_flags() {
+  target="$1"
+  case "$target" in
+    ansi3)
+      TARGET_FLAGS=(--ansi3)
+      ;;
+    ansi3-release)
+      TARGET_FLAGS=(--release --ansi3)
+      ;;
+    perl)
+      TARGET_FLAGS=(--perl)
+      ;;
+    java)
+      TARGET_FLAGS=(--java)
+      ;;
+    node2)
+      TARGET_FLAGS=(--node2)
+      ;;
+    haskell)
+      TARGET_FLAGS=(--haskell)
+      ;;
+    *)
+      echo "Unknown target: $target" >&2
+      exit 2
+      ;;
+  esac
+}
+
 prepare_java_bootstrap() {
   JAVA_CLASSES="$OUTDIR/java-bootstrap-classes"
   mkdir -p "$JAVA_CLASSES"
@@ -193,12 +220,13 @@ backend_run() {
 emit_artifact() {
   backend="$1"
   program="$2"
-  flag="$3"
+  target="$3"
   artifact="$4"
   log="$5"
+  shift 5
 
-  printf "%-64s" "emit $backend $program $flag"
-  if (cd "$ROOT" && backend_run "$backend" "$program" "$flag" >"$artifact") 2>"$log"; then
+  printf "%-64s" "emit $backend $program $target"
+  if (cd "$ROOT" && backend_run "$backend" "$program" "$@" >"$artifact") 2>"$log"; then
     printf "PASS\n"
   else
     printf "FAIL\n"
@@ -216,7 +244,7 @@ verify_artifact() {
   target_dir="$5"
 
   case "$target" in
-    ansi3)
+    ansi3|ansi3-release)
       binary="$target_dir/$backend.bin"
       run_logged_quiet "gcc $backend -> $target" "$target_dir/$backend.gcc.log" \
         gcc -O2 -Wno-parentheses-equality -Wno-format-security "$artifact" -o "$binary"
@@ -248,6 +276,16 @@ verify_artifact() {
         run_logged_quiet "$backend -> $target --test" "$target_dir/$backend.test.log" node "$artifact" --test
       fi
       ;;
+    haskell)
+      binary="$target_dir/$backend.bin"
+      build_dir="$target_dir/$backend.ghc"
+      mkdir -p "$build_dir/obj" "$build_dir/hi"
+      run_logged_quiet "ghc $backend -> $target" "$target_dir/$backend.ghc.log" \
+        ghc -ignore-dot-ghci -odir "$build_dir/obj" -hidir "$build_dir/hi" -o "$binary" "$artifact"
+      if is_compiler_program "$program"; then
+        run_logged_quiet "$backend -> $target --test" "$target_dir/$backend.test.log" "$binary" --test
+      fi
+      ;;
     *)
       echo "Unknown target: $target" >&2
       exit 2
@@ -264,7 +302,7 @@ run_generated_program() {
   log="$target_dir/$backend.run.log"
 
   case "$target" in
-    ansi3)
+    ansi3|ansi3-release)
       run_stdout_quiet "run $backend -> $target" "$stdout" "$log" "$target_dir/$backend.bin"
       ;;
     perl)
@@ -276,6 +314,9 @@ run_generated_program() {
       ;;
     node2)
       run_stdout_quiet "run $backend -> $target" "$stdout" "$log" node "$artifact"
+      ;;
+    haskell)
+      run_stdout_quiet "run $backend -> $target" "$stdout" "$log" "$target_dir/$backend.bin"
       ;;
     *)
       echo "Unknown target: $target" >&2
@@ -366,15 +407,15 @@ check_program() {
 
   for i in "${!TARGETS[@]}"; do
     target="${TARGETS[$i]}"
-    flag="${TARGET_FLAGS[$i]}"
     ext="${TARGET_EXTS[$i]}"
+    target_flags "$target"
     target_dir="$program_dir/$target"
     mkdir -p "$target_dir"
 
-    printf "\nTarget: %s (%s)\n" "$target" "$flag"
+    printf "\nTarget: %s (%s)\n" "$target" "${TARGET_FLAGS[*]}"
     for backend in "${BACKENDS[@]}"; do
       artifact="$target_dir/$backend.$ext"
-      emit_artifact "$backend" "$program" "$flag" "$artifact" "$target_dir/$backend.emit.log"
+      emit_artifact "$backend" "$program" "$target" "$artifact" "$target_dir/$backend.emit.log" "${TARGET_FLAGS[@]}"
     done
 
     compare_target "$program" "$target" "$ext" "$target_dir"

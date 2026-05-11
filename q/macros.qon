@@ -79,6 +79,25 @@
          (return tree)
 			))))))
 
+  (list macroSymbolSingle (list tree string search string replace ) (declare (box val nil)) (body
+    (if (isEmpty tree)
+      (then (return nil))
+      (else
+       (if (isList tree)
+         (then
+            (return (cons (macroSymbolSingle (car tree) search replace) (macroSymbolSingle (cdr tree) search replace))))
+         (else
+          (if (equalString "symbol" (boxType tree))
+            (then
+              (if (equalString search (stringify tree))
+                (then
+                  (set val (clone tree))
+                  (set-struct val str replace)
+                  (return val))
+                (else)))
+            (else))
+          (return tree)))))))
+
   ;This time, replace is a list, search remains a string.  Every occurence of search is replaced with replace
   (list macrolist (list l string search list replace ) (declare (box val nil)) (body
     (if (isEmpty l)

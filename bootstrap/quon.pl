@@ -80,6 +80,64 @@ sub test23;
 sub test24;
 sub test25;
 sub test27;
+sub test28;
+sub haskellBackslash;
+sub haskellDoubleQuote;
+sub haskellEscapedBackslash;
+sub haskellEscapedDoubleQuote;
+sub haskellEscapeString;
+sub haskellSafeNameString;
+sub haskellSafeName;
+sub haskellFieldName;
+sub haskellNewName;
+sub haskellStringEndsWith;
+sub haskellStringStartsWith;
+sub haskellPointerBase;
+sub haskellTypeIsPointer;
+sub haskellTypeMap;
+sub haskellDefaultValue;
+sub haskellRefType;
+sub haskellGlobalVariables;
+sub haskellCollectVariablesFromArgs;
+sub haskellCollectVariablesFromDecls;
+sub haskellCollectVariables;
+sub haskellFuncMap;
+sub haskellNumberAtom;
+sub haskellAtom;
+sub haskellArgNames;
+sub haskellBindArgs;
+sub haskellCall;
+sub haskellBinop;
+sub haskellGetStruct;
+sub haskellNewExpression;
+sub haskellExpression;
+sub haskellSet;
+sub haskellSetStruct;
+sub haskellReturn;
+sub haskellIf;
+sub haskellStatement;
+sub haskellBody;
+sub haskellFunctionArgsSignature;
+sub haskellFunctionArgs;
+sub haskellArgRefs;
+sub haskellDeclarations;
+sub haskellFunction;
+sub haskellFunctions;
+sub haskellTypeDecl;
+sub haskellStructFields;
+sub haskellNewStructField;
+sub haskellNewStructFields;
+sub haskellStructCtorFields;
+sub haskellType;
+sub haskellTypes;
+sub haskellIncludes;
+sub haskellMainEntry;
+sub haskellApplyTypeAliases;
+sub haskellLoadProgram;
+sub haskellProgramTree;
+sub haskellProgram;
+sub haskellCompileString;
+sub haskellCompile;
 sub javaFunctionArgs;
 sub javaAtom;
 sub javaExpression;
@@ -95,12 +153,14 @@ sub javaFunction;
 sub javaFunctions;
 sub javaIncludes;
 sub javaTypeMap;
+sub javaPointerBase;
 sub javaFuncMap;
 sub javaTypeDecl;
 sub javaStructComponents;
 sub javaStruct;
 sub javaType;
 sub javaTypes;
+sub javaApplyTypeAliases;
 sub javaMainEntry;
 sub javaLoadProgram;
 sub javaProgramTree;
@@ -270,8 +330,10 @@ sub equalList;
 sub reverseRec;
 sub reverseList;
 sub flatten;
+sub printStringTree;
 sub macrowalk;
 sub macrosingle;
+sub macroSymbolSingle;
 sub macrolist;
 sub filterVoid;
 sub filterTokens;
@@ -900,7 +962,7 @@ my $replace = undef;
 
   fprintf($stderr, "//Printing program\n");
 
-  printf("%s", node2Program($tree));
+  printStringTree(node2ProgramTree($tree));
 
   fprintf($stderr, "//Done printing program\n");
 
@@ -1720,6 +1782,1331 @@ my $input = undef;
 }
 
 
+# Function test28 from line 462
+
+sub test28 {
+  my () = @_;
+  my $splitExpected = undef;
+my $splitResult = undef;
+
+  if ( equalString("aXYZc", stringReplace("b", "XYZ", "abc")) ) {
+    printf("28.1 pass stringReplace\n");
+
+  } else {
+    printf("28.1 fail stringReplace\n");
+
+  };
+
+  if ( equalString("abc", stringTrim(" abc ")) ) {
+    printf("28.2 pass stringTrim\n");
+
+  } else {
+    printf("28.2 fail stringTrim\n");
+
+  };
+
+  $splitExpected = cons(boxString("a"), cons(boxString("b"), undef));
+
+  $splitResult = stringSplit("a,b", ",");
+
+  if ( equalList($splitExpected, $splitResult) ) {
+    printf("28.3 pass stringSplit\n");
+
+  } else {
+    printf("28.3 fail stringSplit\n");
+
+  };
+
+}
+
+
+# Function haskellBackslash from line 5
+
+sub haskellBackslash {
+  my () = @_;
+  
+  return character(92);
+
+}
+
+
+# Function haskellDoubleQuote from line 8
+
+sub haskellDoubleQuote {
+  my () = @_;
+  
+  return character(34);
+
+}
+
+
+# Function haskellEscapedBackslash from line 11
+
+sub haskellEscapedBackslash {
+  my () = @_;
+  
+  return stringConcatenate(haskellBackslash(), haskellBackslash());
+
+}
+
+
+# Function haskellEscapedDoubleQuote from line 14
+
+sub haskellEscapedDoubleQuote {
+  my () = @_;
+  
+  return stringConcatenate(haskellBackslash(), haskellDoubleQuote());
+
+}
+
+
+# Function haskellEscapeString from line 17
+
+sub haskellEscapeString {
+  my ($s) = @_;
+  
+  $s = stringReplace(character(10), stringConcatenate(haskellBackslash(), "n"), $s);
+
+  $s = stringReplace(character(13), stringConcatenate(haskellBackslash(), "r"), $s);
+
+  $s = stringReplace(character(9), stringConcatenate(haskellBackslash(), "t"), $s);
+
+  return $s;
+
+}
+
+
+# Function haskellSafeNameString from line 24
+
+sub haskellSafeNameString {
+  my ($name) = @_;
+  
+  if ( equalString($name, "case") ) {
+    return "caseValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "class") ) {
+    return "classValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "data") ) {
+    return "dataValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "default") ) {
+    return "defaultValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "deriving") ) {
+    return "derivingValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "do") ) {
+    return "doValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "else") ) {
+    return "elseValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "foreign") ) {
+    return "foreignValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "if") ) {
+    return "ifValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "import") ) {
+    return "importValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "in") ) {
+    return "inValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "infix") ) {
+    return "infixValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "infixl") ) {
+    return "infixlValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "infixr") ) {
+    return "infixrValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "instance") ) {
+    return "instanceValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "let") ) {
+    return "letValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "module") ) {
+    return "moduleValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "newtype") ) {
+    return "newtypeValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "of") ) {
+    return "ofValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "then") ) {
+    return "thenValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "type") ) {
+    return "typeValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "where") ) {
+    return "whereValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "id") ) {
+    return "qid";
+
+  } else {
+  };
+
+  if ( equalString($name, "old") ) {
+    return "oldValue";
+
+  } else {
+  };
+
+  if ( equalString($name, "new") ) {
+    return "newValue";
+
+  } else {
+  };
+
+  if ( haskellStringStartsWith($name, "-") ) {
+    return $name;
+
+  } else {
+  };
+
+  if ( equalString($name, "StringListJoinRec") ) {
+    return "stringListJoinRec";
+
+  } else {
+  };
+
+  if ( equalString($name, "StringListJoin") ) {
+    return "stringListJoin";
+
+  } else {
+  };
+
+  if ( equalString($name, "ListToBoxString") ) {
+    return "listToBoxString";
+
+  } else {
+  };
+
+  if ( equalString($name, "ListToString") ) {
+    return "listToString";
+
+  } else {
+  };
+
+  if ( equalString($name, "StackTraceMove") ) {
+    return "stackTraceMove";
+
+  } else {
+  };
+
+  if ( equalString($name, "StackTracePrint") ) {
+    return "stackTracePrint";
+
+  } else {
+  };
+
+  if ( equalString($name, "StackTracePrintHelper") ) {
+    return "stackTracePrintHelper";
+
+  } else {
+  };
+
+  if ( equalString($name, "NoStackTrace_list") ) {
+    return "noStackTrace_list";
+
+  } else {
+  };
+
+  if ( equalString($name, "NoTrace_list") ) {
+    return "noTrace_list";
+
+  } else {
+  };
+
+  $name = stringReplace("-", "_", $name);
+
+  $name = stringReplace("?", "_q", $name);
+
+  $name = stringReplace("!", "_bang", $name);
+
+  return $name;
+
+}
+
+
+# Function haskellSafeName from line 66
+
+sub haskellSafeName {
+  my ($aSym) = @_;
+  
+  return boxSymbol(haskellSafeNameString(stringify($aSym)));
+
+}
+
+
+# Function haskellFieldName from line 70
+
+sub haskellFieldName {
+  my ($aSym) = @_;
+  
+  return stringConcatenate("qf_", haskellSafeNameString(stringify($aSym)));
+
+}
+
+
+# Function haskellNewName from line 74
+
+sub haskellNewName {
+  my ($aSym) = @_;
+  
+  return stringConcatenate("new", stringify($aSym));
+
+}
+
+
+# Function haskellStringEndsWith from line 78
+
+sub haskellStringEndsWith {
+  my ($s, $suffix) = @_;
+  my $start = 0;
+
+  if ( greaterthan(length($suffix), length($s)) ) {
+    return $false;
+
+  } else {
+    $start = subtract(length($s), length($suffix));
+
+    return equalString(substr($s, $start, length($suffix)), $suffix);
+
+  };
+
+}
+
+
+# Function haskellStringStartsWith from line 86
+
+sub haskellStringStartsWith {
+  my ($s, $prefix) = @_;
+  
+  if ( greaterthan(length($prefix), length($s)) ) {
+    return $false;
+
+  } else {
+    return equalString(substr($s, 0, length($prefix)), $prefix);
+
+  };
+
+}
+
+
+# Function haskellPointerBase from line 92
+
+sub haskellPointerBase {
+  my ($aSym) = @_;
+  my $name = "";
+
+  $name = stringify($aSym);
+
+  if ( haskellStringEndsWith($name, "*") ) {
+    return boxSymbol(substr($name, 0, sub1(length($name))));
+
+  } else {
+    return $aSym;
+
+  };
+
+}
+
+
+# Function haskellTypeIsPointer from line 99
+
+sub haskellTypeIsPointer {
+  my ($aSym) = @_;
+  my $mapped = "";
+
+  $mapped = stringify(haskellTypeMap($aSym));
+
+  return haskellStringStartsWith($mapped, "Maybe ");
+
+}
+
+
+# Function haskellTypeMap from line 104
+
+sub haskellTypeMap {
+  my ($aSym) = @_;
+  my $symMap = undef;
+my $name = "";
+
+  $symMap = alistCons(boxSymbol("pair"), boxSymbol("Maybe Box"), alistCons(boxSymbol("box"), boxSymbol("Maybe Box"), alistCons(boxSymbol("list"), boxSymbol("Maybe Box"), alistCons(boxSymbol("Box*"), boxSymbol("Maybe Box"), alistCons(boxSymbol("Pair"), boxSymbol("Box"), alistCons(boxSymbol("struct"), boxSymbol(""), alistCons(boxSymbol("bool"), boxSymbol("Bool"), alistCons(boxSymbol("uint"), boxSymbol("Int"), alistCons(boxSymbol("int"), boxSymbol("Int"), alistCons(boxSymbol("float"), boxSymbol("Double"), alistCons(boxSymbol("void"), boxSymbol("()"), alistCons(boxSymbol("stringArray"), boxSymbol("[String]"), alistCons(boxSymbol("array"), boxSymbol("[String]"), alistCons(boxSymbol("hashmap"), boxSymbol("IORef [(String, String)]"), alistCons(boxSymbol("string"), boxSymbol("String"), undef)))))))))))))));
+
+  if ( truthy(assoc(stringify($aSym), $symMap)) ) {
+    return cdr(assoc(stringify($aSym), $symMap));
+
+  } else {
+    $name = stringify($aSym);
+
+    if ( haskellStringEndsWith($name, "*") ) {
+      return boxSymbol(stringConcatenate("Maybe ", stringify(haskellPointerBase($aSym))));
+
+    } else {
+      return $aSym;
+
+    };
+
+  };
+
+}
+
+
+# Function haskellDefaultValue from line 130
+
+sub haskellDefaultValue {
+  my ($typeSym) = @_;
+  my $typ = "";
+
+  $typ = stringify(haskellTypeMap($typeSym));
+
+  if ( equalString($typ, "()") ) {
+    return "()";
+
+  } else {
+  };
+
+  if ( equalString($typ, "Bool") ) {
+    return "False";
+
+  } else {
+  };
+
+  if ( equalString($typ, "Int") ) {
+    return "0";
+
+  } else {
+  };
+
+  if ( equalString($typ, "Double") ) {
+    return "0.0";
+
+  } else {
+  };
+
+  if ( equalString($typ, "String") ) {
+    return "\"\"";
+
+  } else {
+  };
+
+  if ( equalString($typ, "[String]") ) {
+    return "[]";
+
+  } else {
+  };
+
+  if ( haskellStringStartsWith($typ, "Maybe ") ) {
+    return "Nothing";
+
+  } else {
+  };
+
+  return stringConcatenate("(error \"no default value for ", stringConcatenate($typ, "\")"));
+
+}
+
+
+# Function haskellRefType from line 142
+
+sub haskellRefType {
+  my ($typeSym) = @_;
+  
+  return stringConcatenate("(", stringConcatenate(stringify(haskellTypeMap($typeSym)), ")"));
+
+}
+
+
+# Function haskellGlobalVariables from line 146
+
+sub haskellGlobalVariables {
+  my () = @_;
+  
+  return cons(id(boxSymbol("globalArgsCount")), cons(id(boxSymbol("globalArgs")), cons(id(boxSymbol("releaseMode")), cons(id(boxSymbol("caller")), cons(id(boxSymbol("globalTrace")), cons(id(boxSymbol("globalStepTrace")), cons(id(boxSymbol("globalStackTrace")), undef)))))));
+
+}
+
+
+# Function haskellCollectVariablesFromArgs from line 157
+
+sub haskellCollectVariablesFromArgs {
+  my ($args) = @_;
+  my $variables = undef;
+
+  if ( isNil($args) ) {
+    return $variables;
+
+  } else {
+    $variables = cons(second($args), $variables);
+
+    return appendVariables($variables, haskellCollectVariablesFromArgs(cddr($args)));
+
+  };
+
+}
+
+
+# Function haskellCollectVariablesFromDecls from line 165
+
+sub haskellCollectVariablesFromDecls {
+  my ($decls) = @_;
+  my $variables = undef;
+my $decl = undef;
+
+  if ( isNil($decls) ) {
+    return $variables;
+
+  } else {
+    $decl = car($decls);
+
+    $variables = cons(second($decl), $variables);
+
+    return appendVariables($variables, haskellCollectVariablesFromDecls(cdr($decls)));
+
+  };
+
+}
+
+
+# Function haskellCollectVariables from line 174
+
+sub haskellCollectVariables {
+  my ($args, $decls) = @_;
+  my $variables = undef;
+
+  $variables = haskellCollectVariablesFromArgs($args);
+
+  $variables = appendVariables($variables, haskellCollectVariablesFromDecls($decls));
+
+  $variables = appendVariables($variables, haskellGlobalVariables());
+
+  return $variables;
+
+}
+
+
+# Function haskellFuncMap from line 181
+
+sub haskellFuncMap {
+  my ($aSym, $variables) = @_;
+  my $symMap = undef;
+
+  if ( orBool(equalString("symbol", boxType($aSym)), equalString("string", boxType($aSym))) ) {
+    if ( inList($aSym, $variables) ) {
+      return haskellSafeName($aSym);
+
+    } else {
+      $symMap = alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("sub_string"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("string_length"), alistCons(boxSymbol("nil"), boxSymbol("Nothing"), alistCons(boxSymbol("true"), boxSymbol("True"), alistCons(boxSymbol("false"), boxSymbol("False"), alistCons(boxSymbol("old"), boxSymbol("oldValue"), alistCons(boxSymbol("new"), boxSymbol("newValue"), undef)))))))))));
+
+      if ( truthy(assoc(stringify($aSym), $symMap)) ) {
+        return cdr(assoc(stringify($aSym), $symMap));
+
+      } else {
+        return haskellSafeName($aSym);
+
+      };
+
+    };
+
+  } else {
+    return $aSym;
+
+  };
+
+}
+
+
+# Function haskellNumberAtom from line 205
+
+sub haskellNumberAtom {
+  my ($tree) = @_;
+  my $val = "";
+
+  $val = stringify($tree);
+
+  if ( haskellStringStartsWith($val, "-") ) {
+    return cons(boxString("pure ("), cons(id(boxString($val)), cons(boxString(")"), undef)));
+
+  } else {
+    return cons(boxString("pure "), cons(id(boxString($val)), undef));
+
+  };
+
+}
+
+
+# Function haskellAtom from line 212
+
+sub haskellAtom {
+  my ($tree, $variables) = @_;
+  
+  if ( equalString("int", boxType($tree)) ) {
+    return haskellNumberAtom($tree);
+
+  } else {
+    if ( equalString("float", boxType($tree)) ) {
+      return haskellNumberAtom($tree);
+
+    } else {
+      if ( equalString("string", boxType($tree)) ) {
+        return cons(boxString("pure \""), cons(id(boxString(haskellEscapeString(stringify($tree)))), cons(boxString("\""), undef)));
+
+      } else {
+        if ( isInt(stringify($tree)) ) {
+          return haskellNumberAtom($tree);
+
+        } else {
+          if ( isFloat(stringify($tree)) ) {
+            return haskellNumberAtom($tree);
+
+          } else {
+            if ( haskellStringStartsWith(stringify($tree), "-") ) {
+              return cons(boxString("pure ("), cons(id(haskellFuncMap($tree, $variables)), cons(boxString(")"), undef)));
+
+            } else {
+              if ( inList($tree, $variables) ) {
+                return cons(boxString("liftIO (readIORef "), cons(id(haskellFuncMap($tree, $variables)), cons(boxString(")"), undef)));
+
+              } else {
+                return cons(boxString("pure "), cons(id(haskellFuncMap($tree, $variables)), undef));
+
+              };
+
+            };
+
+          };
+
+        };
+
+      };
+
+    };
+
+  };
+
+}
+
+
+# Function haskellArgNames from line 236
+
+sub haskellArgNames {
+  my ($expr, $pos) = @_;
+  
+  if ( isEmpty($expr) ) {
+    return emptyList();
+
+  } else {
+    if ( isNil(cdr($expr)) ) {
+      return cons(boxString(" arg"), cons(id(boxString(intToString($pos))), undef));
+
+    } else {
+      return cons(boxString(" arg"), cons(id(boxString(intToString($pos))), cons(id(haskellArgNames(cdr($expr), add1($pos))), undef)));
+
+    };
+
+  };
+
+}
+
+
+# Function haskellBindArgs from line 245
+
+sub haskellBindArgs {
+  my ($expr, $indent, $variables, $pos) = @_;
+  
+  if ( isEmpty($expr) ) {
+    return emptyList();
+
+  } else {
+    return cons(id(listNewLine($indent)), cons(boxString("arg"), cons(id(boxString(intToString($pos))), cons(boxString(" <- "), cons(id(haskellExpression(car($expr), $indent, $variables)), cons(id(haskellBindArgs(cdr($expr), $indent, $variables, add1($pos))), undef))))));
+
+  };
+
+}
+
+
+# Function haskellCall from line 257
+
+sub haskellCall {
+  my ($name, $args, $indent, $variables) = @_;
+  
+  if ( isEmpty($args) ) {
+    return cons(boxString("liftIO "), cons(id(haskellFuncMap($name, undef)), undef));
+
+  } else {
+    return cons(boxString("do"), cons(id(haskellBindArgs($args, add1($indent), $variables, 0)), cons(id(listNewLine(add1($indent))), cons(boxString("liftIO ("), cons(id(haskellFuncMap($name, undef)), cons(id(haskellArgNames($args, 0)), cons(boxString(")"), undef)))))));
+
+  };
+
+}
+
+
+# Function haskellBinop from line 270
+
+sub haskellBinop {
+  my ($tree, $indent, $variables) = @_;
+  
+  return cons(boxString("do"), cons(id(listNewLine(add1($indent))), cons(boxString("arg0 <- "), cons(id(haskellExpression(third($tree), add1($indent), $variables)), cons(id(listNewLine(add1($indent))), cons(boxString("arg1 <- "), cons(id(haskellExpression(fourth($tree), add1($indent), $variables)), cons(id(listNewLine(add1($indent))), cons(boxString("pure (arg0 "), cons(id(second($tree)), cons(boxString(" arg1)"), undef)))))))))));
+
+}
+
+
+# Function haskellGetStruct from line 285
+
+sub haskellGetStruct {
+  my ($tree, $indent, $variables) = @_;
+  
+  return cons(boxString("do"), cons(id(listNewLine(add1($indent))), cons(boxString("hobj <- "), cons(id(haskellExpression(second($tree), add1($indent), $variables)), cons(id(listNewLine(add1($indent))), cons(boxString("liftIO (readIORef ("), cons(boxString("getField \@\""), cons(id(boxString(haskellFieldName(third($tree)))), cons(boxString("\" (expect hobj)))"), undef)))))))));
+
+}
+
+
+# Function haskellNewExpression from line 298
+
+sub haskellNewExpression {
+  my ($tree) = @_;
+  
+  if ( haskellTypeIsPointer(second($tree)) ) {
+    return cons(boxString("liftIO (Just <\$> "), cons(id(boxString(haskellNewName(third($tree)))), cons(boxString(")"), undef)));
+
+  } else {
+    return cons(boxString("liftIO "), cons(id(boxString(haskellNewName(third($tree)))), undef));
+
+  };
+
+}
+
+
+# Function haskellExpression from line 304
+
+sub haskellExpression {
+  my ($tree, $indent, $variables) = @_;
+  my $thing = undef;
+
+  if ( notBool(isList($tree)) ) {
+    return haskellAtom($tree, $variables);
+
+  } else {
+    if ( equal(1, listLength($tree)) ) {
+      if ( equalBox(boxString("return"), car($tree)) ) {
+        return cons(boxString("pure "), cons(id(haskellFuncMap(car($tree), $variables)), undef));
+
+      } else {
+        return haskellCall(car($tree), undef, $indent, $variables);
+
+      };
+
+    } else {
+      $thing = first($tree);
+
+      if ( equalBox(boxSymbol("get-struct"), $thing) ) {
+        return haskellGetStruct($tree, $indent, $variables);
+
+      } else {
+        if ( equalBox(boxSymbol("new"), $thing) ) {
+          return haskellNewExpression($tree);
+
+        } else {
+          if ( equalBox(boxSymbol("passthrough"), $thing) ) {
+            return cons(boxString("pure ("), cons(id(second($tree)), cons(boxString(")"), undef)));
+
+          } else {
+            if ( equalBox(boxSymbol("binop"), $thing) ) {
+              return haskellBinop($tree, $indent, $variables);
+
+            } else {
+              return haskellCall(car($tree), cdr($tree), $indent, $variables);
+
+            };
+
+          };
+
+        };
+
+      };
+
+    };
+
+  };
+
+}
+
+
+# Function haskellSet from line 329
+
+sub haskellSet {
+  my ($node, $indent, $variables) = @_;
+  
+  return cons(id(listNewLine($indent)), cons(boxString("qset <- "), cons(id(haskellExpression(third($node), $indent, $variables)), cons(id(listNewLine($indent)), cons(boxString("liftIO (writeIORef "), cons(id(haskellFuncMap(second($node), $variables)), cons(boxString(" qset)"), undef)))))));
+
+}
+
+
+# Function haskellSetStruct from line 340
+
+sub haskellSetStruct {
+  my ($node, $indent, $variables) = @_;
+  
+  return cons(id(listNewLine($indent)), cons(boxString("hobj <- "), cons(id(haskellExpression(second($node), $indent, $variables)), cons(id(listNewLine($indent)), cons(boxString("qset <- "), cons(id(haskellExpression(fourth($node), $indent, $variables)), cons(id(listNewLine($indent)), cons(boxString("liftIO (writeIORef ("), cons(boxString("getField \@\""), cons(id(boxString(haskellFieldName(third($node)))), cons(boxString("\" (expect hobj)) qset)"), undef)))))))))));
+
+}
+
+
+# Function haskellReturn from line 355
+
+sub haskellReturn {
+  my ($node, $indent, $variables) = @_;
+  
+  if ( greaterthan(listLength($node), 1) ) {
+    return cons(id(listNewLine($indent)), cons(boxString("hret <- "), cons(id(haskellExpression(cadr($node), $indent, $variables)), cons(id(listNewLine($indent)), cons(boxString("qreturn hret"), undef)))));
+
+  } else {
+    return cons(id(listNewLine($indent)), cons(boxString("qreturn ()"), undef));
+
+  };
+
+}
+
+
+# Function haskellIf from line 366
+
+sub haskellIf {
+  my ($node, $indent, $variables) = @_;
+  
+  return cons(id(listNewLine($indent)), cons(boxString("hcond <- "), cons(id(haskellExpression(second($node), $indent, $variables)), cons(id(listNewLine($indent)), cons(boxString("if hcond"), cons(id(listNewLine($indent)), cons(boxString("  then do"), cons(id(haskellBody(cdr(third($node)), add($indent, 2), $variables)), cons(id(listNewLine(add($indent, 2))), cons(boxString("pure ()"), cons(id(listNewLine($indent)), cons(boxString("  else do"), cons(id(haskellBody(cdr(fourth($node)), add($indent, 2), $variables)), cons(id(listNewLine(add($indent, 2))), cons(boxString("pure ()"), undef)))))))))))))));
+
+}
+
+
+# Function haskellStatement from line 385
+
+sub haskellStatement {
+  my ($node, $indent, $variables) = @_;
+  
+  if ( equalBox(boxString("set"), first($node)) ) {
+    return haskellSet($node, $indent, $variables);
+
+  } else {
+    if ( equalBox(boxString("set-struct"), first($node)) ) {
+      return haskellSetStruct($node, $indent, $variables);
+
+    } else {
+      if ( equalBox(boxString("if"), first($node)) ) {
+        return haskellIf($node, $indent, $variables);
+
+      } else {
+        if ( equalBox(boxString("return"), first($node)) ) {
+          return haskellReturn($node, $indent, $variables);
+
+        } else {
+          return cons(id(listNewLine($indent)), cons(boxString("_ <- "), cons(id(haskellExpression($node, $indent, $variables)), undef)));
+
+        };
+
+      };
+
+    };
+
+  };
+
+}
+
+
+# Function haskellBody from line 403
+
+sub haskellBody {
+  my ($tree, $indent, $variables) = @_;
+  
+  if ( isEmpty($tree) ) {
+    return emptyList();
+
+  } else {
+    return cons(id(haskellStatement(car($tree), $indent, $variables)), cons(id(haskellBody(cdr($tree), $indent, $variables)), undef));
+
+  };
+
+}
+
+
+# Function haskellFunctionArgsSignature from line 411
+
+sub haskellFunctionArgsSignature {
+  my ($tree) = @_;
+  
+  if ( isEmpty($tree) ) {
+    return emptyList();
+
+  } else {
+    if ( isNil(cddr($tree)) ) {
+      return cons(id(haskellTypeMap(first($tree))), cons(boxString(" -> "), undef));
+
+    } else {
+      return cons(id(haskellTypeMap(first($tree))), cons(boxString(" -> "), cons(id(haskellFunctionArgsSignature(cddr($tree))), undef)));
+
+    };
+
+  };
+
+}
+
+
+# Function haskellFunctionArgs from line 420
+
+sub haskellFunctionArgs {
+  my ($tree) = @_;
+  
+  if ( isEmpty($tree) ) {
+    return emptyList();
+
+  } else {
+    if ( isNil(cddr($tree)) ) {
+      return cons(boxString(" "), cons(id(haskellFuncMap(second($tree), undef)), cons(boxString("_arg"), undef)));
+
+    } else {
+      return cons(boxString(" "), cons(id(haskellFuncMap(second($tree), undef)), cons(boxString("_arg"), cons(id(haskellFunctionArgs(cddr($tree))), undef))));
+
+    };
+
+  };
+
+}
+
+
+# Function haskellArgRefs from line 429
+
+sub haskellArgRefs {
+  my ($args, $indent) = @_;
+  
+  if ( isEmpty($args) ) {
+    return emptyList();
+
+  } else {
+    return cons(id(listNewLine($indent)), cons(id(haskellFuncMap(second($args), undef)), cons(boxString(" <- liftIO (newIORef "), cons(id(haskellFuncMap(second($args), undef)), cons(boxString("_arg)"), cons(id(haskellArgRefs(cddr($args), $indent)), undef))))));
+
+  };
+
+}
+
+
+# Function haskellDeclarations from line 441
+
+sub haskellDeclarations {
+  my ($decls, $indent, $variables) = @_;
+  my $decl = undef;
+
+  if ( isEmpty($decls) ) {
+    return emptyList();
+
+  } else {
+    $decl = car($decls);
+
+    return cons(id(listNewLine($indent)), cons(boxString("qinit <- "), cons(id(haskellExpression(third($decl), $indent, $variables)), cons(id(listNewLine($indent)), cons(id(haskellFuncMap(second($decl), undef)), cons(boxString(" <- liftIO (newIORef qinit)"), cons(id(haskellDeclarations(cdr($decls), $indent, $variables)), undef)))))));
+
+  };
+
+}
+
+
+# Function haskellFunction from line 456
+
+sub haskellFunction {
+  my ($node) = @_;
+  my $variables = undef;
+my $args = undef;
+my $decls = undef;
+
+  if ( isNil($node) ) {
+    return emptyList();
+
+  } else {
+    $args = third($node);
+
+    $decls = cdr(fourth($node));
+
+    $variables = haskellCollectVariables($args, $decls);
+
+    return cons(id(listNewLine(0)), cons(id(haskellFuncMap(second($node), undef)), cons(boxString(" :: "), cons(id(haskellFunctionArgsSignature($args)), cons(boxString("IO "), cons(id(boxString(haskellRefType(first($node)))), cons(id(listNewLine(0)), cons(id(haskellFuncMap(second($node), undef)), cons(id(haskellFunctionArgs($args)), cons(boxString(" = evalContT \$ callCC \$ \\qreturn -> do"), cons(id(haskellArgRefs($args, 1)), cons(id(haskellDeclarations($decls, 1, $variables)), cons(id(haskellBody(cdr(fifth($node)), 1, $variables)), cons(id(listNewLine(1)), cons(boxString("pure "), cons(id(boxString(haskellDefaultValue(first($node)))), cons(boxString("\n"), undef)))))))))))))))));
+
+  };
+
+}
+
+
+# Function haskellFunctions from line 483
+
+sub haskellFunctions {
+  my ($tree) = @_;
+  
+  if ( isEmpty($tree) ) {
+    return emptyList();
+
+  } else {
+    return cons(id(haskellFunction(car($tree))), cons(id(haskellFunctions(cdr($tree))), undef));
+
+  };
+
+}
+
+
+# Function haskellTypeDecl from line 491
+
+sub haskellTypeDecl {
+  my ($l) = @_;
+  my $fieldType = undef;
+
+  if ( greaterthan(listLength($l), 2) ) {
+    $fieldType = listLast($l);
+
+  } else {
+    $fieldType = second($l);
+
+  };
+
+  return cons(boxString("  "), cons(id(boxString(haskellFieldName(first($l)))), cons(boxString(" :: IORef "), cons(id(boxString(haskellRefType($fieldType))), undef))));
+
+}
+
+
+# Function haskellStructFields from line 502
+
+sub haskellStructFields {
+  my ($node) = @_;
+  
+  if ( isEmpty($node) ) {
+    return emptyList();
+
+  } else {
+    if ( isNil(cdr($node)) ) {
+      return haskellTypeDecl(car($node));
+
+    } else {
+      return cons(id(haskellTypeDecl(car($node))), cons(boxString("\n, "), cons(id(haskellStructFields(cdr($node))), undef)));
+
+    };
+
+  };
+
+}
+
+
+# Function haskellNewStructField from line 514
+
+sub haskellNewStructField {
+  my ($l, $indent) = @_;
+  my $fieldType = undef;
+
+  if ( greaterthan(listLength($l), 2) ) {
+    $fieldType = listLast($l);
+
+  } else {
+    $fieldType = second($l);
+
+  };
+
+  return cons(id(listNewLine($indent)), cons(boxString("v_"), cons(id(boxString(haskellFieldName(first($l)))), cons(boxString(" <- newIORef "), cons(id(boxString(haskellDefaultValue($fieldType))), undef)))));
+
+}
+
+
+# Function haskellNewStructFields from line 526
+
+sub haskellNewStructFields {
+  my ($fields, $indent) = @_;
+  
+  if ( isEmpty($fields) ) {
+    return emptyList();
+
+  } else {
+    return cons(id(haskellNewStructField(car($fields), $indent)), cons(id(haskellNewStructFields(cdr($fields), $indent)), undef));
+
+  };
+
+}
+
+
+# Function haskellStructCtorFields from line 534
+
+sub haskellStructCtorFields {
+  my ($fields) = @_;
+  
+  if ( isEmpty($fields) ) {
+    return emptyList();
+
+  } else {
+    if ( isNil(cdr($fields)) ) {
+      return cons(id(boxString(haskellFieldName(first(car($fields))))), cons(boxString(" = v_"), cons(id(boxString(haskellFieldName(first(car($fields))))), undef)));
+
+    } else {
+      return cons(id(boxString(haskellFieldName(first(car($fields))))), cons(boxString(" = v_"), cons(id(boxString(haskellFieldName(first(car($fields))))), cons(boxString(", "), cons(id(haskellStructCtorFields(cdr($fields))), undef)))));
+
+    };
+
+  };
+
+}
+
+
+# Function haskellType from line 548
+
+sub haskellType {
+  my ($node) = @_;
+  my $fields = undef;
+
+  if ( isList(second($node)) ) {
+    $fields = cdr(second($node));
+
+    return cons(boxString("\ndata "), cons(id(first($node)), cons(boxString(" = "), cons(id(first($node)), cons(boxString(" { "), cons(id(haskellStructFields($fields)), cons(boxString("\n}\n\n"), cons(id(boxString(haskellNewName(first($node)))), cons(boxString(" :: IO "), cons(id(first($node)), cons(boxString("\n"), cons(id(boxString(haskellNewName(first($node)))), cons(boxString(" = do"), cons(id(haskellNewStructFields($fields, 1)), cons(id(listNewLine(1)), cons(boxString("pure "), cons(id(first($node)), cons(boxString(" { "), cons(id(haskellStructCtorFields($fields)), cons(boxString(" }\n"), undef))))))))))))))))))));
+
+  } else {
+    return emptyList();
+
+  };
+
+}
+
+
+# Function haskellTypes from line 576
+
+sub haskellTypes {
+  my ($nodes) = @_;
+  
+  if ( isEmpty($nodes) ) {
+    return emptyList();
+
+  } else {
+    return cons(id(haskellType(car($nodes))), cons(id(haskellTypes(cdr($nodes))), undef));
+
+  };
+
+}
+
+
+# Function haskellIncludes from line 584
+
+sub haskellIncludes {
+  my ($nodes) = @_;
+  
+  return cons(boxString("{-# LANGUAGE DataKinds #-}\n"), cons(boxString("{-# LANGUAGE DuplicateRecordFields #-}\n"), cons(boxString("{-# LANGUAGE ExtendedDefaultRules #-}\n"), cons(boxString("{-# LANGUAGE TypeApplications #-}\n"), cons(boxString("import Control.Monad.Trans.Cont\n"), cons(boxString("import Control.Monad.IO.Class\n"), cons(boxString("import Data.Char (chr)\n"), cons(boxString("import Data.IORef\n"), cons(boxString("import Data.Maybe (isNothing)\n"), cons(boxString("import GHC.Records (getField)\n"), cons(boxString("import System.Directory (doesFileExist)\n"), cons(boxString("import System.Environment (getArgs, lookupEnv)\n"), cons(boxString("import System.Exit (ExitCode(..), exitWith)\n"), cons(boxString("import System.IO (Handle, stderr, hPutStr, hFlush)\n"), cons(boxString("import System.IO.Unsafe (unsafePerformIO)\n"), cons(boxString("import Text.Printf (printf, hPrintf)\n\n"), cons(boxString("default (Int, Double)\n\n"), cons(boxString("expect :: Maybe a -> a\n"), cons(boxString("expect (Just x) = x\n"), cons(boxString("expect Nothing = error \"Quon nil dereference\"\n\n"), cons(boxString("globalTrace :: IORef Bool\n"), cons(boxString("globalTrace = unsafePerformIO (newIORef False)\n"), cons(boxString("{-# NOINLINE globalTrace #-}\n\n"), cons(boxString("globalStepTrace :: IORef Bool\n"), cons(boxString("globalStepTrace = unsafePerformIO (newIORef False)\n"), cons(boxString("{-# NOINLINE globalStepTrace #-}\n\n"), cons(boxString("releaseMode :: IORef Bool\n"), cons(boxString("releaseMode = unsafePerformIO (newIORef False)\n"), cons(boxString("{-# NOINLINE releaseMode #-}\n\n"), cons(boxString("caller :: IORef String\n"), cons(boxString("caller = unsafePerformIO (newIORef \"\")\n"), cons(boxString("{-# NOINLINE caller #-}\n\n"), cons(boxString("globalArgs :: IORef [String]\n"), cons(boxString("globalArgs = unsafePerformIO (newIORef [])\n"), cons(boxString("{-# NOINLINE globalArgs #-}\n\n"), cons(boxString("globalArgsCount :: IORef Int\n"), cons(boxString("globalArgsCount = unsafePerformIO (newIORef 0)\n"), cons(boxString("{-# NOINLINE globalArgsCount #-}\n\n"), cons(boxString("globalStackTrace :: IORef (Maybe Box)\n"), cons(boxString("globalStackTrace = unsafePerformIO (newIORef Nothing)\n"), cons(boxString("{-# NOINLINE globalStackTrace #-}\n\n"), cons(boxString("hsIsNil :: Maybe a -> IO Bool\n"), cons(boxString("hsIsNil = pure . isNothing\n\n"), cons(boxString("hsGetEnv :: String -> IO String\n"), cons(boxString("hsGetEnv key = do\n"), cons(boxString("  value <- lookupEnv key\n"), cons(boxString("  pure (maybe \"\" (\\x -> x) value)\n\n"), cons(boxString("hsPanic :: String -> IO ()\n"), cons(boxString("hsPanic = error\n\n"), cons(boxString("hsExit :: Int -> IO ()\n"), cons(boxString("hsExit 0 = exitWith ExitSuccess\n"), cons(boxString("hsExit n = exitWith (ExitFailure n)\n\n"), cons(boxString("hsStringLength :: String -> IO Int\n"), cons(boxString("hsStringLength = pure . length\n\n"), cons(boxString("hsSubString :: String -> Int -> Int -> IO String\n"), cons(boxString("hsSubString s start len = pure (take len (drop start s))\n\n"), cons(boxString("hsSetSubString :: String -> Int -> String -> IO String\n"), cons(boxString("hsSetSubString target start source = pure (take start target ++ source ++ drop (start + 1) target)\n\n"), cons(boxString("hsShowInt :: Int -> IO String\n"), cons(boxString("hsShowInt = pure . show\n\n"), cons(boxString("hsShowFloat :: Double -> IO String\n"), cons(boxString("hsShowFloat = pure . show\n\n"), cons(boxString("hsReadFile :: String -> IO (Maybe Box)\n"), cons(boxString("hsReadFile filename = do\n"), cons(boxString("  exists <- doesFileExist filename\n"), cons(boxString("  if exists then do\n"), cons(boxString("    contents <- readFile filename\n"), cons(boxString("    boxString contents\n"), cons(boxString("  else pure Nothing\n\n"), cons(boxString("hsWriteFile :: String -> String -> IO ()\n"), cons(boxString("hsWriteFile = writeFile\n\n"), cons(boxString("hsGetStringArray :: Int -> [String] -> IO String\n"), cons(boxString("hsGetStringArray index strs = pure (strs !! index)\n\n"), cons(boxString("hsProgramArgs :: IO [String]\n"), cons(boxString("hsProgramArgs = readIORef globalArgs\n\n"), cons(boxString("hsProgramArgsCount :: IO Int\n"), cons(boxString("hsProgramArgsCount = readIORef globalArgsCount\n\n"), cons(boxString("hsCharacter :: Int -> IO String\n"), cons(boxString("hsCharacter num = pure [chr num]\n\n"), cons(boxString("hsRemainder :: Int -> Int -> IO Int\n"), cons(boxString("hsRemainder a b = pure (a `mod` b)\n\n"), cons(boxString("hsMakeHash :: IO (IORef [(String, String)])\n"), cons(boxString("hsMakeHash = newIORef []\n\n"), cons(boxString("hsSetHash :: IORef [(String, String)] -> String -> String -> IO ()\n"), cons(boxString("hsSetHash hash key value = modifyIORef hash ((key, value) :)\n\n"), cons(boxString("hsGetHash :: IORef [(String, String)] -> String -> IO String\n"), cons(boxString("hsGetHash hash key = do\n"), cons(boxString("  pairs <- readIORef hash\n"), cons(boxString("  pure (maybe \"\" (\\x -> x) (lookup key pairs))\n\n"), cons(boxString("hsInHash :: IORef [(String, String)] -> String -> IO Bool\n"), cons(boxString("hsInHash hash key = do\n"), cons(boxString("  pairs <- readIORef hash\n"), cons(boxString("  pure (not (isNothing (lookup key pairs)))\n\n"), cons(boxString("hsMakeArray :: Int -> IO [String]\n"), cons(boxString("hsMakeArray len = pure (replicate len \"\")\n\n"), cons(boxString("hsSetArray :: [String] -> Int -> String -> IO ()\n"), cons(boxString("hsSetArray _ _ _ = pure ()\n\n"), cons(boxString("hsGetArray :: [String] -> Int -> IO String\n"), cons(boxString("hsGetArray array index = pure (array !! index)\n\n"), undef)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))));
+
+}
+
+
+# Function haskellMainEntry from line 687
+
+sub haskellMainEntry {
+  my () = @_;
+  
+  return cons(boxString("\nmain :: IO ()\n"), cons(boxString("main = do\n"), cons(boxString("  args <- getArgs\n"), cons(boxString("  let qargs = \"fixmeprogname\" : args\n"), cons(boxString("  writeIORef globalArgs qargs\n"), cons(boxString("  writeIORef globalArgsCount (length qargs)\n"), cons(boxString("  _ <- start\n"), cons(boxString("  pure ()\n"), undef))))))));
+
+}
+
+
+# Function haskellApplyTypeAliases from line 699
+
+sub haskellApplyTypeAliases {
+  my ($tree, $types) = @_;
+  my $node = undef;
+my $alias = undef;
+my $target = undef;
+
+  if ( isEmpty($types) ) {
+    return $tree;
+
+  } else {
+  };
+
+  $node = car($types);
+
+  if ( isList(second($node)) ) {
+    return haskellApplyTypeAliases($tree, cdr($types));
+
+  } else {
+  };
+
+  $alias = first($node);
+
+  if ( equalString(stringify(haskellTypeMap($alias)), stringify($alias)) ) {
+    $target = haskellTypeMap(second($node));
+
+    return haskellApplyTypeAliases(macroSymbolSingle($tree, stringify($alias), stringify($target)), cdr($types));
+
+  } else {
+    return haskellApplyTypeAliases($tree, cdr($types));
+
+  };
+
+}
+
+
+# Function haskellLoadProgram from line 715
+
+sub haskellLoadProgram {
+  my ($filename) = @_;
+  my $tree = undef;
+my $replace = undef;
+
+  $tree = loadQuon($filename);
+
+  $tree = insertInclude($tree, "q/shims/haskell.qon");
+
+  $tree = loadIncludes($tree, undef);
+
+  $tree = macrowalk($tree);
+
+  $replace = cons(boxSymbol("hPrintf"), cons(boxSymbol("stderr"), undef));
+
+  $tree = macrolist($tree, stringConcatenate("q", "log"), $replace);
+
+  $tree = haskellApplyTypeAliases($tree, cdr(getTypes($tree)));
+
+  return $tree;
+
+}
+
+
+# Function haskellProgramTree from line 726
+
+sub haskellProgramTree {
+  my ($tree) = @_;
+  
+  return cons(id(haskellIncludes(cdr(first($tree)))), cons(id(haskellTypes(cdr(second($tree)))), cons(id(haskellFunctions(cdr(third($tree)))), cons(id(haskellMainEntry()), cons(boxString("\n"), undef)))));
+
+}
+
+
+# Function haskellProgram from line 735
+
+sub haskellProgram {
+  my ($tree) = @_;
+  
+  return ListToString(flatten(haskellProgramTree($tree)), 0, $true, $false);
+
+}
+
+
+# Function haskellCompileString from line 739
+
+sub haskellCompileString {
+  my ($filename) = @_;
+  
+  return haskellProgram(haskellLoadProgram($filename));
+
+}
+
+
+# Function haskellCompile from line 743
+
+sub haskellCompile {
+  my ($filename) = @_;
+  my $tree = undef;
+my $replace = undef;
+
+  fprintf($stderr, "Scanning file...%s\n", $filename);
+
+  $tree = loadQuon($filename);
+
+  fprintf($stderr, "Adding Haskell shim functions\n");
+
+  $tree = insertInclude($tree, "q/shims/haskell.qon");
+
+  fprintf($stderr, "Loading includes\n");
+
+  $tree = loadIncludes($tree, undef);
+
+  fprintf($stderr, "Walking tree\n");
+
+  $tree = macrowalk($tree);
+
+  fprintf($stderr, "Replacing q log\n");
+
+  $replace = cons(boxSymbol("hPrintf"), cons(boxSymbol("stderr"), undef));
+
+  $tree = macrolist($tree, stringConcatenate("q", "log"), $replace);
+
+  $tree = haskellApplyTypeAliases($tree, cdr(getTypes($tree)));
+
+  fprintf($stderr, "Printing program\n");
+
+  printStringTree(haskellProgramTree($tree));
+
+}
+
+
 # Function javaFunctionArgs from line 5
 
 sub javaFunctionArgs {
@@ -1797,7 +3184,7 @@ sub javaExpression {
 
       } else {
         if ( equalBox(boxSymbol("new"), $thing) ) {
-          return cons(boxString("new "), cons(id(third($tree)), cons(boxString("()"), undef)));
+          return cons(boxString("new "), cons(id(javaTypeMap(second($tree))), cons(boxString("()"), undef)));
 
         } else {
           if ( equalBox(boxSymbol("passthrough"), $thing) ) {
@@ -2029,7 +3416,26 @@ sub javaTypeMap {
 }
 
 
-# Function javaFuncMap from line 267
+# Function javaPointerBase from line 267
+
+sub javaPointerBase {
+  my ($aSym) = @_;
+  my $name = "";
+
+  $name = stringify($aSym);
+
+  if ( equalString("*", substr($name, sub1(length($name)), 1)) ) {
+    return boxSymbol(substr($name, 0, sub1(length($name))));
+
+  } else {
+    return $aSym;
+
+  };
+
+}
+
+
+# Function javaFuncMap from line 274
 
 sub javaFuncMap {
   my ($aSym) = @_;
@@ -2054,7 +3460,7 @@ sub javaFuncMap {
 }
 
 
-# Function javaTypeDecl from line 309
+# Function javaTypeDecl from line 316
 
 sub javaTypeDecl {
   my ($l) = @_;
@@ -2070,7 +3476,7 @@ sub javaTypeDecl {
 }
 
 
-# Function javaStructComponents from line 327
+# Function javaStructComponents from line 334
 
 sub javaStructComponents {
   my ($node) = @_;
@@ -2086,7 +3492,7 @@ sub javaStructComponents {
 }
 
 
-# Function javaStruct from line 336
+# Function javaStruct from line 343
 
 sub javaStruct {
   my ($node) = @_;
@@ -2096,7 +3502,7 @@ sub javaStruct {
 }
 
 
-# Function javaType from line 340
+# Function javaType from line 347
 
 sub javaType {
   my ($node) = @_;
@@ -2112,7 +3518,7 @@ sub javaType {
 }
 
 
-# Function javaTypes from line 352
+# Function javaTypes from line 359
 
 sub javaTypes {
   my ($nodes) = @_;
@@ -2128,7 +3534,44 @@ sub javaTypes {
 }
 
 
-# Function javaMainEntry from line 361
+# Function javaApplyTypeAliases from line 368
+
+sub javaApplyTypeAliases {
+  my ($tree, $types) = @_;
+  my $node = undef;
+my $alias = undef;
+my $target = undef;
+
+  if ( isEmpty($types) ) {
+    return $tree;
+
+  } else {
+  };
+
+  $node = car($types);
+
+  if ( isList(second($node)) ) {
+    return javaApplyTypeAliases($tree, cdr($types));
+
+  } else {
+  };
+
+  $alias = first($node);
+
+  if ( equalString(stringify(javaTypeMap($alias)), stringify($alias)) ) {
+    $target = javaTypeMap(javaPointerBase(second($node)));
+
+    return javaApplyTypeAliases(macroSymbolSingle($tree, stringify($alias), stringify($target)), cdr($types));
+
+  } else {
+    return javaApplyTypeAliases($tree, cdr($types));
+
+  };
+
+}
+
+
+# Function javaMainEntry from line 384
 
 sub javaMainEntry {
   my () = @_;
@@ -2138,7 +3581,7 @@ sub javaMainEntry {
 }
 
 
-# Function javaLoadProgram from line 374
+# Function javaLoadProgram from line 397
 
 sub javaLoadProgram {
   my ($filename) = @_;
@@ -2157,12 +3600,14 @@ my $replace = undef;
 
   $tree = macrolist($tree, stringConcatenate("q", "log"), $replace);
 
+  $tree = javaApplyTypeAliases($tree, cdr(getTypes($tree)));
+
   return $tree;
 
 }
 
 
-# Function javaProgramTree from line 384
+# Function javaProgramTree from line 408
 
 sub javaProgramTree {
   my ($tree) = @_;
@@ -2172,7 +3617,7 @@ sub javaProgramTree {
 }
 
 
-# Function javaProgram from line 393
+# Function javaProgram from line 417
 
 sub javaProgram {
   my ($tree) = @_;
@@ -2182,7 +3627,7 @@ sub javaProgram {
 }
 
 
-# Function javaCompileString from line 397
+# Function javaCompileString from line 421
 
 sub javaCompileString {
   my ($filename) = @_;
@@ -2192,12 +3637,12 @@ sub javaCompileString {
 }
 
 
-# Function javaCompile from line 401
+# Function javaCompile from line 425
 
 sub javaCompile {
   my ($filename) = @_;
   
-  printf("%s", javaCompileString($filename));
+  printStringTree(javaProgramTree(javaLoadProgram($filename)));
 
   fprintf($stderr, "//Done printing program\n");
 
@@ -2807,7 +4252,7 @@ sub ansi3CompileString {
 sub ansi3Compile {
   my ($filename) = @_;
   
-  printf("%s", ansi3CompileString($filename));
+  printStringTree(ansi3ProgramTree(ansi3LoadProgram($filename)));
 
   fprintf($stderr, "//Done printing program\n");
 
@@ -3493,7 +4938,7 @@ my $replace = undef;
 
   fprintf($stderr, "Printing program\n");
 
-  printf("%s", perlProgram($tree));
+  printStringTree(perlProgramTree($tree));
 
 }
 
@@ -5647,6 +7092,33 @@ sub flatten {
 }
 
 
+# Function printStringTree from line 535
+
+sub printStringTree {
+  my ($tree) = @_;
+  my $val = undef;
+
+  if ( isEmpty($tree) ) {
+    return;
+
+  } else {
+  };
+
+  $val = car($tree);
+
+  if ( isList($val) ) {
+    printStringTree(car($tree));
+
+  } else {
+    printf("%s", stringify($val));
+
+  };
+
+  printStringTree(cdr($tree));
+
+}
+
+
 # Function macrowalk from line 5
 
 sub macrowalk {
@@ -5732,7 +7204,44 @@ sub macrosingle {
 }
 
 
-# Function macrolist from line 82
+# Function macroSymbolSingle from line 81
+
+sub macroSymbolSingle {
+  my ($tree, $search, $replace) = @_;
+  my $val = undef;
+
+  if ( isEmpty($tree) ) {
+    return undef;
+
+  } else {
+    if ( isList($tree) ) {
+      return cons(macroSymbolSingle(car($tree), $search, $replace), macroSymbolSingle(cdr($tree), $search, $replace));
+
+    } else {
+      if ( equalString("symbol", boxType($tree)) ) {
+        if ( equalString($search, stringify($tree)) ) {
+          $val = clone($tree);
+
+          $val->{str} = $replace;
+
+          return $val;
+
+        } else {
+        };
+
+      } else {
+      };
+
+      return $tree;
+
+    };
+
+  };
+
+}
+
+
+# Function macrolist from line 101
 
 sub macrolist {
   my ($l, $search, $replace) = @_;
@@ -7057,14 +8566,14 @@ sub stringReplace {
     return $s;
 
   } else {
-    return stringConcatenate(substr($s, 0, $pos), stringConcatenate($new, stringReplace($old, $new, substr($s, add($pos, length($old)), length($s)))));
+    return stringConcatenate(substr($s, 0, $pos), stringConcatenate($new, stringReplace($old, $new, substr($s, add($pos, length($old)), subtract(length($s), add($pos, length($old)))))));
 
   };
 
 }
 
 
-# Function stringContains from line 474
+# Function stringContains from line 475
 
 sub stringContains {
   my ($haystack, $needle) = @_;
@@ -7086,7 +8595,7 @@ my $needleLength = 0;
 }
 
 
-# Function stringContainsHelper from line 489
+# Function stringContainsHelper from line 490
 
 sub stringContainsHelper {
   my ($haystack, $needle, $startIndex) = @_;
@@ -7114,7 +8623,7 @@ my $needleLength = 0;
 }
 
 
-# Function isWhiteSpace from line 510
+# Function isWhiteSpace from line 511
 
 sub isWhiteSpace {
   my ($s) = @_;
@@ -7148,7 +8657,7 @@ sub isWhiteSpace {
 }
 
 
-# Function stringTrim from line 525
+# Function stringTrim from line 526
 
 sub stringTrim {
   my ($s) = @_;
@@ -7158,10 +8667,10 @@ sub stringTrim {
 
   } else {
     if ( isWhiteSpace(substr($s, 0, 1)) ) {
-      return stringTrim(substr($s, 1, length($s)));
+      return stringTrim(substr($s, 1, sub1(length($s))));
 
     } else {
-      if ( isWhiteSpace(substr($s, subtract(length($s), 1), length($s))) ) {
+      if ( isWhiteSpace(substr($s, subtract(length($s), 1), 1)) ) {
         return stringTrim(substr($s, 0, subtract(length($s), 1)));
 
       } else {
@@ -7176,7 +8685,7 @@ sub stringTrim {
 }
 
 
-# Function stringSplit from line 541
+# Function stringSplit from line 542
 
 sub stringSplit {
   my ($s, $delimiter) = @_;
@@ -7197,7 +8706,7 @@ my $delimiterLength = 0;
   } else {
     printf("Splitting string in stringSplit\n");
 
-    return cons(boxString(substr($s, 0, $end)), stringSplit(substr($s, add($end, $delimiterLength), length($s)), $delimiter));
+    return cons(boxString(substr($s, 0, $end)), stringSplit(substr($s, add($end, $delimiterLength), subtract(length($s), add($end, $delimiterLength))), $delimiter));
 
   };
 
@@ -7625,6 +9134,7 @@ my $runPerl = $false;
 my $runJava = $false;
 my $runNode = $false;
 my $runNode2 = $false;
+my $runHaskell = $false;
 my $runAnsi3 = $false;
 my $runTree = $false;
 
@@ -7654,6 +9164,8 @@ my $runTree = $false;
 
   $runNode2 = inList(boxString("--node2"), $cmdLine);
 
+  $runHaskell = orBool(inList(boxString("--haskell"), $cmdLine), inList(boxString("--hs"), $cmdLine));
+
   $runAnsi3 = inList(boxString("--ansi3"), $cmdLine);
 
   $globalTrace = inList(boxString("--trace"), $cmdLine);
@@ -7680,6 +9192,8 @@ my $runTree = $false;
     printf("  --node      Compile to Node.js\n");
 
     printf("  --node2      Compile to Node.js, new outputter\n");
+
+    printf("  --haskell, --hs Compile to Haskell\n");
 
     printf("  --ansi3     Compile to ANSI C (quon version 3)\n");
 
@@ -7745,6 +9259,8 @@ my $runTree = $false;
 
     test27();
 
+    test28();
+
     printf("\n\nAfter all that hard work, I need a beer...\n");
 
     beers(9);
@@ -7760,27 +9276,35 @@ my $runTree = $false;
         printf("\n");
 
       } else {
-        if ( $runPerl ) {
-          perlCompile($filename);
+        if ( $runHaskell ) {
+          haskellCompile($filename);
 
           printf("\n");
 
         } else {
-          if ( $runJava ) {
-            javaCompile($filename);
+          if ( $runPerl ) {
+            perlCompile($filename);
 
             printf("\n");
 
           } else {
-            if ( $runAnsi3 ) {
-              ansi3Compile($filename);
+            if ( $runJava ) {
+              javaCompile($filename);
 
               printf("\n");
 
             } else {
-              ansi3Compile($filename);
+              if ( $runAnsi3 ) {
+                ansi3Compile($filename);
 
-              printf("\n");
+                printf("\n");
+
+              } else {
+                ansi3Compile($filename);
+
+                printf("\n");
+
+              };
 
             };
 

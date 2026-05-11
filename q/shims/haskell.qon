@@ -1,0 +1,157 @@
+((includes)
+ (types)
+ (functions
+
+(bool isNil (list a) (declare)
+  (body
+    (return (hsIsNil a))))
+
+(string getEnv (string key) (declare)
+  (body
+    (return (hsGetEnv key))))
+
+(void panic (string s) (declare)
+  (body
+    (hsPanic s)))
+
+(void exit (int status) (declare)
+  (body
+    (hsExit status)))
+
+(int sub (int a int b) (declare)
+  (body
+    (return (binop - a b))))
+
+(int mult (int a int b) (declare)
+  (body
+    (return (binop * a b))))
+
+(bool greaterthan (int a int b) (declare)
+  (body
+    (return (binop > a b))))
+
+(float subf (float a float b) (declare)
+  (body
+    (return (binop - a b))))
+
+(float multf (float a float b) (declare)
+  (body
+    (return (binop * a b))))
+
+(bool greaterthanf (float a float b) (declare)
+  (body
+    (return (binop > a b))))
+
+(bool equalf (float a float b) (declare)
+  (body
+    (return (binop == a b))))
+
+(bool equal (int a int b) (declare)
+  (body
+    (return (binop == a b))))
+
+(bool equalString (string a string b) (declare)
+  (body
+    (return (binop == a b))))
+
+(int string_length (string s) (declare)
+  (body
+    (return (hsStringLength s))))
+
+(string setSubString (string target int start string source)(declare)
+  (body
+    (return (hsSetSubString target start source))))
+
+(string sub_string (string s int start int length) (declare)
+  (body
+    (return (hsSubString s start length))))
+
+(string stringConcatenate (string a string b) (declare)
+  (body
+    (return (binop ++ a b))))
+
+(string intToString (int a) (declare)
+  (body
+    (return (hsShowInt a))))
+
+(string floatToString (float a) (declare)
+  (body
+    (return (hsShowFloat a))))
+
+(box read_file (string filename) (declare)
+  (body
+    (return (hsReadFile filename))))
+
+(void write_file (string filename string data) (declare)
+  (body
+    (hsWriteFile filename data)))
+
+(string getStringArray (int index array strs) (declare)
+  (body
+    (return (hsGetStringArray index strs))))
+
+(array programArgs () (declare)
+  (body
+    (return (hsProgramArgs))))
+
+(int programArgsCount () (declare)
+  (body
+    (return (hsProgramArgsCount))))
+
+(string character (int num) (declare)
+  (body
+    (return (hsCharacter num))))
+
+(void displays (string s) (declare)
+  (body
+    (printf "%s" s)))
+
+(int remainder (int a int b) (declare)
+  (body
+    (return (hsRemainder a b))))
+
+(bool or (bool a bool b) (declare)
+  (body
+    (return (binop || a b))))
+
+(int max (int a int b) (declare)
+  (body
+    (if (greaterthan a b)
+      (then (return a))
+      (else (return b)))))
+
+(int min (int a int b) (declare)
+  (body
+    (if (greaterthan a b)
+      (then (return b))
+      (else (return a)))))
+
+(hashmap makeHash () (declare)
+  (body
+    (return (hsMakeHash))))
+
+(void setHash (hashmap hash string key string value) (declare)
+  (body
+    (hsSetHash hash key value)))
+
+(string getHash (hashmap hash string key) (declare)
+  (body
+    (return (hsGetHash hash key))))
+
+(bool inHash (hashmap hash string key) (declare)
+  (body
+    (return (hsInHash hash key))))
+
+(array makeArray (int length) (declare)
+  (body
+    (return (hsMakeArray length))))
+
+(void setArray (array array int index string value) (declare)
+  (body
+    (hsSetArray array index value)))
+
+(string getArray (array array int index) (declare)
+  (body
+    (return (hsGetArray array index))))
+
+))

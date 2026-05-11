@@ -55,8 +55,9 @@ Run the full current check suite with:
 
 This runs parser negative tests first, then the backend matrix.  By default it
 checks `compiler.qon`, `examples/hello.qon`, `examples/fac.qon`,
-`examples/quotelist.qon`, and `listtest.qon`.  You can pass a smaller set of
-programs when you only want to check specific fixtures:
+`examples/quotelist.qon`, `examples/lib/portable_libs.qon`, and
+`listtest.qon`.  You can pass a smaller set of programs when you only want to
+check specific fixtures:
 
     ./check.bash examples/hello.qon listtest.qon
 
@@ -72,7 +73,8 @@ The backend comparison matrix can also be run directly:
     ./backend_matrix.bash compiler.qon
 
 It writes generated artifacts and logs to a temporary output directory unless
-`--outdir DIR` is provided.
+`--outdir DIR` is provided.  It checks normal and release C output, plus Perl,
+Java, and Node output.
 
 After compiler or runtime changes, refresh the generated bootstraps with:
 

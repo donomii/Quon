@@ -460,6 +460,23 @@
   )
 )
 
+(void test28 ()
+  (declare
+    (list splitExpected nil)
+    (list splitResult nil))
+  (body
+    (if (equalString "aXYZc" (stringReplace "b" "XYZ" "abc"))
+      (then (printf "28.1 pass stringReplace\n"))
+      (else (printf "28.1 fail stringReplace\n")))
+    (if (equalString "abc" (stringTrim " abc "))
+      (then (printf "28.2 pass stringTrim\n"))
+      (else (printf "28.2 fail stringTrim\n")))
+    (set splitExpected (stringList "a" "b"))
+    (set splitResult (stringSplit "a,b" ","))
+    (if (equalList splitExpected splitResult)
+      (then (printf "28.3 pass stringSplit\n"))
+      (else (printf "28.3 fail stringSplit\n")))))
+
 
 
 ;	(void test22 () (declare 

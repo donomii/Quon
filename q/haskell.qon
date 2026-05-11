@@ -1,0 +1,761 @@
+((includes)
+ (types)
+
+ (functions
+
+(string haskellBackslash () (declare)
+  (body (return (character 92))))
+
+(string haskellDoubleQuote () (declare)
+  (body (return (character 34))))
+
+(string haskellEscapedBackslash () (declare)
+  (body (return (stringConcatenate (haskellBackslash) (haskellBackslash)))))
+
+(string haskellEscapedDoubleQuote () (declare)
+  (body (return (stringConcatenate (haskellBackslash) (haskellDoubleQuote)))))
+
+(string haskellEscapeString (string s) (declare)
+  (body
+    (set s (stringReplace (character 10) (stringConcatenate (haskellBackslash) "n") s))
+    (set s (stringReplace (character 13) (stringConcatenate (haskellBackslash) "r") s))
+    (set s (stringReplace (character 9) (stringConcatenate (haskellBackslash) "t") s))
+    (return s)))
+
+(string haskellSafeNameString (string name) (declare)
+  (body
+    (if (equalString name "case") (then (return "caseValue")) (else))
+    (if (equalString name "class") (then (return "classValue")) (else))
+    (if (equalString name "data") (then (return "dataValue")) (else))
+    (if (equalString name "default") (then (return "defaultValue")) (else))
+    (if (equalString name "deriving") (then (return "derivingValue")) (else))
+    (if (equalString name "do") (then (return "doValue")) (else))
+    (if (equalString name "else") (then (return "elseValue")) (else))
+    (if (equalString name "foreign") (then (return "foreignValue")) (else))
+    (if (equalString name "if") (then (return "ifValue")) (else))
+    (if (equalString name "import") (then (return "importValue")) (else))
+    (if (equalString name "in") (then (return "inValue")) (else))
+    (if (equalString name "infix") (then (return "infixValue")) (else))
+    (if (equalString name "infixl") (then (return "infixlValue")) (else))
+    (if (equalString name "infixr") (then (return "infixrValue")) (else))
+    (if (equalString name "instance") (then (return "instanceValue")) (else))
+    (if (equalString name "let") (then (return "letValue")) (else))
+    (if (equalString name "module") (then (return "moduleValue")) (else))
+    (if (equalString name "newtype") (then (return "newtypeValue")) (else))
+    (if (equalString name "of") (then (return "ofValue")) (else))
+    (if (equalString name "then") (then (return "thenValue")) (else))
+    (if (equalString name "type") (then (return "typeValue")) (else))
+    (if (equalString name "where") (then (return "whereValue")) (else))
+    (if (equalString name "id") (then (return "qid")) (else))
+    (if (equalString name "old") (then (return "oldValue")) (else))
+    (if (equalString name "new") (then (return "newValue")) (else))
+    (if (haskellStringStartsWith name "-") (then (return name)) (else))
+    (if (equalString name "StringListJoinRec") (then (return "stringListJoinRec")) (else))
+    (if (equalString name "StringListJoin") (then (return "stringListJoin")) (else))
+    (if (equalString name "ListToBoxString") (then (return "listToBoxString")) (else))
+    (if (equalString name "ListToString") (then (return "listToString")) (else))
+    (if (equalString name "StackTraceMove") (then (return "stackTraceMove")) (else))
+    (if (equalString name "StackTracePrint") (then (return "stackTracePrint")) (else))
+    (if (equalString name "StackTracePrintHelper") (then (return "stackTracePrintHelper")) (else))
+    (if (equalString name "NoStackTrace_list") (then (return "noStackTrace_list")) (else))
+    (if (equalString name "NoTrace_list") (then (return "noTrace_list")) (else))
+    (set name (stringReplace "-" "_" name))
+    (set name (stringReplace "?" "_q" name))
+    (set name (stringReplace "!" "_bang" name))
+    (return name)))
+
+(box haskellSafeName (box aSym) (declare)
+  (body
+    (return (boxSymbol (haskellSafeNameString (stringify aSym))))))
+
+(string haskellFieldName (box aSym) (declare)
+  (body
+    (return (stringConcatenate "qf_" (haskellSafeNameString (stringify aSym))))))
+
+(string haskellNewName (box aSym) (declare)
+  (body
+    (return (stringConcatenate "new" (stringify aSym)))))
+
+(bool haskellStringEndsWith (string s string suffix) (declare (int start 0))
+  (body
+    (if (greaterthan (string-length suffix) (string-length s))
+      (then (return false))
+      (else
+        (set start (sub (string-length s) (string-length suffix)))
+        (return (equalString (sub-string s start (string-length suffix)) suffix))))))
+
+(bool haskellStringStartsWith (string s string prefix) (declare)
+  (body
+    (if (greaterthan (string-length prefix) (string-length s))
+      (then (return false))
+      (else (return (equalString (sub-string s 0 (string-length prefix)) prefix))))))
+
+(box haskellPointerBase (box aSym) (declare (string name ""))
+  (body
+    (set name (stringify aSym))
+    (if (haskellStringEndsWith name "*")
+      (then (return (boxSymbol (sub-string name 0 (sub1 (string-length name))))))
+      (else (return aSym)))))
+
+(bool haskellTypeIsPointer (box aSym) (declare (string mapped ""))
+  (body
+    (set mapped (stringify (haskellTypeMap aSym)))
+    (return (haskellStringStartsWith mapped "Maybe "))))
+
+(box haskellTypeMap (box aSym) (declare (list symMap nil) (string name ""))
+  (body
+    (set symMap
+     (alistCons (boxSymbol "pair") (boxSymbol "Maybe Box")
+      (alistCons (boxSymbol "box") (boxSymbol "Maybe Box")
+       (alistCons (boxSymbol "list") (boxSymbol "Maybe Box")
+        (alistCons (boxSymbol "Box*") (boxSymbol "Maybe Box")
+         (alistCons (boxSymbol "Pair") (boxSymbol "Box")
+          (alistCons (boxSymbol "struct") (boxSymbol "")
+           (alistCons (boxSymbol "bool") (boxSymbol "Bool")
+            (alistCons (boxSymbol "uint") (boxSymbol "Int")
+             (alistCons (boxSymbol "int") (boxSymbol "Int")
+              (alistCons (boxSymbol "float") (boxSymbol "Double")
+               (alistCons (boxSymbol "void") (boxSymbol "()")
+                (alistCons (boxSymbol "stringArray") (boxSymbol "[String]")
+                 (alistCons (boxSymbol "array") (boxSymbol "[String]")
+                  (alistCons (boxSymbol "hashmap") (boxSymbol "IORef [(String, String)]")
+                   (alistCons (boxSymbol "string") (boxSymbol "String") nil))))))))))))))))
+    (if (truthy (assoc (stringify aSym) symMap))
+      (then (return (cdr (assoc (stringify aSym) symMap))))
+      (else
+        (set name (stringify aSym))
+        (if (haskellStringEndsWith name "*")
+          (then (return (boxSymbol (stringConcatenate "Maybe " (stringify (haskellPointerBase aSym))))))
+          (else (return aSym)))))))
+
+(string haskellDefaultValue (box typeSym) (declare (string typ ""))
+  (body
+    (set typ (stringify (haskellTypeMap typeSym)))
+    (if (equalString typ "()") (then (return "()")) (else))
+    (if (equalString typ "Bool") (then (return "False")) (else))
+    (if (equalString typ "Int") (then (return "0")) (else))
+    (if (equalString typ "Double") (then (return "0.0")) (else))
+    (if (equalString typ "String") (then (return "\"\"")) (else))
+    (if (equalString typ "[String]") (then (return "[]")) (else))
+    (if (haskellStringStartsWith typ "Maybe ") (then (return "Nothing")) (else))
+    (return (stringConcatenate "(error \"no default value for " (stringConcatenate typ "\")")))))
+
+(string haskellRefType (box typeSym) (declare)
+  (body
+    (return (stringConcatenate "(" (stringConcatenate (stringify (haskellTypeMap typeSym)) ")")))))
+
+(list haskellGlobalVariables () (declare)
+  (body
+    (return (makeList
+      (boxSymbol "globalArgsCount")
+      (boxSymbol "globalArgs")
+      (boxSymbol "releaseMode")
+      (boxSymbol "caller")
+      (boxSymbol "globalTrace")
+      (boxSymbol "globalStepTrace")
+      (boxSymbol "globalStackTrace")))))
+
+(list haskellCollectVariablesFromArgs (list args) (declare (list variables nil))
+  (body
+    (if (isNil args)
+      (then (return variables))
+      (else
+        (set variables (cons (second args) variables))
+        (return (appendVariables variables (haskellCollectVariablesFromArgs (cddr args))))))))
+
+(list haskellCollectVariablesFromDecls (list decls) (declare (list variables nil) (box decl nil))
+  (body
+    (if (isNil decls)
+      (then (return variables))
+      (else
+        (set decl (car decls))
+        (set variables (cons (second decl) variables))
+        (return (appendVariables variables (haskellCollectVariablesFromDecls (cdr decls))))))))
+
+(list haskellCollectVariables (list args list decls) (declare (list variables nil))
+  (body
+    (set variables (haskellCollectVariablesFromArgs args))
+    (set variables (appendVariables variables (haskellCollectVariablesFromDecls decls)))
+    (set variables (appendVariables variables (haskellGlobalVariables)))
+    (return variables)))
+
+(box haskellFuncMap (box aSym list variables) (declare (list symMap nil))
+  (body
+    (if (orBool (equalString "symbol" (boxType aSym)) (equalString "string" (boxType aSym)))
+      (then
+        (if (inList aSym variables)
+          (then (return (haskellSafeName aSym)))
+          (else
+            (set symMap
+             (alistCons (boxSymbol "=") (boxSymbol "equal")
+              (alistCons (boxSymbol "sub-string") (boxSymbol "sub_string")
+               (alistCons (boxSymbol "read-file") (boxSymbol "read_file")
+                (alistCons (boxSymbol "write-file") (boxSymbol "write_file")
+                 (alistCons (boxSymbol ">") (boxSymbol "greaterthan")
+                  (alistCons (boxSymbol "string-length") (boxSymbol "string_length")
+                   (alistCons (boxSymbol "nil") (boxSymbol "Nothing")
+                    (alistCons (boxSymbol "true") (boxSymbol "True")
+                     (alistCons (boxSymbol "false") (boxSymbol "False")
+                      (alistCons (boxSymbol "old") (boxSymbol "oldValue")
+                       (alistCons (boxSymbol "new") (boxSymbol "newValue") nil))))))))))))
+            (if (truthy (assoc (stringify aSym) symMap))
+              (then (return (cdr (assoc (stringify aSym) symMap))))
+              (else (return (haskellSafeName aSym)))))))
+      (else (return aSym)))))
+
+(list haskellNumberAtom (box tree) (declare (string val ""))
+  (body
+    (set val (stringify tree))
+    (if (haskellStringStartsWith val "-")
+      (then (return (makeList "pure (" (boxString val) ")")))
+      (else (return (makeList "pure " (boxString val)))))))
+
+(list haskellAtom (box tree list variables) (declare)
+  (body
+    (if (equalString "int" (boxType tree))
+      (then (return (haskellNumberAtom tree)))
+      (else
+    (if (equalString "float" (boxType tree))
+      (then (return (haskellNumberAtom tree)))
+      (else
+    (if (equalString "string" (boxType tree))
+      (then (return (makeList "pure \"" (boxString (haskellEscapeString (stringify tree))) "\"")))
+      (else
+        (if (isInt (stringify tree))
+          (then (return (haskellNumberAtom tree)))
+          (else
+        (if (isFloat (stringify tree))
+          (then (return (haskellNumberAtom tree)))
+          (else
+        (if (haskellStringStartsWith (stringify tree) "-")
+          (then (return (makeList "pure (" (haskellFuncMap tree variables) ")")))
+          (else
+        (if (inList tree variables)
+          (then (return (makeList "liftIO (readIORef " (haskellFuncMap tree variables) ")")))
+          (else (return (makeList "pure " (haskellFuncMap tree variables)))))))))))))))))))
+
+(list haskellArgNames (list expr int pos) (declare)
+  (body
+    (if (isEmpty expr)
+      (then (return (emptyList)))
+      (else
+        (if (isNil (cdr expr))
+          (then (return (makeList " arg" (boxString (intToString pos)))))
+          (else (return (makeList " arg" (boxString (intToString pos)) (haskellArgNames (cdr expr) (add1 pos))))))))))
+
+(list haskellBindArgs (list expr int indent list variables int pos) (declare)
+  (body
+    (if (isEmpty expr)
+      (then (return (emptyList)))
+      (else (return (makeList
+        (listNewLine indent)
+        "arg"
+        (boxString (intToString pos))
+        " <- "
+        (haskellExpression (car expr) indent variables)
+        (haskellBindArgs (cdr expr) indent variables (add1 pos))))))))
+
+(list haskellCall (box name list args int indent list variables) (declare)
+  (body
+    (if (isEmpty args)
+      (then (return (makeList "liftIO " (haskellFuncMap name nil))))
+      (else (return (makeList
+        "do"
+        (haskellBindArgs args (add1 indent) variables 0)
+        (listNewLine (add1 indent))
+        "liftIO ("
+        (haskellFuncMap name nil)
+        (haskellArgNames args 0)
+        ")"))))))
+
+(list haskellBinop (list tree int indent list variables) (declare)
+  (body
+    (return (makeList
+      "do"
+      (listNewLine (add1 indent))
+      "arg0 <- "
+      (haskellExpression (third tree) (add1 indent) variables)
+      (listNewLine (add1 indent))
+      "arg1 <- "
+      (haskellExpression (fourth tree) (add1 indent) variables)
+      (listNewLine (add1 indent))
+      "pure (arg0 "
+      (second tree)
+      " arg1)"))))
+
+(list haskellGetStruct (list tree int indent list variables) (declare)
+  (body
+    (return (makeList
+      "do"
+      (listNewLine (add1 indent))
+      "hobj <- "
+      (haskellExpression (second tree) (add1 indent) variables)
+      (listNewLine (add1 indent))
+      "liftIO (readIORef ("
+      "getField @\""
+      (boxString (haskellFieldName (third tree)))
+      "\" (expect hobj)))"))))
+
+(list haskellNewExpression (list tree) (declare)
+  (body
+    (if (haskellTypeIsPointer (second tree))
+      (then (return (makeList "liftIO (Just <$> " (boxString (haskellNewName (third tree))) ")")))
+      (else (return (makeList "liftIO " (boxString (haskellNewName (third tree)))))))))
+
+(list haskellExpression (list tree int indent list variables) (declare (list thing nil))
+  (body
+    (if (notBool (isList tree))
+      (then (return (haskellAtom tree variables)))
+      (else
+        (if (equal 1 (listLength tree))
+          (then
+            (if (equalBox (boxString "return") (car tree))
+              (then (return (makeList "pure " (haskellFuncMap (car tree) variables))))
+              (else (return (haskellCall (car tree) nil indent variables)))))
+          (else
+            (set thing (first tree))
+            (if (equalBox (boxSymbol "get-struct") thing)
+              (then (return (haskellGetStruct tree indent variables)))
+              (else
+                (if (equalBox (boxSymbol "new") thing)
+                  (then (return (haskellNewExpression tree)))
+                  (else
+                    (if (equalBox (boxSymbol "passthrough") thing)
+                      (then (return (makeList "pure (" (second tree) ")")))
+                      (else
+                        (if (equalBox (boxSymbol "binop") thing)
+                          (then (return (haskellBinop tree indent variables)))
+                          (else (return (haskellCall (car tree) (cdr tree) indent variables))))))))))))))))
+
+(list haskellSet (list node int indent list variables) (declare)
+  (body
+    (return (makeList
+      (listNewLine indent)
+      "qset <- "
+      (haskellExpression (third node) indent variables)
+      (listNewLine indent)
+      "liftIO (writeIORef "
+      (haskellFuncMap (second node) variables)
+      " qset)"))))
+
+(list haskellSetStruct (list node int indent list variables) (declare)
+  (body
+    (return (makeList
+      (listNewLine indent)
+      "hobj <- "
+      (haskellExpression (second node) indent variables)
+      (listNewLine indent)
+      "qset <- "
+      (haskellExpression (fourth node) indent variables)
+      (listNewLine indent)
+      "liftIO (writeIORef ("
+      "getField @\""
+      (boxString (haskellFieldName (third node)))
+      "\" (expect hobj)) qset)"))))
+
+(list haskellReturn (list node int indent list variables) (declare)
+  (body
+    (if (greaterthan (listLength node) 1)
+      (then (return (makeList
+        (listNewLine indent)
+        "hret <- "
+        (haskellExpression (cadr node) indent variables)
+        (listNewLine indent)
+        "qreturn hret")))
+      (else (return (makeList (listNewLine indent) "qreturn ()"))))))
+
+(list haskellIf (list node int indent list variables) (declare)
+  (body
+    (return (makeList
+      (listNewLine indent)
+      "hcond <- "
+      (haskellExpression (second node) indent variables)
+      (listNewLine indent)
+      "if hcond"
+      (listNewLine indent)
+      "  then do"
+      (haskellBody (cdr (third node)) (add indent 2) variables)
+      (listNewLine (add indent 2))
+      "pure ()"
+      (listNewLine indent)
+      "  else do"
+      (haskellBody (cdr (fourth node)) (add indent 2) variables)
+      (listNewLine (add indent 2))
+      "pure ()"))))
+
+(list haskellStatement (list node int indent list variables) (declare)
+  (body
+    (if (equalBox (boxString "set") (first node))
+      (then (return (haskellSet node indent variables)))
+      (else
+        (if (equalBox (boxString "set-struct") (first node))
+          (then (return (haskellSetStruct node indent variables)))
+          (else
+            (if (equalBox (boxString "if") (first node))
+              (then (return (haskellIf node indent variables)))
+              (else
+                (if (equalBox (boxString "return") (first node))
+                  (then (return (haskellReturn node indent variables)))
+                  (else (return (makeList
+                    (listNewLine indent)
+                    "_ <- "
+                    (haskellExpression node indent variables)))))))))))))
+
+(list haskellBody (list tree int indent list variables) (declare)
+  (body
+    (if (isEmpty tree)
+      (then (return (emptyList)))
+      (else (return (makeList
+        (haskellStatement (car tree) indent variables)
+        (haskellBody (cdr tree) indent variables)))))))
+
+(list haskellFunctionArgsSignature (list tree) (declare)
+  (body
+    (if (isEmpty tree)
+      (then (return (emptyList)))
+      (else
+        (if (isNil (cddr tree))
+          (then (return (makeList (haskellTypeMap (first tree)) " -> ")))
+          (else (return (makeList (haskellTypeMap (first tree)) " -> " (haskellFunctionArgsSignature (cddr tree))))))))))
+
+(list haskellFunctionArgs (list tree) (declare)
+  (body
+    (if (isEmpty tree)
+      (then (return (emptyList)))
+      (else
+        (if (isNil (cddr tree))
+          (then (return (makeList " " (haskellFuncMap (second tree) nil) "_arg")))
+          (else (return (makeList " " (haskellFuncMap (second tree) nil) "_arg" (haskellFunctionArgs (cddr tree))))))))))
+
+(list haskellArgRefs (list args int indent) (declare)
+  (body
+    (if (isEmpty args)
+      (then (return (emptyList)))
+      (else (return (makeList
+        (listNewLine indent)
+        (haskellFuncMap (second args) nil)
+        " <- liftIO (newIORef "
+        (haskellFuncMap (second args) nil)
+        "_arg)"
+        (haskellArgRefs (cddr args) indent)))))))
+
+(list haskellDeclarations (list decls int indent list variables) (declare (box decl nil))
+  (body
+    (if (isEmpty decls)
+      (then (return (emptyList)))
+      (else
+        (set decl (car decls))
+        (return (makeList
+          (listNewLine indent)
+          "qinit <- "
+          (haskellExpression (third decl) indent variables)
+          (listNewLine indent)
+          (haskellFuncMap (second decl) nil)
+          " <- liftIO (newIORef qinit)"
+          (haskellDeclarations (cdr decls) indent variables)))))))
+
+(list haskellFunction (list node) (declare (list variables nil) (list args nil) (list decls nil))
+  (body
+    (if (isNil node)
+      (then (return (emptyList)))
+      (else
+        (set args (third node))
+        (set decls (cdr (fourth node)))
+        (set variables (haskellCollectVariables args decls))
+        (return (makeList
+          (listNewLine 0)
+          (haskellFuncMap (second node) nil)
+          " :: "
+          (haskellFunctionArgsSignature args)
+          "IO "
+          (boxString (haskellRefType (first node)))
+          (listNewLine 0)
+          (haskellFuncMap (second node) nil)
+          (haskellFunctionArgs args)
+          " = evalContT $ callCC $ \\qreturn -> do"
+          (haskellArgRefs args 1)
+          (haskellDeclarations decls 1 variables)
+          (haskellBody (cdr (fifth node)) 1 variables)
+          (listNewLine 1)
+          "pure "
+          (boxString (haskellDefaultValue (first node)))
+          "\n"))))))
+
+(list haskellFunctions (list tree) (declare)
+  (body
+    (if (isEmpty tree)
+      (then (return (emptyList)))
+      (else (return (makeList
+        (haskellFunction (car tree))
+        (haskellFunctions (cdr tree))))))))
+
+(list haskellTypeDecl (list l) (declare (box fieldType nil))
+  (body
+    (if (> (listLength l) 2)
+      (then (set fieldType (listLast l)))
+      (else (set fieldType (second l))))
+    (return (makeList
+      "  "
+      (boxString (haskellFieldName (first l)))
+      " :: IORef "
+      (boxString (haskellRefType fieldType))))))
+
+(list haskellStructFields (list node) (declare)
+  (body
+    (if (isEmpty node)
+      (then (return (emptyList)))
+      (else
+        (if (isNil (cdr node))
+          (then (return (haskellTypeDecl (car node))))
+          (else (return (makeList
+            (haskellTypeDecl (car node))
+            "\n, "
+            (haskellStructFields (cdr node))))))))))
+
+(list haskellNewStructField (list l int indent) (declare (box fieldType nil))
+  (body
+    (if (> (listLength l) 2)
+      (then (set fieldType (listLast l)))
+      (else (set fieldType (second l))))
+    (return (makeList
+      (listNewLine indent)
+      "v_"
+      (boxString (haskellFieldName (first l)))
+      " <- newIORef "
+      (boxString (haskellDefaultValue fieldType))))))
+
+(list haskellNewStructFields (list fields int indent) (declare)
+  (body
+    (if (isEmpty fields)
+      (then (return (emptyList)))
+      (else (return (makeList
+        (haskellNewStructField (car fields) indent)
+        (haskellNewStructFields (cdr fields) indent)))))))
+
+(list haskellStructCtorFields (list fields) (declare)
+  (body
+    (if (isEmpty fields)
+      (then (return (emptyList)))
+      (else
+        (if (isNil (cdr fields))
+          (then (return (makeList (boxString (haskellFieldName (first (car fields)))) " = v_" (boxString (haskellFieldName (first (car fields)))))))
+          (else (return (makeList
+            (boxString (haskellFieldName (first (car fields))))
+            " = v_"
+            (boxString (haskellFieldName (first (car fields))))
+            ", "
+            (haskellStructCtorFields (cdr fields))))))))))
+
+(list haskellType (list node) (declare (list fields nil))
+  (body
+    (if (isList (second node))
+      (then
+        (set fields (cdr (second node)))
+        (return (makeList
+          "\ndata "
+          (first node)
+          " = "
+          (first node)
+          " { "
+          (haskellStructFields fields)
+          "\n}\n\n"
+          (boxString (haskellNewName (first node)))
+          " :: IO "
+          (first node)
+          "\n"
+          (boxString (haskellNewName (first node)))
+          " = do"
+          (haskellNewStructFields fields 1)
+          (listNewLine 1)
+          "pure "
+          (first node)
+          " { "
+          (haskellStructCtorFields fields)
+          " }\n")))
+      (else (return (emptyList))))))
+
+(list haskellTypes (list nodes) (declare)
+  (body
+    (if (isEmpty nodes)
+      (then (return (emptyList)))
+      (else (return (makeList
+        (haskellType (car nodes))
+        (haskellTypes (cdr nodes))))))))
+
+(list haskellIncludes (list nodes) (declare)
+  (body
+    (return (stringList
+      "{-# LANGUAGE DataKinds #-}\n"
+      "{-# LANGUAGE DuplicateRecordFields #-}\n"
+      "{-# LANGUAGE ExtendedDefaultRules #-}\n"
+      "{-# LANGUAGE TypeApplications #-}\n"
+      "import Control.Monad.Trans.Cont\n"
+      "import Control.Monad.IO.Class\n"
+      "import Data.Char (chr)\n"
+      "import Data.IORef\n"
+      "import Data.Maybe (isNothing)\n"
+      "import GHC.Records (getField)\n"
+      "import System.Directory (doesFileExist)\n"
+      "import System.Environment (getArgs, lookupEnv)\n"
+      "import System.Exit (ExitCode(..), exitWith)\n"
+      "import System.IO (Handle, stderr, hPutStr, hFlush)\n"
+      "import System.IO.Unsafe (unsafePerformIO)\n"
+      "import Text.Printf (printf, hPrintf)\n\n"
+      "default (Int, Double)\n\n"
+      "expect :: Maybe a -> a\n"
+      "expect (Just x) = x\n"
+      "expect Nothing = error \"Quon nil dereference\"\n\n"
+      "globalTrace :: IORef Bool\n"
+      "globalTrace = unsafePerformIO (newIORef False)\n"
+      "{-# NOINLINE globalTrace #-}\n\n"
+      "globalStepTrace :: IORef Bool\n"
+      "globalStepTrace = unsafePerformIO (newIORef False)\n"
+      "{-# NOINLINE globalStepTrace #-}\n\n"
+      "releaseMode :: IORef Bool\n"
+      "releaseMode = unsafePerformIO (newIORef False)\n"
+      "{-# NOINLINE releaseMode #-}\n\n"
+      "caller :: IORef String\n"
+      "caller = unsafePerformIO (newIORef \"\")\n"
+      "{-# NOINLINE caller #-}\n\n"
+      "globalArgs :: IORef [String]\n"
+      "globalArgs = unsafePerformIO (newIORef [])\n"
+      "{-# NOINLINE globalArgs #-}\n\n"
+      "globalArgsCount :: IORef Int\n"
+      "globalArgsCount = unsafePerformIO (newIORef 0)\n"
+      "{-# NOINLINE globalArgsCount #-}\n\n"
+      "globalStackTrace :: IORef (Maybe Box)\n"
+      "globalStackTrace = unsafePerformIO (newIORef Nothing)\n"
+      "{-# NOINLINE globalStackTrace #-}\n\n"
+      "hsIsNil :: Maybe a -> IO Bool\n"
+      "hsIsNil = pure . isNothing\n\n"
+      "hsGetEnv :: String -> IO String\n"
+      "hsGetEnv key = do\n"
+      "  value <- lookupEnv key\n"
+      "  pure (maybe \"\" (\\x -> x) value)\n\n"
+      "hsPanic :: String -> IO ()\n"
+      "hsPanic = error\n\n"
+      "hsExit :: Int -> IO ()\n"
+      "hsExit 0 = exitWith ExitSuccess\n"
+      "hsExit n = exitWith (ExitFailure n)\n\n"
+      "hsStringLength :: String -> IO Int\n"
+      "hsStringLength = pure . length\n\n"
+      "hsSubString :: String -> Int -> Int -> IO String\n"
+      "hsSubString s start len = pure (take len (drop start s))\n\n"
+      "hsSetSubString :: String -> Int -> String -> IO String\n"
+      "hsSetSubString target start source = pure (take start target ++ source ++ drop (start + 1) target)\n\n"
+      "hsShowInt :: Int -> IO String\n"
+      "hsShowInt = pure . show\n\n"
+      "hsShowFloat :: Double -> IO String\n"
+      "hsShowFloat = pure . show\n\n"
+      "hsReadFile :: String -> IO (Maybe Box)\n"
+      "hsReadFile filename = do\n"
+      "  exists <- doesFileExist filename\n"
+      "  if exists then do\n"
+      "    contents <- readFile filename\n"
+      "    boxString contents\n"
+      "  else pure Nothing\n\n"
+      "hsWriteFile :: String -> String -> IO ()\n"
+      "hsWriteFile = writeFile\n\n"
+      "hsGetStringArray :: Int -> [String] -> IO String\n"
+      "hsGetStringArray index strs = pure (strs !! index)\n\n"
+      "hsProgramArgs :: IO [String]\n"
+      "hsProgramArgs = readIORef globalArgs\n\n"
+      "hsProgramArgsCount :: IO Int\n"
+      "hsProgramArgsCount = readIORef globalArgsCount\n\n"
+      "hsCharacter :: Int -> IO String\n"
+      "hsCharacter num = pure [chr num]\n\n"
+      "hsRemainder :: Int -> Int -> IO Int\n"
+      "hsRemainder a b = pure (a `mod` b)\n\n"
+      "hsMakeHash :: IO (IORef [(String, String)])\n"
+      "hsMakeHash = newIORef []\n\n"
+      "hsSetHash :: IORef [(String, String)] -> String -> String -> IO ()\n"
+      "hsSetHash hash key value = modifyIORef hash ((key, value) :)\n\n"
+      "hsGetHash :: IORef [(String, String)] -> String -> IO String\n"
+      "hsGetHash hash key = do\n"
+      "  pairs <- readIORef hash\n"
+      "  pure (maybe \"\" (\\x -> x) (lookup key pairs))\n\n"
+      "hsInHash :: IORef [(String, String)] -> String -> IO Bool\n"
+      "hsInHash hash key = do\n"
+      "  pairs <- readIORef hash\n"
+      "  pure (not (isNothing (lookup key pairs)))\n\n"
+      "hsMakeArray :: Int -> IO [String]\n"
+      "hsMakeArray len = pure (replicate len \"\")\n\n"
+      "hsSetArray :: [String] -> Int -> String -> IO ()\n"
+      "hsSetArray _ _ _ = pure ()\n\n"
+      "hsGetArray :: [String] -> Int -> IO String\n"
+      "hsGetArray array index = pure (array !! index)\n\n"))))
+
+(list haskellMainEntry () (declare)
+  (body
+    (return (stringList
+      "\nmain :: IO ()\n"
+      "main = do\n"
+      "  args <- getArgs\n"
+      "  let qargs = \"fixmeprogname\" : args\n"
+      "  writeIORef globalArgs qargs\n"
+      "  writeIORef globalArgsCount (length qargs)\n"
+      "  _ <- start\n"
+      "  pure ()\n"))))
+
+(list haskellApplyTypeAliases (list tree list types) (declare (list node nil) (box alias nil) (box target nil))
+  (body
+    (if (isEmpty types)
+      (then (return tree))
+      (else))
+    (set node (car types))
+    (if (isList (second node))
+      (then (return (haskellApplyTypeAliases tree (cdr types))))
+      (else))
+    (set alias (first node))
+    (if (equalString (stringify (haskellTypeMap alias)) (stringify alias))
+      (then
+        (set target (haskellTypeMap (second node)))
+        (return (haskellApplyTypeAliases (macroSymbolSingle tree (stringify alias) (stringify target)) (cdr types))))
+      (else (return (haskellApplyTypeAliases tree (cdr types)))))))
+
+(list haskellLoadProgram (string filename) (declare (list tree nil)(list replace nil))
+  (body
+    (set tree (loadQuon filename))
+    (set tree (insertInclude tree "q/shims/haskell.qon"))
+    (set tree (loadIncludes tree nil))
+    (set tree (macrowalk tree))
+    (set replace (symbolList "hPrintf" "stderr"))
+    (set tree (macrolist tree (stringConcatenate "q" "log") replace))
+    (set tree (haskellApplyTypeAliases tree (cdr (getTypes tree))))
+    (return tree)))
+
+(list haskellProgramTree (list tree) (declare)
+  (body
+    (return (makeList
+      (haskellIncludes (cdr (first tree)))
+      (haskellTypes (cdr (second tree)))
+      (haskellFunctions (cdr (third tree)))
+      (haskellMainEntry)
+      "\n"))))
+
+(string haskellProgram (list tree) (declare)
+  (body
+    (return (ListToString (flatten (haskellProgramTree tree)) 0 true false))))
+
+(string haskellCompileString (string filename) (declare)
+  (body
+    (return (haskellProgram (haskellLoadProgram filename)))))
+
+(void haskellCompile (string filename) (declare (list tree nil)(list replace nil))
+  (body
+    (qlog "Scanning file...%s\n" filename)
+    (set tree (loadQuon filename))
+    (qlog "Adding Haskell shim functions\n")
+    (set tree (insertInclude tree "q/shims/haskell.qon"))
+    (qlog "Loading includes\n")
+    (set tree (loadIncludes tree nil))
+    (qlog "Walking tree\n")
+    (set tree (macrowalk tree))
+    (qlog "Replacing q log\n")
+    (set replace (symbolList "hPrintf" "stderr"))
+    (set tree (macrolist tree (stringConcatenate "q" "log") replace))
+    (set tree (haskellApplyTypeAliases tree (cdr (getTypes tree))))
+    (qlog "Printing program\n")
+    (printStringTree (haskellProgramTree tree))))
+
+ ))

@@ -118,6 +118,64 @@ void test23();
 void test24();
 void test25();
 void test27();
+void test28();
+char* haskellBackslash();
+char* haskellDoubleQuote();
+char* haskellEscapedBackslash();
+char* haskellEscapedDoubleQuote();
+char* haskellEscapeString(char* s);
+char* haskellSafeNameString(char* name);
+box haskellSafeName(box aSym);
+char* haskellFieldName(box aSym);
+char* haskellNewName(box aSym);
+bool haskellStringEndsWith(char* s, char* suffix);
+bool haskellStringStartsWith(char* s, char* prefix);
+box haskellPointerBase(box aSym);
+bool haskellTypeIsPointer(box aSym);
+box haskellTypeMap(box aSym);
+char* haskellDefaultValue(box typeSym);
+char* haskellRefType(box typeSym);
+list haskellGlobalVariables();
+list haskellCollectVariablesFromArgs(list args);
+list haskellCollectVariablesFromDecls(list decls);
+list haskellCollectVariables(list args, list decls);
+box haskellFuncMap(box aSym, list variables);
+list haskellNumberAtom(box tree);
+list haskellAtom(box tree, list variables);
+list haskellArgNames(list expr, int pos);
+list haskellBindArgs(list expr, int indent, list variables, int pos);
+list haskellCall(box name, list args, int indent, list variables);
+list haskellBinop(list tree, int indent, list variables);
+list haskellGetStruct(list tree, int indent, list variables);
+list haskellNewExpression(list tree);
+list haskellExpression(list tree, int indent, list variables);
+list haskellSet(list node, int indent, list variables);
+list haskellSetStruct(list node, int indent, list variables);
+list haskellReturn(list node, int indent, list variables);
+list haskellIf(list node, int indent, list variables);
+list haskellStatement(list node, int indent, list variables);
+list haskellBody(list tree, int indent, list variables);
+list haskellFunctionArgsSignature(list tree);
+list haskellFunctionArgs(list tree);
+list haskellArgRefs(list args, int indent);
+list haskellDeclarations(list decls, int indent, list variables);
+list haskellFunction(list node);
+list haskellFunctions(list tree);
+list haskellTypeDecl(list l);
+list haskellStructFields(list node);
+list haskellNewStructField(list l, int indent);
+list haskellNewStructFields(list fields, int indent);
+list haskellStructCtorFields(list fields);
+list haskellType(list node);
+list haskellTypes(list nodes);
+list haskellIncludes(list nodes);
+list haskellMainEntry();
+list haskellApplyTypeAliases(list tree, list types);
+list haskellLoadProgram(char* filename);
+list haskellProgramTree(list tree);
+char* haskellProgram(list tree);
+char* haskellCompileString(char* filename);
+void haskellCompile(char* filename);
 list javaFunctionArgs(list tree);
 list javaAtom(box tree);
 list javaExpression(list tree, int indent);
@@ -133,12 +191,14 @@ list javaFunction(list node);
 list javaFunctions(list tree);
 list javaIncludes(list nodes);
 box javaTypeMap(box aSym);
+box javaPointerBase(box aSym);
 box javaFuncMap(box aSym);
 list javaTypeDecl(list l);
 list javaStructComponents(list node);
 list javaStruct(list node);
 list javaType(list node);
 list javaTypes(list nodes);
+list javaApplyTypeAliases(list tree, list types);
 list javaMainEntry();
 list javaLoadProgram(char* filename);
 list javaProgramTree(list tree);
@@ -308,8 +368,10 @@ bool equalList(list a, list b);
 list reverseRec(list oldL, list newL);
 list reverseList(list l);
 list flatten(list tree);
+void printStringTree(list tree);
 list macrowalk(list l);
 list macrosingle(list tree, char* search, char* replace);
+list macroSymbolSingle(list tree, char* search, char* replace);
 list macrolist(list l, char* search, list replace);
 list filterVoid(list l);
 list filterTokens(list l);
@@ -1544,7 +1606,7 @@ if (globalTrace)
     snprintf(caller, 1024, "from q/node2.qon:307");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  printf("%s", node2Program(tree));
+  printStringTree(node2ProgramTree(tree));
 
 if (globalTrace)
     snprintf(caller, 1024, "from Unknown file (not provided by parser):Line missing");
@@ -3240,6 +3302,3011 @@ if (globalTrace)
 }
 
 
+void test28() {
+  list splitExpected = NULL;
+list splitResult = NULL;
+
+if (globalTrace)
+    printf("test28 at q/tests.qon:462 (%s)\n", caller);
+
+  StackTraceMove("in", "q/tests.qon", "test28", "462" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/tests.qon:467");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString("aXYZc", stringReplace("b", "XYZ", "abc"))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/tests.qon:468");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    printf("28.1 pass stringReplace\n");
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/tests.qon:469");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    printf("28.1 fail stringReplace\n");
+
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/tests.qon:470");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString("abc", stringTrim(" abc "))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/tests.qon:471");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    printf("28.2 pass stringTrim\n");
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/tests.qon:472");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    printf("28.2 fail stringTrim\n");
+
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/tests.qon:473");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  splitExpected = cons(boxString("a"), cons(boxString("b"), NULL));
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/tests.qon:474");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  splitResult = stringSplit("a,b", ",");
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/tests.qon:475");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalList(splitExpected, splitResult)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/tests.qon:476");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    printf("28.3 pass stringSplit\n");
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/tests.qon:477");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    printf("28.3 fail stringSplit\n");
+
+  };
+
+}
+
+
+char* haskellBackslash() {
+  
+if (globalTrace)
+    printf("haskellBackslash at q/haskell.qon:5 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellBackslash", "5" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:6");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return character(92);;
+
+}
+
+
+char* haskellDoubleQuote() {
+  
+if (globalTrace)
+    printf("haskellDoubleQuote at q/haskell.qon:8 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellDoubleQuote", "8" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:9");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return character(34);;
+
+}
+
+
+char* haskellEscapedBackslash() {
+  
+if (globalTrace)
+    printf("haskellEscapedBackslash at q/haskell.qon:11 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellEscapedBackslash", "11" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:12");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return stringConcatenate(haskellBackslash(), haskellBackslash());;
+
+}
+
+
+char* haskellEscapedDoubleQuote() {
+  
+if (globalTrace)
+    printf("haskellEscapedDoubleQuote at q/haskell.qon:14 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellEscapedDoubleQuote", "14" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:15");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return stringConcatenate(haskellBackslash(), haskellDoubleQuote());;
+
+}
+
+
+char* haskellEscapeString(char* s) {
+  
+if (globalTrace)
+    printf("haskellEscapeString at q/haskell.qon:17 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellEscapeString", "17" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:19");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  s = stringReplace(character(10), stringConcatenate(haskellBackslash(), "n"), s);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:20");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  s = stringReplace(character(13), stringConcatenate(haskellBackslash(), "r"), s);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:21");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  s = stringReplace(character(9), stringConcatenate(haskellBackslash(), "t"), s);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:22");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return s;;
+
+}
+
+
+char* haskellSafeNameString(char* name) {
+  
+if (globalTrace)
+    printf("haskellSafeNameString at q/haskell.qon:24 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellSafeNameString", "24" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:26");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "case")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:26");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "caseValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:27");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "class")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:27");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "classValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:28");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "data")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:28");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "dataValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:29");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "default")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:29");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "defaultValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:30");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "deriving")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:30");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "derivingValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:31");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "do")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:31");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "doValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:32");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "else")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:32");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "elseValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:33");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "foreign")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:33");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "foreignValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:34");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "if")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:34");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "ifValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:35");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "import")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:35");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "importValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:36");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "in")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:36");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "inValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:37");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "infix")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:37");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "infixValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:38");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "infixl")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:38");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "infixlValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:39");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "infixr")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:39");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "infixrValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:40");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "instance")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:40");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "instanceValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:41");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "let")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:41");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "letValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:42");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "module")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:42");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "moduleValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:43");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "newtype")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:43");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "newtypeValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:44");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "of")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:44");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "ofValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:45");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "then")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:45");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "thenValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:46");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "type")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:46");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "typeValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:47");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "where")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:47");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "whereValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:48");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "id")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:48");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "qid";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:49");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "old")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:49");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "oldValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:50");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "new")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:50");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "newValue";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:51");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( haskellStringStartsWith(name, "-")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:51");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return name;;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:52");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "StringListJoinRec")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:52");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "stringListJoinRec";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:53");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "StringListJoin")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:53");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "stringListJoin";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:54");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "ListToBoxString")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:54");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "listToBoxString";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:55");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "ListToString")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:55");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "listToString";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:56");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "StackTraceMove")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:56");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "stackTraceMove";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:57");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "StackTracePrint")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:57");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "stackTracePrint";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:58");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "StackTracePrintHelper")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:58");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "stackTracePrintHelper";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:59");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "NoStackTrace_list")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:59");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "noStackTrace_list";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:60");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(name, "NoTrace_list")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:60");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "noTrace_list";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:61");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  name = stringReplace("-", "_", name);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:62");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  name = stringReplace("?", "_q", name);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:63");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  name = stringReplace("!", "_bang", name);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:64");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return name;;
+
+}
+
+
+box haskellSafeName(box aSym) {
+  
+if (globalTrace)
+    printf("haskellSafeName at q/haskell.qon:66 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellSafeName", "66" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:68");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return boxSymbol(haskellSafeNameString(stringify(aSym)));;
+
+}
+
+
+char* haskellFieldName(box aSym) {
+  
+if (globalTrace)
+    printf("haskellFieldName at q/haskell.qon:70 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellFieldName", "70" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:72");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return stringConcatenate("qf_", haskellSafeNameString(stringify(aSym)));;
+
+}
+
+
+char* haskellNewName(box aSym) {
+  
+if (globalTrace)
+    printf("haskellNewName at q/haskell.qon:74 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellNewName", "74" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:76");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return stringConcatenate("new", stringify(aSym));;
+
+}
+
+
+bool haskellStringEndsWith(char* s, char* suffix) {
+  int start = 0;
+
+if (globalTrace)
+    printf("haskellStringEndsWith at q/haskell.qon:78 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellStringEndsWith", "78" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:80");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( greaterthan(string_length(suffix), string_length(s))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:81");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return false;;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:83");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    start = sub(string_length(s), string_length(suffix));
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:84");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return equalString(sub_string(s, start, string_length(suffix)), suffix);;
+
+  };
+
+}
+
+
+bool haskellStringStartsWith(char* s, char* prefix) {
+  
+if (globalTrace)
+    printf("haskellStringStartsWith at q/haskell.qon:86 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellStringStartsWith", "86" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:88");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( greaterthan(string_length(prefix), string_length(s))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:89");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return false;;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:90");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return equalString(sub_string(s, 0, string_length(prefix)), prefix);;
+
+  };
+
+}
+
+
+box haskellPointerBase(box aSym) {
+  char* name = "";
+
+if (globalTrace)
+    printf("haskellPointerBase at q/haskell.qon:92 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellPointerBase", "92" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:94");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  name = stringify(aSym);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:95");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( haskellStringEndsWith(name, "*")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:96");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return boxSymbol(sub_string(name, 0, sub1(string_length(name))));;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:97");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return aSym;;
+
+  };
+
+}
+
+
+bool haskellTypeIsPointer(box aSym) {
+  char* mapped = "";
+
+if (globalTrace)
+    printf("haskellTypeIsPointer at q/haskell.qon:99 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellTypeIsPointer", "99" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:101");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  mapped = stringify(haskellTypeMap(aSym));
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:102");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return haskellStringStartsWith(mapped, "Maybe ");;
+
+}
+
+
+box haskellTypeMap(box aSym) {
+  list symMap = NULL;
+char* name = "";
+
+if (globalTrace)
+    printf("haskellTypeMap at q/haskell.qon:104 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellTypeMap", "104" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:106");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  symMap = alistCons(boxSymbol("pair"), boxSymbol("Maybe Box"), alistCons(boxSymbol("box"), boxSymbol("Maybe Box"), alistCons(boxSymbol("list"), boxSymbol("Maybe Box"), alistCons(boxSymbol("Box*"), boxSymbol("Maybe Box"), alistCons(boxSymbol("Pair"), boxSymbol("Box"), alistCons(boxSymbol("struct"), boxSymbol(""), alistCons(boxSymbol("bool"), boxSymbol("Bool"), alistCons(boxSymbol("uint"), boxSymbol("Int"), alistCons(boxSymbol("int"), boxSymbol("Int"), alistCons(boxSymbol("float"), boxSymbol("Double"), alistCons(boxSymbol("void"), boxSymbol("()"), alistCons(boxSymbol("stringArray"), boxSymbol("[String]"), alistCons(boxSymbol("array"), boxSymbol("[String]"), alistCons(boxSymbol("hashmap"), boxSymbol("IORef [(String, String)]"), alistCons(boxSymbol("string"), boxSymbol("String"), NULL)))))))))))))));
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:122");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( truthy(assoc(stringify(aSym), symMap))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:123");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cdr(assoc(stringify(aSym), symMap));;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:125");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    name = stringify(aSym);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:126");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    if ( haskellStringEndsWith(name, "*")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:127");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      StackTraceMove("out", "", "", "");
+
+      return boxSymbol(stringConcatenate("Maybe ", stringify(haskellPointerBase(aSym))));;
+
+    } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:128");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      StackTraceMove("out", "", "", "");
+
+      return aSym;;
+
+    };
+
+  };
+
+}
+
+
+char* haskellDefaultValue(box typeSym) {
+  char* typ = "";
+
+if (globalTrace)
+    printf("haskellDefaultValue at q/haskell.qon:130 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellDefaultValue", "130" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:132");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  typ = stringify(haskellTypeMap(typeSym));
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:133");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(typ, "()")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:133");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "()";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:134");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(typ, "Bool")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:134");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "False";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:135");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(typ, "Int")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:135");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "0";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:136");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(typ, "Double")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:136");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "0.0";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:137");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(typ, "String")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:137");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "\"\"";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:138");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(typ, "[String]")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:138");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "[]";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:139");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( haskellStringStartsWith(typ, "Maybe ")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:139");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return "Nothing";;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:140");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return stringConcatenate("(error \"no default value for ", stringConcatenate(typ, "\")"));;
+
+}
+
+
+char* haskellRefType(box typeSym) {
+  
+if (globalTrace)
+    printf("haskellRefType at q/haskell.qon:142 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellRefType", "142" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:144");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return stringConcatenate("(", stringConcatenate(stringify(haskellTypeMap(typeSym)), ")"));;
+
+}
+
+
+list haskellGlobalVariables() {
+  
+if (globalTrace)
+    printf("haskellGlobalVariables at q/haskell.qon:146 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellGlobalVariables", "146" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:148");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return cons(id(boxSymbol("globalArgsCount")), cons(id(boxSymbol("globalArgs")), cons(id(boxSymbol("releaseMode")), cons(id(boxSymbol("caller")), cons(id(boxSymbol("globalTrace")), cons(id(boxSymbol("globalStepTrace")), cons(id(boxSymbol("globalStackTrace")), NULL)))))));;
+
+}
+
+
+list haskellCollectVariablesFromArgs(list args) {
+  list variables = NULL;
+
+if (globalTrace)
+    printf("haskellCollectVariablesFromArgs at q/haskell.qon:157 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellCollectVariablesFromArgs", "157" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:159");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isNil(args)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:160");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return variables;;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:162");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    variables = cons(second(args), variables);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:163");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return appendVariables(variables, haskellCollectVariablesFromArgs(cddr(args)));;
+
+  };
+
+}
+
+
+list haskellCollectVariablesFromDecls(list decls) {
+  list variables = NULL;
+box decl = NULL;
+
+if (globalTrace)
+    printf("haskellCollectVariablesFromDecls at q/haskell.qon:165 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellCollectVariablesFromDecls", "165" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:167");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isNil(decls)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:168");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return variables;;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:170");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    decl = car(decls);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:171");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    variables = cons(second(decl), variables);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:172");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return appendVariables(variables, haskellCollectVariablesFromDecls(cdr(decls)));;
+
+  };
+
+}
+
+
+list haskellCollectVariables(list args, list decls) {
+  list variables = NULL;
+
+if (globalTrace)
+    printf("haskellCollectVariables at q/haskell.qon:174 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellCollectVariables", "174" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:176");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  variables = haskellCollectVariablesFromArgs(args);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:177");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  variables = appendVariables(variables, haskellCollectVariablesFromDecls(decls));
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:178");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  variables = appendVariables(variables, haskellGlobalVariables());
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:179");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return variables;;
+
+}
+
+
+box haskellFuncMap(box aSym, list variables) {
+  list symMap = NULL;
+
+if (globalTrace)
+    printf("haskellFuncMap at q/haskell.qon:181 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellFuncMap", "181" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:183");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( orBool(equalString("symbol", boxType(aSym)), equalString("string", boxType(aSym)))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:185");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    if ( inList(aSym, variables)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:186");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      StackTraceMove("out", "", "", "");
+
+      return haskellSafeName(aSym);;
+
+    } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:188");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      symMap = alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("sub_string"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("string_length"), alistCons(boxSymbol("nil"), boxSymbol("Nothing"), alistCons(boxSymbol("true"), boxSymbol("True"), alistCons(boxSymbol("false"), boxSymbol("False"), alistCons(boxSymbol("old"), boxSymbol("oldValue"), alistCons(boxSymbol("new"), boxSymbol("newValue"), NULL)))))))))));
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:200");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      if ( truthy(assoc(stringify(aSym), symMap))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:201");
+        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+        StackTraceMove("out", "", "", "");
+
+        return cdr(assoc(stringify(aSym), symMap));;
+
+      } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:202");
+        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+        StackTraceMove("out", "", "", "");
+
+        return haskellSafeName(aSym);;
+
+      };
+
+    };
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:203");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return aSym;;
+
+  };
+
+}
+
+
+list haskellNumberAtom(box tree) {
+  char* val = "";
+
+if (globalTrace)
+    printf("haskellNumberAtom at q/haskell.qon:205 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellNumberAtom", "205" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:207");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  val = stringify(tree);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:208");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( haskellStringStartsWith(val, "-")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:209");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(boxString("pure ("), cons(id(boxString(val)), cons(boxString(")"), NULL)));;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:210");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(boxString("pure "), cons(id(boxString(val)), NULL));;
+
+  };
+
+}
+
+
+list haskellAtom(box tree, list variables) {
+  
+if (globalTrace)
+    printf("haskellAtom at q/haskell.qon:212 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellAtom", "212" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:214");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString("int", boxType(tree))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:215");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return haskellNumberAtom(tree);;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:217");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    if ( equalString("float", boxType(tree))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:218");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      StackTraceMove("out", "", "", "");
+
+      return haskellNumberAtom(tree);;
+
+    } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:220");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      if ( equalString("string", boxType(tree))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:221");
+        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+        StackTraceMove("out", "", "", "");
+
+        return cons(boxString("pure \""), cons(id(boxString(haskellEscapeString(stringify(tree)))), cons(boxString("\""), NULL)));;
+
+      } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:223");
+        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+        if ( isInt(stringify(tree))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:224");
+          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+          StackTraceMove("out", "", "", "");
+
+          return haskellNumberAtom(tree);;
+
+        } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:226");
+          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+          if ( isFloat(stringify(tree))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:227");
+            if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+            StackTraceMove("out", "", "", "");
+
+            return haskellNumberAtom(tree);;
+
+          } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:229");
+            if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+            if ( haskellStringStartsWith(stringify(tree), "-")) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:230");
+              if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+              StackTraceMove("out", "", "", "");
+
+              return cons(boxString("pure ("), cons(id(haskellFuncMap(tree, variables)), cons(boxString(")"), NULL)));;
+
+            } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:232");
+              if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+              if ( inList(tree, variables)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:233");
+                if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+                StackTraceMove("out", "", "", "");
+
+                return cons(boxString("liftIO (readIORef "), cons(id(haskellFuncMap(tree, variables)), cons(boxString(")"), NULL)));;
+
+              } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:234");
+                if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+                StackTraceMove("out", "", "", "");
+
+                return cons(boxString("pure "), cons(id(haskellFuncMap(tree, variables)), NULL));;
+
+              };
+
+            };
+
+          };
+
+        };
+
+      };
+
+    };
+
+  };
+
+}
+
+
+list haskellArgNames(list expr, int pos) {
+  
+if (globalTrace)
+    printf("haskellArgNames at q/haskell.qon:236 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellArgNames", "236" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:238");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isEmpty(expr)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:239");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return emptyList();;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:241");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    if ( isNil(cdr(expr))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:242");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      StackTraceMove("out", "", "", "");
+
+      return cons(boxString(" arg"), cons(id(boxString(intToString(pos))), NULL));;
+
+    } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:243");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      StackTraceMove("out", "", "", "");
+
+      return cons(boxString(" arg"), cons(id(boxString(intToString(pos))), cons(id(haskellArgNames(cdr(expr), add1(pos))), NULL)));;
+
+    };
+
+  };
+
+}
+
+
+list haskellBindArgs(list expr, int indent, list variables, int pos) {
+  
+if (globalTrace)
+    printf("haskellBindArgs at q/haskell.qon:245 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellBindArgs", "245" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:247");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isEmpty(expr)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:248");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return emptyList();;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:249");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(id(listNewLine(indent)), cons(boxString("arg"), cons(id(boxString(intToString(pos))), cons(boxString(" <- "), cons(id(haskellExpression(car(expr), indent, variables)), cons(id(haskellBindArgs(cdr(expr), indent, variables, add1(pos))), NULL))))));;
+
+  };
+
+}
+
+
+list haskellCall(box name, list args, int indent, list variables) {
+  
+if (globalTrace)
+    printf("haskellCall at q/haskell.qon:257 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellCall", "257" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:259");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isEmpty(args)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:260");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(boxString("liftIO "), cons(id(haskellFuncMap(name, NULL)), NULL));;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:261");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(boxString("do"), cons(id(haskellBindArgs(args, add1(indent), variables, 0)), cons(id(listNewLine(add1(indent))), cons(boxString("liftIO ("), cons(id(haskellFuncMap(name, NULL)), cons(id(haskellArgNames(args, 0)), cons(boxString(")"), NULL)))))));;
+
+  };
+
+}
+
+
+list haskellBinop(list tree, int indent, list variables) {
+  
+if (globalTrace)
+    printf("haskellBinop at q/haskell.qon:270 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellBinop", "270" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:272");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return cons(boxString("do"), cons(id(listNewLine(add1(indent))), cons(boxString("arg0 <- "), cons(id(haskellExpression(third(tree), add1(indent), variables)), cons(id(listNewLine(add1(indent))), cons(boxString("arg1 <- "), cons(id(haskellExpression(fourth(tree), add1(indent), variables)), cons(id(listNewLine(add1(indent))), cons(boxString("pure (arg0 "), cons(id(second(tree)), cons(boxString(" arg1)"), NULL)))))))))));;
+
+}
+
+
+list haskellGetStruct(list tree, int indent, list variables) {
+  
+if (globalTrace)
+    printf("haskellGetStruct at q/haskell.qon:285 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellGetStruct", "285" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:287");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return cons(boxString("do"), cons(id(listNewLine(add1(indent))), cons(boxString("hobj <- "), cons(id(haskellExpression(second(tree), add1(indent), variables)), cons(id(listNewLine(add1(indent))), cons(boxString("liftIO (readIORef ("), cons(boxString("getField @\""), cons(id(boxString(haskellFieldName(third(tree)))), cons(boxString("\" (expect hobj)))"), NULL)))))))));;
+
+}
+
+
+list haskellNewExpression(list tree) {
+  
+if (globalTrace)
+    printf("haskellNewExpression at q/haskell.qon:298 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellNewExpression", "298" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:300");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( haskellTypeIsPointer(second(tree))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:301");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(boxString("liftIO (Just <$> "), cons(id(boxString(haskellNewName(third(tree)))), cons(boxString(")"), NULL)));;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:302");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(boxString("liftIO "), cons(id(boxString(haskellNewName(third(tree)))), NULL));;
+
+  };
+
+}
+
+
+list haskellExpression(list tree, int indent, list variables) {
+  list thing = NULL;
+
+if (globalTrace)
+    printf("haskellExpression at q/haskell.qon:304 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellExpression", "304" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:306");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( notBool(isList(tree))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:307");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return haskellAtom(tree, variables);;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:309");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    if ( equal(1, listLength(tree))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:311");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      if ( equalBox(boxString("return"), car(tree))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:312");
+        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+        StackTraceMove("out", "", "", "");
+
+        return cons(boxString("pure "), cons(id(haskellFuncMap(car(tree), variables)), NULL));;
+
+      } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:313");
+        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+        StackTraceMove("out", "", "", "");
+
+        return haskellCall(car(tree), NULL, indent, variables);;
+
+      };
+
+    } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:315");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      thing = first(tree);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:316");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      if ( equalBox(boxSymbol("get-struct"), thing)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:317");
+        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+        StackTraceMove("out", "", "", "");
+
+        return haskellGetStruct(tree, indent, variables);;
+
+      } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:319");
+        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+        if ( equalBox(boxSymbol("new"), thing)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:320");
+          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+          StackTraceMove("out", "", "", "");
+
+          return haskellNewExpression(tree);;
+
+        } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:322");
+          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+          if ( equalBox(boxSymbol("passthrough"), thing)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:323");
+            if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+            StackTraceMove("out", "", "", "");
+
+            return cons(boxString("pure ("), cons(id(second(tree)), cons(boxString(")"), NULL)));;
+
+          } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:325");
+            if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+            if ( equalBox(boxSymbol("binop"), thing)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:326");
+              if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+              StackTraceMove("out", "", "", "");
+
+              return haskellBinop(tree, indent, variables);;
+
+            } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:327");
+              if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+              StackTraceMove("out", "", "", "");
+
+              return haskellCall(car(tree), cdr(tree), indent, variables);;
+
+            };
+
+          };
+
+        };
+
+      };
+
+    };
+
+  };
+
+}
+
+
+list haskellSet(list node, int indent, list variables) {
+  
+if (globalTrace)
+    printf("haskellSet at q/haskell.qon:329 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellSet", "329" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:331");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return cons(id(listNewLine(indent)), cons(boxString("qset <- "), cons(id(haskellExpression(third(node), indent, variables)), cons(id(listNewLine(indent)), cons(boxString("liftIO (writeIORef "), cons(id(haskellFuncMap(second(node), variables)), cons(boxString(" qset)"), NULL)))))));;
+
+}
+
+
+list haskellSetStruct(list node, int indent, list variables) {
+  
+if (globalTrace)
+    printf("haskellSetStruct at q/haskell.qon:340 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellSetStruct", "340" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:342");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return cons(id(listNewLine(indent)), cons(boxString("hobj <- "), cons(id(haskellExpression(second(node), indent, variables)), cons(id(listNewLine(indent)), cons(boxString("qset <- "), cons(id(haskellExpression(fourth(node), indent, variables)), cons(id(listNewLine(indent)), cons(boxString("liftIO (writeIORef ("), cons(boxString("getField @\""), cons(id(boxString(haskellFieldName(third(node)))), cons(boxString("\" (expect hobj)) qset)"), NULL)))))))))));;
+
+}
+
+
+list haskellReturn(list node, int indent, list variables) {
+  
+if (globalTrace)
+    printf("haskellReturn at q/haskell.qon:355 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellReturn", "355" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:357");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( greaterthan(listLength(node), 1)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:358");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(id(listNewLine(indent)), cons(boxString("hret <- "), cons(id(haskellExpression(cadr(node), indent, variables)), cons(id(listNewLine(indent)), cons(boxString("qreturn hret"), NULL)))));;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:364");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(id(listNewLine(indent)), cons(boxString("qreturn ()"), NULL));;
+
+  };
+
+}
+
+
+list haskellIf(list node, int indent, list variables) {
+  
+if (globalTrace)
+    printf("haskellIf at q/haskell.qon:366 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellIf", "366" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:368");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return cons(id(listNewLine(indent)), cons(boxString("hcond <- "), cons(id(haskellExpression(second(node), indent, variables)), cons(id(listNewLine(indent)), cons(boxString("if hcond"), cons(id(listNewLine(indent)), cons(boxString("  then do"), cons(id(haskellBody(cdr(third(node)), add(indent, 2), variables)), cons(id(listNewLine(add(indent, 2))), cons(boxString("pure ()"), cons(id(listNewLine(indent)), cons(boxString("  else do"), cons(id(haskellBody(cdr(fourth(node)), add(indent, 2), variables)), cons(id(listNewLine(add(indent, 2))), cons(boxString("pure ()"), NULL)))))))))))))));;
+
+}
+
+
+list haskellStatement(list node, int indent, list variables) {
+  
+if (globalTrace)
+    printf("haskellStatement at q/haskell.qon:385 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellStatement", "385" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:387");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalBox(boxString("set"), first(node))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:388");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return haskellSet(node, indent, variables);;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:390");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    if ( equalBox(boxString("set-struct"), first(node))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:391");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      StackTraceMove("out", "", "", "");
+
+      return haskellSetStruct(node, indent, variables);;
+
+    } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:393");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      if ( equalBox(boxString("if"), first(node))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:394");
+        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+        StackTraceMove("out", "", "", "");
+
+        return haskellIf(node, indent, variables);;
+
+      } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:396");
+        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+        if ( equalBox(boxString("return"), first(node))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:397");
+          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+          StackTraceMove("out", "", "", "");
+
+          return haskellReturn(node, indent, variables);;
+
+        } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:398");
+          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+          StackTraceMove("out", "", "", "");
+
+          return cons(id(listNewLine(indent)), cons(boxString("_ <- "), cons(id(haskellExpression(node, indent, variables)), NULL)));;
+
+        };
+
+      };
+
+    };
+
+  };
+
+}
+
+
+list haskellBody(list tree, int indent, list variables) {
+  
+if (globalTrace)
+    printf("haskellBody at q/haskell.qon:403 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellBody", "403" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:405");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isEmpty(tree)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:406");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return emptyList();;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:407");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(id(haskellStatement(car(tree), indent, variables)), cons(id(haskellBody(cdr(tree), indent, variables)), NULL));;
+
+  };
+
+}
+
+
+list haskellFunctionArgsSignature(list tree) {
+  
+if (globalTrace)
+    printf("haskellFunctionArgsSignature at q/haskell.qon:411 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellFunctionArgsSignature", "411" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:413");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isEmpty(tree)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:414");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return emptyList();;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:416");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    if ( isNil(cddr(tree))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:417");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      StackTraceMove("out", "", "", "");
+
+      return cons(id(haskellTypeMap(first(tree))), cons(boxString(" -> "), NULL));;
+
+    } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:418");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      StackTraceMove("out", "", "", "");
+
+      return cons(id(haskellTypeMap(first(tree))), cons(boxString(" -> "), cons(id(haskellFunctionArgsSignature(cddr(tree))), NULL)));;
+
+    };
+
+  };
+
+}
+
+
+list haskellFunctionArgs(list tree) {
+  
+if (globalTrace)
+    printf("haskellFunctionArgs at q/haskell.qon:420 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellFunctionArgs", "420" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:422");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isEmpty(tree)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:423");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return emptyList();;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:425");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    if ( isNil(cddr(tree))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:426");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      StackTraceMove("out", "", "", "");
+
+      return cons(boxString(" "), cons(id(haskellFuncMap(second(tree), NULL)), cons(boxString("_arg"), NULL)));;
+
+    } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:427");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      StackTraceMove("out", "", "", "");
+
+      return cons(boxString(" "), cons(id(haskellFuncMap(second(tree), NULL)), cons(boxString("_arg"), cons(id(haskellFunctionArgs(cddr(tree))), NULL))));;
+
+    };
+
+  };
+
+}
+
+
+list haskellArgRefs(list args, int indent) {
+  
+if (globalTrace)
+    printf("haskellArgRefs at q/haskell.qon:429 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellArgRefs", "429" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:431");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isEmpty(args)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:432");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return emptyList();;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:433");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(id(listNewLine(indent)), cons(id(haskellFuncMap(second(args), NULL)), cons(boxString(" <- liftIO (newIORef "), cons(id(haskellFuncMap(second(args), NULL)), cons(boxString("_arg)"), cons(id(haskellArgRefs(cddr(args), indent)), NULL))))));;
+
+  };
+
+}
+
+
+list haskellDeclarations(list decls, int indent, list variables) {
+  box decl = NULL;
+
+if (globalTrace)
+    printf("haskellDeclarations at q/haskell.qon:441 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellDeclarations", "441" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:443");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isEmpty(decls)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:444");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return emptyList();;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:446");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    decl = car(decls);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:447");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(id(listNewLine(indent)), cons(boxString("qinit <- "), cons(id(haskellExpression(third(decl), indent, variables)), cons(id(listNewLine(indent)), cons(id(haskellFuncMap(second(decl), NULL)), cons(boxString(" <- liftIO (newIORef qinit)"), cons(id(haskellDeclarations(cdr(decls), indent, variables)), NULL)))))));;
+
+  };
+
+}
+
+
+list haskellFunction(list node) {
+  list variables = NULL;
+list args = NULL;
+list decls = NULL;
+
+if (globalTrace)
+    printf("haskellFunction at q/haskell.qon:456 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellFunction", "456" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:458");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isNil(node)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:459");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return emptyList();;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:461");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    args = third(node);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:462");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    decls = cdr(fourth(node));
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:463");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    variables = haskellCollectVariables(args, decls);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:464");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(id(listNewLine(0)), cons(id(haskellFuncMap(second(node), NULL)), cons(boxString(" :: "), cons(id(haskellFunctionArgsSignature(args)), cons(boxString("IO "), cons(id(boxString(haskellRefType(first(node)))), cons(id(listNewLine(0)), cons(id(haskellFuncMap(second(node), NULL)), cons(id(haskellFunctionArgs(args)), cons(boxString(" = evalContT $ callCC $ \\qreturn -> do"), cons(id(haskellArgRefs(args, 1)), cons(id(haskellDeclarations(decls, 1, variables)), cons(id(haskellBody(cdr(fifth(node)), 1, variables)), cons(id(listNewLine(1)), cons(boxString("pure "), cons(id(boxString(haskellDefaultValue(first(node)))), cons(boxString("\n"), NULL)))))))))))))))));;
+
+  };
+
+}
+
+
+list haskellFunctions(list tree) {
+  
+if (globalTrace)
+    printf("haskellFunctions at q/haskell.qon:483 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellFunctions", "483" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:485");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isEmpty(tree)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:486");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return emptyList();;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:487");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(id(haskellFunction(car(tree))), cons(id(haskellFunctions(cdr(tree))), NULL));;
+
+  };
+
+}
+
+
+list haskellTypeDecl(list l) {
+  box fieldType = NULL;
+
+if (globalTrace)
+    printf("haskellTypeDecl at q/haskell.qon:491 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellTypeDecl", "491" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:493");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( greaterthan(listLength(l), 2)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:494");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    fieldType = listLast(l);
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:495");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    fieldType = second(l);
+
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:496");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return cons(boxString("  "), cons(id(boxString(haskellFieldName(first(l)))), cons(boxString(" :: IORef "), cons(id(boxString(haskellRefType(fieldType))), NULL))));;
+
+}
+
+
+list haskellStructFields(list node) {
+  
+if (globalTrace)
+    printf("haskellStructFields at q/haskell.qon:502 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellStructFields", "502" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:504");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isEmpty(node)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:505");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return emptyList();;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:507");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    if ( isNil(cdr(node))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:508");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      StackTraceMove("out", "", "", "");
+
+      return haskellTypeDecl(car(node));;
+
+    } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:509");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      StackTraceMove("out", "", "", "");
+
+      return cons(id(haskellTypeDecl(car(node))), cons(boxString("\n, "), cons(id(haskellStructFields(cdr(node))), NULL)));;
+
+    };
+
+  };
+
+}
+
+
+list haskellNewStructField(list l, int indent) {
+  box fieldType = NULL;
+
+if (globalTrace)
+    printf("haskellNewStructField at q/haskell.qon:514 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellNewStructField", "514" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:516");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( greaterthan(listLength(l), 2)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:517");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    fieldType = listLast(l);
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:518");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    fieldType = second(l);
+
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:519");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return cons(id(listNewLine(indent)), cons(boxString("v_"), cons(id(boxString(haskellFieldName(first(l)))), cons(boxString(" <- newIORef "), cons(id(boxString(haskellDefaultValue(fieldType))), NULL)))));;
+
+}
+
+
+list haskellNewStructFields(list fields, int indent) {
+  
+if (globalTrace)
+    printf("haskellNewStructFields at q/haskell.qon:526 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellNewStructFields", "526" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:528");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isEmpty(fields)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:529");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return emptyList();;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:530");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(id(haskellNewStructField(car(fields), indent)), cons(id(haskellNewStructFields(cdr(fields), indent)), NULL));;
+
+  };
+
+}
+
+
+list haskellStructCtorFields(list fields) {
+  
+if (globalTrace)
+    printf("haskellStructCtorFields at q/haskell.qon:534 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellStructCtorFields", "534" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:536");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isEmpty(fields)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:537");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return emptyList();;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:539");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    if ( isNil(cdr(fields))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:540");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      StackTraceMove("out", "", "", "");
+
+      return cons(id(boxString(haskellFieldName(first(car(fields))))), cons(boxString(" = v_"), cons(id(boxString(haskellFieldName(first(car(fields))))), NULL)));;
+
+    } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:541");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      StackTraceMove("out", "", "", "");
+
+      return cons(id(boxString(haskellFieldName(first(car(fields))))), cons(boxString(" = v_"), cons(id(boxString(haskellFieldName(first(car(fields))))), cons(boxString(", "), cons(id(haskellStructCtorFields(cdr(fields))), NULL)))));;
+
+    };
+
+  };
+
+}
+
+
+list haskellType(list node) {
+  list fields = NULL;
+
+if (globalTrace)
+    printf("haskellType at q/haskell.qon:548 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellType", "548" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:550");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isList(second(node))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:552");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    fields = cdr(second(node));
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:553");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(boxString("\ndata "), cons(id(first(node)), cons(boxString(" = "), cons(id(first(node)), cons(boxString(" { "), cons(id(haskellStructFields(fields)), cons(boxString("\n}\n\n"), cons(id(boxString(haskellNewName(first(node)))), cons(boxString(" :: IO "), cons(id(first(node)), cons(boxString("\n"), cons(id(boxString(haskellNewName(first(node)))), cons(boxString(" = do"), cons(id(haskellNewStructFields(fields, 1)), cons(id(listNewLine(1)), cons(boxString("pure "), cons(id(first(node)), cons(boxString(" { "), cons(id(haskellStructCtorFields(fields)), cons(boxString(" }\n"), NULL))))))))))))))))))));;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:574");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return emptyList();;
+
+  };
+
+}
+
+
+list haskellTypes(list nodes) {
+  
+if (globalTrace)
+    printf("haskellTypes at q/haskell.qon:576 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellTypes", "576" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:578");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isEmpty(nodes)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:579");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return emptyList();;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:580");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return cons(id(haskellType(car(nodes))), cons(id(haskellTypes(cdr(nodes))), NULL));;
+
+  };
+
+}
+
+
+list haskellIncludes(list nodes) {
+  
+if (globalTrace)
+    printf("haskellIncludes at q/haskell.qon:584 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellIncludes", "584" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:586");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return cons(boxString("{-# LANGUAGE DataKinds #-}\n"), cons(boxString("{-# LANGUAGE DuplicateRecordFields #-}\n"), cons(boxString("{-# LANGUAGE ExtendedDefaultRules #-}\n"), cons(boxString("{-# LANGUAGE TypeApplications #-}\n"), cons(boxString("import Control.Monad.Trans.Cont\n"), cons(boxString("import Control.Monad.IO.Class\n"), cons(boxString("import Data.Char (chr)\n"), cons(boxString("import Data.IORef\n"), cons(boxString("import Data.Maybe (isNothing)\n"), cons(boxString("import GHC.Records (getField)\n"), cons(boxString("import System.Directory (doesFileExist)\n"), cons(boxString("import System.Environment (getArgs, lookupEnv)\n"), cons(boxString("import System.Exit (ExitCode(..), exitWith)\n"), cons(boxString("import System.IO (Handle, stderr, hPutStr, hFlush)\n"), cons(boxString("import System.IO.Unsafe (unsafePerformIO)\n"), cons(boxString("import Text.Printf (printf, hPrintf)\n\n"), cons(boxString("default (Int, Double)\n\n"), cons(boxString("expect :: Maybe a -> a\n"), cons(boxString("expect (Just x) = x\n"), cons(boxString("expect Nothing = error \"Quon nil dereference\"\n\n"), cons(boxString("globalTrace :: IORef Bool\n"), cons(boxString("globalTrace = unsafePerformIO (newIORef False)\n"), cons(boxString("{-# NOINLINE globalTrace #-}\n\n"), cons(boxString("globalStepTrace :: IORef Bool\n"), cons(boxString("globalStepTrace = unsafePerformIO (newIORef False)\n"), cons(boxString("{-# NOINLINE globalStepTrace #-}\n\n"), cons(boxString("releaseMode :: IORef Bool\n"), cons(boxString("releaseMode = unsafePerformIO (newIORef False)\n"), cons(boxString("{-# NOINLINE releaseMode #-}\n\n"), cons(boxString("caller :: IORef String\n"), cons(boxString("caller = unsafePerformIO (newIORef \"\")\n"), cons(boxString("{-# NOINLINE caller #-}\n\n"), cons(boxString("globalArgs :: IORef [String]\n"), cons(boxString("globalArgs = unsafePerformIO (newIORef [])\n"), cons(boxString("{-# NOINLINE globalArgs #-}\n\n"), cons(boxString("globalArgsCount :: IORef Int\n"), cons(boxString("globalArgsCount = unsafePerformIO (newIORef 0)\n"), cons(boxString("{-# NOINLINE globalArgsCount #-}\n\n"), cons(boxString("globalStackTrace :: IORef (Maybe Box)\n"), cons(boxString("globalStackTrace = unsafePerformIO (newIORef Nothing)\n"), cons(boxString("{-# NOINLINE globalStackTrace #-}\n\n"), cons(boxString("hsIsNil :: Maybe a -> IO Bool\n"), cons(boxString("hsIsNil = pure . isNothing\n\n"), cons(boxString("hsGetEnv :: String -> IO String\n"), cons(boxString("hsGetEnv key = do\n"), cons(boxString("  value <- lookupEnv key\n"), cons(boxString("  pure (maybe \"\" (\\x -> x) value)\n\n"), cons(boxString("hsPanic :: String -> IO ()\n"), cons(boxString("hsPanic = error\n\n"), cons(boxString("hsExit :: Int -> IO ()\n"), cons(boxString("hsExit 0 = exitWith ExitSuccess\n"), cons(boxString("hsExit n = exitWith (ExitFailure n)\n\n"), cons(boxString("hsStringLength :: String -> IO Int\n"), cons(boxString("hsStringLength = pure . length\n\n"), cons(boxString("hsSubString :: String -> Int -> Int -> IO String\n"), cons(boxString("hsSubString s start len = pure (take len (drop start s))\n\n"), cons(boxString("hsSetSubString :: String -> Int -> String -> IO String\n"), cons(boxString("hsSetSubString target start source = pure (take start target ++ source ++ drop (start + 1) target)\n\n"), cons(boxString("hsShowInt :: Int -> IO String\n"), cons(boxString("hsShowInt = pure . show\n\n"), cons(boxString("hsShowFloat :: Double -> IO String\n"), cons(boxString("hsShowFloat = pure . show\n\n"), cons(boxString("hsReadFile :: String -> IO (Maybe Box)\n"), cons(boxString("hsReadFile filename = do\n"), cons(boxString("  exists <- doesFileExist filename\n"), cons(boxString("  if exists then do\n"), cons(boxString("    contents <- readFile filename\n"), cons(boxString("    boxString contents\n"), cons(boxString("  else pure Nothing\n\n"), cons(boxString("hsWriteFile :: String -> String -> IO ()\n"), cons(boxString("hsWriteFile = writeFile\n\n"), cons(boxString("hsGetStringArray :: Int -> [String] -> IO String\n"), cons(boxString("hsGetStringArray index strs = pure (strs !! index)\n\n"), cons(boxString("hsProgramArgs :: IO [String]\n"), cons(boxString("hsProgramArgs = readIORef globalArgs\n\n"), cons(boxString("hsProgramArgsCount :: IO Int\n"), cons(boxString("hsProgramArgsCount = readIORef globalArgsCount\n\n"), cons(boxString("hsCharacter :: Int -> IO String\n"), cons(boxString("hsCharacter num = pure [chr num]\n\n"), cons(boxString("hsRemainder :: Int -> Int -> IO Int\n"), cons(boxString("hsRemainder a b = pure (a `mod` b)\n\n"), cons(boxString("hsMakeHash :: IO (IORef [(String, String)])\n"), cons(boxString("hsMakeHash = newIORef []\n\n"), cons(boxString("hsSetHash :: IORef [(String, String)] -> String -> String -> IO ()\n"), cons(boxString("hsSetHash hash key value = modifyIORef hash ((key, value) :)\n\n"), cons(boxString("hsGetHash :: IORef [(String, String)] -> String -> IO String\n"), cons(boxString("hsGetHash hash key = do\n"), cons(boxString("  pairs <- readIORef hash\n"), cons(boxString("  pure (maybe \"\" (\\x -> x) (lookup key pairs))\n\n"), cons(boxString("hsInHash :: IORef [(String, String)] -> String -> IO Bool\n"), cons(boxString("hsInHash hash key = do\n"), cons(boxString("  pairs <- readIORef hash\n"), cons(boxString("  pure (not (isNothing (lookup key pairs)))\n\n"), cons(boxString("hsMakeArray :: Int -> IO [String]\n"), cons(boxString("hsMakeArray len = pure (replicate len \"\")\n\n"), cons(boxString("hsSetArray :: [String] -> Int -> String -> IO ()\n"), cons(boxString("hsSetArray _ _ _ = pure ()\n\n"), cons(boxString("hsGetArray :: [String] -> Int -> IO String\n"), cons(boxString("hsGetArray array index = pure (array !! index)\n\n"), NULL)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))));;
+
+}
+
+
+list haskellMainEntry() {
+  
+if (globalTrace)
+    printf("haskellMainEntry at q/haskell.qon:687 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellMainEntry", "687" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:689");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return cons(boxString("\nmain :: IO ()\n"), cons(boxString("main = do\n"), cons(boxString("  args <- getArgs\n"), cons(boxString("  let qargs = \"fixmeprogname\" : args\n"), cons(boxString("  writeIORef globalArgs qargs\n"), cons(boxString("  writeIORef globalArgsCount (length qargs)\n"), cons(boxString("  _ <- start\n"), cons(boxString("  pure ()\n"), NULL))))))));;
+
+}
+
+
+list haskellApplyTypeAliases(list tree, list types) {
+  list node = NULL;
+box alias = NULL;
+box target = NULL;
+
+if (globalTrace)
+    printf("haskellApplyTypeAliases at q/haskell.qon:699 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellApplyTypeAliases", "699" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:701");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isEmpty(types)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:702");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return tree;;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:704");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  node = car(types);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:705");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isList(second(node))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:706");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return haskellApplyTypeAliases(tree, cdr(types));;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:708");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  alias = first(node);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:709");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(stringify(haskellTypeMap(alias)), stringify(alias))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:711");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    target = haskellTypeMap(second(node));
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:712");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return haskellApplyTypeAliases(macroSymbolSingle(tree, stringify(alias), stringify(target)), cdr(types));;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:713");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return haskellApplyTypeAliases(tree, cdr(types));;
+
+  };
+
+}
+
+
+list haskellLoadProgram(char* filename) {
+  list tree = NULL;
+list replace = NULL;
+
+if (globalTrace)
+    printf("haskellLoadProgram at q/haskell.qon:715 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellLoadProgram", "715" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:717");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  tree = loadQuon(filename);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:718");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  tree = insertInclude(tree, "q/shims/haskell.qon");
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:719");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  tree = loadIncludes(tree, NULL);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:720");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  tree = macrowalk(tree);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:721");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  replace = cons(boxSymbol("hPrintf"), cons(boxSymbol("stderr"), NULL));
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:722");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  tree = macrolist(tree, stringConcatenate("q", "log"), replace);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:723");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  tree = haskellApplyTypeAliases(tree, cdr(getTypes(tree)));
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:724");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return tree;;
+
+}
+
+
+list haskellProgramTree(list tree) {
+  
+if (globalTrace)
+    printf("haskellProgramTree at q/haskell.qon:726 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellProgramTree", "726" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:728");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return cons(id(haskellIncludes(cdr(first(tree)))), cons(id(haskellTypes(cdr(second(tree)))), cons(id(haskellFunctions(cdr(third(tree)))), cons(id(haskellMainEntry()), cons(boxString("\n"), NULL)))));;
+
+}
+
+
+char* haskellProgram(list tree) {
+  
+if (globalTrace)
+    printf("haskellProgram at q/haskell.qon:735 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellProgram", "735" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:737");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return ListToString(flatten(haskellProgramTree(tree)), 0, true, false);;
+
+}
+
+
+char* haskellCompileString(char* filename) {
+  
+if (globalTrace)
+    printf("haskellCompileString at q/haskell.qon:739 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellCompileString", "739" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:741");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  StackTraceMove("out", "", "", "");
+
+  return haskellProgram(haskellLoadProgram(filename));;
+
+}
+
+
+void haskellCompile(char* filename) {
+  list tree = NULL;
+list replace = NULL;
+
+if (globalTrace)
+    printf("haskellCompile at q/haskell.qon:743 (%s)\n", caller);
+
+  StackTraceMove("in", "q/haskell.qon", "haskellCompile", "743" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from Unknown file (not provided by parser):Line missing");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  fprintf(stderr, "Scanning file...%s\n", filename);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:746");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  tree = loadQuon(filename);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from Unknown file (not provided by parser):Line missing");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  fprintf(stderr, "Adding Haskell shim functions\n");
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:748");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  tree = insertInclude(tree, "q/shims/haskell.qon");
+
+if (globalTrace)
+    snprintf(caller, 1024, "from Unknown file (not provided by parser):Line missing");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  fprintf(stderr, "Loading includes\n");
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:750");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  tree = loadIncludes(tree, NULL);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from Unknown file (not provided by parser):Line missing");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  fprintf(stderr, "Walking tree\n");
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:752");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  tree = macrowalk(tree);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from Unknown file (not provided by parser):Line missing");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  fprintf(stderr, "Replacing q log\n");
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:754");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  replace = cons(boxSymbol("hPrintf"), cons(boxSymbol("stderr"), NULL));
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:755");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  tree = macrolist(tree, stringConcatenate("q", "log"), replace);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:756");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  tree = haskellApplyTypeAliases(tree, cdr(getTypes(tree)));
+
+if (globalTrace)
+    snprintf(caller, 1024, "from Unknown file (not provided by parser):Line missing");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  fprintf(stderr, "Printing program\n");
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/haskell.qon:758");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  printStringTree(haskellProgramTree(tree));
+
+}
+
+
 list javaFunctionArgs(list tree) {
   
 if (globalTrace)
@@ -3439,7 +6506,7 @@ if (globalTrace)
 
           StackTraceMove("out", "", "", "");
 
-          return cons(boxString("new "), cons(id(third(tree)), cons(boxString("()"), NULL)));;
+          return cons(boxString("new "), cons(id(javaTypeMap(second(tree))), cons(boxString("()"), NULL)));;
 
         } else {
 if (globalTrace)
@@ -3929,32 +6996,73 @@ if (globalTrace)
 }
 
 
-box javaFuncMap(box aSym) {
-  list symMap = NULL;
+box javaPointerBase(box aSym) {
+  char* name = "";
 
 if (globalTrace)
-    printf("javaFuncMap at q/java.qon:267 (%s)\n", caller);
+    printf("javaPointerBase at q/java.qon:267 (%s)\n", caller);
 
-  StackTraceMove("in", "q/java.qon", "javaFuncMap", "267" );
+  StackTraceMove("in", "q/java.qon", "javaPointerBase", "267" );
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/java.qon:269");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  if ( equalString("symbol", boxType(aSym))) {
+  name = stringify(aSym);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/java.qon:270");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString("*", sub_string(name, sub1(string_length(name)), 1))) {
 if (globalTrace)
     snprintf(caller, 1024, "from q/java.qon:271");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return boxSymbol(sub_string(name, 0, sub1(string_length(name))));;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/java.qon:272");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return aSym;;
+
+  };
+
+}
+
+
+box javaFuncMap(box aSym) {
+  list symMap = NULL;
+
+if (globalTrace)
+    printf("javaFuncMap at q/java.qon:274 (%s)\n", caller);
+
+  StackTraceMove("in", "q/java.qon", "javaFuncMap", "274" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/java.qon:276");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString("symbol", boxType(aSym))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/java.qon:278");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     symMap = alistCons(boxSymbol("printf"), boxSymbol("System.out.printf"), alistCons(boxSymbol(stringConcatenate("q", "log")), boxSymbol("System.err.printf"), alistCons(boxSymbol("="), boxSymbol("equal"), alistCons(boxSymbol("sub-string"), boxSymbol("sub_string"), alistCons(boxSymbol("read-file"), boxSymbol("read_file"), alistCons(boxSymbol("write-file"), boxSymbol("write_file"), alistCons(boxSymbol(">"), boxSymbol("greaterthan"), alistCons(boxSymbol("string-length"), boxSymbol("string_length"), alistCons(boxSymbol("nil"), boxSymbol("null"), alistCons(boxSymbol("old"), boxSymbol("oldValue"), alistCons(boxSymbol("new"), boxSymbol("newValue"), NULL)))))))))));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:304");
+    snprintf(caller, 1024, "from q/java.qon:311");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( truthy(assoc(stringify(aSym), symMap))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:305");
+    snprintf(caller, 1024, "from q/java.qon:312");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       StackTraceMove("out", "", "", "");
@@ -3963,7 +7071,7 @@ if (globalTrace)
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:306");
+    snprintf(caller, 1024, "from q/java.qon:313");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       StackTraceMove("out", "", "", "");
@@ -3974,7 +7082,7 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:307");
+    snprintf(caller, 1024, "from q/java.qon:314");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -3989,17 +7097,17 @@ if (globalTrace)
 list javaTypeDecl(list l) {
   
 if (globalTrace)
-    printf("javaTypeDecl at q/java.qon:309 (%s)\n", caller);
+    printf("javaTypeDecl at q/java.qon:316 (%s)\n", caller);
 
-  StackTraceMove("in", "q/java.qon", "javaTypeDecl", "309" );
+  StackTraceMove("in", "q/java.qon", "javaTypeDecl", "316" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:311");
+    snprintf(caller, 1024, "from q/java.qon:318");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( greaterthan(listLength(l), 2)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:313");
+    snprintf(caller, 1024, "from q/java.qon:320");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -4008,7 +7116,7 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:320");
+    snprintf(caller, 1024, "from q/java.qon:327");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -4023,17 +7131,17 @@ if (globalTrace)
 list javaStructComponents(list node) {
   
 if (globalTrace)
-    printf("javaStructComponents at q/java.qon:327 (%s)\n", caller);
+    printf("javaStructComponents at q/java.qon:334 (%s)\n", caller);
 
-  StackTraceMove("in", "q/java.qon", "javaStructComponents", "327" );
+  StackTraceMove("in", "q/java.qon", "javaStructComponents", "334" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:329");
+    snprintf(caller, 1024, "from q/java.qon:336");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isEmpty(node)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:330");
+    snprintf(caller, 1024, "from q/java.qon:337");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -4042,7 +7150,7 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:332");
+    snprintf(caller, 1024, "from q/java.qon:339");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -4057,12 +7165,12 @@ if (globalTrace)
 list javaStruct(list node) {
   
 if (globalTrace)
-    printf("javaStruct at q/java.qon:336 (%s)\n", caller);
+    printf("javaStruct at q/java.qon:343 (%s)\n", caller);
 
-  StackTraceMove("in", "q/java.qon", "javaStruct", "336" );
+  StackTraceMove("in", "q/java.qon", "javaStruct", "343" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:338");
+    snprintf(caller, 1024, "from q/java.qon:345");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   StackTraceMove("out", "", "", "");
@@ -4075,17 +7183,17 @@ if (globalTrace)
 list javaType(list node) {
   
 if (globalTrace)
-    printf("javaType at q/java.qon:340 (%s)\n", caller);
+    printf("javaType at q/java.qon:347 (%s)\n", caller);
 
-  StackTraceMove("in", "q/java.qon", "javaType", "340" );
+  StackTraceMove("in", "q/java.qon", "javaType", "347" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:342");
+    snprintf(caller, 1024, "from q/java.qon:349");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isList(second(node))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:344");
+    snprintf(caller, 1024, "from q/java.qon:351");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -4094,7 +7202,7 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:350");
+    snprintf(caller, 1024, "from q/java.qon:357");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -4109,17 +7217,17 @@ if (globalTrace)
 list javaTypes(list nodes) {
   
 if (globalTrace)
-    printf("javaTypes at q/java.qon:352 (%s)\n", caller);
+    printf("javaTypes at q/java.qon:359 (%s)\n", caller);
 
-  StackTraceMove("in", "q/java.qon", "javaTypes", "352" );
+  StackTraceMove("in", "q/java.qon", "javaTypes", "359" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:354");
+    snprintf(caller, 1024, "from q/java.qon:361");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( isEmpty(nodes)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:355");
+    snprintf(caller, 1024, "from q/java.qon:362");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -4128,7 +7236,7 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:357");
+    snprintf(caller, 1024, "from q/java.qon:364");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -4140,15 +7248,102 @@ if (globalTrace)
 }
 
 
+list javaApplyTypeAliases(list tree, list types) {
+  list node = NULL;
+box alias = NULL;
+box target = NULL;
+
+if (globalTrace)
+    printf("javaApplyTypeAliases at q/java.qon:368 (%s)\n", caller);
+
+  StackTraceMove("in", "q/java.qon", "javaApplyTypeAliases", "368" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/java.qon:370");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isEmpty(types)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/java.qon:371");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return tree;;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/java.qon:373");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  node = car(types);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/java.qon:374");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isList(second(node))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/java.qon:375");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return javaApplyTypeAliases(tree, cdr(types));;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/java.qon:377");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  alias = first(node);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/java.qon:378");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( equalString(stringify(javaTypeMap(alias)), stringify(alias))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/java.qon:380");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    target = javaTypeMap(javaPointerBase(second(node)));
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/java.qon:381");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return javaApplyTypeAliases(macroSymbolSingle(tree, stringify(alias), stringify(target)), cdr(types));;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/java.qon:382");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return javaApplyTypeAliases(tree, cdr(types));;
+
+  };
+
+}
+
+
 list javaMainEntry() {
   
 if (globalTrace)
-    printf("javaMainEntry at q/java.qon:361 (%s)\n", caller);
+    printf("javaMainEntry at q/java.qon:384 (%s)\n", caller);
 
-  StackTraceMove("in", "q/java.qon", "javaMainEntry", "361" );
+  StackTraceMove("in", "q/java.qon", "javaMainEntry", "384" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:363");
+    snprintf(caller, 1024, "from q/java.qon:386");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   StackTraceMove("out", "", "", "");
@@ -4163,48 +7358,54 @@ list javaLoadProgram(char* filename) {
 list replace = NULL;
 
 if (globalTrace)
-    printf("javaLoadProgram at q/java.qon:374 (%s)\n", caller);
+    printf("javaLoadProgram at q/java.qon:397 (%s)\n", caller);
 
-  StackTraceMove("in", "q/java.qon", "javaLoadProgram", "374" );
+  StackTraceMove("in", "q/java.qon", "javaLoadProgram", "397" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:376");
+    snprintf(caller, 1024, "from q/java.qon:399");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   tree = loadQuon(filename);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:377");
+    snprintf(caller, 1024, "from q/java.qon:400");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   tree = buildProg(cons(boxString("q/shims/java.qon"), getIncludes(tree)), getTypes(tree), getFunctions(tree));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:378");
+    snprintf(caller, 1024, "from q/java.qon:401");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   tree = loadIncludes(tree, NULL);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:379");
+    snprintf(caller, 1024, "from q/java.qon:402");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   tree = macrowalk(tree);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:380");
+    snprintf(caller, 1024, "from q/java.qon:403");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   replace = cons(boxSymbol("fprintf"), cons(boxSymbol("stderr"), NULL));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:381");
+    snprintf(caller, 1024, "from q/java.qon:404");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   tree = macrolist(tree, stringConcatenate("q", "log"), replace);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:382");
+    snprintf(caller, 1024, "from q/java.qon:405");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  tree = javaApplyTypeAliases(tree, cdr(getTypes(tree)));
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/java.qon:406");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   StackTraceMove("out", "", "", "");
@@ -4217,12 +7418,12 @@ if (globalTrace)
 list javaProgramTree(list tree) {
   
 if (globalTrace)
-    printf("javaProgramTree at q/java.qon:384 (%s)\n", caller);
+    printf("javaProgramTree at q/java.qon:408 (%s)\n", caller);
 
-  StackTraceMove("in", "q/java.qon", "javaProgramTree", "384" );
+  StackTraceMove("in", "q/java.qon", "javaProgramTree", "408" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:386");
+    snprintf(caller, 1024, "from q/java.qon:410");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   StackTraceMove("out", "", "", "");
@@ -4235,12 +7436,12 @@ if (globalTrace)
 char* javaProgram(list tree) {
   
 if (globalTrace)
-    printf("javaProgram at q/java.qon:393 (%s)\n", caller);
+    printf("javaProgram at q/java.qon:417 (%s)\n", caller);
 
-  StackTraceMove("in", "q/java.qon", "javaProgram", "393" );
+  StackTraceMove("in", "q/java.qon", "javaProgram", "417" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:395");
+    snprintf(caller, 1024, "from q/java.qon:419");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   StackTraceMove("out", "", "", "");
@@ -4253,12 +7454,12 @@ if (globalTrace)
 char* javaCompileString(char* filename) {
   
 if (globalTrace)
-    printf("javaCompileString at q/java.qon:397 (%s)\n", caller);
+    printf("javaCompileString at q/java.qon:421 (%s)\n", caller);
 
-  StackTraceMove("in", "q/java.qon", "javaCompileString", "397" );
+  StackTraceMove("in", "q/java.qon", "javaCompileString", "421" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:399");
+    snprintf(caller, 1024, "from q/java.qon:423");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   StackTraceMove("out", "", "", "");
@@ -4271,15 +7472,15 @@ if (globalTrace)
 void javaCompile(char* filename) {
   
 if (globalTrace)
-    printf("javaCompile at q/java.qon:401 (%s)\n", caller);
+    printf("javaCompile at q/java.qon:425 (%s)\n", caller);
 
-  StackTraceMove("in", "q/java.qon", "javaCompile", "401" );
+  StackTraceMove("in", "q/java.qon", "javaCompile", "425" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/java.qon:403");
+    snprintf(caller, 1024, "from q/java.qon:427");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  printf("%s", javaCompileString(filename));
+  printStringTree(javaProgramTree(javaLoadProgram(filename)));
 
 if (globalTrace)
     snprintf(caller, 1024, "from Unknown file (not provided by parser):Line missing");
@@ -5613,7 +8814,7 @@ if (globalTrace)
     snprintf(caller, 1024, "from q/ansi3.qon:443");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  printf("%s", ansi3CompileString(filename));
+  printStringTree(ansi3ProgramTree(ansi3LoadProgram(filename)));
 
 if (globalTrace)
     snprintf(caller, 1024, "from Unknown file (not provided by parser):Line missing");
@@ -7079,7 +10280,7 @@ if (globalTrace)
     snprintf(caller, 1024, "from q/perl.qon:431");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  printf("%s", perlProgram(tree));
+  printStringTree(perlProgramTree(tree));
 
 }
 
@@ -11677,6 +14878,65 @@ if (globalTrace)
 }
 
 
+void printStringTree(list tree) {
+  box val = NULL;
+
+if (globalTrace)
+    printf("printStringTree at q/lists.qon:535 (%s)\n", caller);
+
+  StackTraceMove("in", "q/lists.qon", "printStringTree", "535" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/lists.qon:537");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isEmpty(tree)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/lists.qon:538");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return;;
+
+  } else {
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/lists.qon:540");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  val = car(tree);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/lists.qon:541");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isList(val)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/lists.qon:542");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    printStringTree(car(tree));
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/lists.qon:543");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    printf("%s", stringify(val));
+
+  };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/lists.qon:544");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  printStringTree(cdr(tree));
+
+}
+
+
 list macrowalk(list l) {
   
 if (globalTrace)
@@ -11886,21 +15146,21 @@ if (globalTrace)
 }
 
 
-list macrolist(list l, char* search, list replace) {
+list macroSymbolSingle(list tree, char* search, char* replace) {
   box val = NULL;
 
 if (globalTrace)
-    printf("macrolist at q/macros.qon:82 (%s)\n", caller);
+    printf("macroSymbolSingle at q/macros.qon:81 (%s)\n", caller);
 
-  StackTraceMove("in", "q/macros.qon", "macrolist", "82" );
+  StackTraceMove("in", "q/macros.qon", "macroSymbolSingle", "81" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/macros.qon:83");
+    snprintf(caller, 1024, "from q/macros.qon:82");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  if ( isEmpty(l)) {
+  if ( isEmpty(tree)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/macros.qon:84");
+    snprintf(caller, 1024, "from q/macros.qon:83");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -11909,17 +15169,104 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/macros.qon:88");
+    snprintf(caller, 1024, "from q/macros.qon:85");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    if ( isList(tree)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/macros.qon:87");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      StackTraceMove("out", "", "", "");
+
+      return cons(macroSymbolSingle(car(tree), search, replace), macroSymbolSingle(cdr(tree), search, replace));;
+
+    } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/macros.qon:89");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      if ( equalString("symbol", boxType(tree))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/macros.qon:91");
+        if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+        if ( equalString(search, stringify(tree))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/macros.qon:93");
+          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+          val = clone(tree);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/macros.qon:94");
+          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+          val->str = replace;
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/macros.qon:95");
+          if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+          StackTraceMove("out", "", "", "");
+
+          return val;;
+
+        } else {
+        };
+
+      } else {
+      };
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/macros.qon:98");
+      if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+      StackTraceMove("out", "", "", "");
+
+      return tree;;
+
+    };
+
+  };
+
+}
+
+
+list macrolist(list l, char* search, list replace) {
+  box val = NULL;
+
+if (globalTrace)
+    printf("macrolist at q/macros.qon:101 (%s)\n", caller);
+
+  StackTraceMove("in", "q/macros.qon", "macrolist", "101" );
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/macros.qon:102");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( isEmpty(l)) {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/macros.qon:103");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    StackTraceMove("out", "", "", "");
+
+    return NULL;;
+
+  } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from q/macros.qon:107");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( isList(l)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/macros.qon:91");
+    snprintf(caller, 1024, "from q/macros.qon:110");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       if ( equalString(search, stringify(car(l)))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/macros.qon:94");
+    snprintf(caller, 1024, "from q/macros.qon:113");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         StackTraceMove("out", "", "", "");
@@ -11928,7 +15275,7 @@ if (globalTrace)
 
       } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/macros.qon:97");
+    snprintf(caller, 1024, "from q/macros.qon:116");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         StackTraceMove("out", "", "", "");
@@ -11939,7 +15286,7 @@ if (globalTrace)
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/macros.qon:105");
+    snprintf(caller, 1024, "from q/macros.qon:124");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       StackTraceMove("out", "", "", "");
@@ -14431,7 +17778,7 @@ if (globalTrace)
 
     StackTraceMove("out", "", "", "");
 
-    return stringConcatenate(sub_string(s, 0, pos), stringConcatenate(new, stringReplace(old, new, sub_string(s, add(pos, string_length(old)), string_length(s)))));;
+    return stringConcatenate(sub_string(s, 0, pos), stringConcatenate(new, stringReplace(old, new, sub_string(s, add(pos, string_length(old)), sub(string_length(s), add(pos, string_length(old)))))));;
 
   };
 
@@ -14443,29 +17790,29 @@ bool stringContains(char* haystack, char* needle) {
 int needleLength = 0;
 
 if (globalTrace)
-    printf("stringContains at q/base.qon:474 (%s)\n", caller);
+    printf("stringContains at q/base.qon:475 (%s)\n", caller);
 
-  StackTraceMove("in", "q/base.qon", "stringContains", "474" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:478");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  haystackLength = string_length(haystack);
+  StackTraceMove("in", "q/base.qon", "stringContains", "475" );
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/base.qon:479");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
+  haystackLength = string_length(haystack);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/base.qon:480");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
   needleLength = string_length(needle);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:481");
+    snprintf(caller, 1024, "from q/base.qon:482");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( greaterthan(needleLength, haystackLength)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:484");
+    snprintf(caller, 1024, "from q/base.qon:485");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -14474,7 +17821,7 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:487");
+    snprintf(caller, 1024, "from q/base.qon:488");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -14491,29 +17838,29 @@ bool stringContainsHelper(char* haystack, char* needle, int startIndex) {
 int needleLength = 0;
 
 if (globalTrace)
-    printf("stringContainsHelper at q/base.qon:489 (%s)\n", caller);
+    printf("stringContainsHelper at q/base.qon:490 (%s)\n", caller);
 
-  StackTraceMove("in", "q/base.qon", "stringContainsHelper", "489" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:494");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  haystackLength = string_length(haystack);
+  StackTraceMove("in", "q/base.qon", "stringContainsHelper", "490" );
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/base.qon:495");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
+  haystackLength = string_length(haystack);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/base.qon:496");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
   needleLength = string_length(needle);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:497");
+    snprintf(caller, 1024, "from q/base.qon:498");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( greaterthan(add(startIndex, needleLength), haystackLength)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:500");
+    snprintf(caller, 1024, "from q/base.qon:501");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -14522,12 +17869,12 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:502");
+    snprintf(caller, 1024, "from q/base.qon:503");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( equalString(sub_string(haystack, startIndex, needleLength), needle)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:505");
+    snprintf(caller, 1024, "from q/base.qon:506");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       StackTraceMove("out", "", "", "");
@@ -14536,7 +17883,7 @@ if (globalTrace)
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:508");
+    snprintf(caller, 1024, "from q/base.qon:509");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       StackTraceMove("out", "", "", "");
@@ -14553,17 +17900,17 @@ if (globalTrace)
 bool isWhiteSpace(char* s) {
   
 if (globalTrace)
-    printf("isWhiteSpace at q/base.qon:510 (%s)\n", caller);
+    printf("isWhiteSpace at q/base.qon:511 (%s)\n", caller);
 
-  StackTraceMove("in", "q/base.qon", "isWhiteSpace", "510" );
+  StackTraceMove("in", "q/base.qon", "isWhiteSpace", "511" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:512");
+    snprintf(caller, 1024, "from q/base.qon:513");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( equalString(" ", s)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:513");
+    snprintf(caller, 1024, "from q/base.qon:514");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -14572,12 +17919,12 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:515");
+    snprintf(caller, 1024, "from q/base.qon:516");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( equalString("\t", s)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:516");
+    snprintf(caller, 1024, "from q/base.qon:517");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       StackTraceMove("out", "", "", "");
@@ -14586,12 +17933,12 @@ if (globalTrace)
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:518");
+    snprintf(caller, 1024, "from q/base.qon:519");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       if ( equalString("\n", s)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:519");
+    snprintf(caller, 1024, "from q/base.qon:520");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         StackTraceMove("out", "", "", "");
@@ -14600,12 +17947,12 @@ if (globalTrace)
 
       } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:521");
+    snprintf(caller, 1024, "from q/base.qon:522");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         if ( equalString("\r", s)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:522");
+    snprintf(caller, 1024, "from q/base.qon:523");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
           StackTraceMove("out", "", "", "");
@@ -14614,7 +17961,7 @@ if (globalTrace)
 
         } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:523");
+    snprintf(caller, 1024, "from q/base.qon:524");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
           StackTraceMove("out", "", "", "");
@@ -14635,17 +17982,17 @@ if (globalTrace)
 char* stringTrim(char* s) {
   
 if (globalTrace)
-    printf("stringTrim at q/base.qon:525 (%s)\n", caller);
+    printf("stringTrim at q/base.qon:526 (%s)\n", caller);
 
-  StackTraceMove("in", "q/base.qon", "stringTrim", "525" );
+  StackTraceMove("in", "q/base.qon", "stringTrim", "526" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:527");
+    snprintf(caller, 1024, "from q/base.qon:528");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( equal(string_length(s), 0)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:529");
+    snprintf(caller, 1024, "from q/base.qon:530");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -14654,26 +18001,26 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:531");
+    snprintf(caller, 1024, "from q/base.qon:532");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( isWhiteSpace(sub_string(s, 0, 1))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:533");
+    snprintf(caller, 1024, "from q/base.qon:534");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       StackTraceMove("out", "", "", "");
 
-      return stringTrim(sub_string(s, 1, string_length(s)));;
+      return stringTrim(sub_string(s, 1, sub1(string_length(s))));;
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:535");
+    snprintf(caller, 1024, "from q/base.qon:536");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-      if ( isWhiteSpace(sub_string(s, sub(string_length(s), 1), string_length(s)))) {
+      if ( isWhiteSpace(sub_string(s, sub(string_length(s), 1), 1))) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:537");
+    snprintf(caller, 1024, "from q/base.qon:538");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         StackTraceMove("out", "", "", "");
@@ -14682,7 +18029,7 @@ if (globalTrace)
 
       } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:539");
+    snprintf(caller, 1024, "from q/base.qon:540");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         StackTraceMove("out", "", "", "");
@@ -14703,41 +18050,41 @@ list stringSplit(char* s, char* delimiter) {
 int delimiterLength = 0;
 
 if (globalTrace)
-    printf("stringSplit at q/base.qon:541 (%s)\n", caller);
+    printf("stringSplit at q/base.qon:542 (%s)\n", caller);
 
-  StackTraceMove("in", "q/base.qon", "stringSplit", "541" );
-
-if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:545");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  printf("Entering stringSplit with s: %.20s..., delimiter: %s\n", s, delimiter);
+  StackTraceMove("in", "q/base.qon", "stringSplit", "542" );
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/base.qon:546");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  delimiterLength = string_length(delimiter);
+  printf("Entering stringSplit with s: %.20s..., delimiter: %s\n", s, delimiter);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/base.qon:547");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  end = indexOf(s, delimiter, 0);
+  delimiterLength = string_length(delimiter);
 
 if (globalTrace)
     snprintf(caller, 1024, "from q/base.qon:548");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
+  end = indexOf(s, delimiter, 0);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from q/base.qon:549");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
   if ( equal(end, -1)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:550");
+    snprintf(caller, 1024, "from q/base.qon:551");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("No delimiter found in stringSplit\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:551");
+    snprintf(caller, 1024, "from q/base.qon:552");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
@@ -14746,18 +18093,18 @@ if (globalTrace)
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:553");
+    snprintf(caller, 1024, "from q/base.qon:554");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("Splitting string in stringSplit\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from q/base.qon:554");
+    snprintf(caller, 1024, "from q/base.qon:555");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     StackTraceMove("out", "", "", "");
 
-    return cons(boxString(sub_string(s, 0, end)), stringSplit(sub_string(s, add(end, delimiterLength), string_length(s)), delimiter));;
+    return cons(boxString(sub_string(s, 0, end)), stringSplit(sub_string(s, add(end, delimiterLength), sub(string_length(s), add(end, delimiterLength))), delimiter));;
 
   };
 
@@ -15555,6 +18902,7 @@ bool runPerl = false;
 bool runJava = false;
 bool runNode = false;
 bool runNode2 = false;
+bool runHaskell = false;
 bool runAnsi3 = false;
 bool runTree = false;
 
@@ -15564,25 +18912,25 @@ if (globalTrace)
   StackTraceMove("in", "compiler.qon", "start", "5" );
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:18");
+    snprintf(caller, 1024, "from compiler.qon:19");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   cmdLine = listReverse(argList(globalArgsCount, 0, globalArgs));
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:20");
+    snprintf(caller, 1024, "from compiler.qon:21");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( greaterthan(listLength(cmdLine), 1)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:21");
+    snprintf(caller, 1024, "from compiler.qon:22");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     filenameBox = second(cmdLine);
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:22");
+    snprintf(caller, 1024, "from compiler.qon:23");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     filenameBox = boxString("compiler.qon");
@@ -15590,156 +18938,168 @@ if (globalTrace)
   };
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:23");
+    snprintf(caller, 1024, "from compiler.qon:24");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   filename = unBoxString(filenameBox);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:25");
+    snprintf(caller, 1024, "from compiler.qon:26");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   releaseMode = inList(boxString("--release"), cmdLine);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:26");
+    snprintf(caller, 1024, "from compiler.qon:27");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   runTests = inList(boxString("--test"), cmdLine);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:27");
+    snprintf(caller, 1024, "from compiler.qon:28");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   runJava = inList(boxString("--java"), cmdLine);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:28");
+    snprintf(caller, 1024, "from compiler.qon:29");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   runPerl = inList(boxString("--perl"), cmdLine);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:29");
+    snprintf(caller, 1024, "from compiler.qon:30");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   runTree = inList(boxString("--tree"), cmdLine);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:30");
+    snprintf(caller, 1024, "from compiler.qon:31");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   runNode = inList(boxString("--node"), cmdLine);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:31");
+    snprintf(caller, 1024, "from compiler.qon:32");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   runNode2 = inList(boxString("--node2"), cmdLine);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:32");
-  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
-
-  runAnsi3 = inList(boxString("--ansi3"), cmdLine);
-
-if (globalTrace)
     snprintf(caller, 1024, "from compiler.qon:33");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  globalTrace = inList(boxString("--trace"), cmdLine);
+  runHaskell = orBool(inList(boxString("--haskell"), cmdLine), inList(boxString("--hs"), cmdLine));
 
 if (globalTrace)
     snprintf(caller, 1024, "from compiler.qon:34");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  globalStepTrace = inList(boxString("--steptrace"), cmdLine);
+  runAnsi3 = inList(boxString("--ansi3"), cmdLine);
 
 if (globalTrace)
     snprintf(caller, 1024, "from compiler.qon:35");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-  if ( orBool(inList(boxString("--help"), cmdLine), inList(boxString("-h"), cmdLine))) {
+  globalTrace = inList(boxString("--trace"), cmdLine);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from compiler.qon:36");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  globalStepTrace = inList(boxString("--steptrace"), cmdLine);
+
 if (globalTrace)
     snprintf(caller, 1024, "from compiler.qon:37");
+  if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+  if ( orBool(inList(boxString("--help"), cmdLine), inList(boxString("-h"), cmdLine))) {
+if (globalTrace)
+    snprintf(caller, 1024, "from compiler.qon:39");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("Usage: quon file [options]\n\nNote the options go after the file name\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:38");
+    snprintf(caller, 1024, "from compiler.qon:40");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("Options:\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:39");
+    snprintf(caller, 1024, "from compiler.qon:41");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  -h, --help  Display this help\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:40");
+    snprintf(caller, 1024, "from compiler.qon:42");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --release   Compile in release mode\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:41");
+    snprintf(caller, 1024, "from compiler.qon:43");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --test      Run the test suite\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:42");
+    snprintf(caller, 1024, "from compiler.qon:44");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --java      Compile to Java\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:43");
+    snprintf(caller, 1024, "from compiler.qon:45");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --perl      Compile to Perl\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:44");
+    snprintf(caller, 1024, "from compiler.qon:46");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --tree      Compile to an s-expression tree\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:45");
+    snprintf(caller, 1024, "from compiler.qon:47");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --node      Compile to Node.js\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:46");
+    snprintf(caller, 1024, "from compiler.qon:48");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --node2      Compile to Node.js, new outputter\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:48");
+    snprintf(caller, 1024, "from compiler.qon:49");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    printf("  --haskell, --hs Compile to Haskell\n");
+
+if (globalTrace)
+    snprintf(caller, 1024, "from compiler.qon:51");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --ansi3     Compile to ANSI C (quon version 3)\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:49");
+    snprintf(caller, 1024, "from compiler.qon:52");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --trace     Trace execution\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:50");
+    snprintf(caller, 1024, "from compiler.qon:53");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("  --steptrace Step trace execution\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:51");
+    snprintf(caller, 1024, "from compiler.qon:54");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     exit(0);
@@ -15748,274 +19108,300 @@ if (globalTrace)
   };
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:55");
+    snprintf(caller, 1024, "from compiler.qon:58");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   if ( runTests) {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:57");
+    snprintf(caller, 1024, "from compiler.qon:60");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test0();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:58");
+    snprintf(caller, 1024, "from compiler.qon:61");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test1();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:59");
+    snprintf(caller, 1024, "from compiler.qon:62");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test2();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:60");
+    snprintf(caller, 1024, "from compiler.qon:63");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test3();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:61");
+    snprintf(caller, 1024, "from compiler.qon:64");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test4();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:62");
+    snprintf(caller, 1024, "from compiler.qon:65");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test5();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:63");
+    snprintf(caller, 1024, "from compiler.qon:66");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test6();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:64");
+    snprintf(caller, 1024, "from compiler.qon:67");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test7();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:65");
+    snprintf(caller, 1024, "from compiler.qon:68");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test8();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:66");
+    snprintf(caller, 1024, "from compiler.qon:69");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test9();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:67");
+    snprintf(caller, 1024, "from compiler.qon:70");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test10();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:68");
+    snprintf(caller, 1024, "from compiler.qon:71");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test12();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:69");
+    snprintf(caller, 1024, "from compiler.qon:72");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test13();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:70");
+    snprintf(caller, 1024, "from compiler.qon:73");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test14();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:71");
+    snprintf(caller, 1024, "from compiler.qon:74");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test15();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:72");
+    snprintf(caller, 1024, "from compiler.qon:75");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test16();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:73");
+    snprintf(caller, 1024, "from compiler.qon:76");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test17();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:74");
+    snprintf(caller, 1024, "from compiler.qon:77");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test18();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:75");
+    snprintf(caller, 1024, "from compiler.qon:78");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test19();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:76");
+    snprintf(caller, 1024, "from compiler.qon:79");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test20();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:77");
+    snprintf(caller, 1024, "from compiler.qon:80");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test21();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:78");
+    snprintf(caller, 1024, "from compiler.qon:81");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test22();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:79");
+    snprintf(caller, 1024, "from compiler.qon:82");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test23();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:80");
+    snprintf(caller, 1024, "from compiler.qon:83");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test24();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:81");
+    snprintf(caller, 1024, "from compiler.qon:84");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test25();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:82");
+    snprintf(caller, 1024, "from compiler.qon:85");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     test27();
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:84");
+    snprintf(caller, 1024, "from compiler.qon:86");
+    if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+    test28();
+
+if (globalTrace)
+    snprintf(caller, 1024, "from compiler.qon:88");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     printf("\n\nAfter all that hard work, I need a beer...\n");
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:85");
+    snprintf(caller, 1024, "from compiler.qon:89");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     beers(9);
 
   } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:87");
+    snprintf(caller, 1024, "from compiler.qon:91");
     if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
     if ( runTree) {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:88");
+    snprintf(caller, 1024, "from compiler.qon:92");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       display(macrowalk(loadQuon(filename)));
 
     } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:90");
+    snprintf(caller, 1024, "from compiler.qon:94");
       if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
       if ( orBool(runNode, runNode2)) {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:91");
+    snprintf(caller, 1024, "from compiler.qon:95");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         node2Compile(filename);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:91");
+    snprintf(caller, 1024, "from compiler.qon:95");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
         printf("\n");
 
       } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:93");
+    snprintf(caller, 1024, "from compiler.qon:97");
         if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-        if ( runPerl) {
+        if ( runHaskell) {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:94");
+    snprintf(caller, 1024, "from compiler.qon:98");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-          perlCompile(filename);
+          haskellCompile(filename);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:94");
+    snprintf(caller, 1024, "from compiler.qon:98");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
           printf("\n");
 
         } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:96");
+    snprintf(caller, 1024, "from compiler.qon:100");
           if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-          if ( runJava) {
+          if ( runPerl) {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:97");
+    snprintf(caller, 1024, "from compiler.qon:101");
             if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-            javaCompile(filename);
+            perlCompile(filename);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:97");
+    snprintf(caller, 1024, "from compiler.qon:101");
             if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
             printf("\n");
 
           } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:99");
+    snprintf(caller, 1024, "from compiler.qon:103");
             if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-            if ( runAnsi3) {
+            if ( runJava) {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:100");
+    snprintf(caller, 1024, "from compiler.qon:104");
               if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-              ansi3Compile(filename);
+              javaCompile(filename);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:100");
+    snprintf(caller, 1024, "from compiler.qon:104");
               if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
               printf("\n");
 
             } else {
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:101");
+    snprintf(caller, 1024, "from compiler.qon:106");
               if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-              ansi3Compile(filename);
+              if ( runAnsi3) {
+if (globalTrace)
+    snprintf(caller, 1024, "from compiler.qon:107");
+                if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+                ansi3Compile(filename);
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:101");
-              if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+    snprintf(caller, 1024, "from compiler.qon:107");
+                if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
-              printf("\n");
+                printf("\n");
+
+              } else {
+if (globalTrace)
+    snprintf(caller, 1024, "from compiler.qon:108");
+                if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+                ansi3Compile(filename);
+
+if (globalTrace)
+    snprintf(caller, 1024, "from compiler.qon:108");
+                if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
+
+                printf("\n");
+
+              };
 
             };
 
@@ -16030,7 +19416,7 @@ if (globalTrace)
   };
 
 if (globalTrace)
-    snprintf(caller, 1024, "from compiler.qon:102");
+    snprintf(caller, 1024, "from compiler.qon:109");
   if (globalStepTrace) printf("StepTrace %s:%d\n", __FILE__, __LINE__);
 
   StackTraceMove("out", "", "", "");

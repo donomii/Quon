@@ -53,7 +53,7 @@
                (then
                 (return (makeList
                  "new "
-                 (third tree)
+                 (javaTypeMap (second tree))
                  "()")))
                (else
                 (if (equalBox (boxSymbol "passthrough") thing)
@@ -265,6 +265,13 @@
       (then (return (cdr (assoc (stringify aSym) symMap))))
       (else (return aSym)))))
 
+  (box javaPointerBase (box aSym) (declare (string name ""))
+   (body
+    (set name (stringify aSym))
+    (if (equalString "*" (sub-string name (sub1 (string-length name)) 1))
+      (then (return (boxSymbol (sub-string name 0 (sub1 (string-length name))))))
+      (else (return aSym)))))
+
   (box javaFuncMap (box aSym) (declare (list symMap nil))
    (body
     (if (equalString "symbol" (boxType aSym))
@@ -359,6 +366,22 @@
         (javaType (car nodes))
         (javaTypes (cdr nodes))))))))
 
+  (list javaApplyTypeAliases (list tree list types) (declare (list node nil) (box alias nil) (box target nil))
+   (body
+    (if (isEmpty types)
+      (then (return tree))
+      (else))
+    (set node (car types))
+    (if (isList (second node))
+      (then (return (javaApplyTypeAliases tree (cdr types))))
+      (else))
+    (set alias (first node))
+    (if (equalString (stringify (javaTypeMap alias)) (stringify alias))
+      (then
+       (set target (javaTypeMap (javaPointerBase (second node))))
+       (return (javaApplyTypeAliases (macroSymbolSingle tree (stringify alias) (stringify target)) (cdr types))))
+      (else (return (javaApplyTypeAliases tree (cdr types)))))))
+
   (list javaMainEntry () (declare)
    (body
     (return (stringList
@@ -380,6 +403,7 @@
     (set tree (macrowalk tree))
     (set replace (symbolList "fprintf" "stderr"))
     (set tree (macrolist tree (stringConcatenate "q" "log") replace))
+    (set tree (javaApplyTypeAliases tree (cdr (getTypes tree))))
     (return tree)))
 
   (list javaProgramTree (list tree) (declare)
@@ -401,7 +425,7 @@
 
   (void javaCompile (string filename) (declare)
    (body
-    (printf "%s" (javaCompileString filename))
+    (printStringTree (javaProgramTree (javaLoadProgram filename)))
     (qlog "//Done printing program\n")))
 
  ))

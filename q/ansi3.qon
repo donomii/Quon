@@ -441,7 +441,7 @@
 
   (void ansi3Compile (string filename) (declare)
    (body
-    (printf "%s" (ansi3CompileString filename))
+    (printStringTree (ansi3ProgramTree (ansi3LoadProgram filename)))
     (qlog "//Done printing program\n")))
 
  ))

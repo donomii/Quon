@@ -470,7 +470,8 @@
                   (stringReplace old new
                                  (sub-string s
                                              (add pos (string-length old))
-                                             (string-length s))))))))))  ;; Recursive call for remaining string
+                                             (sub (string-length s)
+                                                  (add pos (string-length old))))))))))))  ;; Recursive call for remaining string
 
 (bool stringContains (string haystack string needle) (declare
   (int haystackLength 0)
@@ -531,9 +532,9 @@
       (else
         (if (isWhiteSpace (sub-string s 0 1))
           (then
-            (return (stringTrim (sub-string s 1 (string-length s)))))
+            (return (stringTrim (sub-string s 1 (sub1 (string-length s))))))
           (else
-            (if (isWhiteSpace (sub-string s (sub (string-length s) 1) (string-length s)))
+            (if (isWhiteSpace (sub-string s (sub (string-length s) 1) 1))
               (then
                 (return (stringTrim (sub-string s 0 (sub (string-length s) 1)))))
               (else
@@ -555,7 +556,7 @@
         (return (cons
           (boxString (sub-string s 0 end))
           (stringSplit 
-            (sub-string s (add end delimiterLength) (string-length s))
+            (sub-string s (add end delimiterLength) (sub (string-length s) (add end delimiterLength)))
             delimiter)))))))
 
  ))

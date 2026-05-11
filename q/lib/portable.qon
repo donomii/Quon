@@ -6,14 +6,6 @@
    (body
     (return (greaterthan (add1 n) 0))))
 
-  (bool isWhiteSpace (string ch) (declare)
-   (body
-    (if (equalString ch " ") (then (return true)) (else))
-    (if (equalString ch (character 9)) (then (return true)) (else))
-    (if (equalString ch (character 10)) (then (return true)) (else))
-    (if (equalString ch (character 13)) (then (return true)) (else))
-    (return false)))
-
   (int intDivPositive (int a int b int count) (declare)
    (body
     (if (greaterthan b 0)

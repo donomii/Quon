@@ -305,7 +305,7 @@
       (set replace (symbolList "fprintf" "stderr"))
       (set tree (macrolist tree (stringConcatenate "q" "log") replace))
       (qlog "//Printing program\n")
-      (printf "%s" (node2Program tree))
+      (printStringTree (node2ProgramTree tree))
       (qlog "//Done printing program\n")))
 
   ))
