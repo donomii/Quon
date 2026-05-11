@@ -10,7 +10,9 @@ Quon is a self-hosting compiler that targets other languages, rather than direct
 
 ## Current status
 
-The C, Java, and Perl backends work completely.  The Node.js backend produces code that works, but it is failing some tests.
+The C, Java, Perl, and Node.js backends can compile the compiler and the current
+check programs.  The test matrix compares output from all four bootstrap
+compilers across all four output targets.
 
 ## Compiling
 
@@ -44,6 +46,41 @@ Quon transpiles to C, perl, Javascript (nodejs) and Java.  You can choose the ou
     ./a.out
 
 See build.bat and build.bash for more detailed examples
+
+## Development checks
+
+Run the full current check suite with:
+
+    ./check.bash
+
+This runs parser negative tests first, then the backend matrix.  By default it
+checks `compiler.qon`, `examples/hello.qon`, `examples/fac.qon`,
+`examples/quotelist.qon`, and `listtest.qon`.  You can pass a smaller set of
+programs when you only want to check specific fixtures:
+
+    ./check.bash examples/hello.qon listtest.qon
+
+The parser failure tests can be run directly:
+
+    ./parser_negative_tests.bash
+
+Those tests feed malformed input to the C, Perl, Java, and Node bootstraps and
+check for the expected parser errors.
+
+The backend comparison matrix can also be run directly:
+
+    ./backend_matrix.bash compiler.qon
+
+It writes generated artifacts and logs to a temporary output directory unless
+`--outdir DIR` is provided.
+
+After compiler or runtime changes, refresh the generated bootstraps with:
+
+    ./refresh_bootstrap.bash
+
+That script builds a temporary C stage compiler, regenerates
+`bootstrap/quon.c`, `bootstrap/quon.js`, `bootstrap/quon.pl`, and
+`bootstrap/quon.java`, and only then moves the refreshed files into place.
 
 ## Known bugs
 

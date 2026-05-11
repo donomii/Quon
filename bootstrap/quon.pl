@@ -66,6 +66,7 @@ sub test9;
 sub test10;
 sub test12;
 sub test13;
+sub test14;
 sub test15;
 sub test16;
 sub test17;
@@ -112,7 +113,6 @@ sub ansi3Expression;
 sub ansi3RecurList;
 sub ansi3If;
 sub ansi3SetStruct;
-sub ansi3GetStruct;
 sub ansi3Set;
 sub ansi3Return;
 sub ansi3TraceReturn;
@@ -1346,7 +1346,28 @@ my $contents = "";
 }
 
 
-# Function test15 from line 212
+# Function test14 from line 213
+
+sub test14 {
+  my () = @_;
+  my $contentsBox = undef;
+
+  $contentsBox = read_file("q/this-file-should-not-exist.qon");
+
+  if ( isNil($contentsBox) ) {
+    printf("14. pass Missing read-file returns nil\n");
+
+  } else {
+    printf("14. fail Missing read-file returns nil\n");
+
+    printf("Got: %s\n", unBoxString($contentsBox));
+
+  };
+
+}
+
+
+# Function test15 from line 224
 
 sub test15 {
   my () = @_;
@@ -1367,7 +1388,7 @@ my $c = "";
 }
 
 
-# Function test16 from line 220
+# Function test16 from line 232
 
 sub test16 {
   my () = @_;
@@ -1407,7 +1428,7 @@ my $assocCell3 = undef;
 }
 
 
-# Function test17 from line 244
+# Function test17 from line 256
 
 sub test17 {
   my () = @_;
@@ -1426,7 +1447,7 @@ sub test17 {
 }
 
 
-# Function test18 from line 255
+# Function test18 from line 267
 
 sub test18 {
   my () = @_;
@@ -1447,7 +1468,7 @@ my $l = undef;
 }
 
 
-# Function test19 from line 269
+# Function test19 from line 281
 
 sub test19 {
   my () = @_;
@@ -1474,7 +1495,7 @@ my $answer = undef;
 }
 
 
-# Function concatenateLists from line 287
+# Function concatenateLists from line 299
 
 sub concatenateLists {
   my ($oldL, $newL) = @_;
@@ -1484,7 +1505,7 @@ sub concatenateLists {
 }
 
 
-# Function test20 from line 292
+# Function test20 from line 304
 
 sub test20 {
   my () = @_;
@@ -1515,7 +1536,7 @@ my $combined = undef;
 }
 
 
-# Function test21 from line 312
+# Function test21 from line 324
 
 sub test21 {
   my () = @_;
@@ -1540,7 +1561,7 @@ my $l2 = undef;
 }
 
 
-# Function test22 from line 328
+# Function test22 from line 340
 
 sub test22 {
   my () = @_;
@@ -1578,7 +1599,7 @@ my $correct = undef;
 }
 
 
-# Function test23 from line 351
+# Function test23 from line 363
 
 sub test23 {
   my () = @_;
@@ -1614,7 +1635,7 @@ my $correct = undef;
 }
 
 
-# Function test24 from line 374
+# Function test24 from line 386
 
 sub test24 {
   my () = @_;
@@ -1634,7 +1655,7 @@ my $res = "";
 }
 
 
-# Function test25 from line 388
+# Function test25 from line 400
 
 sub test25 {
   my () = @_;
@@ -1660,7 +1681,7 @@ my $input = undef;
 }
 
 
-# Function test27 from line 424
+# Function test27 from line 436
 
 sub test27 {
   my () = @_;
@@ -1829,9 +1850,9 @@ sub javaRecurList {
 # Function javaIf from line 91
 
 sub javaIf {
-  my ($node, $indent, $functionName) = @_;
+  my ($node, $indent) = @_;
   
-  return cons(id(listNewLine($indent)), cons(boxString("if ( "), cons(id(javaExpression(second($node), 0)), cons(boxString(") {"), cons(id(javaBody(cdr(third($node)), add1($indent), $functionName)), cons(id(listNewLine($indent)), cons(boxString("} else {"), cons(id(javaBody(cdr(fourth($node)), add1($indent), $functionName)), cons(id(listNewLine($indent)), cons(boxString("}"), undef))))))))));
+  return cons(id(listNewLine($indent)), cons(boxString("if ( "), cons(id(javaExpression(second($node), 0)), cons(boxString(") {"), cons(id(javaBody(cdr(third($node)), add1($indent))), cons(id(listNewLine($indent)), cons(boxString("} else {"), cons(id(javaBody(cdr(fourth($node)), add1($indent))), cons(id(listNewLine($indent)), cons(boxString("}"), undef))))))))));
 
 }
 
@@ -1875,7 +1896,7 @@ sub javaReturn {
 # Function javaStatement from line 133
 
 sub javaStatement {
-  my ($node, $indent, $functionName) = @_;
+  my ($node, $indent) = @_;
   
   if ( equalBox(boxString("set"), first($node)) ) {
     return cons(id(javaSet($node, $indent)), cons(boxString(";\n"), undef));
@@ -1886,7 +1907,7 @@ sub javaStatement {
 
     } else {
       if ( equalBox(boxString("if"), first($node)) ) {
-        return cons(id(javaIf($node, $indent, $functionName)), cons(boxString("\n"), undef));
+        return cons(id(javaIf($node, $indent)), cons(boxString("\n"), undef));
 
       } else {
         if ( equalBox(boxString("return"), first($node)) ) {
@@ -1909,7 +1930,7 @@ sub javaStatement {
 # Function javaBody from line 152
 
 sub javaBody {
-  my ($tree, $indent, $functionName) = @_;
+  my ($tree, $indent) = @_;
   my $code = undef;
 
   if ( isEmpty($tree) ) {
@@ -1918,7 +1939,7 @@ sub javaBody {
   } else {
     $code = car($tree);
 
-    return cons(id(javaStatement($code, $indent, $functionName)), cons(id(javaBody(cdr($tree), $indent, $functionName)), undef));
+    return cons(id(javaStatement($code, $indent)), cons(id(javaBody(cdr($tree), $indent)), undef));
 
   };
 
@@ -1956,7 +1977,7 @@ sub javaFunction {
     return emptyList();
 
   } else {
-    return cons(id(listNewLine(0)), cons(id(listNewLine(0)), cons(id(javaTypeMap(first($node))), cons(boxString(" "), cons(id(second($node)), cons(boxString("("), cons(id(javaFunctionArgs(third($node))), cons(boxString(") {"), cons(id(listNewLine(1)), cons(id(javaDeclarations(cdr(fourth($node)), 1)), cons(id(javaBody(cdr(fifth($node)), 1, stringify($name))), cons(boxString("\n}\n"), undef))))))))))));
+    return cons(id(listNewLine(0)), cons(id(listNewLine(0)), cons(id(javaTypeMap(first($node))), cons(boxString(" "), cons(id(javaFuncMap(second($node))), cons(boxString("("), cons(id(javaFunctionArgs(third($node))), cons(boxString(") {"), cons(id(listNewLine(1)), cons(id(javaDeclarations(cdr(fourth($node)), 1)), cons(id(javaBody(cdr(fifth($node)), 1)), cons(boxString("\n}\n"), undef))))))))))));
 
   };
 
@@ -2175,32 +2196,8 @@ sub javaCompileString {
 
 sub javaCompile {
   my ($filename) = @_;
-  my $tree = undef;
-my $replace = undef;
-
-  fprintf($stderr, "//Scanning file...%s\n", $filename);
-
-  $tree = loadQuon($filename);
-
-  fprintf($stderr, "Loading shim java\n");
-
-  $tree = buildProg(cons(boxString("q/shims/java.qon"), getIncludes($tree)), getTypes($tree), getFunctions($tree));
-
-  fprintf($stderr, "Loading all includes\n");
-
-  $tree = loadIncludes($tree, undef);
-
-  fprintf($stderr, "Applying macros\n");
-
-  $replace = cons(boxSymbol("fprintf"), cons(boxSymbol("stderr"), undef));
-
-  $tree = macrowalk($tree);
-
-  $tree = macrolist($tree, stringConcatenate("q", "log"), $replace);
-
-  fprintf($stderr, "//Printing program\n");
-
-  printf("%s", javaProgram($tree));
+  
+  printf("%s", javaCompileString($filename));
 
   fprintf($stderr, "//Done printing program\n");
 
@@ -2354,17 +2351,7 @@ sub ansi3SetStruct {
 }
 
 
-# Function ansi3GetStruct from line 115
-
-sub ansi3GetStruct {
-  my ($node, $indent) = @_;
-  
-  return cons(id(listNewLine($indent)), cons(id(first($node)), cons(boxString("->"), cons(id(second($node)), undef))));
-
-}
-
-
-# Function ansi3Set from line 123
+# Function ansi3Set from line 115
 
 sub ansi3Set {
   my ($node, $indent) = @_;
@@ -2374,7 +2361,7 @@ sub ansi3Set {
 }
 
 
-# Function ansi3Return from line 131
+# Function ansi3Return from line 123
 
 sub ansi3Return {
   my ($node, $indent) = @_;
@@ -2390,7 +2377,7 @@ sub ansi3Return {
 }
 
 
-# Function ansi3TraceReturn from line 142
+# Function ansi3TraceReturn from line 134
 
 sub ansi3TraceReturn {
   my ($node, $indent, $functionName) = @_;
@@ -2412,7 +2399,7 @@ sub ansi3TraceReturn {
 }
 
 
-# Function ansi3Statement from line 156
+# Function ansi3Statement from line 148
 
 sub ansi3Statement {
   my ($node, $indent, $functionName) = @_;
@@ -2446,7 +2433,7 @@ sub ansi3Statement {
 }
 
 
-# Function ansi3StatementTrace from line 175
+# Function ansi3StatementTrace from line 167
 
 sub ansi3StatementTrace {
   my ($code, $indent, $functionName) = @_;
@@ -2468,7 +2455,7 @@ sub ansi3StatementTrace {
 }
 
 
-# Function ansi3StepTrace from line 190
+# Function ansi3StepTrace from line 182
 
 sub ansi3StepTrace {
   my ($indent) = @_;
@@ -2484,7 +2471,7 @@ sub ansi3StepTrace {
 }
 
 
-# Function ansi3Body from line 199
+# Function ansi3Body from line 191
 
 sub ansi3Body {
   my ($tree, $indent, $functionName) = @_;
@@ -2503,7 +2490,7 @@ sub ansi3Body {
 }
 
 
-# Function ansi3Declarations from line 211
+# Function ansi3Declarations from line 203
 
 sub ansi3Declarations {
   my ($decls, $indent) = @_;
@@ -2522,7 +2509,7 @@ sub ansi3Declarations {
 }
 
 
-# Function ansi3FunctionTrace from line 226
+# Function ansi3FunctionTrace from line 218
 
 sub ansi3FunctionTrace {
   my ($name) = @_;
@@ -2544,7 +2531,7 @@ sub ansi3FunctionTrace {
 }
 
 
-# Function ansi3FunctionStackTrace from line 243
+# Function ansi3FunctionStackTrace from line 235
 
 sub ansi3FunctionStackTrace {
   my ($name) = @_;
@@ -2566,7 +2553,7 @@ sub ansi3FunctionStackTrace {
 }
 
 
-# Function ansi3Function from line 260
+# Function ansi3Function from line 252
 
 sub ansi3Function {
   my ($node) = @_;
@@ -2585,7 +2572,7 @@ sub ansi3Function {
 }
 
 
-# Function ansi3ForwardDeclaration from line 282
+# Function ansi3ForwardDeclaration from line 274
 
 sub ansi3ForwardDeclaration {
   my ($node) = @_;
@@ -2601,7 +2588,7 @@ sub ansi3ForwardDeclaration {
 }
 
 
-# Function ansi3ForwardDeclarations from line 296
+# Function ansi3ForwardDeclarations from line 288
 
 sub ansi3ForwardDeclarations {
   my ($tree) = @_;
@@ -2617,7 +2604,7 @@ sub ansi3ForwardDeclarations {
 }
 
 
-# Function ansi3Functions from line 305
+# Function ansi3Functions from line 297
 
 sub ansi3Functions {
   my ($tree) = @_;
@@ -2633,7 +2620,7 @@ sub ansi3Functions {
 }
 
 
-# Function ansi3Includes from line 314
+# Function ansi3Includes from line 306
 
 sub ansi3Includes {
   my ($nodes) = @_;
@@ -2643,7 +2630,7 @@ sub ansi3Includes {
 }
 
 
-# Function ansi3TypeDecl from line 320
+# Function ansi3TypeDecl from line 312
 
 sub ansi3TypeDecl {
   my ($l) = @_;
@@ -2659,7 +2646,7 @@ sub ansi3TypeDecl {
 }
 
 
-# Function ansi3StructComponents from line 340
+# Function ansi3StructComponents from line 332
 
 sub ansi3StructComponents {
   my ($node) = @_;
@@ -2675,7 +2662,7 @@ sub ansi3StructComponents {
 }
 
 
-# Function ansi3Struct from line 349
+# Function ansi3Struct from line 341
 
 sub ansi3Struct {
   my ($node) = @_;
@@ -2685,7 +2672,7 @@ sub ansi3Struct {
 }
 
 
-# Function ansi3TypeMap from line 353
+# Function ansi3TypeMap from line 345
 
 sub ansi3TypeMap {
   my ($aSym) = @_;
@@ -2704,7 +2691,7 @@ sub ansi3TypeMap {
 }
 
 
-# Function ansi3FuncMap from line 363
+# Function ansi3FuncMap from line 355
 
 sub ansi3FuncMap {
   my ($aSym) = @_;
@@ -2729,7 +2716,7 @@ sub ansi3FuncMap {
 }
 
 
-# Function ansi3Type from line 393
+# Function ansi3Type from line 385
 
 sub ansi3Type {
   my ($node) = @_;
@@ -2745,7 +2732,7 @@ sub ansi3Type {
 }
 
 
-# Function ansi3Types from line 410
+# Function ansi3Types from line 402
 
 sub ansi3Types {
   my ($nodes) = @_;
@@ -2761,7 +2748,7 @@ sub ansi3Types {
 }
 
 
-# Function ansi3LoadProgram from line 419
+# Function ansi3LoadProgram from line 411
 
 sub ansi3LoadProgram {
   my ($filename) = @_;
@@ -2785,7 +2772,7 @@ my $replace = undef;
 }
 
 
-# Function ansi3ProgramTree from line 429
+# Function ansi3ProgramTree from line 421
 
 sub ansi3ProgramTree {
   my ($tree) = @_;
@@ -2795,7 +2782,7 @@ sub ansi3ProgramTree {
 }
 
 
-# Function ansi3Program from line 441
+# Function ansi3Program from line 433
 
 sub ansi3Program {
   my ($tree) = @_;
@@ -2805,7 +2792,7 @@ sub ansi3Program {
 }
 
 
-# Function ansi3CompileString from line 445
+# Function ansi3CompileString from line 437
 
 sub ansi3CompileString {
   my ($filename) = @_;
@@ -2815,38 +2802,12 @@ sub ansi3CompileString {
 }
 
 
-# Function ansi3Compile from line 449
+# Function ansi3Compile from line 441
 
 sub ansi3Compile {
   my ($filename) = @_;
-  my $tree = undef;
-my $replace = undef;
-
-  fprintf($stderr, "//Scanning file...%s\n", $filename);
-
-  $tree = loadQuon($filename);
-
-  fprintf($stderr, "//Building sexpr\n");
-
-  fprintf($stderr, "Loading shim ansi3\n");
-
-  $tree = buildProg(cons(boxString("q/shims/ansi3.qon"), getIncludes($tree)), getTypes($tree), getFunctions($tree));
-
-  fprintf($stderr, "Loading all includes\n");
-
-  $tree = loadIncludes($tree, undef);
-
-  fprintf($stderr, "Applying macros\n");
-
-  $tree = macrowalk($tree);
-
-  $replace = cons(boxSymbol("fprintf"), cons(boxSymbol("stderr"), undef));
-
-  $tree = macrolist($tree, stringConcatenate("q", "log"), $replace);
-
-  fprintf($stderr, "//Printing program\n");
-
-  printf("%s", ansi3Program($tree));
+  
+  printf("%s", ansi3CompileString($filename));
 
   fprintf($stderr, "//Done printing program\n");
 
@@ -7757,6 +7718,8 @@ my $runTree = $false;
     test12();
 
     test13();
+
+    test14();
 
     test15();
 

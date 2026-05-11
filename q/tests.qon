@@ -210,6 +210,18 @@
       (printf "Got: %s\n" contents)
       ))))))
 
+(void
+ test14
+ ()
+ (declare (box contentsBox nil))
+ (body
+  (set contentsBox (read-file "q/this-file-should-not-exist.qon"))
+  (if (isNil contentsBox)
+    (then (printf "14. pass Missing read-file returns nil\n"))
+    (else
+      (printf "14. fail Missing read-file returns nil\n")
+      (printf "Got: %s\n" (unBoxString contentsBox))))))
+
 (void test15 ()
    (declare (string a "hello") (string b " world") (string c ""))
    (body

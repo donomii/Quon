@@ -89,17 +89,17 @@
            ", "
            (javaRecurList (cdr expr) indent)))))))))
 
-  (list javaIf (list node int indent string functionName) (declare)
+  (list javaIf (list node int indent) (declare)
    (body
     (return (makeList
      (listNewLine indent)
      "if ( "
      (javaExpression (second node) 0)
      ") {"
-     (javaBody (cdr (third node)) (add1 indent) functionName)
+     (javaBody (cdr (third node)) (add1 indent))
      (listNewLine indent)
      "} else {"
-     (javaBody (cdr (fourth node)) (add1 indent) functionName)
+     (javaBody (cdr (fourth node)) (add1 indent))
      (listNewLine indent)
      "}"))))
 
@@ -131,7 +131,7 @@
         "return "
         (javaExpression (cadr node) indent)))))))
 
-  (list javaStatement (list node int indent string functionName) (declare)
+  (list javaStatement (list node int indent) (declare)
    (body
     (if (equalBox (boxString "set") (first node))
       (then (return (makeList (javaSet node indent) ";\n")))
@@ -140,7 +140,7 @@
          (then (return (makeList (javaSetStruct node indent) ";\n")))
          (else
           (if (equalBox (boxString "if") (first node))
-            (then (return (makeList (javaIf node indent functionName) "\n")))
+            (then (return (makeList (javaIf node indent) "\n")))
             (else
              (if (equalBox (boxString "return") (first node))
                (then (return (makeList (javaReturn node indent) ";\n")))
@@ -150,15 +150,15 @@
                  (javaExpression node indent)
                  ";\n"))))))))))))
 
-  (list javaBody (list tree int indent string functionName) (declare (list code nil))
+  (list javaBody (list tree int indent) (declare (list code nil))
    (body
     (if (isEmpty tree)
       (then (return (emptyList)))
       (else
        (set code (car tree))
        (return (makeList
-        (javaStatement code indent functionName)
-        (javaBody (cdr tree) indent functionName)))))))
+        (javaStatement code indent)
+        (javaBody (cdr tree) indent)))))))
 
   (list javaDeclarations (list decls int indent) (declare (box decl nil))
    (body
@@ -186,13 +186,13 @@
         (listNewLine 0)
         (javaTypeMap (first node))
         " "
-        (second node)
+        (javaFuncMap (second node))
         "("
         (javaFunctionArgs (third node))
         ") {"
         (listNewLine 1)
         (javaDeclarations (cdr (fourth node)) 1)
-        (javaBody (cdr (fifth node)) 1 (stringify name))
+        (javaBody (cdr (fifth node)) 1)
         "\n}\n"))))))
 
   (list javaFunctions (list tree) (declare)
@@ -399,20 +399,9 @@
    (body
     (return (javaProgram (javaLoadProgram filename)))))
 
-  (void javaCompile (string filename) (declare (list tree nil)(list replace nil))
+  (void javaCompile (string filename) (declare)
    (body
-    (qlog "//Scanning file...%s\n" filename)
-    (set tree (loadQuon filename))
-    (qlog "Loading shim java\n")
-    (set tree (buildProg (cons (boxString "q/shims/java.qon") (getIncludes tree)) (getTypes tree) (getFunctions tree)))
-    (qlog "Loading all includes\n")
-    (set tree (loadIncludes tree nil))
-    (qlog "Applying macros\n")
-    (set replace (symbolList "fprintf" "stderr"))
-    (set tree (macrowalk tree))
-    (set tree (macrolist tree (stringConcatenate "q" "log") replace))
-    (qlog "//Printing program\n")
-    (printf "%s" (javaProgram tree))
+    (printf "%s" (javaCompileString filename))
     (qlog "//Done printing program\n")))
 
  ))

@@ -846,6 +846,24 @@ function test13() {
 }
 
 
+function test14() {
+    let contentsBox = null;
+
+  contentsBox = read_file("q/this-file-should-not-exist.qon");
+
+  if (isNil(contentsBox)) {
+    printf("14. pass Missing read-file returns nil\n");
+
+  } else {
+    printf("14. fail Missing read-file returns nil\n");
+
+    printf("Got: %s\n", unBoxString(contentsBox));
+
+  };
+
+}
+
+
 function test15() {
     let a = "hello";
   let b = " world";
@@ -1275,9 +1293,9 @@ function javaRecurList(expr, indent) {
 }
 
 
-function javaIf(node, indent, functionName) {
+function javaIf(node, indent) {
   
-  return cons(id(listNewLine(indent)), cons(boxString("if ( "), cons(id(javaExpression(second(node), 0)), cons(boxString(") {"), cons(id(javaBody(cdr(third(node)), add1(indent), functionName)), cons(id(listNewLine(indent)), cons(boxString("} else {"), cons(id(javaBody(cdr(fourth(node)), add1(indent), functionName)), cons(id(listNewLine(indent)), cons(boxString("}"), null))))))))));
+  return cons(id(listNewLine(indent)), cons(boxString("if ( "), cons(id(javaExpression(second(node), 0)), cons(boxString(") {"), cons(id(javaBody(cdr(third(node)), add1(indent))), cons(id(listNewLine(indent)), cons(boxString("} else {"), cons(id(javaBody(cdr(fourth(node)), add1(indent))), cons(id(listNewLine(indent)), cons(boxString("}"), null))))))))));
 
 }
 
@@ -1309,7 +1327,7 @@ function javaReturn(node, indent) {
 }
 
 
-function javaStatement(node, indent, functionName) {
+function javaStatement(node, indent) {
   
   if (equalBox(boxString("set"), first(node))) {
     return cons(id(javaSet(node, indent)), cons(boxString(";\n"), null));
@@ -1320,7 +1338,7 @@ function javaStatement(node, indent, functionName) {
 
     } else {
       if (equalBox(boxString("if"), first(node))) {
-        return cons(id(javaIf(node, indent, functionName)), cons(boxString("\n"), null));
+        return cons(id(javaIf(node, indent)), cons(boxString("\n"), null));
 
       } else {
         if (equalBox(boxString("return"), first(node))) {
@@ -1340,7 +1358,7 @@ function javaStatement(node, indent, functionName) {
 }
 
 
-function javaBody(tree, indent, functionName) {
+function javaBody(tree, indent) {
     let code = null;
 
   if (isEmpty(tree)) {
@@ -1349,7 +1367,7 @@ function javaBody(tree, indent, functionName) {
   } else {
     code = car(tree);
 
-    return cons(id(javaStatement(code, indent, functionName)), cons(id(javaBody(cdr(tree), indent, functionName)), null));
+    return cons(id(javaStatement(code, indent)), cons(id(javaBody(cdr(tree), indent)), null));
 
   };
 
@@ -1381,7 +1399,7 @@ function javaFunction(node) {
     return emptyList();
 
   } else {
-    return cons(id(listNewLine(0)), cons(id(listNewLine(0)), cons(id(javaTypeMap(first(node))), cons(boxString(" "), cons(id(second(node)), cons(boxString("("), cons(id(javaFunctionArgs(third(node))), cons(boxString(") {"), cons(id(listNewLine(1)), cons(id(javaDeclarations(cdr(fourth(node)), 1)), cons(id(javaBody(cdr(fifth(node)), 1, stringify(name))), cons(boxString("\n}\n"), null))))))))))));
+    return cons(id(listNewLine(0)), cons(id(listNewLine(0)), cons(id(javaTypeMap(first(node))), cons(boxString(" "), cons(id(javaFuncMap(second(node))), cons(boxString("("), cons(id(javaFunctionArgs(third(node))), cons(boxString(") {"), cons(id(listNewLine(1)), cons(id(javaDeclarations(cdr(fourth(node)), 1)), cons(id(javaBody(cdr(fifth(node)), 1)), cons(boxString("\n}\n"), null))))))))))));
 
   };
 
@@ -1555,32 +1573,8 @@ function javaCompileString(filename) {
 
 
 function javaCompile(filename) {
-    let tree = null;
-  let replace = null;
-
-  fprintf(stderr, "//Scanning file...%s\n", filename);
-
-  tree = loadQuon(filename);
-
-  fprintf(stderr, "Loading shim java\n");
-
-  tree = buildProg(cons(boxString("q/shims/java.qon"), getIncludes(tree)), getTypes(tree), getFunctions(tree));
-
-  fprintf(stderr, "Loading all includes\n");
-
-  tree = loadIncludes(tree, null);
-
-  fprintf(stderr, "Applying macros\n");
-
-  replace = cons(boxSymbol("fprintf"), cons(boxSymbol("stderr"), null));
-
-  tree = macrowalk(tree);
-
-  tree = macrolist(tree, stringConcatenate("q", "log"), replace);
-
-  fprintf(stderr, "//Printing program\n");
-
-  printf("%s", javaProgram(tree));
+  
+  printf("%s", javaCompileString(filename));
 
   fprintf(stderr, "//Done printing program\n");
 
@@ -1712,13 +1706,6 @@ function ansi3If(node, indent, functionName) {
 function ansi3SetStruct(node, indent) {
   
   return cons(id(listNewLine(indent)), cons(id(second(node)), cons(boxString("->"), cons(id(third(node)), cons(boxString(" = "), cons(id(ansi3Expression(fourth(node), indent)), null))))));
-
-}
-
-
-function ansi3GetStruct(node, indent) {
-  
-  return cons(id(listNewLine(indent)), cons(id(first(node)), cons(boxString("->"), cons(id(second(node)), null))));
 
 }
 
@@ -2097,34 +2084,8 @@ function ansi3CompileString(filename) {
 
 
 function ansi3Compile(filename) {
-    let tree = null;
-  let replace = null;
-
-  fprintf(stderr, "//Scanning file...%s\n", filename);
-
-  tree = loadQuon(filename);
-
-  fprintf(stderr, "//Building sexpr\n");
-
-  fprintf(stderr, "Loading shim ansi3\n");
-
-  tree = buildProg(cons(boxString("q/shims/ansi3.qon"), getIncludes(tree)), getTypes(tree), getFunctions(tree));
-
-  fprintf(stderr, "Loading all includes\n");
-
-  tree = loadIncludes(tree, null);
-
-  fprintf(stderr, "Applying macros\n");
-
-  tree = macrowalk(tree);
-
-  replace = cons(boxSymbol("fprintf"), cons(boxSymbol("stderr"), null));
-
-  tree = macrolist(tree, stringConcatenate("q", "log"), replace);
-
-  fprintf(stderr, "//Printing program\n");
-
-  printf("%s", ansi3Program(tree));
+  
+  printf("%s", ansi3CompileString(filename));
 
   fprintf(stderr, "//Done printing program\n");
 
@@ -6320,6 +6281,8 @@ function start() {
     test12();
 
     test13();
+
+    test14();
 
     test15();
 

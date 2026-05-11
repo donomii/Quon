@@ -18,15 +18,20 @@ So rather than having a complicated parser like RecDescent or Combinator, it use
 
 == The files
 
-compiler.qon is the compiler source.
+compiler.qon is the compiler entry point.
 
-base.qon Holds all the parsing and lexing code.  The parser is a simple S-Expression reader (written in qon), and so the language looks very lisp-like even though it isn't a lisp at all.
+q/compiler.qon holds the scanner and token helpers. q/newparser.qon reads the
+tokens into the native s-expression AST and validates the program shape.
 
-perl.qon, c.qon, node.qon, java.qon hold the output generators for each language.  They take the AST generated in base.qon, and generate correct code for their target language.
+q/perl.qon, q/ansi3.qon, q/node2.qon, and q/java.qon hold the output
+generators for each language. They take the native AST and generate code for
+their target language.
 
 == The compiler
 
-The compiler is very simple.  It parses the input as s-expressions, does some extremely simple transforms on it, builds an AST, then walks the AST to print out code in the target language.
+The compiler is very simple. It parses the input as s-expressions, validates
+the native AST, does some extremely simple transforms, then walks the AST to
+generate code in the target language.
 
 This is technically a multi-pass compiler.  The entire source code, including all libraries is loaded into memory, and a single AST is created in memory.  This process is inefficient, and wastes a lot of memory.  There is no garbage collector, so if the target language doesn't have one, then quon will usually run out of memory and crash.
 
@@ -74,15 +79,18 @@ The payoff to this limition is that you can convert your code into 4 different l
 
 == The AST
 
-The AST is a direct reflection of the quon code.  Additional data for compilation is stored in "tags".  Tags are hash tables (right now, association lists) that are "attached" to boxes.  At the moment, this only works for boxes.  So an AST node would just be a symbol, with the followng tags attached
+The AST is a direct reflection of the quon code. Additional data for
+compilation is stored in "tags". Tags are association lists attached to boxes,
+so a token can remain a plain symbol or string while carrying source metadata.
+The parser currently attaches:
 
-        ("line"    -1)              Line number of source file, deprecated
-        ("file"    base)            File name of source file, deprecated
-        ("name"    "node type")     e.g. statement, expression
-        ("subname" "subtype")       node subtype, e.g. setter, getter
+        ("filename" "compiler.qon") Source file
+        ("line"     12)             Source line
+        ("column"   4)              Source column
+        ("totalCharPos" 128)        Character offset
 
-
-Specialised nodes often have more keys.
+The compiler no longer builds a separate object-style AST. The list structure is
+the AST, and tags carry the side data.
 
 
 

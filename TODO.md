@@ -26,7 +26,6 @@ Captured May 9, 2026.
 ## Backends
 
 - Fix `--release --ansi3`: release mode suppresses stack trace pushes but still emits `StackTraceMove("out", ...)`, which can call `cdr` on an empty trace stack.
-- Finish making the C outputter return strings/lists instead of printing directly.
 - Keep improving the JavaScript outputter as the main webpage/library target.
 - Decide whether Java is still worth reviving after C and JavaScript are solid.
 - Consider a .NET backend for broader platform coverage.
@@ -34,6 +33,6 @@ Captured May 9, 2026.
 
 ## Tests
 
-- Build a real test runner that can compile and run fixture programs across C, Perl, and Node.
-- Add regression tests for parser failures, especially missing/extra parentheses and swallowed function definitions.
+- Keep extending `check.bash` and `backend_matrix.bash` as the main test runners.
+- Add more fixture programs to the backend matrix as libraries become useful.
 - Add regression coverage for `--release --ansi3`.
