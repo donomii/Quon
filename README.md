@@ -6,13 +6,12 @@ It has no practical use, except to exist.
 
 ## How
 
-Quon is a self-hosting compiler that targets other languages, rather than direct machine code.  It uses the data types and functions of the host language, and is completely interoperable with it.  This provides access to all the libraries and abilities of the host language.  There is o need to provide external declarations or bindings, quon accesses all the host language's functions and data types directly.
+Quon is a self-hosting compiler that targets other languages, rather than direct machine code.  It uses the data types and functions of the host language, and is completely interoperable with it.  This provides access to all the libraries and abilities of the host language.  There is o need to provide external declarations or bindings, quon accesses all the host language's functions and data types directly.  And the host language can call any quon function.
 
 ## Current status
 
-The C, Java, Perl, and Node.js backends can compile the compiler and the current
-check programs.  The test matrix compares output from all four bootstrap
-compilers across all four output targets.
+The C, Java, Perl, Haskell, and Node.js backends can compile the compiler and the current
+check programs.  The test matrix compares output from all four bootstrap compilers across all four output targets.
 
 ## Compiling
 
@@ -20,7 +19,7 @@ Run bootstrap.bash, or bootstrap.bat on windows.  This will use the platform C c
 
 Then run build.bash, or buildwin.bat.  This will create files for all the possible backends and put them in build/
 
-Then check out the longer [Guide](QuickStart.md)/
+Then check out the longer [User Guide](QuickStart.md)/
 
 ## Compile to multiple languages
 
@@ -88,7 +87,7 @@ That script builds a temporary C stage compiler, regenerates
 
 ### Unicode
 
-Quon does not support unicode.  I rely on the underlying programming language for string support, so if that language does not have unicode support, then Quon can't have it either.  Worse, Quon cannot detect unicode support, so instead it silently corrupts the string and gets confused.  
+Quon does not support unicode.  I rely on the underlying programming language for string support, so if that language does not have unicode support, then Quon can't have it either.  Worse, Quon cannot detect unicode support, so instead it silently corrupts unicode strings.
 
 If your compile keeps failing but the code looks ok, check for hidden unicode characters.
 

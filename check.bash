@@ -58,6 +58,7 @@ if [ "${#PROGRAMS[@]}" -eq 0 ]; then
     examples/fac.qon
     examples/quotelist.qon
     examples/lib/portable_libs.qon
+    examples/mandelbrot.qon
     listtest.qon
   )
 fi

@@ -25,23 +25,23 @@
                      (else (return iteration)))
                  ))
             ;"mandelRow" generates a single row of the ASCII representation of the Mandelbrot set.
-           (void mandelRow (float start float end float step float y) (declare)
+           (void mandelRow (float x float step float y int column int maxColumns) (declare)
                  (body
-                  (if (greaterthanf end start)
+                  (if (greaterthan maxColumns column)
                       (then
-                       (printf "%s" (asciiShade (escape start y start y 0 16)))
-                       (mandelRow (addf start step) end step y))
+                       (printf "%s" (asciiShade (escape x y x y 0 16)))
+                       (mandelRow (addf x step) step y (add1 column) maxColumns))
                       (else
                        (return)))
                   ))
             ;"mandelRows" generates all the rows of the ASCII representation of the Mandelbrot set.
-           (void mandelRows (float start float end float step) (declare)
+           (void mandelRows (float y float step int row int maxRows) (declare)
                  (body
-                  (if (greaterthanf end start)
+                  (if (greaterthan maxRows row)
                       (then
-                       (mandelRow -2.1 1 0.02 start)
+                       (mandelRow -2.1 0.02 y 0 155)
                        (newLine 0)
-                       (mandelRows (addf start step) end step))
+                       (mandelRows (addf y step) step (add1 row) maxRows))
                       (else
                        (return)))
                   ))
@@ -49,7 +49,7 @@
 
            (void mandelPic () (declare)
                  (body
-                  (mandelRows -1.1 1.1 0.035)
+                  (mandelRows -1.1 0.035 0 63)
            ))
     ;"start" is the entry point of the program.
      (int start () (declare (list cmdLine nil))
