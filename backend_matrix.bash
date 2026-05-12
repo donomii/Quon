@@ -5,7 +5,7 @@ ROOT="$(cd "$(dirname "$0")" && pwd)"
 OUTDIR=""
 PROGRAMS=()
 
-BACKENDS=(c perl java node)
+BACKENDS=(c perl java node haskell)
 TARGETS=(ansi3 ansi3-release perl java node2 haskell)
 TARGET_EXTS=(c c pl java js hs)
 
@@ -193,6 +193,15 @@ prepare_c_bootstrap() {
     gcc -O2 -Wno-parentheses-equality -Wno-format-security "$ROOT/bootstrap/quon.c" -o "$C_BOOTSTRAP"
 }
 
+prepare_haskell_bootstrap() {
+  HASKELL_BOOTSTRAP="$OUTDIR/haskell-bootstrap"
+  HASKELL_BOOTSTRAP_BUILD="$OUTDIR/haskell-bootstrap-build"
+  mkdir -p "$HASKELL_BOOTSTRAP_BUILD/obj" "$HASKELL_BOOTSTRAP_BUILD/hi"
+
+  run_logged "ghc bootstrap/quon.hs" "$LOGDIR/haskell-bootstrap-ghc.log" \
+    ghc -ignore-dot-ghci -odir "$HASKELL_BOOTSTRAP_BUILD/obj" -hidir "$HASKELL_BOOTSTRAP_BUILD/hi" -o "$HASKELL_BOOTSTRAP" "$ROOT/bootstrap/quon.hs"
+}
+
 backend_run() {
   backend="$1"
   shift
@@ -209,6 +218,9 @@ backend_run() {
       ;;
     node)
       node bootstrap/quon.js "$@"
+      ;;
+    haskell)
+      "$HASKELL_BOOTSTRAP" "$@"
       ;;
     *)
       echo "Unknown backend: $backend" >&2
@@ -436,6 +448,7 @@ check_program() {
 
 printf "Output directory: %s\n" "$OUTDIR"
 prepare_c_bootstrap
+prepare_haskell_bootstrap
 prepare_java_bootstrap
 check_bootstraps
 

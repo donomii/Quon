@@ -13,8 +13,10 @@ gcc -O2 -Wno-parentheses-equality -Wno-format-security "$OUTDIR/quon-stage.c" -o
 "$OUTDIR/quon-stage" compiler.qon --node > "$OUTDIR/quon.js"
 "$OUTDIR/quon-stage" compiler.qon --perl > "$OUTDIR/quon.pl"
 "$OUTDIR/quon-stage" compiler.qon --java > "$OUTDIR/quon.java"
+"$OUTDIR/quon-stage" compiler.qon --haskell > "$OUTDIR/quon.hs"
 
 mv "$OUTDIR/quon.c" bootstrap/quon.c
 mv "$OUTDIR/quon.js" bootstrap/quon.js
 mv "$OUTDIR/quon.pl" bootstrap/quon.pl
 mv "$OUTDIR/quon.java" bootstrap/quon.java
+mv "$OUTDIR/quon.hs" bootstrap/quon.hs
