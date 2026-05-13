@@ -23,6 +23,25 @@ sub orBool;
 sub nand;
 sub xor;
 sub lessThan;
+sub parserValidateBodyForm;
+sub readBodySexpr;
+sub readSingleSexpr;
+sub readBodyFragment;
+sub readFunctionsSexpr;
+sub readFunctionsFragment;
+sub readTypesSexpr;
+sub readTypesFragment;
+sub bodyTreeToString;
+sub compileBodySectionString;
+sub compileBodyString;
+sub compileBodyForm;
+sub compileFunctionsSectionString;
+sub compileFunctionsString;
+sub compileFunctionsSection;
+sub compileTypesSectionString;
+sub compileTypesString;
+sub compileTypesSection;
+sub compileProgramBareString;
 sub node2FunctionArgs;
 sub node2Atom;
 sub node2Expression;
@@ -544,6 +563,430 @@ sub lessThan {
 }
 
 
+# Function parserValidateBodyForm from line 4
+
+sub parserValidateBodyForm {
+  my ($bodyForm, $filename) = @_;
+  
+  if ( isNil($bodyForm) ) {
+    parserPanicAt($filename, undef, "empty body fragment");
+
+  } else {
+  };
+
+  if ( isList($bodyForm) ) {
+  } else {
+    parserPanicAtNode($filename, $bodyForm, "body fragment must be a list");
+
+  };
+
+  if ( parserListStartsWith($bodyForm, "body") ) {
+    parserValidateBody(cdr($bodyForm), $filename);
+
+  } else {
+    parserPanicAtNode($filename, $bodyForm, "expected body fragment");
+
+  };
+
+}
+
+
+# Function readBodySexpr from line 16
+
+sub readBodySexpr {
+  my ($aStr, $filename) = @_;
+  my $tokens = undef;
+my $as = undef;
+my $bodyForm = undef;
+
+  $bodyForm = readSingleSexpr($aStr, $filename);
+
+  parserValidateBodyForm($bodyForm, $filename);
+
+  return $bodyForm;
+
+}
+
+
+# Function readSingleSexpr from line 22
+
+sub readSingleSexpr {
+  my ($aStr, $filename) = @_;
+  my $tokens = undef;
+my $as = undef;
+
+  $tokens = emptyList();
+
+  $tokens = filterTokens(filterVoid(scan($aStr, 0, 1, 0, 0, $filename)));
+
+  parserValidateParens($tokens, undef, $filename);
+
+  $as = sexprTree($tokens);
+
+  parserValidateRoot($as, $filename);
+
+  return car($as);
+
+}
+
+
+# Function readBodyFragment from line 31
+
+sub readBodyFragment {
+  my ($source, $filename) = @_;
+  my $wrapped = "";
+
+  $wrapped = stringConcatenate("(body\n", stringConcatenate($source, "\n)"));
+
+  return readBodySexpr($wrapped, $filename);
+
+}
+
+
+# Function readFunctionsSexpr from line 36
+
+sub readFunctionsSexpr {
+  my ($aStr, $filename) = @_;
+  my $section = undef;
+
+  $section = readSingleSexpr($aStr, $filename);
+
+  parserValidateSection($section, "functions", $filename);
+
+  parserValidateFunctions(cdr($section), $filename);
+
+  return $section;
+
+}
+
+
+# Function readFunctionsFragment from line 43
+
+sub readFunctionsFragment {
+  my ($source, $filename) = @_;
+  my $wrapped = "";
+
+  $wrapped = stringConcatenate("(functions\n", stringConcatenate($source, "\n)"));
+
+  return readFunctionsSexpr($wrapped, $filename);
+
+}
+
+
+# Function readTypesSexpr from line 48
+
+sub readTypesSexpr {
+  my ($aStr, $filename) = @_;
+  my $section = undef;
+
+  $section = readSingleSexpr($aStr, $filename);
+
+  parserValidateSection($section, "types", $filename);
+
+  parserRejectFunctionDefinitions(cdr($section), $filename);
+
+  return $section;
+
+}
+
+
+# Function readTypesFragment from line 55
+
+sub readTypesFragment {
+  my ($source, $filename) = @_;
+  my $wrapped = "";
+
+  $wrapped = stringConcatenate("(types\n", stringConcatenate($source, "\n)"));
+
+  return readTypesSexpr($wrapped, $filename);
+
+}
+
+
+# Function bodyTreeToString from line 60
+
+sub bodyTreeToString {
+  my ($tree) = @_;
+  
+  return ListToString(flatten($tree), 0, $true, $false);
+
+}
+
+
+# Function compileBodySectionString from line 64
+
+sub compileBodySectionString {
+  my ($source, $filename, $target) = @_;
+  my $bodyForm = undef;
+
+  $bodyForm = readBodySexpr($source, $filename);
+
+  return compileBodyForm($bodyForm, $target);
+
+}
+
+
+# Function compileBodyString from line 69
+
+sub compileBodyString {
+  my ($source, $filename, $target) = @_;
+  my $bodyForm = undef;
+
+  $bodyForm = readBodyFragment($source, $filename);
+
+  return compileBodyForm($bodyForm, $target);
+
+}
+
+
+# Function compileBodyForm from line 74
+
+sub compileBodyForm {
+  my ($bodyForm, $target) = @_;
+  my $variables = undef;
+
+  if ( equalString($target, "node2") ) {
+    return bodyTreeToString(node2Body(cdr($bodyForm), 0, "snippet"));
+
+  } else {
+  };
+
+  if ( equalString($target, "perl") ) {
+    $variables = getGlobalVariables();
+
+    return bodyTreeToString(perlBody(cdr($bodyForm), 0, $variables));
+
+  } else {
+  };
+
+  if ( equalString($target, "java") ) {
+    return bodyTreeToString(javaBody(cdr($bodyForm), 0));
+
+  } else {
+  };
+
+  if ( equalString($target, "haskell") ) {
+    $variables = haskellGlobalVariables();
+
+    return bodyTreeToString(haskellBody(cdr($bodyForm), 0, $variables));
+
+  } else {
+  };
+
+  if ( orBool(equalString($target, "ansi3"), equalString($target, "ansi3-release")) ) {
+    $releaseMode = $true;
+
+    return bodyTreeToString(ansi3Body(cdr($bodyForm), 0, "snippet"));
+
+  } else {
+  };
+
+  panic(stringConcatenate("unknown body target: ", $target));
+
+  return "";
+
+}
+
+
+# Function compileFunctionsSectionString from line 100
+
+sub compileFunctionsSectionString {
+  my ($source, $filename, $target) = @_;
+  my $section = undef;
+
+  $section = readFunctionsSexpr($source, $filename);
+
+  return compileFunctionsSection($section, $target);
+
+}
+
+
+# Function compileFunctionsString from line 105
+
+sub compileFunctionsString {
+  my ($source, $filename, $target) = @_;
+  my $section = undef;
+
+  $section = readFunctionsFragment($source, $filename);
+
+  return compileFunctionsSection($section, $target);
+
+}
+
+
+# Function compileFunctionsSection from line 110
+
+sub compileFunctionsSection {
+  my ($section, $target) = @_;
+  
+  if ( equalString($target, "node2") ) {
+    return bodyTreeToString(node2Functions(cdr($section)));
+
+  } else {
+  };
+
+  if ( equalString($target, "perl") ) {
+    return bodyTreeToString(perlFunctions(cdr($section)));
+
+  } else {
+  };
+
+  if ( equalString($target, "java") ) {
+    return bodyTreeToString(javaFunctions(cdr($section)));
+
+  } else {
+  };
+
+  if ( equalString($target, "haskell") ) {
+    return bodyTreeToString(haskellFunctions(cdr($section)));
+
+  } else {
+  };
+
+  if ( orBool(equalString($target, "ansi3"), equalString($target, "ansi3-release")) ) {
+    $releaseMode = $true;
+
+    return bodyTreeToString(ansi3Functions(cdr($section)));
+
+  } else {
+  };
+
+  panic(stringConcatenate("unknown functions target: ", $target));
+
+  return "";
+
+}
+
+
+# Function compileTypesSectionString from line 132
+
+sub compileTypesSectionString {
+  my ($source, $filename, $target) = @_;
+  my $section = undef;
+
+  $section = readTypesSexpr($source, $filename);
+
+  return compileTypesSection($section, $target);
+
+}
+
+
+# Function compileTypesString from line 137
+
+sub compileTypesString {
+  my ($source, $filename, $target) = @_;
+  my $section = undef;
+
+  $section = readTypesFragment($source, $filename);
+
+  return compileTypesSection($section, $target);
+
+}
+
+
+# Function compileTypesSection from line 142
+
+sub compileTypesSection {
+  my ($section, $target) = @_;
+  
+  if ( equalString($target, "node2") ) {
+    return bodyTreeToString(node2Types(cdr($section)));
+
+  } else {
+  };
+
+  if ( equalString($target, "perl") ) {
+    return bodyTreeToString(perlTypes(cdr($section)));
+
+  } else {
+  };
+
+  if ( equalString($target, "java") ) {
+    return bodyTreeToString(javaTypes(cdr($section)));
+
+  } else {
+  };
+
+  if ( equalString($target, "haskell") ) {
+    return bodyTreeToString(haskellTypes(cdr($section)));
+
+  } else {
+  };
+
+  if ( orBool(equalString($target, "ansi3"), equalString($target, "ansi3-release")) ) {
+    return bodyTreeToString(ansi3Types(cdr($section)));
+
+  } else {
+  };
+
+  panic(stringConcatenate("unknown types target: ", $target));
+
+  return "";
+
+}
+
+
+# Function compileProgramBareString from line 162
+
+sub compileProgramBareString {
+  my ($source, $filename, $target) = @_;
+  my $tree = undef;
+
+  $tree = readSexpr($source, $filename);
+
+  $tree = macrowalk($tree);
+
+  if ( equalString($target, "java") ) {
+    $tree = javaApplyTypeAliases($tree, cdr(getTypes($tree)));
+
+  } else {
+  };
+
+  if ( equalString($target, "haskell") ) {
+    $tree = haskellApplyTypeAliases($tree, cdr(getTypes($tree)));
+
+  } else {
+  };
+
+  if ( equalString($target, "node2") ) {
+    return bodyTreeToString(cons(id(node2Types(getTypes($tree))), cons(id(node2Functions(getFunctions($tree))), undef)));
+
+  } else {
+  };
+
+  if ( equalString($target, "perl") ) {
+    return bodyTreeToString(cons(id(perlTypes(getTypes($tree))), cons(id(perlFunctions(getFunctions($tree))), undef)));
+
+  } else {
+  };
+
+  if ( equalString($target, "java") ) {
+    return bodyTreeToString(cons(id(javaTypes(getTypes($tree))), cons(id(javaFunctions(getFunctions($tree))), undef)));
+
+  } else {
+  };
+
+  if ( equalString($target, "haskell") ) {
+    return bodyTreeToString(cons(id(haskellTypes(getTypes($tree))), cons(id(haskellFunctions(getFunctions($tree))), undef)));
+
+  } else {
+  };
+
+  if ( orBool(equalString($target, "ansi3"), equalString($target, "ansi3-release")) ) {
+    $releaseMode = $true;
+
+    return bodyTreeToString(cons(id(ansi3Types(getTypes($tree))), cons(id(ansi3Functions(getFunctions($tree))), undef)));
+
+  } else {
+  };
+
+  panic(stringConcatenate("unknown program target: ", $target));
+
+  return "";
+
+}
+
+
 # Function node2FunctionArgs from line 5
 
 sub node2FunctionArgs {
@@ -829,12 +1272,12 @@ sub node2Functions {
 sub node2Includes {
   my ($nodes) = @_;
   
-  return cons(boxString("\"use strict\";\n"), cons(boxString("const fs = require(\"fs\");\n"), cons(boxString("let globalArgsCount = 0;\n"), cons(boxString("let globalArgs = [];\n"), cons(boxString("let releaseMode = false;\n"), cons(boxString("let globalTrace = false;\n"), cons(boxString("let globalStepTrace = false;\n"), cons(boxString("let globalStackTrace = null;\n"), cons(boxString("let caller = \"\";\n"), cons(boxString("let stderr = process.stderr;\n"), cons(boxString("function cformat(fmt, ...args) {\n"), cons(boxString("  fmt = String(fmt);\n"), cons(boxString("  let out = '';\n"), cons(boxString("  let argi = 0;\n"), cons(boxString("  for (let pos = 0; pos < fmt.length; pos++) {\n"), cons(boxString("    let ch = fmt[pos];\n"), cons(boxString("    if (ch !== '%') { out += ch; continue; }\n"), cons(boxString("    if (fmt[pos + 1] === '%') { out += '%'; pos++; continue; }\n"), cons(boxString("    let precision = null;\n"), cons(boxString("    if (fmt[pos + 1] === '.') {\n"), cons(boxString("      let end = pos + 2;\n"), cons(boxString("      while (end < fmt.length && fmt[end] >= '0' && fmt[end] <= '9') end++;\n"), cons(boxString("      precision = Number(fmt.slice(pos + 2, end));\n"), cons(boxString("      pos = end - 1;\n"), cons(boxString("    }\n"), cons(boxString("    let spec = fmt[pos + 1];\n"), cons(boxString("    if (spec === 's' || spec === 'd') {\n"), cons(boxString("      let value = String(args[argi++]);\n"), cons(boxString("      if (precision !== null) value = value.slice(0, precision);\n"), cons(boxString("      out += value;\n"), cons(boxString("      pos++;\n"), cons(boxString("    } else {\n"), cons(boxString("      out += ch;\n"), cons(boxString("    }\n"), cons(boxString("  }\n"), cons(boxString("  return out;\n"), cons(boxString("}\n"), cons(boxString("function printf(fmt, ...args) { process.stdout.write(cformat(fmt, ...args)); }\n"), cons(boxString("function fprintf(stream, fmt, ...args) { stream.write(cformat(fmt, ...args)); }\n"), undef)))))))))))))))))))))))))))))))))))))));
+  return cons(boxString("\"use strict\";\n"), cons(boxString("const fs = (typeof require === \"function\") ? require(\"fs\") : null;\n"), cons(boxString("let globalArgsCount = 0;\n"), cons(boxString("let globalArgs = [];\n"), cons(boxString("let releaseMode = false;\n"), cons(boxString("let globalTrace = false;\n"), cons(boxString("let globalStepTrace = false;\n"), cons(boxString("let globalStackTrace = null;\n"), cons(boxString("let caller = \"\";\n"), cons(boxString("let quonIO = makeDefaultQuonIO();\n"), cons(boxString("let stderr = { write: function(s) { quonIO.error(String(s)); } };\n"), cons(boxString("function makeDefaultQuonIO() {\n"), cons(boxString("  return {\n"), cons(boxString("    write: function(s) {\n"), cons(boxString("      if (typeof process !== \"undefined\" && process.stdout) process.stdout.write(String(s));\n"), cons(boxString("    },\n"), cons(boxString("    error: function(s) {\n"), cons(boxString("      if (typeof process !== \"undefined\" && process.stderr) process.stderr.write(String(s));\n"), cons(boxString("      else if (typeof console !== \"undefined\" && console.error) console.error(String(s));\n"), cons(boxString("    },\n"), cons(boxString("    readFile: null,\n"), cons(boxString("    writeFile: null,\n"), cons(boxString("    exit: null,\n"), cons(boxString("    env: (typeof process !== \"undefined\" && process.env) ? process.env : {}\n"), cons(boxString("  };\n"), cons(boxString("}\n"), cons(boxString("function configureQuonIO(io) {\n"), cons(boxString("  const defaults = makeDefaultQuonIO();\n"), cons(boxString("  quonIO = Object.assign(defaults, io || {});\n"), cons(boxString("  if (!quonIO.error) quonIO.error = defaults.error;\n"), cons(boxString("  if (!quonIO.write) quonIO.write = defaults.write;\n"), cons(boxString("  return quonIO;\n"), cons(boxString("}\n"), cons(boxString("function qreadFile(filename) {\n"), cons(boxString("  if (quonIO.readFile) {\n"), cons(boxString("    const data = quonIO.readFile(filename);\n"), cons(boxString("    if (data === null || data === undefined) return null;\n"), cons(boxString("    return boxString(String(data));\n"), cons(boxString("  }\n"), cons(boxString("  if (fs) {\n"), cons(boxString("    try { return boxString(fs.readFileSync(filename, \"utf8\")); } catch (e) { return null; }\n"), cons(boxString("  }\n"), cons(boxString("  return null;\n"), cons(boxString("}\n"), cons(boxString("function qwriteFile(filename, data) {\n"), cons(boxString("  if (quonIO.writeFile) return quonIO.writeFile(filename, data);\n"), cons(boxString("  if (fs) return fs.writeFileSync(filename, data);\n"), cons(boxString("  throw new Error(\"write-file is not available in this environment\");\n"), cons(boxString("}\n"), cons(boxString("function qexit(status) {\n"), cons(boxString("  if (quonIO.exit) return quonIO.exit(status);\n"), cons(boxString("  if (typeof process !== \"undefined\" && process.exit) return process.exit(status);\n"), cons(boxString("  throw new Error(\"Quon exit \" + status);\n"), cons(boxString("}\n"), cons(boxString("function cformat(fmt, ...args) {\n"), cons(boxString("  fmt = String(fmt);\n"), cons(boxString("  let out = '';\n"), cons(boxString("  let argi = 0;\n"), cons(boxString("  for (let pos = 0; pos < fmt.length; pos++) {\n"), cons(boxString("    let ch = fmt[pos];\n"), cons(boxString("    if (ch !== '%') { out += ch; continue; }\n"), cons(boxString("    if (fmt[pos + 1] === '%') { out += '%'; pos++; continue; }\n"), cons(boxString("    let precision = null;\n"), cons(boxString("    if (fmt[pos + 1] === '.') {\n"), cons(boxString("      let end = pos + 2;\n"), cons(boxString("      while (end < fmt.length && fmt[end] >= '0' && fmt[end] <= '9') end++;\n"), cons(boxString("      precision = Number(fmt.slice(pos + 2, end));\n"), cons(boxString("      pos = end - 1;\n"), cons(boxString("    }\n"), cons(boxString("    let spec = fmt[pos + 1];\n"), cons(boxString("    if (spec === 's' || spec === 'd') {\n"), cons(boxString("      let value = String(args[argi++]);\n"), cons(boxString("      if (precision !== null) value = value.slice(0, precision);\n"), cons(boxString("      out += value;\n"), cons(boxString("      pos++;\n"), cons(boxString("    } else {\n"), cons(boxString("      out += ch;\n"), cons(boxString("    }\n"), cons(boxString("  }\n"), cons(boxString("  return out;\n"), cons(boxString("}\n"), cons(boxString("function printf(fmt, ...args) { quonIO.write(cformat(fmt, ...args)); }\n"), cons(boxString("function fprintf(stream, fmt, ...args) { stream.write(cformat(fmt, ...args)); }\n"), undef)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))));
 
 }
 
 
-# Function node2Types from line 237
+# Function node2Types from line 281
 
 sub node2Types {
   my ($nodes) = @_;
@@ -844,7 +1287,7 @@ sub node2Types {
 }
 
 
-# Function node2FuncMap from line 241
+# Function node2FuncMap from line 285
 
 sub node2FuncMap {
   my ($aSym) = @_;
@@ -869,17 +1312,17 @@ sub node2FuncMap {
 }
 
 
-# Function node2MainEntry from line 259
+# Function node2MainEntry from line 303
 
 sub node2MainEntry {
   my () = @_;
   
-  return cons(boxString("\n// Main entry point\n"), cons(boxString("globalArgs = [\"fixmeprogname\", ...process.argv.slice(2)];\n"), cons(boxString("globalArgsCount = globalArgs.length;\n"), cons(boxString("start();\n"), undef))));
+  return cons(boxString("\n// Main entry point\n"), cons(boxString("function runQuon(args = [], io = {}) {\n"), cons(boxString("  configureQuonIO(io);\n"), cons(boxString("  globalArgs = [\"fixmeprogname\", ...args];\n"), cons(boxString("  globalArgsCount = globalArgs.length;\n"), cons(boxString("  return start();\n"), cons(boxString("}\n"), cons(boxString("const __quonProgramApi = { runQuon, configureQuonIO, cformat, start };\n"), cons(boxString("if (typeof compileBodyString === \"function\") __quonProgramApi.compileBodyString = compileBodyString;\n"), cons(boxString("if (typeof compileBodySectionString === \"function\") __quonProgramApi.compileBodySectionString = compileBodySectionString;\n"), cons(boxString("if (typeof compileFunctionsString === \"function\") __quonProgramApi.compileFunctionsString = compileFunctionsString;\n"), cons(boxString("if (typeof compileFunctionsSectionString === \"function\") __quonProgramApi.compileFunctionsSectionString = compileFunctionsSectionString;\n"), cons(boxString("if (typeof compileTypesString === \"function\") __quonProgramApi.compileTypesString = compileTypesString;\n"), cons(boxString("if (typeof compileTypesSectionString === \"function\") __quonProgramApi.compileTypesSectionString = compileTypesSectionString;\n"), cons(boxString("if (typeof compileProgramBareString === \"function\") __quonProgramApi.compileProgramBareString = compileProgramBareString;\n"), cons(boxString("if (typeof readBodyFragment === \"function\") __quonProgramApi.readBodyFragment = readBodyFragment;\n"), cons(boxString("if (typeof module !== \"undefined\" && module.exports) module.exports = __quonProgramApi;\n"), cons(boxString("if (typeof globalThis !== \"undefined\") globalThis.QuonProgram = __quonProgramApi;\n"), cons(boxString("if (typeof require === \"function\" && typeof module !== \"undefined\" && require.main === module) {\n"), cons(boxString("  runQuon((typeof process !== \"undefined\" && process.argv) ? process.argv.slice(2) : []);\n"), cons(boxString("}\n"), undef)))))))))))))))))))));
 
 }
 
 
-# Function node2LoadProgram from line 267
+# Function node2LoadProgram from line 328
 
 sub node2LoadProgram {
   my ($filename) = @_;
@@ -903,7 +1346,7 @@ my $replace = undef;
 }
 
 
-# Function node2ProgramTree from line 277
+# Function node2ProgramTree from line 338
 
 sub node2ProgramTree {
   my ($tree) = @_;
@@ -913,7 +1356,7 @@ sub node2ProgramTree {
 }
 
 
-# Function node2Program from line 286
+# Function node2Program from line 347
 
 sub node2Program {
   my ($tree) = @_;
@@ -923,7 +1366,7 @@ sub node2Program {
 }
 
 
-# Function node2CompileString from line 290
+# Function node2CompileString from line 351
 
 sub node2CompileString {
   my ($filename) = @_;
@@ -933,7 +1376,7 @@ sub node2CompileString {
 }
 
 
-# Function node2Compile from line 294
+# Function node2Compile from line 355
 
 sub node2Compile {
   my ($filename) = @_;

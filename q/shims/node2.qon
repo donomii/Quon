@@ -8,7 +8,7 @@
 
 (string getEnv (string key) (declare)
   (body
-    (return (passthrough "process.env[key]"))))
+    (return (passthrough "quonIO.env ? quonIO.env[key] : undefined"))))
 
 (void panic (string s) (declare)
   (body
@@ -16,7 +16,7 @@
 
 (void exit (int status) (declare)
   (body
-    (passthrough "process.exit(status)")))
+    (passthrough "qexit(status)")))
 
 (int sub (int a int b) (declare)
   (body
@@ -80,11 +80,11 @@
 
 (box read_file (string filename) (declare)
   (body
-    (return (passthrough "(() => { try { return boxString(fs.readFileSync(filename, 'utf8')); } catch (e) { return null; } })()"))))
+    (return (passthrough "qreadFile(filename)"))))
 
 (void write_file (string filename string data) (declare)
   (body
-    (passthrough "fs.writeFileSync(filename, data)")))
+    (passthrough "qwriteFile(filename, data)")))
 
 (string getStringArray (int index array strs) (declare)
   (body

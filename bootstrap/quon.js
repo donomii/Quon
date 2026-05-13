@@ -1,5 +1,5 @@
 "use strict";
-const fs = require("fs");
+const fs = (typeof require === "function") ? require("fs") : null;
 let globalArgsCount = 0;
 let globalArgs = [];
 let releaseMode = false;
@@ -7,7 +7,51 @@ let globalTrace = false;
 let globalStepTrace = false;
 let globalStackTrace = null;
 let caller = "";
-let stderr = process.stderr;
+let quonIO = makeDefaultQuonIO();
+let stderr = { write: function(s) { quonIO.error(String(s)); } };
+function makeDefaultQuonIO() {
+  return {
+    write: function(s) {
+      if (typeof process !== "undefined" && process.stdout) process.stdout.write(String(s));
+    },
+    error: function(s) {
+      if (typeof process !== "undefined" && process.stderr) process.stderr.write(String(s));
+      else if (typeof console !== "undefined" && console.error) console.error(String(s));
+    },
+    readFile: null,
+    writeFile: null,
+    exit: null,
+    env: (typeof process !== "undefined" && process.env) ? process.env : {}
+  };
+}
+function configureQuonIO(io) {
+  const defaults = makeDefaultQuonIO();
+  quonIO = Object.assign(defaults, io || {});
+  if (!quonIO.error) quonIO.error = defaults.error;
+  if (!quonIO.write) quonIO.write = defaults.write;
+  return quonIO;
+}
+function qreadFile(filename) {
+  if (quonIO.readFile) {
+    const data = quonIO.readFile(filename);
+    if (data === null || data === undefined) return null;
+    return boxString(String(data));
+  }
+  if (fs) {
+    try { return boxString(fs.readFileSync(filename, "utf8")); } catch (e) { return null; }
+  }
+  return null;
+}
+function qwriteFile(filename, data) {
+  if (quonIO.writeFile) return quonIO.writeFile(filename, data);
+  if (fs) return fs.writeFileSync(filename, data);
+  throw new Error("write-file is not available in this environment");
+}
+function qexit(status) {
+  if (quonIO.exit) return quonIO.exit(status);
+  if (typeof process !== "undefined" && process.exit) return process.exit(status);
+  throw new Error("Quon exit " + status);
+}
 function cformat(fmt, ...args) {
   fmt = String(fmt);
   let out = '';
@@ -35,7 +79,7 @@ function cformat(fmt, ...args) {
   }
   return out;
 }
-function printf(fmt, ...args) { process.stdout.write(cformat(fmt, ...args)); }
+function printf(fmt, ...args) { quonIO.write(cformat(fmt, ...args)); }
 function fprintf(stream, fmt, ...args) { stream.write(cformat(fmt, ...args)); }
 
 
@@ -107,6 +151,373 @@ function xor(a, b) {
 function lessThan(a, b) {
   
   return andBool(notBool(equal(a, b)), notBool(greaterthan(a, b)));
+
+}
+
+
+function parserValidateBodyForm(bodyForm, filename) {
+  
+  if (isNil(bodyForm)) {
+    parserPanicAt(filename, null, "empty body fragment");
+
+  } else {
+  };
+
+  if (isList(bodyForm)) {
+  } else {
+    parserPanicAtNode(filename, bodyForm, "body fragment must be a list");
+
+  };
+
+  if (parserListStartsWith(bodyForm, "body")) {
+    parserValidateBody(cdr(bodyForm), filename);
+
+  } else {
+    parserPanicAtNode(filename, bodyForm, "expected body fragment");
+
+  };
+
+}
+
+
+function readBodySexpr(aStr, filename) {
+    let tokens = null;
+  let as = null;
+  let bodyForm = null;
+
+  bodyForm = readSingleSexpr(aStr, filename);
+
+  parserValidateBodyForm(bodyForm, filename);
+
+  return bodyForm;
+
+}
+
+
+function readSingleSexpr(aStr, filename) {
+    let tokens = null;
+  let as = null;
+
+  tokens = emptyList();
+
+  tokens = filterTokens(filterVoid(scan(aStr, 0, 1, 0, 0, filename)));
+
+  parserValidateParens(tokens, null, filename);
+
+  as = sexprTree(tokens);
+
+  parserValidateRoot(as, filename);
+
+  return car(as);
+
+}
+
+
+function readBodyFragment(source, filename) {
+    let wrapped = "";
+
+  wrapped = stringConcatenate("(body\n", stringConcatenate(source, "\n)"));
+
+  return readBodySexpr(wrapped, filename);
+
+}
+
+
+function readFunctionsSexpr(aStr, filename) {
+    let section = null;
+
+  section = readSingleSexpr(aStr, filename);
+
+  parserValidateSection(section, "functions", filename);
+
+  parserValidateFunctions(cdr(section), filename);
+
+  return section;
+
+}
+
+
+function readFunctionsFragment(source, filename) {
+    let wrapped = "";
+
+  wrapped = stringConcatenate("(functions\n", stringConcatenate(source, "\n)"));
+
+  return readFunctionsSexpr(wrapped, filename);
+
+}
+
+
+function readTypesSexpr(aStr, filename) {
+    let section = null;
+
+  section = readSingleSexpr(aStr, filename);
+
+  parserValidateSection(section, "types", filename);
+
+  parserRejectFunctionDefinitions(cdr(section), filename);
+
+  return section;
+
+}
+
+
+function readTypesFragment(source, filename) {
+    let wrapped = "";
+
+  wrapped = stringConcatenate("(types\n", stringConcatenate(source, "\n)"));
+
+  return readTypesSexpr(wrapped, filename);
+
+}
+
+
+function bodyTreeToString(tree) {
+  
+  return ListToString(flatten(tree), 0, true, false);
+
+}
+
+
+function compileBodySectionString(source, filename, target) {
+    let bodyForm = null;
+
+  bodyForm = readBodySexpr(source, filename);
+
+  return compileBodyForm(bodyForm, target);
+
+}
+
+
+function compileBodyString(source, filename, target) {
+    let bodyForm = null;
+
+  bodyForm = readBodyFragment(source, filename);
+
+  return compileBodyForm(bodyForm, target);
+
+}
+
+
+function compileBodyForm(bodyForm, target) {
+    let variables = null;
+
+  if (equalString(target, "node2")) {
+    return bodyTreeToString(node2Body(cdr(bodyForm), 0, "snippet"));
+
+  } else {
+  };
+
+  if (equalString(target, "perl")) {
+    variables = getGlobalVariables();
+
+    return bodyTreeToString(perlBody(cdr(bodyForm), 0, variables));
+
+  } else {
+  };
+
+  if (equalString(target, "java")) {
+    return bodyTreeToString(javaBody(cdr(bodyForm), 0));
+
+  } else {
+  };
+
+  if (equalString(target, "haskell")) {
+    variables = haskellGlobalVariables();
+
+    return bodyTreeToString(haskellBody(cdr(bodyForm), 0, variables));
+
+  } else {
+  };
+
+  if (orBool(equalString(target, "ansi3"), equalString(target, "ansi3-release"))) {
+    releaseMode = true;
+
+    return bodyTreeToString(ansi3Body(cdr(bodyForm), 0, "snippet"));
+
+  } else {
+  };
+
+  panic(stringConcatenate("unknown body target: ", target));
+
+  return "";
+
+}
+
+
+function compileFunctionsSectionString(source, filename, target) {
+    let section = null;
+
+  section = readFunctionsSexpr(source, filename);
+
+  return compileFunctionsSection(section, target);
+
+}
+
+
+function compileFunctionsString(source, filename, target) {
+    let section = null;
+
+  section = readFunctionsFragment(source, filename);
+
+  return compileFunctionsSection(section, target);
+
+}
+
+
+function compileFunctionsSection(section, target) {
+  
+  if (equalString(target, "node2")) {
+    return bodyTreeToString(node2Functions(cdr(section)));
+
+  } else {
+  };
+
+  if (equalString(target, "perl")) {
+    return bodyTreeToString(perlFunctions(cdr(section)));
+
+  } else {
+  };
+
+  if (equalString(target, "java")) {
+    return bodyTreeToString(javaFunctions(cdr(section)));
+
+  } else {
+  };
+
+  if (equalString(target, "haskell")) {
+    return bodyTreeToString(haskellFunctions(cdr(section)));
+
+  } else {
+  };
+
+  if (orBool(equalString(target, "ansi3"), equalString(target, "ansi3-release"))) {
+    releaseMode = true;
+
+    return bodyTreeToString(ansi3Functions(cdr(section)));
+
+  } else {
+  };
+
+  panic(stringConcatenate("unknown functions target: ", target));
+
+  return "";
+
+}
+
+
+function compileTypesSectionString(source, filename, target) {
+    let section = null;
+
+  section = readTypesSexpr(source, filename);
+
+  return compileTypesSection(section, target);
+
+}
+
+
+function compileTypesString(source, filename, target) {
+    let section = null;
+
+  section = readTypesFragment(source, filename);
+
+  return compileTypesSection(section, target);
+
+}
+
+
+function compileTypesSection(section, target) {
+  
+  if (equalString(target, "node2")) {
+    return bodyTreeToString(node2Types(cdr(section)));
+
+  } else {
+  };
+
+  if (equalString(target, "perl")) {
+    return bodyTreeToString(perlTypes(cdr(section)));
+
+  } else {
+  };
+
+  if (equalString(target, "java")) {
+    return bodyTreeToString(javaTypes(cdr(section)));
+
+  } else {
+  };
+
+  if (equalString(target, "haskell")) {
+    return bodyTreeToString(haskellTypes(cdr(section)));
+
+  } else {
+  };
+
+  if (orBool(equalString(target, "ansi3"), equalString(target, "ansi3-release"))) {
+    return bodyTreeToString(ansi3Types(cdr(section)));
+
+  } else {
+  };
+
+  panic(stringConcatenate("unknown types target: ", target));
+
+  return "";
+
+}
+
+
+function compileProgramBareString(source, filename, target) {
+    let tree = null;
+
+  tree = readSexpr(source, filename);
+
+  tree = macrowalk(tree);
+
+  if (equalString(target, "java")) {
+    tree = javaApplyTypeAliases(tree, cdr(getTypes(tree)));
+
+  } else {
+  };
+
+  if (equalString(target, "haskell")) {
+    tree = haskellApplyTypeAliases(tree, cdr(getTypes(tree)));
+
+  } else {
+  };
+
+  if (equalString(target, "node2")) {
+    return bodyTreeToString(cons(id(node2Types(getTypes(tree))), cons(id(node2Functions(getFunctions(tree))), null)));
+
+  } else {
+  };
+
+  if (equalString(target, "perl")) {
+    return bodyTreeToString(cons(id(perlTypes(getTypes(tree))), cons(id(perlFunctions(getFunctions(tree))), null)));
+
+  } else {
+  };
+
+  if (equalString(target, "java")) {
+    return bodyTreeToString(cons(id(javaTypes(getTypes(tree))), cons(id(javaFunctions(getFunctions(tree))), null)));
+
+  } else {
+  };
+
+  if (equalString(target, "haskell")) {
+    return bodyTreeToString(cons(id(haskellTypes(getTypes(tree))), cons(id(haskellFunctions(getFunctions(tree))), null)));
+
+  } else {
+  };
+
+  if (orBool(equalString(target, "ansi3"), equalString(target, "ansi3-release"))) {
+    releaseMode = true;
+
+    return bodyTreeToString(cons(id(ansi3Types(getTypes(tree))), cons(id(ansi3Functions(getFunctions(tree))), null)));
+
+  } else {
+  };
+
+  panic(stringConcatenate("unknown program target: ", target));
+
+  return "";
 
 }
 
@@ -354,7 +765,7 @@ function node2Functions(tree) {
 
 function node2Includes(nodes) {
   
-  return cons(boxString("\"use strict\";\n"), cons(boxString("const fs = require(\"fs\");\n"), cons(boxString("let globalArgsCount = 0;\n"), cons(boxString("let globalArgs = [];\n"), cons(boxString("let releaseMode = false;\n"), cons(boxString("let globalTrace = false;\n"), cons(boxString("let globalStepTrace = false;\n"), cons(boxString("let globalStackTrace = null;\n"), cons(boxString("let caller = \"\";\n"), cons(boxString("let stderr = process.stderr;\n"), cons(boxString("function cformat(fmt, ...args) {\n"), cons(boxString("  fmt = String(fmt);\n"), cons(boxString("  let out = '';\n"), cons(boxString("  let argi = 0;\n"), cons(boxString("  for (let pos = 0; pos < fmt.length; pos++) {\n"), cons(boxString("    let ch = fmt[pos];\n"), cons(boxString("    if (ch !== '%') { out += ch; continue; }\n"), cons(boxString("    if (fmt[pos + 1] === '%') { out += '%'; pos++; continue; }\n"), cons(boxString("    let precision = null;\n"), cons(boxString("    if (fmt[pos + 1] === '.') {\n"), cons(boxString("      let end = pos + 2;\n"), cons(boxString("      while (end < fmt.length && fmt[end] >= '0' && fmt[end] <= '9') end++;\n"), cons(boxString("      precision = Number(fmt.slice(pos + 2, end));\n"), cons(boxString("      pos = end - 1;\n"), cons(boxString("    }\n"), cons(boxString("    let spec = fmt[pos + 1];\n"), cons(boxString("    if (spec === 's' || spec === 'd') {\n"), cons(boxString("      let value = String(args[argi++]);\n"), cons(boxString("      if (precision !== null) value = value.slice(0, precision);\n"), cons(boxString("      out += value;\n"), cons(boxString("      pos++;\n"), cons(boxString("    } else {\n"), cons(boxString("      out += ch;\n"), cons(boxString("    }\n"), cons(boxString("  }\n"), cons(boxString("  return out;\n"), cons(boxString("}\n"), cons(boxString("function printf(fmt, ...args) { process.stdout.write(cformat(fmt, ...args)); }\n"), cons(boxString("function fprintf(stream, fmt, ...args) { stream.write(cformat(fmt, ...args)); }\n"), null)))))))))))))))))))))))))))))))))))))));
+  return cons(boxString("\"use strict\";\n"), cons(boxString("const fs = (typeof require === \"function\") ? require(\"fs\") : null;\n"), cons(boxString("let globalArgsCount = 0;\n"), cons(boxString("let globalArgs = [];\n"), cons(boxString("let releaseMode = false;\n"), cons(boxString("let globalTrace = false;\n"), cons(boxString("let globalStepTrace = false;\n"), cons(boxString("let globalStackTrace = null;\n"), cons(boxString("let caller = \"\";\n"), cons(boxString("let quonIO = makeDefaultQuonIO();\n"), cons(boxString("let stderr = { write: function(s) { quonIO.error(String(s)); } };\n"), cons(boxString("function makeDefaultQuonIO() {\n"), cons(boxString("  return {\n"), cons(boxString("    write: function(s) {\n"), cons(boxString("      if (typeof process !== \"undefined\" && process.stdout) process.stdout.write(String(s));\n"), cons(boxString("    },\n"), cons(boxString("    error: function(s) {\n"), cons(boxString("      if (typeof process !== \"undefined\" && process.stderr) process.stderr.write(String(s));\n"), cons(boxString("      else if (typeof console !== \"undefined\" && console.error) console.error(String(s));\n"), cons(boxString("    },\n"), cons(boxString("    readFile: null,\n"), cons(boxString("    writeFile: null,\n"), cons(boxString("    exit: null,\n"), cons(boxString("    env: (typeof process !== \"undefined\" && process.env) ? process.env : {}\n"), cons(boxString("  };\n"), cons(boxString("}\n"), cons(boxString("function configureQuonIO(io) {\n"), cons(boxString("  const defaults = makeDefaultQuonIO();\n"), cons(boxString("  quonIO = Object.assign(defaults, io || {});\n"), cons(boxString("  if (!quonIO.error) quonIO.error = defaults.error;\n"), cons(boxString("  if (!quonIO.write) quonIO.write = defaults.write;\n"), cons(boxString("  return quonIO;\n"), cons(boxString("}\n"), cons(boxString("function qreadFile(filename) {\n"), cons(boxString("  if (quonIO.readFile) {\n"), cons(boxString("    const data = quonIO.readFile(filename);\n"), cons(boxString("    if (data === null || data === undefined) return null;\n"), cons(boxString("    return boxString(String(data));\n"), cons(boxString("  }\n"), cons(boxString("  if (fs) {\n"), cons(boxString("    try { return boxString(fs.readFileSync(filename, \"utf8\")); } catch (e) { return null; }\n"), cons(boxString("  }\n"), cons(boxString("  return null;\n"), cons(boxString("}\n"), cons(boxString("function qwriteFile(filename, data) {\n"), cons(boxString("  if (quonIO.writeFile) return quonIO.writeFile(filename, data);\n"), cons(boxString("  if (fs) return fs.writeFileSync(filename, data);\n"), cons(boxString("  throw new Error(\"write-file is not available in this environment\");\n"), cons(boxString("}\n"), cons(boxString("function qexit(status) {\n"), cons(boxString("  if (quonIO.exit) return quonIO.exit(status);\n"), cons(boxString("  if (typeof process !== \"undefined\" && process.exit) return process.exit(status);\n"), cons(boxString("  throw new Error(\"Quon exit \" + status);\n"), cons(boxString("}\n"), cons(boxString("function cformat(fmt, ...args) {\n"), cons(boxString("  fmt = String(fmt);\n"), cons(boxString("  let out = '';\n"), cons(boxString("  let argi = 0;\n"), cons(boxString("  for (let pos = 0; pos < fmt.length; pos++) {\n"), cons(boxString("    let ch = fmt[pos];\n"), cons(boxString("    if (ch !== '%') { out += ch; continue; }\n"), cons(boxString("    if (fmt[pos + 1] === '%') { out += '%'; pos++; continue; }\n"), cons(boxString("    let precision = null;\n"), cons(boxString("    if (fmt[pos + 1] === '.') {\n"), cons(boxString("      let end = pos + 2;\n"), cons(boxString("      while (end < fmt.length && fmt[end] >= '0' && fmt[end] <= '9') end++;\n"), cons(boxString("      precision = Number(fmt.slice(pos + 2, end));\n"), cons(boxString("      pos = end - 1;\n"), cons(boxString("    }\n"), cons(boxString("    let spec = fmt[pos + 1];\n"), cons(boxString("    if (spec === 's' || spec === 'd') {\n"), cons(boxString("      let value = String(args[argi++]);\n"), cons(boxString("      if (precision !== null) value = value.slice(0, precision);\n"), cons(boxString("      out += value;\n"), cons(boxString("      pos++;\n"), cons(boxString("    } else {\n"), cons(boxString("      out += ch;\n"), cons(boxString("    }\n"), cons(boxString("  }\n"), cons(boxString("  return out;\n"), cons(boxString("}\n"), cons(boxString("function printf(fmt, ...args) { quonIO.write(cformat(fmt, ...args)); }\n"), cons(boxString("function fprintf(stream, fmt, ...args) { stream.write(cformat(fmt, ...args)); }\n"), null)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))));
 
 }
 
@@ -390,7 +801,7 @@ function node2FuncMap(aSym) {
 
 function node2MainEntry() {
   
-  return cons(boxString("\n// Main entry point\n"), cons(boxString("globalArgs = [\"fixmeprogname\", ...process.argv.slice(2)];\n"), cons(boxString("globalArgsCount = globalArgs.length;\n"), cons(boxString("start();\n"), null))));
+  return cons(boxString("\n// Main entry point\n"), cons(boxString("function runQuon(args = [], io = {}) {\n"), cons(boxString("  configureQuonIO(io);\n"), cons(boxString("  globalArgs = [\"fixmeprogname\", ...args];\n"), cons(boxString("  globalArgsCount = globalArgs.length;\n"), cons(boxString("  return start();\n"), cons(boxString("}\n"), cons(boxString("const __quonProgramApi = { runQuon, configureQuonIO, cformat, start };\n"), cons(boxString("if (typeof compileBodyString === \"function\") __quonProgramApi.compileBodyString = compileBodyString;\n"), cons(boxString("if (typeof compileBodySectionString === \"function\") __quonProgramApi.compileBodySectionString = compileBodySectionString;\n"), cons(boxString("if (typeof compileFunctionsString === \"function\") __quonProgramApi.compileFunctionsString = compileFunctionsString;\n"), cons(boxString("if (typeof compileFunctionsSectionString === \"function\") __quonProgramApi.compileFunctionsSectionString = compileFunctionsSectionString;\n"), cons(boxString("if (typeof compileTypesString === \"function\") __quonProgramApi.compileTypesString = compileTypesString;\n"), cons(boxString("if (typeof compileTypesSectionString === \"function\") __quonProgramApi.compileTypesSectionString = compileTypesSectionString;\n"), cons(boxString("if (typeof compileProgramBareString === \"function\") __quonProgramApi.compileProgramBareString = compileProgramBareString;\n"), cons(boxString("if (typeof readBodyFragment === \"function\") __quonProgramApi.readBodyFragment = readBodyFragment;\n"), cons(boxString("if (typeof module !== \"undefined\" && module.exports) module.exports = __quonProgramApi;\n"), cons(boxString("if (typeof globalThis !== \"undefined\") globalThis.QuonProgram = __quonProgramApi;\n"), cons(boxString("if (typeof require === \"function\" && typeof module !== \"undefined\" && require.main === module) {\n"), cons(boxString("  runQuon((typeof process !== \"undefined\" && process.argv) ? process.argv.slice(2) : []);\n"), cons(boxString("}\n"), null)))))))))))))))))))));
 
 }
 
@@ -7122,7 +7533,7 @@ function isNil(a) {
 
 function getEnv(key) {
   
-  return process.env[key];
+  return quonIO.env ? quonIO.env[key] : undefined;
 
 }
 
@@ -7136,7 +7547,7 @@ function panic(s) {
 
 function exit(status) {
   
-  process.exit(status);
+  qexit(status);
 
 }
 
@@ -7248,14 +7659,14 @@ function floatToString(a) {
 
 function read_file(filename) {
   
-  return (() => { try { return boxString(fs.readFileSync(filename, 'utf8')); } catch (e) { return null; } })();
+  return qreadFile(filename);
 
 }
 
 
 function write_file(filename, data) {
   
-  fs.writeFileSync(filename, data);
+  qwriteFile(filename, data);
 
 }
 
@@ -7638,8 +8049,25 @@ function start() {
 }
 
 // Main entry point
-globalArgs = ["fixmeprogname", ...process.argv.slice(2)];
-globalArgsCount = globalArgs.length;
-start();
+function runQuon(args = [], io = {}) {
+  configureQuonIO(io);
+  globalArgs = ["fixmeprogname", ...args];
+  globalArgsCount = globalArgs.length;
+  return start();
+}
+const __quonProgramApi = { runQuon, configureQuonIO, cformat, start };
+if (typeof compileBodyString === "function") __quonProgramApi.compileBodyString = compileBodyString;
+if (typeof compileBodySectionString === "function") __quonProgramApi.compileBodySectionString = compileBodySectionString;
+if (typeof compileFunctionsString === "function") __quonProgramApi.compileFunctionsString = compileFunctionsString;
+if (typeof compileFunctionsSectionString === "function") __quonProgramApi.compileFunctionsSectionString = compileFunctionsSectionString;
+if (typeof compileTypesString === "function") __quonProgramApi.compileTypesString = compileTypesString;
+if (typeof compileTypesSectionString === "function") __quonProgramApi.compileTypesSectionString = compileTypesSectionString;
+if (typeof compileProgramBareString === "function") __quonProgramApi.compileProgramBareString = compileProgramBareString;
+if (typeof readBodyFragment === "function") __quonProgramApi.readBodyFragment = readBodyFragment;
+if (typeof module !== "undefined" && module.exports) module.exports = __quonProgramApi;
+if (typeof globalThis !== "undefined") globalThis.QuonProgram = __quonProgramApi;
+if (typeof require === "function" && typeof module !== "undefined" && require.main === module) {
+  runQuon((typeof process !== "undefined" && process.argv) ? process.argv.slice(2) : []);
+}
 
 

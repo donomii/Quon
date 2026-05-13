@@ -1,5 +1,5 @@
 ;  compiler.qon - the compiler for quon
-((includes q/base.qon q/compiler.qon q/macros.qon q/lists.qon q/newparser.qon q/perl.qon q/ansi3.qon q/java.qon q/haskell.qon q/tests.qon q/node2.qon q/boolean.qon)
+((includes q/base.qon q/compiler.qon q/macros.qon q/lists.qon q/newparser.qon q/perl.qon q/ansi3.qon q/java.qon q/haskell.qon q/tests.qon q/node2.qon q/snippets.qon q/boolean.qon)
  (types)
  (functions
 

@@ -279,6 +279,925 @@ lessThan a_arg b_arg = evalContT $ callCC $ \qreturn -> do
   qreturn hret
   pure False
 
+parserValidateBodyForm :: Maybe Box -> String -> IO (())
+parserValidateBodyForm bodyForm_arg filename_arg = evalContT $ callCC $ \qreturn -> do
+  bodyForm <- liftIO (newIORef bodyForm_arg)
+  filename <- liftIO (newIORef filename_arg)
+  hcond <- do
+    arg0 <- liftIO (readIORef bodyForm)
+    liftIO (isNil arg0)
+  if hcond
+    then do
+      _ <- do
+        arg0 <- liftIO (readIORef filename)
+        arg1 <- pure Nothing
+        arg2 <- pure "empty body fragment"
+        liftIO (parserPanicAt arg0 arg1 arg2)
+      pure ()
+    else do
+      pure ()
+  hcond <- do
+    arg0 <- liftIO (readIORef bodyForm)
+    liftIO (isList arg0)
+  if hcond
+    then do
+      pure ()
+    else do
+      _ <- do
+        arg0 <- liftIO (readIORef filename)
+        arg1 <- liftIO (readIORef bodyForm)
+        arg2 <- pure "body fragment must be a list"
+        liftIO (parserPanicAtNode arg0 arg1 arg2)
+      pure ()
+  hcond <- do
+    arg0 <- liftIO (readIORef bodyForm)
+    arg1 <- pure "body"
+    liftIO (parserListStartsWith arg0 arg1)
+  if hcond
+    then do
+      _ <- do
+        arg0 <- do
+          arg0 <- liftIO (readIORef bodyForm)
+          liftIO (cdr arg0)
+        arg1 <- liftIO (readIORef filename)
+        liftIO (parserValidateBody arg0 arg1)
+      pure ()
+    else do
+      _ <- do
+        arg0 <- liftIO (readIORef filename)
+        arg1 <- liftIO (readIORef bodyForm)
+        arg2 <- pure "expected body fragment"
+        liftIO (parserPanicAtNode arg0 arg1 arg2)
+      pure ()
+  pure ()
+
+readBodySexpr :: String -> String -> IO (Maybe Box)
+readBodySexpr aStr_arg filename_arg = evalContT $ callCC $ \qreturn -> do
+  aStr <- liftIO (newIORef aStr_arg)
+  filename <- liftIO (newIORef filename_arg)
+  qinit <- pure Nothing
+  tokens <- liftIO (newIORef qinit)
+  qinit <- pure Nothing
+  as <- liftIO (newIORef qinit)
+  qinit <- pure Nothing
+  bodyForm <- liftIO (newIORef qinit)
+  qset <- do
+    arg0 <- liftIO (readIORef aStr)
+    arg1 <- liftIO (readIORef filename)
+    liftIO (readSingleSexpr arg0 arg1)
+  liftIO (writeIORef bodyForm qset)
+  _ <- do
+    arg0 <- liftIO (readIORef bodyForm)
+    arg1 <- liftIO (readIORef filename)
+    liftIO (parserValidateBodyForm arg0 arg1)
+  hret <- liftIO (readIORef bodyForm)
+  qreturn hret
+  pure Nothing
+
+readSingleSexpr :: String -> String -> IO (Maybe Box)
+readSingleSexpr aStr_arg filename_arg = evalContT $ callCC $ \qreturn -> do
+  aStr <- liftIO (newIORef aStr_arg)
+  filename <- liftIO (newIORef filename_arg)
+  qinit <- pure Nothing
+  tokens <- liftIO (newIORef qinit)
+  qinit <- pure Nothing
+  as <- liftIO (newIORef qinit)
+  qset <- liftIO emptyList
+  liftIO (writeIORef tokens qset)
+  qset <- do
+    arg0 <- do
+      arg0 <- do
+        arg0 <- liftIO (readIORef aStr)
+        arg1 <- pure 0
+        arg2 <- pure 1
+        arg3 <- pure 0
+        arg4 <- pure 0
+        arg5 <- liftIO (readIORef filename)
+        liftIO (scan arg0 arg1 arg2 arg3 arg4 arg5)
+      liftIO (filterVoid arg0)
+    liftIO (filterTokens arg0)
+  liftIO (writeIORef tokens qset)
+  _ <- do
+    arg0 <- liftIO (readIORef tokens)
+    arg1 <- pure Nothing
+    arg2 <- liftIO (readIORef filename)
+    liftIO (parserValidateParens arg0 arg1 arg2)
+  qset <- do
+    arg0 <- liftIO (readIORef tokens)
+    liftIO (sexprTree arg0)
+  liftIO (writeIORef as qset)
+  _ <- do
+    arg0 <- liftIO (readIORef as)
+    arg1 <- liftIO (readIORef filename)
+    liftIO (parserValidateRoot arg0 arg1)
+  hret <- do
+    arg0 <- liftIO (readIORef as)
+    liftIO (car arg0)
+  qreturn hret
+  pure Nothing
+
+readBodyFragment :: String -> String -> IO (Maybe Box)
+readBodyFragment source_arg filename_arg = evalContT $ callCC $ \qreturn -> do
+  source <- liftIO (newIORef source_arg)
+  filename <- liftIO (newIORef filename_arg)
+  qinit <- pure ""
+  wrapped <- liftIO (newIORef qinit)
+  qset <- do
+    arg0 <- pure "(body\n"
+    arg1 <- do
+      arg0 <- liftIO (readIORef source)
+      arg1 <- pure "\n)"
+      liftIO (stringConcatenate arg0 arg1)
+    liftIO (stringConcatenate arg0 arg1)
+  liftIO (writeIORef wrapped qset)
+  hret <- do
+    arg0 <- liftIO (readIORef wrapped)
+    arg1 <- liftIO (readIORef filename)
+    liftIO (readBodySexpr arg0 arg1)
+  qreturn hret
+  pure Nothing
+
+readFunctionsSexpr :: String -> String -> IO (Maybe Box)
+readFunctionsSexpr aStr_arg filename_arg = evalContT $ callCC $ \qreturn -> do
+  aStr <- liftIO (newIORef aStr_arg)
+  filename <- liftIO (newIORef filename_arg)
+  qinit <- pure Nothing
+  section <- liftIO (newIORef qinit)
+  qset <- do
+    arg0 <- liftIO (readIORef aStr)
+    arg1 <- liftIO (readIORef filename)
+    liftIO (readSingleSexpr arg0 arg1)
+  liftIO (writeIORef section qset)
+  _ <- do
+    arg0 <- liftIO (readIORef section)
+    arg1 <- pure "functions"
+    arg2 <- liftIO (readIORef filename)
+    liftIO (parserValidateSection arg0 arg1 arg2)
+  _ <- do
+    arg0 <- do
+      arg0 <- liftIO (readIORef section)
+      liftIO (cdr arg0)
+    arg1 <- liftIO (readIORef filename)
+    liftIO (parserValidateFunctions arg0 arg1)
+  hret <- liftIO (readIORef section)
+  qreturn hret
+  pure Nothing
+
+readFunctionsFragment :: String -> String -> IO (Maybe Box)
+readFunctionsFragment source_arg filename_arg = evalContT $ callCC $ \qreturn -> do
+  source <- liftIO (newIORef source_arg)
+  filename <- liftIO (newIORef filename_arg)
+  qinit <- pure ""
+  wrapped <- liftIO (newIORef qinit)
+  qset <- do
+    arg0 <- pure "(functions\n"
+    arg1 <- do
+      arg0 <- liftIO (readIORef source)
+      arg1 <- pure "\n)"
+      liftIO (stringConcatenate arg0 arg1)
+    liftIO (stringConcatenate arg0 arg1)
+  liftIO (writeIORef wrapped qset)
+  hret <- do
+    arg0 <- liftIO (readIORef wrapped)
+    arg1 <- liftIO (readIORef filename)
+    liftIO (readFunctionsSexpr arg0 arg1)
+  qreturn hret
+  pure Nothing
+
+readTypesSexpr :: String -> String -> IO (Maybe Box)
+readTypesSexpr aStr_arg filename_arg = evalContT $ callCC $ \qreturn -> do
+  aStr <- liftIO (newIORef aStr_arg)
+  filename <- liftIO (newIORef filename_arg)
+  qinit <- pure Nothing
+  section <- liftIO (newIORef qinit)
+  qset <- do
+    arg0 <- liftIO (readIORef aStr)
+    arg1 <- liftIO (readIORef filename)
+    liftIO (readSingleSexpr arg0 arg1)
+  liftIO (writeIORef section qset)
+  _ <- do
+    arg0 <- liftIO (readIORef section)
+    arg1 <- pure "types"
+    arg2 <- liftIO (readIORef filename)
+    liftIO (parserValidateSection arg0 arg1 arg2)
+  _ <- do
+    arg0 <- do
+      arg0 <- liftIO (readIORef section)
+      liftIO (cdr arg0)
+    arg1 <- liftIO (readIORef filename)
+    liftIO (parserRejectFunctionDefinitions arg0 arg1)
+  hret <- liftIO (readIORef section)
+  qreturn hret
+  pure Nothing
+
+readTypesFragment :: String -> String -> IO (Maybe Box)
+readTypesFragment source_arg filename_arg = evalContT $ callCC $ \qreturn -> do
+  source <- liftIO (newIORef source_arg)
+  filename <- liftIO (newIORef filename_arg)
+  qinit <- pure ""
+  wrapped <- liftIO (newIORef qinit)
+  qset <- do
+    arg0 <- pure "(types\n"
+    arg1 <- do
+      arg0 <- liftIO (readIORef source)
+      arg1 <- pure "\n)"
+      liftIO (stringConcatenate arg0 arg1)
+    liftIO (stringConcatenate arg0 arg1)
+  liftIO (writeIORef wrapped qset)
+  hret <- do
+    arg0 <- liftIO (readIORef wrapped)
+    arg1 <- liftIO (readIORef filename)
+    liftIO (readTypesSexpr arg0 arg1)
+  qreturn hret
+  pure Nothing
+
+bodyTreeToString :: Maybe Box -> IO (String)
+bodyTreeToString tree_arg = evalContT $ callCC $ \qreturn -> do
+  tree <- liftIO (newIORef tree_arg)
+  hret <- do
+    arg0 <- do
+      arg0 <- liftIO (readIORef tree)
+      liftIO (flatten arg0)
+    arg1 <- pure 0
+    arg2 <- pure True
+    arg3 <- pure False
+    liftIO (listToString arg0 arg1 arg2 arg3)
+  qreturn hret
+  pure ""
+
+compileBodySectionString :: String -> String -> String -> IO (String)
+compileBodySectionString source_arg filename_arg target_arg = evalContT $ callCC $ \qreturn -> do
+  source <- liftIO (newIORef source_arg)
+  filename <- liftIO (newIORef filename_arg)
+  target <- liftIO (newIORef target_arg)
+  qinit <- pure Nothing
+  bodyForm <- liftIO (newIORef qinit)
+  qset <- do
+    arg0 <- liftIO (readIORef source)
+    arg1 <- liftIO (readIORef filename)
+    liftIO (readBodySexpr arg0 arg1)
+  liftIO (writeIORef bodyForm qset)
+  hret <- do
+    arg0 <- liftIO (readIORef bodyForm)
+    arg1 <- liftIO (readIORef target)
+    liftIO (compileBodyForm arg0 arg1)
+  qreturn hret
+  pure ""
+
+compileBodyString :: String -> String -> String -> IO (String)
+compileBodyString source_arg filename_arg target_arg = evalContT $ callCC $ \qreturn -> do
+  source <- liftIO (newIORef source_arg)
+  filename <- liftIO (newIORef filename_arg)
+  target <- liftIO (newIORef target_arg)
+  qinit <- pure Nothing
+  bodyForm <- liftIO (newIORef qinit)
+  qset <- do
+    arg0 <- liftIO (readIORef source)
+    arg1 <- liftIO (readIORef filename)
+    liftIO (readBodyFragment arg0 arg1)
+  liftIO (writeIORef bodyForm qset)
+  hret <- do
+    arg0 <- liftIO (readIORef bodyForm)
+    arg1 <- liftIO (readIORef target)
+    liftIO (compileBodyForm arg0 arg1)
+  qreturn hret
+  pure ""
+
+compileBodyForm :: Maybe Box -> String -> IO (String)
+compileBodyForm bodyForm_arg target_arg = evalContT $ callCC $ \qreturn -> do
+  bodyForm <- liftIO (newIORef bodyForm_arg)
+  target <- liftIO (newIORef target_arg)
+  qinit <- pure Nothing
+  variables <- liftIO (newIORef qinit)
+  hcond <- do
+    arg0 <- liftIO (readIORef target)
+    arg1 <- pure "node2"
+    liftIO (equalString arg0 arg1)
+  if hcond
+    then do
+      hret <- do
+        arg0 <- do
+          arg0 <- do
+            arg0 <- liftIO (readIORef bodyForm)
+            liftIO (cdr arg0)
+          arg1 <- pure 0
+          arg2 <- pure "snippet"
+          liftIO (node2Body arg0 arg1 arg2)
+        liftIO (bodyTreeToString arg0)
+      qreturn hret
+      pure ()
+    else do
+      pure ()
+  hcond <- do
+    arg0 <- liftIO (readIORef target)
+    arg1 <- pure "perl"
+    liftIO (equalString arg0 arg1)
+  if hcond
+    then do
+      qset <- liftIO getGlobalVariables
+      liftIO (writeIORef variables qset)
+      hret <- do
+        arg0 <- do
+          arg0 <- do
+            arg0 <- liftIO (readIORef bodyForm)
+            liftIO (cdr arg0)
+          arg1 <- pure 0
+          arg2 <- liftIO (readIORef variables)
+          liftIO (perlBody arg0 arg1 arg2)
+        liftIO (bodyTreeToString arg0)
+      qreturn hret
+      pure ()
+    else do
+      pure ()
+  hcond <- do
+    arg0 <- liftIO (readIORef target)
+    arg1 <- pure "java"
+    liftIO (equalString arg0 arg1)
+  if hcond
+    then do
+      hret <- do
+        arg0 <- do
+          arg0 <- do
+            arg0 <- liftIO (readIORef bodyForm)
+            liftIO (cdr arg0)
+          arg1 <- pure 0
+          liftIO (javaBody arg0 arg1)
+        liftIO (bodyTreeToString arg0)
+      qreturn hret
+      pure ()
+    else do
+      pure ()
+  hcond <- do
+    arg0 <- liftIO (readIORef target)
+    arg1 <- pure "haskell"
+    liftIO (equalString arg0 arg1)
+  if hcond
+    then do
+      qset <- liftIO haskellGlobalVariables
+      liftIO (writeIORef variables qset)
+      hret <- do
+        arg0 <- do
+          arg0 <- do
+            arg0 <- liftIO (readIORef bodyForm)
+            liftIO (cdr arg0)
+          arg1 <- pure 0
+          arg2 <- liftIO (readIORef variables)
+          liftIO (haskellBody arg0 arg1 arg2)
+        liftIO (bodyTreeToString arg0)
+      qreturn hret
+      pure ()
+    else do
+      pure ()
+  hcond <- do
+    arg0 <- do
+      arg0 <- liftIO (readIORef target)
+      arg1 <- pure "ansi3"
+      liftIO (equalString arg0 arg1)
+    arg1 <- do
+      arg0 <- liftIO (readIORef target)
+      arg1 <- pure "ansi3-release"
+      liftIO (equalString arg0 arg1)
+    liftIO (orBool arg0 arg1)
+  if hcond
+    then do
+      qset <- pure True
+      liftIO (writeIORef releaseMode qset)
+      hret <- do
+        arg0 <- do
+          arg0 <- do
+            arg0 <- liftIO (readIORef bodyForm)
+            liftIO (cdr arg0)
+          arg1 <- pure 0
+          arg2 <- pure "snippet"
+          liftIO (ansi3Body arg0 arg1 arg2)
+        liftIO (bodyTreeToString arg0)
+      qreturn hret
+      pure ()
+    else do
+      pure ()
+  _ <- do
+    arg0 <- do
+      arg0 <- pure "unknown body target: "
+      arg1 <- liftIO (readIORef target)
+      liftIO (stringConcatenate arg0 arg1)
+    liftIO (panic arg0)
+  hret <- pure ""
+  qreturn hret
+  pure ""
+
+compileFunctionsSectionString :: String -> String -> String -> IO (String)
+compileFunctionsSectionString source_arg filename_arg target_arg = evalContT $ callCC $ \qreturn -> do
+  source <- liftIO (newIORef source_arg)
+  filename <- liftIO (newIORef filename_arg)
+  target <- liftIO (newIORef target_arg)
+  qinit <- pure Nothing
+  section <- liftIO (newIORef qinit)
+  qset <- do
+    arg0 <- liftIO (readIORef source)
+    arg1 <- liftIO (readIORef filename)
+    liftIO (readFunctionsSexpr arg0 arg1)
+  liftIO (writeIORef section qset)
+  hret <- do
+    arg0 <- liftIO (readIORef section)
+    arg1 <- liftIO (readIORef target)
+    liftIO (compileFunctionsSection arg0 arg1)
+  qreturn hret
+  pure ""
+
+compileFunctionsString :: String -> String -> String -> IO (String)
+compileFunctionsString source_arg filename_arg target_arg = evalContT $ callCC $ \qreturn -> do
+  source <- liftIO (newIORef source_arg)
+  filename <- liftIO (newIORef filename_arg)
+  target <- liftIO (newIORef target_arg)
+  qinit <- pure Nothing
+  section <- liftIO (newIORef qinit)
+  qset <- do
+    arg0 <- liftIO (readIORef source)
+    arg1 <- liftIO (readIORef filename)
+    liftIO (readFunctionsFragment arg0 arg1)
+  liftIO (writeIORef section qset)
+  hret <- do
+    arg0 <- liftIO (readIORef section)
+    arg1 <- liftIO (readIORef target)
+    liftIO (compileFunctionsSection arg0 arg1)
+  qreturn hret
+  pure ""
+
+compileFunctionsSection :: Maybe Box -> String -> IO (String)
+compileFunctionsSection section_arg target_arg = evalContT $ callCC $ \qreturn -> do
+  section <- liftIO (newIORef section_arg)
+  target <- liftIO (newIORef target_arg)
+  hcond <- do
+    arg0 <- liftIO (readIORef target)
+    arg1 <- pure "node2"
+    liftIO (equalString arg0 arg1)
+  if hcond
+    then do
+      hret <- do
+        arg0 <- do
+          arg0 <- do
+            arg0 <- liftIO (readIORef section)
+            liftIO (cdr arg0)
+          liftIO (node2Functions arg0)
+        liftIO (bodyTreeToString arg0)
+      qreturn hret
+      pure ()
+    else do
+      pure ()
+  hcond <- do
+    arg0 <- liftIO (readIORef target)
+    arg1 <- pure "perl"
+    liftIO (equalString arg0 arg1)
+  if hcond
+    then do
+      hret <- do
+        arg0 <- do
+          arg0 <- do
+            arg0 <- liftIO (readIORef section)
+            liftIO (cdr arg0)
+          liftIO (perlFunctions arg0)
+        liftIO (bodyTreeToString arg0)
+      qreturn hret
+      pure ()
+    else do
+      pure ()
+  hcond <- do
+    arg0 <- liftIO (readIORef target)
+    arg1 <- pure "java"
+    liftIO (equalString arg0 arg1)
+  if hcond
+    then do
+      hret <- do
+        arg0 <- do
+          arg0 <- do
+            arg0 <- liftIO (readIORef section)
+            liftIO (cdr arg0)
+          liftIO (javaFunctions arg0)
+        liftIO (bodyTreeToString arg0)
+      qreturn hret
+      pure ()
+    else do
+      pure ()
+  hcond <- do
+    arg0 <- liftIO (readIORef target)
+    arg1 <- pure "haskell"
+    liftIO (equalString arg0 arg1)
+  if hcond
+    then do
+      hret <- do
+        arg0 <- do
+          arg0 <- do
+            arg0 <- liftIO (readIORef section)
+            liftIO (cdr arg0)
+          liftIO (haskellFunctions arg0)
+        liftIO (bodyTreeToString arg0)
+      qreturn hret
+      pure ()
+    else do
+      pure ()
+  hcond <- do
+    arg0 <- do
+      arg0 <- liftIO (readIORef target)
+      arg1 <- pure "ansi3"
+      liftIO (equalString arg0 arg1)
+    arg1 <- do
+      arg0 <- liftIO (readIORef target)
+      arg1 <- pure "ansi3-release"
+      liftIO (equalString arg0 arg1)
+    liftIO (orBool arg0 arg1)
+  if hcond
+    then do
+      qset <- pure True
+      liftIO (writeIORef releaseMode qset)
+      hret <- do
+        arg0 <- do
+          arg0 <- do
+            arg0 <- liftIO (readIORef section)
+            liftIO (cdr arg0)
+          liftIO (ansi3Functions arg0)
+        liftIO (bodyTreeToString arg0)
+      qreturn hret
+      pure ()
+    else do
+      pure ()
+  _ <- do
+    arg0 <- do
+      arg0 <- pure "unknown functions target: "
+      arg1 <- liftIO (readIORef target)
+      liftIO (stringConcatenate arg0 arg1)
+    liftIO (panic arg0)
+  hret <- pure ""
+  qreturn hret
+  pure ""
+
+compileTypesSectionString :: String -> String -> String -> IO (String)
+compileTypesSectionString source_arg filename_arg target_arg = evalContT $ callCC $ \qreturn -> do
+  source <- liftIO (newIORef source_arg)
+  filename <- liftIO (newIORef filename_arg)
+  target <- liftIO (newIORef target_arg)
+  qinit <- pure Nothing
+  section <- liftIO (newIORef qinit)
+  qset <- do
+    arg0 <- liftIO (readIORef source)
+    arg1 <- liftIO (readIORef filename)
+    liftIO (readTypesSexpr arg0 arg1)
+  liftIO (writeIORef section qset)
+  hret <- do
+    arg0 <- liftIO (readIORef section)
+    arg1 <- liftIO (readIORef target)
+    liftIO (compileTypesSection arg0 arg1)
+  qreturn hret
+  pure ""
+
+compileTypesString :: String -> String -> String -> IO (String)
+compileTypesString source_arg filename_arg target_arg = evalContT $ callCC $ \qreturn -> do
+  source <- liftIO (newIORef source_arg)
+  filename <- liftIO (newIORef filename_arg)
+  target <- liftIO (newIORef target_arg)
+  qinit <- pure Nothing
+  section <- liftIO (newIORef qinit)
+  qset <- do
+    arg0 <- liftIO (readIORef source)
+    arg1 <- liftIO (readIORef filename)
+    liftIO (readTypesFragment arg0 arg1)
+  liftIO (writeIORef section qset)
+  hret <- do
+    arg0 <- liftIO (readIORef section)
+    arg1 <- liftIO (readIORef target)
+    liftIO (compileTypesSection arg0 arg1)
+  qreturn hret
+  pure ""
+
+compileTypesSection :: Maybe Box -> String -> IO (String)
+compileTypesSection section_arg target_arg = evalContT $ callCC $ \qreturn -> do
+  section <- liftIO (newIORef section_arg)
+  target <- liftIO (newIORef target_arg)
+  hcond <- do
+    arg0 <- liftIO (readIORef target)
+    arg1 <- pure "node2"
+    liftIO (equalString arg0 arg1)
+  if hcond
+    then do
+      hret <- do
+        arg0 <- do
+          arg0 <- do
+            arg0 <- liftIO (readIORef section)
+            liftIO (cdr arg0)
+          liftIO (node2Types arg0)
+        liftIO (bodyTreeToString arg0)
+      qreturn hret
+      pure ()
+    else do
+      pure ()
+  hcond <- do
+    arg0 <- liftIO (readIORef target)
+    arg1 <- pure "perl"
+    liftIO (equalString arg0 arg1)
+  if hcond
+    then do
+      hret <- do
+        arg0 <- do
+          arg0 <- do
+            arg0 <- liftIO (readIORef section)
+            liftIO (cdr arg0)
+          liftIO (perlTypes arg0)
+        liftIO (bodyTreeToString arg0)
+      qreturn hret
+      pure ()
+    else do
+      pure ()
+  hcond <- do
+    arg0 <- liftIO (readIORef target)
+    arg1 <- pure "java"
+    liftIO (equalString arg0 arg1)
+  if hcond
+    then do
+      hret <- do
+        arg0 <- do
+          arg0 <- do
+            arg0 <- liftIO (readIORef section)
+            liftIO (cdr arg0)
+          liftIO (javaTypes arg0)
+        liftIO (bodyTreeToString arg0)
+      qreturn hret
+      pure ()
+    else do
+      pure ()
+  hcond <- do
+    arg0 <- liftIO (readIORef target)
+    arg1 <- pure "haskell"
+    liftIO (equalString arg0 arg1)
+  if hcond
+    then do
+      hret <- do
+        arg0 <- do
+          arg0 <- do
+            arg0 <- liftIO (readIORef section)
+            liftIO (cdr arg0)
+          liftIO (haskellTypes arg0)
+        liftIO (bodyTreeToString arg0)
+      qreturn hret
+      pure ()
+    else do
+      pure ()
+  hcond <- do
+    arg0 <- do
+      arg0 <- liftIO (readIORef target)
+      arg1 <- pure "ansi3"
+      liftIO (equalString arg0 arg1)
+    arg1 <- do
+      arg0 <- liftIO (readIORef target)
+      arg1 <- pure "ansi3-release"
+      liftIO (equalString arg0 arg1)
+    liftIO (orBool arg0 arg1)
+  if hcond
+    then do
+      hret <- do
+        arg0 <- do
+          arg0 <- do
+            arg0 <- liftIO (readIORef section)
+            liftIO (cdr arg0)
+          liftIO (ansi3Types arg0)
+        liftIO (bodyTreeToString arg0)
+      qreturn hret
+      pure ()
+    else do
+      pure ()
+  _ <- do
+    arg0 <- do
+      arg0 <- pure "unknown types target: "
+      arg1 <- liftIO (readIORef target)
+      liftIO (stringConcatenate arg0 arg1)
+    liftIO (panic arg0)
+  hret <- pure ""
+  qreturn hret
+  pure ""
+
+compileProgramBareString :: String -> String -> String -> IO (String)
+compileProgramBareString source_arg filename_arg target_arg = evalContT $ callCC $ \qreturn -> do
+  source <- liftIO (newIORef source_arg)
+  filename <- liftIO (newIORef filename_arg)
+  target <- liftIO (newIORef target_arg)
+  qinit <- pure Nothing
+  tree <- liftIO (newIORef qinit)
+  qset <- do
+    arg0 <- liftIO (readIORef source)
+    arg1 <- liftIO (readIORef filename)
+    liftIO (readSexpr arg0 arg1)
+  liftIO (writeIORef tree qset)
+  qset <- do
+    arg0 <- liftIO (readIORef tree)
+    liftIO (macrowalk arg0)
+  liftIO (writeIORef tree qset)
+  hcond <- do
+    arg0 <- liftIO (readIORef target)
+    arg1 <- pure "java"
+    liftIO (equalString arg0 arg1)
+  if hcond
+    then do
+      qset <- do
+        arg0 <- liftIO (readIORef tree)
+        arg1 <- do
+          arg0 <- do
+            arg0 <- liftIO (readIORef tree)
+            liftIO (getTypes arg0)
+          liftIO (cdr arg0)
+        liftIO (javaApplyTypeAliases arg0 arg1)
+      liftIO (writeIORef tree qset)
+      pure ()
+    else do
+      pure ()
+  hcond <- do
+    arg0 <- liftIO (readIORef target)
+    arg1 <- pure "haskell"
+    liftIO (equalString arg0 arg1)
+  if hcond
+    then do
+      qset <- do
+        arg0 <- liftIO (readIORef tree)
+        arg1 <- do
+          arg0 <- do
+            arg0 <- liftIO (readIORef tree)
+            liftIO (getTypes arg0)
+          liftIO (cdr arg0)
+        liftIO (haskellApplyTypeAliases arg0 arg1)
+      liftIO (writeIORef tree qset)
+      pure ()
+    else do
+      pure ()
+  hcond <- do
+    arg0 <- liftIO (readIORef target)
+    arg1 <- pure "node2"
+    liftIO (equalString arg0 arg1)
+  if hcond
+    then do
+      hret <- do
+        arg0 <- do
+          arg0 <- do
+            arg0 <- do
+              arg0 <- do
+                arg0 <- liftIO (readIORef tree)
+                liftIO (getTypes arg0)
+              liftIO (node2Types arg0)
+            liftIO (qid arg0)
+          arg1 <- do
+            arg0 <- do
+              arg0 <- do
+                arg0 <- do
+                  arg0 <- liftIO (readIORef tree)
+                  liftIO (getFunctions arg0)
+                liftIO (node2Functions arg0)
+              liftIO (qid arg0)
+            arg1 <- pure Nothing
+            liftIO (cons arg0 arg1)
+          liftIO (cons arg0 arg1)
+        liftIO (bodyTreeToString arg0)
+      qreturn hret
+      pure ()
+    else do
+      pure ()
+  hcond <- do
+    arg0 <- liftIO (readIORef target)
+    arg1 <- pure "perl"
+    liftIO (equalString arg0 arg1)
+  if hcond
+    then do
+      hret <- do
+        arg0 <- do
+          arg0 <- do
+            arg0 <- do
+              arg0 <- do
+                arg0 <- liftIO (readIORef tree)
+                liftIO (getTypes arg0)
+              liftIO (perlTypes arg0)
+            liftIO (qid arg0)
+          arg1 <- do
+            arg0 <- do
+              arg0 <- do
+                arg0 <- do
+                  arg0 <- liftIO (readIORef tree)
+                  liftIO (getFunctions arg0)
+                liftIO (perlFunctions arg0)
+              liftIO (qid arg0)
+            arg1 <- pure Nothing
+            liftIO (cons arg0 arg1)
+          liftIO (cons arg0 arg1)
+        liftIO (bodyTreeToString arg0)
+      qreturn hret
+      pure ()
+    else do
+      pure ()
+  hcond <- do
+    arg0 <- liftIO (readIORef target)
+    arg1 <- pure "java"
+    liftIO (equalString arg0 arg1)
+  if hcond
+    then do
+      hret <- do
+        arg0 <- do
+          arg0 <- do
+            arg0 <- do
+              arg0 <- do
+                arg0 <- liftIO (readIORef tree)
+                liftIO (getTypes arg0)
+              liftIO (javaTypes arg0)
+            liftIO (qid arg0)
+          arg1 <- do
+            arg0 <- do
+              arg0 <- do
+                arg0 <- do
+                  arg0 <- liftIO (readIORef tree)
+                  liftIO (getFunctions arg0)
+                liftIO (javaFunctions arg0)
+              liftIO (qid arg0)
+            arg1 <- pure Nothing
+            liftIO (cons arg0 arg1)
+          liftIO (cons arg0 arg1)
+        liftIO (bodyTreeToString arg0)
+      qreturn hret
+      pure ()
+    else do
+      pure ()
+  hcond <- do
+    arg0 <- liftIO (readIORef target)
+    arg1 <- pure "haskell"
+    liftIO (equalString arg0 arg1)
+  if hcond
+    then do
+      hret <- do
+        arg0 <- do
+          arg0 <- do
+            arg0 <- do
+              arg0 <- do
+                arg0 <- liftIO (readIORef tree)
+                liftIO (getTypes arg0)
+              liftIO (haskellTypes arg0)
+            liftIO (qid arg0)
+          arg1 <- do
+            arg0 <- do
+              arg0 <- do
+                arg0 <- do
+                  arg0 <- liftIO (readIORef tree)
+                  liftIO (getFunctions arg0)
+                liftIO (haskellFunctions arg0)
+              liftIO (qid arg0)
+            arg1 <- pure Nothing
+            liftIO (cons arg0 arg1)
+          liftIO (cons arg0 arg1)
+        liftIO (bodyTreeToString arg0)
+      qreturn hret
+      pure ()
+    else do
+      pure ()
+  hcond <- do
+    arg0 <- do
+      arg0 <- liftIO (readIORef target)
+      arg1 <- pure "ansi3"
+      liftIO (equalString arg0 arg1)
+    arg1 <- do
+      arg0 <- liftIO (readIORef target)
+      arg1 <- pure "ansi3-release"
+      liftIO (equalString arg0 arg1)
+    liftIO (orBool arg0 arg1)
+  if hcond
+    then do
+      qset <- pure True
+      liftIO (writeIORef releaseMode qset)
+      hret <- do
+        arg0 <- do
+          arg0 <- do
+            arg0 <- do
+              arg0 <- do
+                arg0 <- liftIO (readIORef tree)
+                liftIO (getTypes arg0)
+              liftIO (ansi3Types arg0)
+            liftIO (qid arg0)
+          arg1 <- do
+            arg0 <- do
+              arg0 <- do
+                arg0 <- do
+                  arg0 <- liftIO (readIORef tree)
+                  liftIO (getFunctions arg0)
+                liftIO (ansi3Functions arg0)
+              liftIO (qid arg0)
+            arg1 <- pure Nothing
+            liftIO (cons arg0 arg1)
+          liftIO (cons arg0 arg1)
+        liftIO (bodyTreeToString arg0)
+      qreturn hret
+      pure ()
+    else do
+      pure ()
+  _ <- do
+    arg0 <- do
+      arg0 <- pure "unknown program target: "
+      arg1 <- liftIO (readIORef target)
+      liftIO (stringConcatenate arg0 arg1)
+    liftIO (panic arg0)
+  hret <- pure ""
+  qreturn hret
+  pure ""
+
 node2FunctionArgs :: Maybe Box -> IO (Maybe Box)
 node2FunctionArgs tree_arg = evalContT $ callCC $ \qreturn -> do
   tree <- liftIO (newIORef tree_arg)
@@ -1392,7 +2311,7 @@ node2Includes nodes_arg = evalContT $ callCC $ \qreturn -> do
       liftIO (boxString arg0)
     arg1 <- do
       arg0 <- do
-        arg0 <- pure "const fs = require(\"fs\");\n"
+        arg0 <- pure "const fs = (typeof require === \"function\") ? require(\"fs\") : null;\n"
         liftIO (boxString arg0)
       arg1 <- do
         arg0 <- do
@@ -1424,125 +2343,345 @@ node2Includes nodes_arg = evalContT $ callCC $ \qreturn -> do
                       liftIO (boxString arg0)
                     arg1 <- do
                       arg0 <- do
-                        arg0 <- pure "let stderr = process.stderr;\n"
+                        arg0 <- pure "let quonIO = makeDefaultQuonIO();\n"
                         liftIO (boxString arg0)
                       arg1 <- do
                         arg0 <- do
-                          arg0 <- pure "function cformat(fmt, ...args) {\n"
+                          arg0 <- pure "let stderr = { write: function(s) { quonIO.error(String(s)); } };\n"
                           liftIO (boxString arg0)
                         arg1 <- do
                           arg0 <- do
-                            arg0 <- pure "  fmt = String(fmt);\n"
+                            arg0 <- pure "function makeDefaultQuonIO() {\n"
                             liftIO (boxString arg0)
                           arg1 <- do
                             arg0 <- do
-                              arg0 <- pure "  let out = '';\n"
+                              arg0 <- pure "  return {\n"
                               liftIO (boxString arg0)
                             arg1 <- do
                               arg0 <- do
-                                arg0 <- pure "  let argi = 0;\n"
+                                arg0 <- pure "    write: function(s) {\n"
                                 liftIO (boxString arg0)
                               arg1 <- do
                                 arg0 <- do
-                                  arg0 <- pure "  for (let pos = 0; pos < fmt.length; pos++) {\n"
+                                  arg0 <- pure "      if (typeof process !== \"undefined\" && process.stdout) process.stdout.write(String(s));\n"
                                   liftIO (boxString arg0)
                                 arg1 <- do
                                   arg0 <- do
-                                    arg0 <- pure "    let ch = fmt[pos];\n"
+                                    arg0 <- pure "    },\n"
                                     liftIO (boxString arg0)
                                   arg1 <- do
                                     arg0 <- do
-                                      arg0 <- pure "    if (ch !== '%') { out += ch; continue; }\n"
+                                      arg0 <- pure "    error: function(s) {\n"
                                       liftIO (boxString arg0)
                                     arg1 <- do
                                       arg0 <- do
-                                        arg0 <- pure "    if (fmt[pos + 1] === '%') { out += '%'; pos++; continue; }\n"
+                                        arg0 <- pure "      if (typeof process !== \"undefined\" && process.stderr) process.stderr.write(String(s));\n"
                                         liftIO (boxString arg0)
                                       arg1 <- do
                                         arg0 <- do
-                                          arg0 <- pure "    let precision = null;\n"
+                                          arg0 <- pure "      else if (typeof console !== \"undefined\" && console.error) console.error(String(s));\n"
                                           liftIO (boxString arg0)
                                         arg1 <- do
                                           arg0 <- do
-                                            arg0 <- pure "    if (fmt[pos + 1] === '.') {\n"
+                                            arg0 <- pure "    },\n"
                                             liftIO (boxString arg0)
                                           arg1 <- do
                                             arg0 <- do
-                                              arg0 <- pure "      let end = pos + 2;\n"
+                                              arg0 <- pure "    readFile: null,\n"
                                               liftIO (boxString arg0)
                                             arg1 <- do
                                               arg0 <- do
-                                                arg0 <- pure "      while (end < fmt.length && fmt[end] >= '0' && fmt[end] <= '9') end++;\n"
+                                                arg0 <- pure "    writeFile: null,\n"
                                                 liftIO (boxString arg0)
                                               arg1 <- do
                                                 arg0 <- do
-                                                  arg0 <- pure "      precision = Number(fmt.slice(pos + 2, end));\n"
+                                                  arg0 <- pure "    exit: null,\n"
                                                   liftIO (boxString arg0)
                                                 arg1 <- do
                                                   arg0 <- do
-                                                    arg0 <- pure "      pos = end - 1;\n"
+                                                    arg0 <- pure "    env: (typeof process !== \"undefined\" && process.env) ? process.env : {}\n"
                                                     liftIO (boxString arg0)
                                                   arg1 <- do
                                                     arg0 <- do
-                                                      arg0 <- pure "    }\n"
+                                                      arg0 <- pure "  };\n"
                                                       liftIO (boxString arg0)
                                                     arg1 <- do
                                                       arg0 <- do
-                                                        arg0 <- pure "    let spec = fmt[pos + 1];\n"
+                                                        arg0 <- pure "}\n"
                                                         liftIO (boxString arg0)
                                                       arg1 <- do
                                                         arg0 <- do
-                                                          arg0 <- pure "    if (spec === 's' || spec === 'd') {\n"
+                                                          arg0 <- pure "function configureQuonIO(io) {\n"
                                                           liftIO (boxString arg0)
                                                         arg1 <- do
                                                           arg0 <- do
-                                                            arg0 <- pure "      let value = String(args[argi++]);\n"
+                                                            arg0 <- pure "  const defaults = makeDefaultQuonIO();\n"
                                                             liftIO (boxString arg0)
                                                           arg1 <- do
                                                             arg0 <- do
-                                                              arg0 <- pure "      if (precision !== null) value = value.slice(0, precision);\n"
+                                                              arg0 <- pure "  quonIO = Object.assign(defaults, io || {});\n"
                                                               liftIO (boxString arg0)
                                                             arg1 <- do
                                                               arg0 <- do
-                                                                arg0 <- pure "      out += value;\n"
+                                                                arg0 <- pure "  if (!quonIO.error) quonIO.error = defaults.error;\n"
                                                                 liftIO (boxString arg0)
                                                               arg1 <- do
                                                                 arg0 <- do
-                                                                  arg0 <- pure "      pos++;\n"
+                                                                  arg0 <- pure "  if (!quonIO.write) quonIO.write = defaults.write;\n"
                                                                   liftIO (boxString arg0)
                                                                 arg1 <- do
                                                                   arg0 <- do
-                                                                    arg0 <- pure "    } else {\n"
+                                                                    arg0 <- pure "  return quonIO;\n"
                                                                     liftIO (boxString arg0)
                                                                   arg1 <- do
                                                                     arg0 <- do
-                                                                      arg0 <- pure "      out += ch;\n"
+                                                                      arg0 <- pure "}\n"
                                                                       liftIO (boxString arg0)
                                                                     arg1 <- do
                                                                       arg0 <- do
-                                                                        arg0 <- pure "    }\n"
+                                                                        arg0 <- pure "function qreadFile(filename) {\n"
                                                                         liftIO (boxString arg0)
                                                                       arg1 <- do
                                                                         arg0 <- do
-                                                                          arg0 <- pure "  }\n"
+                                                                          arg0 <- pure "  if (quonIO.readFile) {\n"
                                                                           liftIO (boxString arg0)
                                                                         arg1 <- do
                                                                           arg0 <- do
-                                                                            arg0 <- pure "  return out;\n"
+                                                                            arg0 <- pure "    const data = quonIO.readFile(filename);\n"
                                                                             liftIO (boxString arg0)
                                                                           arg1 <- do
                                                                             arg0 <- do
-                                                                              arg0 <- pure "}\n"
+                                                                              arg0 <- pure "    if (data === null || data === undefined) return null;\n"
                                                                               liftIO (boxString arg0)
                                                                             arg1 <- do
                                                                               arg0 <- do
-                                                                                arg0 <- pure "function printf(fmt, ...args) { process.stdout.write(cformat(fmt, ...args)); }\n"
+                                                                                arg0 <- pure "    return boxString(String(data));\n"
                                                                                 liftIO (boxString arg0)
                                                                               arg1 <- do
                                                                                 arg0 <- do
-                                                                                  arg0 <- pure "function fprintf(stream, fmt, ...args) { stream.write(cformat(fmt, ...args)); }\n"
+                                                                                  arg0 <- pure "  }\n"
                                                                                   liftIO (boxString arg0)
-                                                                                arg1 <- pure Nothing
+                                                                                arg1 <- do
+                                                                                  arg0 <- do
+                                                                                    arg0 <- pure "  if (fs) {\n"
+                                                                                    liftIO (boxString arg0)
+                                                                                  arg1 <- do
+                                                                                    arg0 <- do
+                                                                                      arg0 <- pure "    try { return boxString(fs.readFileSync(filename, \"utf8\")); } catch (e) { return null; }\n"
+                                                                                      liftIO (boxString arg0)
+                                                                                    arg1 <- do
+                                                                                      arg0 <- do
+                                                                                        arg0 <- pure "  }\n"
+                                                                                        liftIO (boxString arg0)
+                                                                                      arg1 <- do
+                                                                                        arg0 <- do
+                                                                                          arg0 <- pure "  return null;\n"
+                                                                                          liftIO (boxString arg0)
+                                                                                        arg1 <- do
+                                                                                          arg0 <- do
+                                                                                            arg0 <- pure "}\n"
+                                                                                            liftIO (boxString arg0)
+                                                                                          arg1 <- do
+                                                                                            arg0 <- do
+                                                                                              arg0 <- pure "function qwriteFile(filename, data) {\n"
+                                                                                              liftIO (boxString arg0)
+                                                                                            arg1 <- do
+                                                                                              arg0 <- do
+                                                                                                arg0 <- pure "  if (quonIO.writeFile) return quonIO.writeFile(filename, data);\n"
+                                                                                                liftIO (boxString arg0)
+                                                                                              arg1 <- do
+                                                                                                arg0 <- do
+                                                                                                  arg0 <- pure "  if (fs) return fs.writeFileSync(filename, data);\n"
+                                                                                                  liftIO (boxString arg0)
+                                                                                                arg1 <- do
+                                                                                                  arg0 <- do
+                                                                                                    arg0 <- pure "  throw new Error(\"write-file is not available in this environment\");\n"
+                                                                                                    liftIO (boxString arg0)
+                                                                                                  arg1 <- do
+                                                                                                    arg0 <- do
+                                                                                                      arg0 <- pure "}\n"
+                                                                                                      liftIO (boxString arg0)
+                                                                                                    arg1 <- do
+                                                                                                      arg0 <- do
+                                                                                                        arg0 <- pure "function qexit(status) {\n"
+                                                                                                        liftIO (boxString arg0)
+                                                                                                      arg1 <- do
+                                                                                                        arg0 <- do
+                                                                                                          arg0 <- pure "  if (quonIO.exit) return quonIO.exit(status);\n"
+                                                                                                          liftIO (boxString arg0)
+                                                                                                        arg1 <- do
+                                                                                                          arg0 <- do
+                                                                                                            arg0 <- pure "  if (typeof process !== \"undefined\" && process.exit) return process.exit(status);\n"
+                                                                                                            liftIO (boxString arg0)
+                                                                                                          arg1 <- do
+                                                                                                            arg0 <- do
+                                                                                                              arg0 <- pure "  throw new Error(\"Quon exit \" + status);\n"
+                                                                                                              liftIO (boxString arg0)
+                                                                                                            arg1 <- do
+                                                                                                              arg0 <- do
+                                                                                                                arg0 <- pure "}\n"
+                                                                                                                liftIO (boxString arg0)
+                                                                                                              arg1 <- do
+                                                                                                                arg0 <- do
+                                                                                                                  arg0 <- pure "function cformat(fmt, ...args) {\n"
+                                                                                                                  liftIO (boxString arg0)
+                                                                                                                arg1 <- do
+                                                                                                                  arg0 <- do
+                                                                                                                    arg0 <- pure "  fmt = String(fmt);\n"
+                                                                                                                    liftIO (boxString arg0)
+                                                                                                                  arg1 <- do
+                                                                                                                    arg0 <- do
+                                                                                                                      arg0 <- pure "  let out = '';\n"
+                                                                                                                      liftIO (boxString arg0)
+                                                                                                                    arg1 <- do
+                                                                                                                      arg0 <- do
+                                                                                                                        arg0 <- pure "  let argi = 0;\n"
+                                                                                                                        liftIO (boxString arg0)
+                                                                                                                      arg1 <- do
+                                                                                                                        arg0 <- do
+                                                                                                                          arg0 <- pure "  for (let pos = 0; pos < fmt.length; pos++) {\n"
+                                                                                                                          liftIO (boxString arg0)
+                                                                                                                        arg1 <- do
+                                                                                                                          arg0 <- do
+                                                                                                                            arg0 <- pure "    let ch = fmt[pos];\n"
+                                                                                                                            liftIO (boxString arg0)
+                                                                                                                          arg1 <- do
+                                                                                                                            arg0 <- do
+                                                                                                                              arg0 <- pure "    if (ch !== '%') { out += ch; continue; }\n"
+                                                                                                                              liftIO (boxString arg0)
+                                                                                                                            arg1 <- do
+                                                                                                                              arg0 <- do
+                                                                                                                                arg0 <- pure "    if (fmt[pos + 1] === '%') { out += '%'; pos++; continue; }\n"
+                                                                                                                                liftIO (boxString arg0)
+                                                                                                                              arg1 <- do
+                                                                                                                                arg0 <- do
+                                                                                                                                  arg0 <- pure "    let precision = null;\n"
+                                                                                                                                  liftIO (boxString arg0)
+                                                                                                                                arg1 <- do
+                                                                                                                                  arg0 <- do
+                                                                                                                                    arg0 <- pure "    if (fmt[pos + 1] === '.') {\n"
+                                                                                                                                    liftIO (boxString arg0)
+                                                                                                                                  arg1 <- do
+                                                                                                                                    arg0 <- do
+                                                                                                                                      arg0 <- pure "      let end = pos + 2;\n"
+                                                                                                                                      liftIO (boxString arg0)
+                                                                                                                                    arg1 <- do
+                                                                                                                                      arg0 <- do
+                                                                                                                                        arg0 <- pure "      while (end < fmt.length && fmt[end] >= '0' && fmt[end] <= '9') end++;\n"
+                                                                                                                                        liftIO (boxString arg0)
+                                                                                                                                      arg1 <- do
+                                                                                                                                        arg0 <- do
+                                                                                                                                          arg0 <- pure "      precision = Number(fmt.slice(pos + 2, end));\n"
+                                                                                                                                          liftIO (boxString arg0)
+                                                                                                                                        arg1 <- do
+                                                                                                                                          arg0 <- do
+                                                                                                                                            arg0 <- pure "      pos = end - 1;\n"
+                                                                                                                                            liftIO (boxString arg0)
+                                                                                                                                          arg1 <- do
+                                                                                                                                            arg0 <- do
+                                                                                                                                              arg0 <- pure "    }\n"
+                                                                                                                                              liftIO (boxString arg0)
+                                                                                                                                            arg1 <- do
+                                                                                                                                              arg0 <- do
+                                                                                                                                                arg0 <- pure "    let spec = fmt[pos + 1];\n"
+                                                                                                                                                liftIO (boxString arg0)
+                                                                                                                                              arg1 <- do
+                                                                                                                                                arg0 <- do
+                                                                                                                                                  arg0 <- pure "    if (spec === 's' || spec === 'd') {\n"
+                                                                                                                                                  liftIO (boxString arg0)
+                                                                                                                                                arg1 <- do
+                                                                                                                                                  arg0 <- do
+                                                                                                                                                    arg0 <- pure "      let value = String(args[argi++]);\n"
+                                                                                                                                                    liftIO (boxString arg0)
+                                                                                                                                                  arg1 <- do
+                                                                                                                                                    arg0 <- do
+                                                                                                                                                      arg0 <- pure "      if (precision !== null) value = value.slice(0, precision);\n"
+                                                                                                                                                      liftIO (boxString arg0)
+                                                                                                                                                    arg1 <- do
+                                                                                                                                                      arg0 <- do
+                                                                                                                                                        arg0 <- pure "      out += value;\n"
+                                                                                                                                                        liftIO (boxString arg0)
+                                                                                                                                                      arg1 <- do
+                                                                                                                                                        arg0 <- do
+                                                                                                                                                          arg0 <- pure "      pos++;\n"
+                                                                                                                                                          liftIO (boxString arg0)
+                                                                                                                                                        arg1 <- do
+                                                                                                                                                          arg0 <- do
+                                                                                                                                                            arg0 <- pure "    } else {\n"
+                                                                                                                                                            liftIO (boxString arg0)
+                                                                                                                                                          arg1 <- do
+                                                                                                                                                            arg0 <- do
+                                                                                                                                                              arg0 <- pure "      out += ch;\n"
+                                                                                                                                                              liftIO (boxString arg0)
+                                                                                                                                                            arg1 <- do
+                                                                                                                                                              arg0 <- do
+                                                                                                                                                                arg0 <- pure "    }\n"
+                                                                                                                                                                liftIO (boxString arg0)
+                                                                                                                                                              arg1 <- do
+                                                                                                                                                                arg0 <- do
+                                                                                                                                                                  arg0 <- pure "  }\n"
+                                                                                                                                                                  liftIO (boxString arg0)
+                                                                                                                                                                arg1 <- do
+                                                                                                                                                                  arg0 <- do
+                                                                                                                                                                    arg0 <- pure "  return out;\n"
+                                                                                                                                                                    liftIO (boxString arg0)
+                                                                                                                                                                  arg1 <- do
+                                                                                                                                                                    arg0 <- do
+                                                                                                                                                                      arg0 <- pure "}\n"
+                                                                                                                                                                      liftIO (boxString arg0)
+                                                                                                                                                                    arg1 <- do
+                                                                                                                                                                      arg0 <- do
+                                                                                                                                                                        arg0 <- pure "function printf(fmt, ...args) { quonIO.write(cformat(fmt, ...args)); }\n"
+                                                                                                                                                                        liftIO (boxString arg0)
+                                                                                                                                                                      arg1 <- do
+                                                                                                                                                                        arg0 <- do
+                                                                                                                                                                          arg0 <- pure "function fprintf(stream, fmt, ...args) { stream.write(cformat(fmt, ...args)); }\n"
+                                                                                                                                                                          liftIO (boxString arg0)
+                                                                                                                                                                        arg1 <- pure Nothing
+                                                                                                                                                                        liftIO (cons arg0 arg1)
+                                                                                                                                                                      liftIO (cons arg0 arg1)
+                                                                                                                                                                    liftIO (cons arg0 arg1)
+                                                                                                                                                                  liftIO (cons arg0 arg1)
+                                                                                                                                                                liftIO (cons arg0 arg1)
+                                                                                                                                                              liftIO (cons arg0 arg1)
+                                                                                                                                                            liftIO (cons arg0 arg1)
+                                                                                                                                                          liftIO (cons arg0 arg1)
+                                                                                                                                                        liftIO (cons arg0 arg1)
+                                                                                                                                                      liftIO (cons arg0 arg1)
+                                                                                                                                                    liftIO (cons arg0 arg1)
+                                                                                                                                                  liftIO (cons arg0 arg1)
+                                                                                                                                                liftIO (cons arg0 arg1)
+                                                                                                                                              liftIO (cons arg0 arg1)
+                                                                                                                                            liftIO (cons arg0 arg1)
+                                                                                                                                          liftIO (cons arg0 arg1)
+                                                                                                                                        liftIO (cons arg0 arg1)
+                                                                                                                                      liftIO (cons arg0 arg1)
+                                                                                                                                    liftIO (cons arg0 arg1)
+                                                                                                                                  liftIO (cons arg0 arg1)
+                                                                                                                                liftIO (cons arg0 arg1)
+                                                                                                                              liftIO (cons arg0 arg1)
+                                                                                                                            liftIO (cons arg0 arg1)
+                                                                                                                          liftIO (cons arg0 arg1)
+                                                                                                                        liftIO (cons arg0 arg1)
+                                                                                                                      liftIO (cons arg0 arg1)
+                                                                                                                    liftIO (cons arg0 arg1)
+                                                                                                                  liftIO (cons arg0 arg1)
+                                                                                                                liftIO (cons arg0 arg1)
+                                                                                                              liftIO (cons arg0 arg1)
+                                                                                                            liftIO (cons arg0 arg1)
+                                                                                                          liftIO (cons arg0 arg1)
+                                                                                                        liftIO (cons arg0 arg1)
+                                                                                                      liftIO (cons arg0 arg1)
+                                                                                                    liftIO (cons arg0 arg1)
+                                                                                                  liftIO (cons arg0 arg1)
+                                                                                                liftIO (cons arg0 arg1)
+                                                                                              liftIO (cons arg0 arg1)
+                                                                                            liftIO (cons arg0 arg1)
+                                                                                          liftIO (cons arg0 arg1)
+                                                                                        liftIO (cons arg0 arg1)
+                                                                                      liftIO (cons arg0 arg1)
+                                                                                    liftIO (cons arg0 arg1)
+                                                                                  liftIO (cons arg0 arg1)
                                                                                 liftIO (cons arg0 arg1)
                                                                               liftIO (cons arg0 arg1)
                                                                             liftIO (cons arg0 arg1)
@@ -1710,17 +2849,102 @@ node2MainEntry = evalContT $ callCC $ \qreturn -> do
       liftIO (boxString arg0)
     arg1 <- do
       arg0 <- do
-        arg0 <- pure "globalArgs = [\"fixmeprogname\", ...process.argv.slice(2)];\n"
+        arg0 <- pure "function runQuon(args = [], io = {}) {\n"
         liftIO (boxString arg0)
       arg1 <- do
         arg0 <- do
-          arg0 <- pure "globalArgsCount = globalArgs.length;\n"
+          arg0 <- pure "  configureQuonIO(io);\n"
           liftIO (boxString arg0)
         arg1 <- do
           arg0 <- do
-            arg0 <- pure "start();\n"
+            arg0 <- pure "  globalArgs = [\"fixmeprogname\", ...args];\n"
             liftIO (boxString arg0)
-          arg1 <- pure Nothing
+          arg1 <- do
+            arg0 <- do
+              arg0 <- pure "  globalArgsCount = globalArgs.length;\n"
+              liftIO (boxString arg0)
+            arg1 <- do
+              arg0 <- do
+                arg0 <- pure "  return start();\n"
+                liftIO (boxString arg0)
+              arg1 <- do
+                arg0 <- do
+                  arg0 <- pure "}\n"
+                  liftIO (boxString arg0)
+                arg1 <- do
+                  arg0 <- do
+                    arg0 <- pure "const __quonProgramApi = { runQuon, configureQuonIO, cformat, start };\n"
+                    liftIO (boxString arg0)
+                  arg1 <- do
+                    arg0 <- do
+                      arg0 <- pure "if (typeof compileBodyString === \"function\") __quonProgramApi.compileBodyString = compileBodyString;\n"
+                      liftIO (boxString arg0)
+                    arg1 <- do
+                      arg0 <- do
+                        arg0 <- pure "if (typeof compileBodySectionString === \"function\") __quonProgramApi.compileBodySectionString = compileBodySectionString;\n"
+                        liftIO (boxString arg0)
+                      arg1 <- do
+                        arg0 <- do
+                          arg0 <- pure "if (typeof compileFunctionsString === \"function\") __quonProgramApi.compileFunctionsString = compileFunctionsString;\n"
+                          liftIO (boxString arg0)
+                        arg1 <- do
+                          arg0 <- do
+                            arg0 <- pure "if (typeof compileFunctionsSectionString === \"function\") __quonProgramApi.compileFunctionsSectionString = compileFunctionsSectionString;\n"
+                            liftIO (boxString arg0)
+                          arg1 <- do
+                            arg0 <- do
+                              arg0 <- pure "if (typeof compileTypesString === \"function\") __quonProgramApi.compileTypesString = compileTypesString;\n"
+                              liftIO (boxString arg0)
+                            arg1 <- do
+                              arg0 <- do
+                                arg0 <- pure "if (typeof compileTypesSectionString === \"function\") __quonProgramApi.compileTypesSectionString = compileTypesSectionString;\n"
+                                liftIO (boxString arg0)
+                              arg1 <- do
+                                arg0 <- do
+                                  arg0 <- pure "if (typeof compileProgramBareString === \"function\") __quonProgramApi.compileProgramBareString = compileProgramBareString;\n"
+                                  liftIO (boxString arg0)
+                                arg1 <- do
+                                  arg0 <- do
+                                    arg0 <- pure "if (typeof readBodyFragment === \"function\") __quonProgramApi.readBodyFragment = readBodyFragment;\n"
+                                    liftIO (boxString arg0)
+                                  arg1 <- do
+                                    arg0 <- do
+                                      arg0 <- pure "if (typeof module !== \"undefined\" && module.exports) module.exports = __quonProgramApi;\n"
+                                      liftIO (boxString arg0)
+                                    arg1 <- do
+                                      arg0 <- do
+                                        arg0 <- pure "if (typeof globalThis !== \"undefined\") globalThis.QuonProgram = __quonProgramApi;\n"
+                                        liftIO (boxString arg0)
+                                      arg1 <- do
+                                        arg0 <- do
+                                          arg0 <- pure "if (typeof require === \"function\" && typeof module !== \"undefined\" && require.main === module) {\n"
+                                          liftIO (boxString arg0)
+                                        arg1 <- do
+                                          arg0 <- do
+                                            arg0 <- pure "  runQuon((typeof process !== \"undefined\" && process.argv) ? process.argv.slice(2) : []);\n"
+                                            liftIO (boxString arg0)
+                                          arg1 <- do
+                                            arg0 <- do
+                                              arg0 <- pure "}\n"
+                                              liftIO (boxString arg0)
+                                            arg1 <- pure Nothing
+                                            liftIO (cons arg0 arg1)
+                                          liftIO (cons arg0 arg1)
+                                        liftIO (cons arg0 arg1)
+                                      liftIO (cons arg0 arg1)
+                                    liftIO (cons arg0 arg1)
+                                  liftIO (cons arg0 arg1)
+                                liftIO (cons arg0 arg1)
+                              liftIO (cons arg0 arg1)
+                            liftIO (cons arg0 arg1)
+                          liftIO (cons arg0 arg1)
+                        liftIO (cons arg0 arg1)
+                      liftIO (cons arg0 arg1)
+                    liftIO (cons arg0 arg1)
+                  liftIO (cons arg0 arg1)
+                liftIO (cons arg0 arg1)
+              liftIO (cons arg0 arg1)
+            liftIO (cons arg0 arg1)
           liftIO (cons arg0 arg1)
         liftIO (cons arg0 arg1)
       liftIO (cons arg0 arg1)

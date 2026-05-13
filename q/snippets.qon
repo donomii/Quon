@@ -1,0 +1,217 @@
+((includes)
+ (types)
+ (functions
+
+  (void parserValidateBodyForm (box bodyForm string filename) (declare)
+   (body
+    (if (isNil bodyForm)
+      (then (parserPanicAt filename nil "empty body fragment"))
+      (else))
+    (if (isList bodyForm)
+      (then)
+      (else (parserPanicAtNode filename bodyForm "body fragment must be a list")))
+    (if (parserListStartsWith bodyForm "body")
+      (then (parserValidateBody (cdr bodyForm) filename))
+      (else (parserPanicAtNode filename bodyForm "expected body fragment")))))
+
+  (list readBodySexpr (string aStr string filename) (declare (list tokens nil) (list as nil) (list bodyForm nil))
+   (body
+    (set bodyForm (readSingleSexpr aStr filename))
+    (parserValidateBodyForm bodyForm filename)
+    (return bodyForm)))
+
+  (list readSingleSexpr (string aStr string filename) (declare (list tokens nil) (list as nil))
+   (body
+    (set tokens (emptyList))
+    (set tokens (filterTokens (filterVoid (scan aStr 0 1 0 0 filename))))
+    (parserValidateParens tokens nil filename)
+    (set as (sexprTree tokens))
+    (parserValidateRoot as filename)
+    (return (car as))))
+
+  (list readBodyFragment (string source string filename) (declare (string wrapped ""))
+   (body
+    (set wrapped (stringConcatenate "(body\n" (stringConcatenate source "\n)")))
+    (return (readBodySexpr wrapped filename))))
+
+  (list readFunctionsSexpr (string aStr string filename) (declare (list section nil))
+   (body
+    (set section (readSingleSexpr aStr filename))
+    (parserValidateSection section "functions" filename)
+    (parserValidateFunctions (cdr section) filename)
+    (return section)))
+
+  (list readFunctionsFragment (string source string filename) (declare (string wrapped ""))
+   (body
+    (set wrapped (stringConcatenate "(functions\n" (stringConcatenate source "\n)")))
+    (return (readFunctionsSexpr wrapped filename))))
+
+  (list readTypesSexpr (string aStr string filename) (declare (list section nil))
+   (body
+    (set section (readSingleSexpr aStr filename))
+    (parserValidateSection section "types" filename)
+    (parserRejectFunctionDefinitions (cdr section) filename)
+    (return section)))
+
+  (list readTypesFragment (string source string filename) (declare (string wrapped ""))
+   (body
+    (set wrapped (stringConcatenate "(types\n" (stringConcatenate source "\n)")))
+    (return (readTypesSexpr wrapped filename))))
+
+  (string bodyTreeToString (list tree) (declare)
+   (body
+    (return (ListToString (flatten tree) 0 true false))))
+
+  (string compileBodySectionString (string source string filename string target) (declare (list bodyForm nil))
+   (body
+    (set bodyForm (readBodySexpr source filename))
+    (return (compileBodyForm bodyForm target))))
+
+  (string compileBodyString (string source string filename string target) (declare (list bodyForm nil))
+   (body
+    (set bodyForm (readBodyFragment source filename))
+    (return (compileBodyForm bodyForm target))))
+
+  (string compileBodyForm (list bodyForm string target) (declare (list variables nil))
+   (body
+    (if (equalString target "node2")
+      (then (return (bodyTreeToString (node2Body (cdr bodyForm) 0 "snippet"))))
+      (else))
+    (if (equalString target "perl")
+      (then
+       (set variables (getGlobalVariables))
+       (return (bodyTreeToString (perlBody (cdr bodyForm) 0 variables))))
+      (else))
+    (if (equalString target "java")
+      (then (return (bodyTreeToString (javaBody (cdr bodyForm) 0))))
+      (else))
+    (if (equalString target "haskell")
+      (then
+       (set variables (haskellGlobalVariables))
+       (return (bodyTreeToString (haskellBody (cdr bodyForm) 0 variables))))
+      (else))
+    (if (orBool (equalString target "ansi3") (equalString target "ansi3-release"))
+      (then
+       (set releaseMode true)
+       (return (bodyTreeToString (ansi3Body (cdr bodyForm) 0 "snippet"))))
+      (else))
+    (panic (stringConcatenate "unknown body target: " target))
+    (return "")))
+
+  (string compileFunctionsSectionString (string source string filename string target) (declare (list section nil))
+   (body
+    (set section (readFunctionsSexpr source filename))
+    (return (compileFunctionsSection section target))))
+
+  (string compileFunctionsString (string source string filename string target) (declare (list section nil))
+   (body
+    (set section (readFunctionsFragment source filename))
+    (return (compileFunctionsSection section target))))
+
+  (string compileFunctionsSection (list section string target) (declare)
+   (body
+    (if (equalString target "node2")
+      (then (return (bodyTreeToString (node2Functions (cdr section)))))
+      (else))
+    (if (equalString target "perl")
+      (then (return (bodyTreeToString (perlFunctions (cdr section)))))
+      (else))
+    (if (equalString target "java")
+      (then (return (bodyTreeToString (javaFunctions (cdr section)))))
+      (else))
+    (if (equalString target "haskell")
+      (then (return (bodyTreeToString (haskellFunctions (cdr section)))))
+      (else))
+    (if (orBool (equalString target "ansi3") (equalString target "ansi3-release"))
+      (then
+       (set releaseMode true)
+       (return (bodyTreeToString (ansi3Functions (cdr section)))))
+      (else))
+    (panic (stringConcatenate "unknown functions target: " target))
+    (return "")))
+
+  (string compileTypesSectionString (string source string filename string target) (declare (list section nil))
+   (body
+    (set section (readTypesSexpr source filename))
+    (return (compileTypesSection section target))))
+
+  (string compileTypesString (string source string filename string target) (declare (list section nil))
+   (body
+    (set section (readTypesFragment source filename))
+    (return (compileTypesSection section target))))
+
+  (string compileTypesSection (list section string target) (declare)
+   (body
+    (if (equalString target "node2")
+      (then (return (bodyTreeToString (node2Types (cdr section)))))
+      (else))
+    (if (equalString target "perl")
+      (then (return (bodyTreeToString (perlTypes (cdr section)))))
+      (else))
+    (if (equalString target "java")
+      (then (return (bodyTreeToString (javaTypes (cdr section)))))
+      (else))
+    (if (equalString target "haskell")
+      (then (return (bodyTreeToString (haskellTypes (cdr section)))))
+      (else))
+    (if (orBool (equalString target "ansi3") (equalString target "ansi3-release"))
+      (then (return (bodyTreeToString (ansi3Types (cdr section)))))
+      (else))
+    (panic (stringConcatenate "unknown types target: " target))
+    (return "")))
+
+  (string compileProgramBareString (string source string filename string target) (declare (list tree nil))
+   (body
+    (set tree (readSexpr source filename))
+    (set tree (macrowalk tree))
+    (if (equalString target "java")
+      (then (set tree (javaApplyTypeAliases tree (cdr (getTypes tree)))))
+      (else))
+    (if (equalString target "haskell")
+      (then (set tree (haskellApplyTypeAliases tree (cdr (getTypes tree)))))
+      (else))
+    (if (equalString target "node2")
+      (then
+       (return
+        (bodyTreeToString
+         (makeList
+          (node2Types (getTypes tree))
+          (node2Functions (getFunctions tree))))))
+      (else))
+    (if (equalString target "perl")
+      (then
+       (return
+        (bodyTreeToString
+         (makeList
+          (perlTypes (getTypes tree))
+          (perlFunctions (getFunctions tree))))))
+      (else))
+    (if (equalString target "java")
+      (then
+       (return
+        (bodyTreeToString
+         (makeList
+          (javaTypes (getTypes tree))
+          (javaFunctions (getFunctions tree))))))
+      (else))
+    (if (equalString target "haskell")
+      (then
+       (return
+        (bodyTreeToString
+         (makeList
+          (haskellTypes (getTypes tree))
+          (haskellFunctions (getFunctions tree))))))
+      (else))
+    (if (orBool (equalString target "ansi3") (equalString target "ansi3-release"))
+      (then
+       (set releaseMode true)
+       (return
+        (bodyTreeToString
+         (makeList
+          (ansi3Types (getTypes tree))
+          (ansi3Functions (getFunctions tree))))))
+      (else))
+    (panic (stringConcatenate "unknown program target: " target))
+    (return "")))
+
+ ))
