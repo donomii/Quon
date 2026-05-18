@@ -1,4 +1,4 @@
-Includes: "q/base.qon" "q/lists.qon" "q/macros.qon" "q/astaccessors.qon"
+Includes: "q/base.qon" "q/lists.qon" "q/macros.qon"
 Types:
 type a is int;
 type b is float;
@@ -18,5 +18,5 @@ fu start() -> int in
 	printf("Factorial 2: %d\n", factorial(2));
 	printf("Factorial 3: %d\n", factorial(3));
 	printf("Factorial 10: %d\n", factorial(10));
+	return(0);
 end function
-

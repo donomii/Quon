@@ -1,8 +1,12 @@
-     use Parse::RecDescent;
-     $::RD_HINT   = 1;
-     $::RD_WARN   = 1;
-     $::RD_ERRORS = 1;
-	my $text = join(" ", <>);
+use strict;
+use warnings;
+use Parse::RecDescent;
+
+$::RD_HINT = 1;
+$::RD_WARN = 1;
+$::RD_ERRORS = 1;
+
+my $text = do { local $/; <> };
 
 my $grammar = '
 	includes: "Includes:" atom(s)  ..."Types" {$return =  "(includes @{$item[2]})\n"} | <error>
@@ -39,6 +43,8 @@ my $grammar = '
      # Parse $text using rule 'startrule' (which must be
      # defined in $grammar):
 
-     use Data::Dumper;
-        my $p = $parser->program($text);
-        print $p;
+my $p = $parser->program($text);
+if (!defined $p) {
+    die "Imaginary parse failed\n";
+}
+print $p;

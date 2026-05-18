@@ -1,8 +1,9 @@
-Includes: "base.qon"
+Includes: "q/base.qon"
 Types:
 type a is int;
 type b is float;
 Functions:
 fu start() -> int in
 	printf("Hello World from Ima");
+	return(0);
 end function

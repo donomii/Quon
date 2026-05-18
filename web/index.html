@@ -177,10 +177,104 @@
         padding: 14px;
       }
 
+      .source-stack {
+        display: grid;
+        grid-template-rows: minmax(0, 1fr) auto;
+        min-height: 0;
+      }
+
       pre {
         overflow: auto;
         padding: 14px;
         white-space: pre;
+      }
+
+      .docs-panel {
+        max-height: 310px;
+        overflow: auto;
+        border-top: 1px solid var(--line);
+        background: var(--panel);
+        color: var(--fg);
+      }
+
+      .docs-panel[hidden] {
+        display: none;
+      }
+
+      .docs-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .docs-head h2,
+      .docs-block h3 {
+        margin: 0;
+        font-size: 13px;
+      }
+
+      .docs-head span,
+      .docs-block p,
+      .docs-list {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .docs-grid {
+        display: grid;
+        grid-template-columns: minmax(180px, 0.75fr) minmax(220px, 1fr);
+        gap: 0;
+      }
+
+      .docs-block {
+        min-width: 0;
+        padding: 12px;
+        border-right: 1px solid var(--line);
+      }
+
+      .docs-block:last-child {
+        border-right: 0;
+      }
+
+      .docs-block.preview {
+        grid-column: 1 / -1;
+        border-top: 1px solid var(--line);
+        border-right: 0;
+      }
+
+      .docs-list {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 6px 10px;
+        margin: 10px 0 0;
+      }
+
+      .docs-list dt {
+        color: var(--fg);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+
+      .docs-list dd {
+        margin: 0;
+      }
+
+      .docs-code {
+        height: auto;
+        max-height: 148px;
+        min-height: 96px;
+        margin-top: 8px;
+        border: 1px solid var(--line);
+        background: var(--code);
+        color: var(--code-fg);
+        font-size: 12px;
+      }
+
+      .docs-error {
+        color: var(--danger);
       }
 
       .output-stack {
@@ -207,6 +301,19 @@
           border-right: 0;
           border-bottom: 1px solid var(--line);
         }
+
+        .docs-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .docs-block {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .docs-block.preview {
+          border-top: 0;
+        }
       }
     </style>
   </head>
@@ -229,6 +336,13 @@
             <option value="haskell" data-flags="--haskell">Haskell</option>
           </select>
         </label>
+        <label>
+          Input
+          <select id="inputSyntaxSelect">
+            <option value="quon">Quon</option>
+            <option value="imaginary">Imaginary</option>
+          </select>
+        </label>
         <label class="checkbox">
           <input id="supportLibrariesToggle" type="checkbox">
           Support libraries
@@ -244,7 +358,54 @@
             <strong>Source</strong>
             <span id="sourceName"></span>
           </header>
-          <textarea id="sourceEditor" spellcheck="false"></textarea>
+          <div class="source-stack">
+            <textarea id="sourceEditor" spellcheck="false"></textarea>
+            <section id="imaginaryDocs" class="docs-panel" hidden>
+              <div class="docs-head">
+                <h2>Imaginary Reference</h2>
+                <span id="imaginaryDocsStatus">Converted preview</span>
+              </div>
+              <div class="docs-grid">
+                <div class="docs-block">
+                  <h3>Syntax</h3>
+                  <p>C-ish front end that emits normal Quon before compilation.</p>
+                  <dl class="docs-list">
+                    <dt>Includes:</dt>
+                    <dd>Quoted Quon library paths.</dd>
+                    <dt>type</dt>
+                    <dd><code>type name is targetType;</code></dd>
+                    <dt>fu</dt>
+                    <dd><code>fu name(arg: type) -&gt; type</code></dd>
+                    <dt>locals</dt>
+                    <dd><code>name: type initialValue</code> before <code>in</code>.</dd>
+                    <dt>calls</dt>
+                    <dd><code>printf("%s", value);</code></dd>
+                    <dt>if</dt>
+                    <dd><code>if expr then ... else ... end</code></dd>
+                  </dl>
+                </div>
+                <div class="docs-block">
+                  <h3>Examples</h3>
+                  <p>Try “imaginary hello”, “imaginary branch”, “imaginary locals”, or “imaginary factorial” from the Example menu.</p>
+                  <pre class="docs-code">fu start() -&gt; int
+  name: string "Quon"
+in
+  if equalString(name, "Quon") then
+    printf("Hello %s\n", name);
+  else
+    printf("Nope\n");
+  end
+  return(0);
+end function</pre>
+                </div>
+                <div class="docs-block preview">
+                  <h3>Converted Quon</h3>
+                  <p>The compiler receives this generated program.</p>
+                  <pre id="convertedPreview" class="docs-code"></pre>
+                </div>
+              </div>
+            </section>
+          </div>
         </div>
         <div class="pane">
           <header>
@@ -261,6 +422,7 @@
 
     <script src="../bootstrap/quon.js"></script>
     <script src="source-bundle.js"></script>
+    <script src="../ima/imaginary.js"></script>
     <script src="playground.js"></script>
   </body>
 </html>

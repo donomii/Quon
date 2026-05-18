@@ -6,12 +6,16 @@
 
   const exampleSelect = document.getElementById("exampleSelect");
   const targetSelect = document.getElementById("targetSelect");
+  const inputSyntaxSelect = document.getElementById("inputSyntaxSelect");
   const supportLibrariesToggle = document.getElementById("supportLibrariesToggle");
   const compileButton = document.getElementById("compileButton");
   const runButton = document.getElementById("runButton");
   const sourceEditor = document.getElementById("sourceEditor");
   const compiledOutput = document.getElementById("compiledOutput");
   const runOutput = document.getElementById("runOutput");
+  const imaginaryDocs = document.getElementById("imaginaryDocs");
+  const imaginaryDocsStatus = document.getElementById("imaginaryDocsStatus");
+  const convertedPreview = document.getElementById("convertedPreview");
   const status = document.getElementById("status");
   const sourceName = document.getElementById("sourceName");
   const outputName = document.getElementById("outputName");
@@ -21,6 +25,18 @@
     { name: "branch body", source: "(if (> 3 2)\n  (then (printf \"%s\" \"yes\\n\"))\n  (else (printf \"%s\" \"no\\n\")))" },
     { name: "start function", source: "(int start () (declare)\n  (body\n    (printf \"%s\" \"Hello from start\\n\")\n    (return 0)))" },
     { name: "simple type", source: "(Thing\n  (struct\n    (name string)\n    (count int)))" },
+    { name: "imaginary hello", sourceName: "ima/hello.ima", syntax: "imaginary" },
+    {
+      name: "imaginary branch",
+      syntax: "imaginary",
+      source: "Includes: \"q/base.qon\"\nTypes:\nFunctions:\nfu start() -> int\n  count: int 3\nin\n  if greaterthan(count, 1) then\n    printf(\"large %d\\n\", count);\n  else\n    printf(\"small %d\\n\", count);\n  end\n  return(0);\nend function",
+    },
+    {
+      name: "imaginary locals",
+      syntax: "imaginary",
+      source: "Includes: \"q/base.qon\"\nTypes:\ntype Counter is int;\nFunctions:\nfu start() -> int\n  name: string \"Quon\"\n  count: int 2\nin\n  printf(\"Hello %s %d\\n\", name, count);\n  return(0);\nend function",
+    },
+    { name: "imaginary factorial", sourceName: "ima/pairsum.ima", syntax: "imaginary" },
     { name: "hello program", sourceName: "examples/hello.qon" },
     { name: "compiler", sourceName: "compiler.qon" },
   ];
@@ -61,6 +77,61 @@
 
   function includeSupportLibraries() {
     return supportLibrariesToggle.checked;
+  }
+
+  function selectedInputSyntax() {
+    return inputSyntaxSelect.value;
+  }
+
+  function exampleSyntax(example) {
+    return example && example.syntax ? example.syntax : "quon";
+  }
+
+  function exampleAvailable(example) {
+    return !example.sourceName || Object.prototype.hasOwnProperty.call(sources, example.sourceName);
+  }
+
+  function sourceToQuon(source) {
+    if (selectedInputSyntax() === "imaginary") {
+      if (!globalThis.QuonImaginary || typeof globalThis.QuonImaginary.convertImaginaryToQuon !== "function") {
+        throw new Error("Imaginary converter unavailable");
+      }
+      return globalThis.QuonImaginary.convertImaginaryToQuon(source);
+    }
+    return source;
+  }
+
+  function clearCompileResult() {
+    lastOutput = "";
+    lastCompileMode = "";
+    lastIncludesSupport = false;
+    compiledOutput.textContent = "";
+    runOutput.textContent = "";
+    outputName.textContent = "";
+    updateRunButton();
+  }
+
+  function updateDocs() {
+    const isImaginary = selectedInputSyntax() === "imaginary";
+    imaginaryDocs.hidden = !isImaginary;
+    if (!isImaginary) return;
+
+    if (!globalThis.QuonImaginary || typeof globalThis.QuonImaginary.convertImaginaryToQuon !== "function") {
+      convertedPreview.textContent = "";
+      imaginaryDocsStatus.textContent = "Converter unavailable";
+      imaginaryDocsStatus.classList.add("docs-error");
+      return;
+    }
+
+    try {
+      convertedPreview.textContent = globalThis.QuonImaginary.convertImaginaryToQuon(sourceEditor.value);
+      imaginaryDocsStatus.textContent = "Converted preview";
+      imaginaryDocsStatus.classList.remove("docs-error");
+    } catch (error) {
+      convertedPreview.textContent = "";
+      imaginaryDocsStatus.textContent = error && error.message ? error.message : String(error);
+      imaginaryDocsStatus.classList.add("docs-error");
+    }
   }
 
   function supportProgramFromBody(source, hasBodyForm) {
@@ -140,7 +211,9 @@
     runOutput.textContent = "";
 
     try {
-      const detected = tryBareCompile(sourceEditor.value);
+      const inputSyntax = selectedInputSyntax();
+      const quonSource = sourceToQuon(sourceEditor.value);
+      const detected = tryBareCompile(quonSource);
 
       if (includeSupportLibraries()) {
         activeCompileSource = detected.supportSource;
@@ -159,8 +232,9 @@
       lastCompileMode = detected.mode;
       lastOutput = output;
       compiledOutput.textContent = output;
-      outputName.textContent = `${targetSelect.options[targetSelect.selectedIndex].text} ${detected.mode}`;
-      setStatus(diagnostics ? `Compiled ${detected.mode} with diagnostics` : `Compiled ${detected.mode}`);
+      const inputLabel = inputSyntax === "imaginary" ? "Imaginary -> " : "";
+      outputName.textContent = `${inputLabel}${targetSelect.options[targetSelect.selectedIndex].text} ${detected.mode}`;
+      setStatus(diagnostics ? `Compiled ${inputSyntax} ${detected.mode} with diagnostics` : `Compiled ${inputSyntax} ${detected.mode}`);
       if (diagnostics) runOutput.textContent = diagnostics;
     } catch (error) {
       activeCompileSource = null;
@@ -232,32 +306,36 @@
     const example = examples.find((item) => item.name === name);
     sourceEditor.value = example && example.sourceName ? sources[example.sourceName] || "" : example ? example.source : "";
     sourceName.textContent = name;
-    compiledOutput.textContent = "";
-    runOutput.textContent = "";
-    lastOutput = "";
-    lastCompileMode = "";
-    lastIncludesSupport = false;
-    updateRunButton();
+    clearCompileResult();
+    updateDocs();
     setStatus("Ready");
   }
 
   function populateExamples() {
     const previous = exampleSelect.value;
+    const syntax = selectedInputSyntax();
+    const availableExamples = examples.filter((example) => exampleAvailable(example) && exampleSyntax(example) === syntax);
     exampleSelect.textContent = "";
 
-    for (const example of examples) {
-      if (example.sourceName && !Object.prototype.hasOwnProperty.call(sources, example.sourceName)) continue;
+    for (const example of availableExamples) {
       const option = document.createElement("option");
       option.value = example.name;
       option.textContent = example.name;
       exampleSelect.appendChild(option);
     }
 
-    const names = examples.map((example) => example.name);
-    const next = names.includes(previous) ? previous : exampleSelect.value || names[0];
+    const names = availableExamples.map((example) => example.name);
+    const next = names.includes(previous) ? previous : names[0];
     if (next) {
       exampleSelect.value = next;
       loadExample(next);
+    } else {
+      currentProgramName = "";
+      sourceEditor.value = "";
+      sourceName.textContent = "";
+      clearCompileResult();
+      updateDocs();
+      setStatus("No examples");
     }
   }
 
@@ -271,6 +349,14 @@
 
     exampleSelect.addEventListener("change", () => loadExample(exampleSelect.value));
     targetSelect.addEventListener("change", updateRunButton);
+    inputSyntaxSelect.addEventListener("change", () => {
+      populateExamples();
+    });
+    sourceEditor.addEventListener("input", () => {
+      clearCompileResult();
+      updateDocs();
+      setStatus("Ready");
+    });
     supportLibrariesToggle.addEventListener("change", updateRunButton);
     compileButton.addEventListener("click", compile);
     runButton.addEventListener("click", runGeneratedJs);
