@@ -67,6 +67,14 @@ The parser failure tests can be run directly:
 Those tests feed malformed input to the C, Perl, Java, and Node bootstraps and
 check for the expected parser errors.
 
+The Imaginary front-end smoke tests can also be run directly:
+
+    ./imaginary_tests.bash
+
+Those tests convert the current `.ima` examples, compile them through the Node
+bootstrap, run the generated programs, and check the browser playground's
+Imaginary example/docs behavior.
+
 The backend comparison matrix can also be run directly:
 
     ./backend_matrix.bash compiler.qon

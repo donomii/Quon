@@ -7,13 +7,13 @@ Captured May 9, 2026.
 - Add some kind of `eval`.
   - C can parse and run Quon functions, then use a dynamic loader for native pieces.
   - Perl and JavaScript should be straightforward here.
-- Build an interactive webpage so people can play with the language.
+- Keep improving the interactive webpage so people can play with the language.
 - Consider embedding the compiler source into the compiler so it can regenerate itself anywhere.
 - Think about an MCP interface.
 
 ## Language Shape
 
-- Design an alternate input language that is not a horror show.
+- Continue evolving the Imaginary alternate input language.
 - Add the keyword `function` to the start of each function definition so definitions are easy to grep.
 - Rename awkward constructs like `ternlist` and `chooseBox`.
 - Make the language easier to change.
@@ -33,4 +33,5 @@ Captured May 9, 2026.
 ## Tests
 
 - Keep extending `check.bash` and `backend_matrix.bash` as the main test runners.
+- Extend `imaginary_tests.bash` as the alternate syntax grows.
 - Add more fixture programs to the backend matrix as libraries become useful.

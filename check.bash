@@ -70,6 +70,9 @@ printf "Check output directory: %s\n" "$OUTDIR"
 printf "\nParser negative tests\n"
 "$ROOT/parser_negative_tests.bash" --outdir "$OUTDIR/parser-negative"
 
+printf "\nImaginary front-end tests\n"
+"$ROOT/imaginary_tests.bash" --outdir "$OUTDIR/imaginary"
+
 printf "\nBackend matrix\n"
 "$ROOT/backend_matrix.bash" --outdir "$OUTDIR/backend-matrix" "${PROGRAMS[@]}"
 

@@ -4,6 +4,6 @@ type a is int;
 type b is float;
 Functions:
 fu start() -> int in
-	printf("Hello World from Ima");
+	printf("Hello World from Ima\n");
 	return(0);
 end function
